@@ -62,6 +62,7 @@ export function MonthlyRevenueSlider({ value, onChange, onContinue }: MonthlyRev
   const lastTimeRef = useRef(0);
   const animFrameRef = useRef<number | null>(null);
   const [containerWidth, setContainerWidth] = useState(400);
+  const [inputValue, setInputValue] = useState('');
 
   const revenue = getRevenueAtPosition(scrollX);
 
@@ -170,6 +171,29 @@ export function MonthlyRevenueSlider({ value, onChange, onContinue }: MonthlyRev
     [snapToNearest]
   );
 
+  const handleCustomInput = (raw: string) => {
+    const digits = raw.replace(/[^0-9]/g, '');
+    const num = digits ? parseInt(digits, 10) : 0;
+    const clamped = Math.min(num, 1000000);
+    setInputValue(clamped > 0 ? clamped.toLocaleString() : digits);
+
+    // Update slider position based on custom input
+    if (clamped > 0) {
+      const closest = REVENUE_STOPS.reduce((prev, curr, idx) => {
+        return Math.abs(curr - clamped) < Math.abs(REVENUE_STOPS[prev] - clamped) ? idx : prev;
+      }, 0);
+      const targetScroll = closest * TICK_SPACING;
+      setScrollX(targetScroll);
+      setSelectedIndex(closest);
+    }
+  };
+
+  const handleCustomBlur = () => {
+    if (!inputValue) {
+      setInputValue('');
+    }
+  };
+
   const offset = containerWidth / 2 - scrollX;
 
   return (
@@ -188,6 +212,22 @@ export function MonthlyRevenueSlider({ value, onChange, onContinue }: MonthlyRev
         </div>
         <div className="mt-2 text-sm text-[#9CA3AF] font-medium">
           per month
+        </div>
+
+        {/* Custom Amount Input */}
+        <div className="mt-6 flex justify-center">
+          <div className="relative w-full max-w-xs">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#041E42] pointer-events-none select-none font-bold">$</span>
+            <input
+              type="text"
+              inputMode="numeric"
+              placeholder="Enter custom amount"
+              value={inputValue}
+              onChange={(e) => handleCustomInput(e.target.value)}
+              onBlur={handleCustomBlur}
+              className="w-full rounded-lg border-2 border-[#e8eaf0] bg-[#f8f9fc] py-2.5 pl-8 pr-3 text-[#041E42] tabular-nums outline-none transition-all duration-200 focus:border-[#4945ff] focus:ring-2 focus:ring-[#4945ff]/15 text-sm font-semibold"
+            />
+          </div>
         </div>
       </div>
 
