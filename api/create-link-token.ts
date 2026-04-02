@@ -23,7 +23,7 @@ export default async function handler(req: any, res: any) {
     const request: LinkTokenCreateRequest = {
       user: { client_user_id: 'delt-user-' + Date.now() },
       client_name: 'Delt Capital',
-      products: [Products.Auth, Products.Transactions],
+      products: [Products.Auth, Products.Identity],
       country_codes: [CountryCode.Us],
       language: 'en',
     };
