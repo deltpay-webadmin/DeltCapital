@@ -146,6 +146,19 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
     }
   };
 
+  const handleReset = () => {
+    setCurrentQuestion(0);
+    setMonthlyRevenue(0);
+    setTimeInBusiness('');
+    setAcceptsCards(null);
+    setCardSales(0);
+    setDeltToggle(false);
+    setIsLoadingResults(false);
+    setShowResults(false);
+    setAnimating(false);
+    setShowDelta(false);
+  };
+
   const triggerLoadingAndResults = () => {
     setIsLoadingResults(true);
     setTimeout(() => {
@@ -570,6 +583,27 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
               </motion.div>
             )}
           </AnimatePresence>
+
+          {/* Start Over */}
+          <div style={{ marginTop: '24px' }}>
+            <button
+              type="button"
+              onClick={handleReset}
+              style={{
+                fontSize: '13px',
+                fontWeight: 500,
+                color: '#A0A0B0',
+                background: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                padding: 0,
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.color = '#4945ff'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = '#A0A0B0'; }}
+            >
+              ↺ Start Over
+            </button>
+          </div>
         </div>
       </div>
     );

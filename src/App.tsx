@@ -428,8 +428,8 @@ function AppContent() {
           {/* Spacer for navbar */}
           <div className="flex-shrink-0 h-[73px]" />
           {/* Scrollable content below navbar */}
-          <div className="flex-1 overflow-y-auto">
-            <div className="max-w-6xl mx-auto px-4 py-10">
+          <div className="flex-1 overflow-y-auto flex flex-col items-center justify-center">
+            <div className="max-w-6xl mx-auto px-4 py-10 w-full">
               <CapitalCostAnalyzer onApplyClick={handleApplyFromCalculator} onDeltLearnMore={handleDeltLearnMoreClick} />
             </div>
           </div>

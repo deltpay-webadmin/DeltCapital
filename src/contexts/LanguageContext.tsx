@@ -352,7 +352,6 @@ const translations = {
     // Additional Quiz/Form UI
     'quiz.complete': 'Complete',
     'quiz.back': 'Back',
-    'quiz.next': 'Next',
     'quiz.startApp': 'Start Your Application',
     'quiz.speakSpecialist': 'Speak with a Specialist',
     
@@ -945,7 +944,6 @@ const translations = {
     // Additional Quiz/Form UI
     'quiz.complete': 'Completo',
     'quiz.back': 'Atrás',
-    'quiz.next': 'Siguiente',
     'quiz.startApp': 'Comenzar su Aplicación',
     'quiz.speakSpecialist': 'Hablar con un Especialista',
     
