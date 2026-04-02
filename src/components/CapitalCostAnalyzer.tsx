@@ -46,6 +46,8 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
   const [cardSales, setCardSales] = useState(0);
   const [cardSalesInputValue, setCardSalesInputValue] = useState('');
   const [deltToggle, setDeltToggle] = useState(false);
+  const [customFundingAmount, setCustomFundingAmount] = useState('');
+  const [customFundingInputValue, setCustomFundingInputValue] = useState('');
 
   // ── Calculating buffer ──
   const [showResults, setShowResults] = useState(false);
@@ -180,6 +182,18 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
     }
   };
 
+  const handleCustomFundingInput = (raw: string) => {
+    const digits = raw.replace(/[^0-9]/g, '');
+    const num = digits ? parseInt(digits, 10) : 0;
+    const clamped = Math.min(num, 500000);
+    setCustomFundingInputValue(clamped > 0 ? clamped.toLocaleString() : digits);
+    setCustomFundingAmount(clamped > 0 ? String(clamped) : '');
+  };
+
+  const handleCustomFundingBlur = () => {
+    if (customFundingAmount) setCustomFundingInputValue(Number(customFundingAmount).toLocaleString());
+  };
+
   const timeOptions: { value: TimeInBusiness; label: string }[] = [
     { value: '<6mo', label: 'Less than 6 months' },
     { value: '6-12mo', label: '6–12 months' },
@@ -197,11 +211,12 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
       '1-2yr': '1-2 years',
       '2yr+': '2-5 years',
     };
+    const requestedAmount = customFundingAmount ? String(customFundingAmount) : (showResults ? String(Math.round(displayHigh)) : '');
     return {
       monthlyRevenue: monthlyRevenue > 0 ? monthlyRevenue.toLocaleString() : '',
       timeInBusiness: timeInBusiness ? (tibMap[timeInBusiness] || '') : '',
       creditCardProcessing: noCards ? 'No credit card processing' : (cardSales > 0 ? cardSales.toLocaleString() : ''),
-      requestedAmount: showResults ? String(Math.round(displayHigh)) : '',
+      requestedAmount,
       acceptsCreditCards: acceptsCards,
       deltProcessing: isDeltBoosted, // true when user toggled Delt Boost or selected no-CC cross-sell branch
     };
@@ -494,7 +509,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
 
                 <AnimatePresence mode="wait">
                   <motion.div
-                    key={hasRevenue ? `${displayLow}-${displayHigh}` : 'empty'}
+                    key={customFundingAmount ? `custom-${customFundingAmount}` : hasRevenue ? `${displayLow}-${displayHigh}` : 'empty'}
                     initial={{ opacity: 0, y: 8, scale: 0.97 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -8, scale: 0.95 }}
@@ -509,13 +524,17 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                         lineHeight: 1.1,
                         color: !hasRevenue
                           ? '#d1d5db'
-                          : isDeltBoosted
+                          : customFundingAmount
                             ? '#4945ff'
-                            : '#041E42',
+                            : isDeltBoosted
+                              ? '#4945ff'
+                              : '#041E42',
                         transition: 'color 0.4s ease',
                       }}
                     >
-                      {hasRevenue ? (
+                      {customFundingAmount ? (
+                        formatK(Number(customFundingAmount))
+                      ) : hasRevenue ? (
                         <>{formatK(displayLow)}<span className="mx-1" style={{ opacity: 0.35 }}>–</span>{formatK(displayHigh)}</>
                       ) : (
                         <>$0<span className="mx-1" style={{ opacity: 0.35 }}>–</span>$0</>
@@ -535,9 +554,11 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                 >
                   {!hasRevenue
                     ? 'Complete the fields to see your estimate.'
-                    : isDeltBoosted
-                      ? 'With Delt processing'
-                      : 'Based on your monthly revenue'}
+                    : customFundingAmount
+                      ? 'Your custom amount'
+                      : isDeltBoosted
+                        ? 'With Delt processing'
+                        : 'Based on your monthly revenue'}
                 </p>
 
                 <AnimatePresence>
@@ -556,6 +577,50 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                         <Sparkles className="w-3.5 h-3.5" />
                         0% processing on your first $5,000
                       </span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Custom Funding Amount Input */}
+                <AnimatePresence>
+                  {hasRevenue && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -6, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -6, scale: 0.95 }}
+                      transition={ease300}
+                      className="mt-4 pt-4"
+                      style={{ borderTop: '1px solid #e8eaf0' }}
+                    >
+                      <label
+                        className="text-[11px] text-gray-400 uppercase tracking-widest mb-2.5 block"
+                        style={{ fontWeight: 600, letterSpacing: '0.1em' }}
+                      >
+                        Custom Amount
+                      </label>
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#041E42] pointer-events-none select-none" style={{ fontSize: '1rem', fontWeight: 700 }}>$</span>
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          placeholder="Enter amount"
+                          value={customFundingInputValue}
+                          onChange={(e) => handleCustomFundingInput(e.target.value)}
+                          onBlur={handleCustomFundingBlur}
+                          className="w-full rounded-lg border border-[#e8eaf0] bg-[#F5F7FA] py-2.5 pl-8 pr-3 text-[#041E42] tabular-nums outline-none transition-all duration-200 focus:border-[#4945ff] focus:ring-2 focus:ring-[#4945ff]/15"
+                          style={{ fontSize: '0.95rem', fontWeight: 600 }}
+                        />
+                      </div>
+                      {customFundingAmount && (
+                        <motion.p
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          className="text-[11px] text-[#4945ff] mt-1.5"
+                          style={{ fontWeight: 500 }}
+                        >
+                          Custom amount selected
+                        </motion.p>
+                      )}
                     </motion.div>
                   )}
                 </AnimatePresence>
