@@ -1,0 +1,119 @@
+import { useState } from 'react';
+import { Plus, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { useLanguage } from '../contexts/LanguageContext';
+import logoImg from 'figma:asset/d59993d0ec9040f5cac8ad4361f161b6a4b3a746.png';
+
+interface FAQPageProps {
+  onClose: () => void;
+}
+
+export function FAQPage({ onClose }: FAQPageProps) {
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const { t } = useLanguage();
+
+  const faqs = [
+    { question: t('faq.q1'), answer: t('faq.a1') },
+    { question: t('faq.q2'), answer: t('faq.a2') },
+    { question: t('faq.q3'), answer: t('faq.a3') },
+    { question: t('faq.q4'), answer: t('faq.a4') },
+    { question: t('faq.q5'), answer: t('faq.a5') },
+    { question: t('faq.q6'), answer: t('faq.a6') },
+    { question: t('faq.q7'), answer: t('faq.a7') },
+    { question: t('faq.q8'), answer: t('faq.a8') },
+    { question: t('faq.q9'), answer: t('faq.a9') },
+    { question: t('faq.q10'), answer: t('faq.a10') },
+  ];
+
+  const leftColumnFaqs = faqs.filter((_, index) => index % 2 === 0);
+  const rightColumnFaqs = faqs.filter((_, index) => index % 2 === 1);
+
+  const toggleFaq = (index: number) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
+
+  const renderFaqItem = (faq: { question: string; answer: string }, index: number) => (
+    <div key={index} className="border-b border-gray-200 pb-6">
+      <button
+        onClick={() => toggleFaq(index)}
+        className="w-full flex items-start justify-between text-left gap-4 group"
+      >
+        <span className="text-lg font-semibold text-[#041E42] group-hover:text-[#4945ff] transition-colors">
+          {faq.question}
+        </span>
+        <motion.div
+          animate={{ rotate: openIndex === index ? 45 : 0 }}
+          transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
+          <Plus
+            className={`w-6 h-6 flex-shrink-0 transition-colors ${
+              openIndex === index
+                ? 'text-[#4945ff]'
+                : 'text-[#4945ff] group-hover:scale-110'
+            }`}
+          />
+        </motion.div>
+      </button>
+      <AnimatePresence initial={false}>
+        {openIndex === index && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className="overflow-hidden"
+          >
+            <div className="mt-4 pr-10">
+              <p className="text-gray-600 leading-relaxed">
+                {faq.answer}
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+
+  return (
+    <div className="fixed inset-0 bg-[#ededf6] z-50 overflow-y-auto">
+      {/* Sticky header */}
+      <div className="sticky top-0 z-10 bg-[#ededf6] border-b border-[#041E42]/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+          <div className="flex items-center gap-0 h-14 w-auto cursor-pointer" onClick={onClose}>
+            <img src={logoImg} alt="Delt" className="h-10 w-auto object-contain" />
+          </div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 pb-24">
+        {/* Title */}
+        <motion.h1
+          className="text-4xl md:text-5xl font-bold text-[#041E42] mb-14"
+          initial={{ opacity: 0, x: -40 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
+          FAQ
+          <span className="text-[#4945ff]">.</span>
+        </motion.h1>
+
+        {/* Two Column FAQ Layout */}
+        <div className="grid md:grid-cols-2 gap-x-16 gap-y-8">
+          {/* Left Column */}
+          <div className="space-y-8">
+            {leftColumnFaqs.map((faq, idx) => renderFaqItem(faq, idx * 2))}
+          </div>
+
+          {/* Right Column */}
+          <div className="space-y-8">
+            {rightColumnFaqs.map((faq, idx) => renderFaqItem(faq, idx * 2 + 1))}
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom accent bar */}
+      <div className="h-1 bg-gradient-to-r from-[#4945ff] to-[#041E42]" />
+    </div>
+  );
+}

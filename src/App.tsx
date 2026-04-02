@@ -1,0 +1,530 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { Navbar } from './components/Navbar';
+import { HeroSection } from './components/HeroSection';
+import { PreQualificationSection } from './components/PreQualificationSection';
+import { UseCapitalSection } from './components/UseCapitalSection';
+import { StatsSection } from './components/StatsSection';
+import { CapitalCostAnalyzer } from './components/CapitalCostAnalyzerQuiz';
+import { ComparisonTable } from './components/ComparisonTable';
+import { FAQPage } from './components/FAQPage';
+import { Footer } from './components/Footer';
+import { Chatbot } from './components/Chatbot';
+import { ApplicationPage } from './components/ApplicationPage';
+import { AboutPage } from './components/AboutPageClean';
+import { ReviewsPage } from './components/ReviewsPage';
+import { BlogPage } from './components/BlogPage';
+import { SupportPage } from './components/SupportPage';
+import { WinsPage } from './components/WinsPage';
+import BookingPage from './components/BookingPage';
+import { LanguageProvider } from './contexts/LanguageContext';
+import { ErrorBoundary } from './components/ErrorBoundary';
+import { TermsOfUse, PrivacyPolicy, ElectronicCommunicationsAgreement } from './components/legal/LegalPages';
+import { LoginPage } from './components/LoginPage';
+import { LoanDashboard } from './components/LoanDashboard';
+import { ResourcesPage } from './components/ResourcesPage';
+import { ScrollProgressBar, ScrollReveal } from './components/ScrollNarrative';
+import { TestimonialsSection } from './components/TestimonialsSection';
+import { StickyCTA } from './components/StickyCTA';
+import { HowItWorksPage } from './components/HowItWorksPage';
+import { DeltLearnMorePage } from './components/DeltLearnMorePage';
+import { PlaidOnboardingModal } from './components/PlaidOnboardingModal';
+import { useViewportScale } from './hooks/useViewportScale';
+import logoImg from 'figma:asset/d59993d0ec9040f5cac8ad4361f161b6a4b3a746.png';
+import faviconImg from 'figma:asset/c3c469c594c03c3bfc98fd83feeab8caee9ddef8.png';
+
+interface PreQualificationSectionRef {
+  scrollToSection: () => void;
+  openQuiz: () => void;
+}
+
+function AppContent() {
+  const [showApplication, setShowApplication] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
+  const [showReviews, setShowReviews] = useState(false);
+  const [showBlog, setShowBlog] = useState(false);
+  const [showSupport, setShowSupport] = useState(false);
+  const [showWins, setShowWins] = useState(false);
+  const [showBooking, setShowBooking] = useState(false);
+  const [showFAQ, setShowFAQ] = useState(false);
+  const [showCalculator, setShowCalculator] = useState(false);
+  const [showResources, setShowResources] = useState(false);
+  const [showHowItWorks, setShowHowItWorks] = useState(false);
+  const [showDeltLearnMore, setShowDeltLearnMore] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+  const [showDashboard, setShowDashboard] = useState(false);
+  const [loggedInEmail, setLoggedInEmail] = useState('');
+  const [quizData, setQuizData] = useState<any>(null);
+  const [calculatorData, setCalculatorData] = useState<any>(() => {
+    try {
+      const stored = sessionStorage.getItem('delt_calculatorData');
+      return stored ? JSON.parse(stored) : null;
+    } catch { return null; }
+  });
+  const [showPlaidOnboarding, setShowPlaidOnboarding] = useState(false);
+  const [_plaidOnboardingData, setPlaidOnboardingData] = useState<any>(null);
+  const [_leadCaptureData, setLeadCaptureData] = useState<any>(null);
+  const preQualSectionRef = useRef<PreQualificationSectionRef>(null);
+
+  const [legalPage, setLegalPage] = useState<'terms' | 'privacy' | 'eca' | null>(null);
+
+  // Viewport-based zoom — sections scale down proportionally on smaller windows
+  const viewportZoom = useViewportScale(1440, 0.6, 768);
+
+  // Persist calculatorData to sessionStorage so it survives page refreshes
+  useEffect(() => {
+    if (calculatorData) {
+      try { sessionStorage.setItem('delt_calculatorData', JSON.stringify(calculatorData)); }
+      catch { /* quota exceeded or unavailable — ignore */ }
+    }
+  }, [calculatorData]);
+
+  useEffect(() => {
+    // Basic routing for legal pages
+    const path = window.location.pathname;
+    if (path === '/terms') setLegalPage('terms');
+    else if (path === '/privacy') setLegalPage('privacy');
+    else if (path === '/electronic-communications') setLegalPage('eca');
+  }, []);
+
+  // Set Delt favicon
+  useEffect(() => {
+    const link: HTMLLinkElement = document.querySelector("link[rel*='icon']") || document.createElement('link');
+    link.type = 'image/png';
+    link.rel = 'icon';
+    link.href = faviconImg;
+    document.head.appendChild(link);
+  }, []);
+
+  const handleLegalLinkClick = (page: 'terms' | 'privacy' | 'eca') => {
+    setLegalPage(page);
+  };
+
+  // Close all overlay pages (used before opening a new one for seamless switching)
+  const closeAllOverlays = () => {
+    setShowApplication(false);
+    setShowAbout(false);
+    setShowReviews(false);
+    setShowBlog(false);
+    setShowSupport(false);
+    setShowWins(false);
+    setShowBooking(false);
+    setShowFAQ(false);
+    setShowCalculator(false);
+    setShowResources(false);
+    setShowHowItWorks(false);
+    setShowDeltLearnMore(false);
+    setShowLogin(false);
+    setShowDashboard(false);
+    setLegalPage(null);
+    // NOTE: we intentionally do NOT clear calculatorData or quizData here
+    // so that data collected from the calculator persists across page transitions
+  };
+
+  // "Apply now" button - opens Get Funded page with lead capture form
+  // Preserves any previously-collected calculator data
+  const handleApplyClick = () => {
+    closeAllOverlays();
+    setShowApplication(true);
+  };
+
+  // Called from calculator CTA with calculator field data
+  const handleApplyFromCalculator = (data?: any) => {
+    const merged = { ...calculatorData, ...data };
+    setCalculatorData(merged);
+    closeAllOverlays();
+    setQuizData(merged);
+    setLeadCaptureData(null);
+    setShowApplication(true);
+  };
+
+  // Called when starting application from quiz results
+  const handleApplyFromQuiz = (data?: any) => {
+    const merged = { ...calculatorData, ...data };
+    closeAllOverlays();
+    setQuizData(merged);
+    setLeadCaptureData(null);
+    setShowApplication(true);
+  };
+
+  const handleCloseApplication = () => {
+    setShowApplication(false);
+    setQuizData(null);
+  };
+
+  const handleAboutClick = () => {
+    closeAllOverlays();
+    setShowAbout(true);
+  };
+
+  const handleCloseAbout = () => {
+    setShowAbout(false);
+  };
+
+  const handleHowItWorksClick = () => {
+    closeAllOverlays();
+    setShowHowItWorks(true);
+  };
+
+  const handleDeltLearnMoreClick = () => {
+    closeAllOverlays();
+    setShowDeltLearnMore(true);
+  };
+
+  const handleReviewsClick = () => {
+    closeAllOverlays();
+    setShowReviews(true);
+  };
+
+  const handleCloseReviews = () => {
+    setShowReviews(false);
+  };
+
+  const handleBlogClick = () => {
+    closeAllOverlays();
+    setShowBlog(true);
+  };
+
+  const handleCloseBlog = () => {
+    setShowBlog(false);
+  };
+
+  const handleSupportClick = () => {
+    closeAllOverlays();
+    setShowSupport(true);
+  };
+
+  const handleCloseSupport = () => {
+    setShowSupport(false);
+  };
+
+  const handleWinsClick = () => {
+    closeAllOverlays();
+    setShowWins(true);
+  };
+
+  const handleCloseWins = () => {
+    setShowWins(false);
+  };
+
+  const handleChatClick = () => {
+    // This will trigger the chatbot to open
+    const chatbotButton = document.querySelector('[aria-label="Open chat"]') as HTMLButtonElement;
+    if (chatbotButton) {
+      chatbotButton.click();
+    }
+  };
+
+  const handleFAQClick = () => {
+    closeAllOverlays();
+    setShowFAQ(true);
+  };
+
+  const handleTalkToSpecialist = () => {
+    closeAllOverlays();
+    setShowBooking(true);
+  };
+
+  const handleQuizClick = () => {
+    // Scroll to PreQualification section and open quiz
+    preQualSectionRef.current?.scrollToSection();
+    setTimeout(() => {
+      preQualSectionRef.current?.openQuiz();
+    }, 500);
+  };
+
+  const handleCalculatorClick = () => {
+    closeAllOverlays();
+    setShowCalculator(true);
+  };
+
+  const handleCloseCalculator = () => {
+    setShowCalculator(false);
+  };
+
+  // Lock body scroll when calculator page is open
+  useEffect(() => {
+    if (showCalculator) {
+      document.body.style.overflow = 'hidden';
+      return () => { document.body.style.overflow = ''; };
+    }
+  }, [showCalculator]);
+
+  const handleResourcesClick = () => {
+    closeAllOverlays();
+    setShowResources(true);
+  };
+
+  const handleCloseResources = () => {
+    setShowResources(false);
+  };
+
+  // Scroll-linked snap-up for content wrapper
+  // Content starts 80px below and translates up as hero fades (scroll 30vh → 75vh)
+  const [scrollPos, setScrollPos] = useState(0);
+  const [vh, setVh] = useState(800);
+  useEffect(() => {
+    const update = () => setVh(window.innerHeight);
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+  useEffect(() => {
+    const handleScroll = () => setScrollPos(window.scrollY || document.documentElement.scrollTop || 0);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Compute scroll-driven transforms manually (avoids Motion's useScroll container issue in iframes)
+  const scrollStart1 = vh * 0.25;
+  const scrollEnd1 = vh * 0.7;
+  const scrollStart2 = vh * 0.25;
+  const scrollEnd2 = vh * 0.55;
+  const contentYVal = scrollPos <= scrollStart1 ? 80 : scrollPos >= scrollEnd1 ? 0 : 80 - (80 * (scrollPos - scrollStart1) / (scrollEnd1 - scrollStart1));
+  const contentOpacityVal = scrollPos <= scrollStart2 ? 0 : scrollPos >= scrollEnd2 ? 1 : (scrollPos - scrollStart2) / (scrollEnd2 - scrollStart2);
+
+  // Compute active overlay state for Navbar
+  const overlayMap: { active: boolean; title: string; close: () => void } | null =
+    showApplication ? { active: true, title: 'Application', close: handleCloseApplication } :
+    showAbout ? { active: true, title: 'About', close: handleCloseAbout } :
+    showReviews ? { active: true, title: 'Reviews', close: handleCloseReviews } :
+    showBlog ? { active: true, title: 'Blog', close: handleCloseBlog } :
+    showSupport ? { active: true, title: 'Support', close: handleCloseSupport } :
+    showWins ? { active: true, title: 'Success Stories', close: handleCloseWins } :
+    showBooking ? { active: true, title: 'Book a Call', close: () => setShowBooking(false) } :
+    showFAQ ? { active: true, title: 'FAQ', close: () => setShowFAQ(false) } :
+    showCalculator ? { active: true, title: 'Calculator', close: handleCloseCalculator } :
+    showResources ? { active: true, title: 'Resources', close: handleCloseResources } :
+    showHowItWorks ? { active: true, title: 'How It Works', close: () => setShowHowItWorks(false) } :
+    showDeltLearnMore ? { active: true, title: 'Learn More', close: () => setShowDeltLearnMore(false) } :
+    showLogin ? { active: true, title: 'Login', close: () => setShowLogin(false) } :
+    showDashboard ? { active: true, title: 'Dashboard', close: () => { setShowDashboard(false); setLoggedInEmail(''); } } :
+    legalPage === 'terms' ? { active: true, title: 'Terms of Use', close: () => setLegalPage(null) } :
+    legalPage === 'privacy' ? { active: true, title: 'Privacy Policy', close: () => setLegalPage(null) } :
+    legalPage === 'eca' ? { active: true, title: 'Electronic Communications', close: () => setLegalPage(null) } :
+    null;
+
+  return (
+    <div className="relative min-h-screen bg-[#ededf6] transition-colors duration-300" style={{ paddingBottom: 70 }}>
+      {!overlayMap && <ScrollProgressBar />}
+      <Navbar
+        onApplyClick={handleApplyClick}
+        onCalculatorClick={handleCalculatorClick}
+        onAboutClick={handleAboutClick}
+        onHowItWorksClick={handleHowItWorksClick}
+        onLoginClick={() => setShowLogin(true)}
+        overlayActive={!!overlayMap}
+        overlayTitle={overlayMap?.title}
+        onOverlayClose={overlayMap?.close}
+      />
+      
+      <main className="relative">
+        <HeroSection onApplyClick={handleApplyClick} onApplyFromQuiz={handleApplyFromQuiz} onCalculatorClick={() => setShowCalculator(true)} />
+        {/* Everything after hero needs relative + z-index to scroll over the fixed hero */}
+        <div
+          className="relative z-10 bg-[#ededf6]"
+          style={{ transform: `translateY(${contentYVal}px)`, opacity: contentOpacityVal }}
+        >
+        <div style={{ zoom: viewportZoom } as React.CSSProperties}>
+          <section className="py-20 bg-[#ededf6]">
+            <ScrollReveal direction="up" distance={50}>
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <CapitalCostAnalyzer onApplyClick={handleApplyFromCalculator} onDeltLearnMore={handleDeltLearnMoreClick} />
+              </div>
+            </ScrollReveal>
+          </section>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div className="h-px bg-[#4945ff0F]" /></div>
+          <ComparisonTable />
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div className="h-px bg-[#4945ff0F]" /></div>
+          <UseCapitalSection onTalkToSpecialist={handleTalkToSpecialist} />
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div className="h-px bg-[#4945ff0F]" /></div>
+          <StatsSection />
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div className="h-px bg-[#4945ff0F]" /></div>
+          <PreQualificationSection ref={preQualSectionRef} onApplyClick={handleApplyClick} onApplyFromQuiz={handleApplyFromQuiz} onCalculatorClick={handleCalculatorClick} />
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div className="h-px bg-[#4945ff0F]" /></div>
+          <TestimonialsSection />
+        </div>
+        </div>
+      </main>
+
+      <div className="relative z-10" style={{ transform: `translateY(${contentYVal}px)` }}>
+        <div style={{ zoom: viewportZoom } as React.CSSProperties}>
+        <Footer onAboutClick={handleAboutClick} onHowItWorksClick={handleHowItWorksClick} onReviewsClick={handleReviewsClick} onBlogClick={handleBlogClick} onFAQClick={handleFAQClick} onSupportClick={handleSupportClick} onWinsClick={handleWinsClick} onApplyClick={handleApplyClick} onQuizClick={handleQuizClick} onResourcesClick={handleResourcesClick} onPrivacyClick={() => handleLegalLinkClick('privacy')} onTermsClick={() => handleLegalLinkClick('terms')} onDisclosuresClick={() => handleLegalLinkClick('eca')} />
+        </div>
+      </div>
+
+      <StickyCTA onApplyClick={handleApplyClick} />
+
+      <Chatbot 
+        onApplyClick={handleApplyClick}
+        onCalculatorClick={handleCalculatorClick}
+        onBookingClick={handleTalkToSpecialist}
+        onSupportClick={handleSupportClick}
+      />
+
+      {/* Application Page - Fully Embedded */}
+      {showApplication && (
+        <ApplicationPage 
+          onClose={handleCloseApplication}
+          quizData={quizData}
+          calculatorData={calculatorData}
+          fromQuiz={!!quizData}
+          onLegalLinkClick={handleLegalLinkClick}
+          onOpenPlaidOnboarding={() => setShowPlaidOnboarding(true)}
+          plaidCompleted={!!quizData?.plaidCompleted}
+          onDeltLearnMore={handleDeltLearnMoreClick}
+        />
+      )}
+      
+      {showAbout && (
+        <div className="fixed inset-0 bg-[#ededf6] z-50 overflow-y-auto">
+          <div className="sticky top-0 z-10 bg-[#ededf6] border-b border-[#041E42]/10">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+              <div className="flex items-center gap-0 h-14 w-auto cursor-pointer" onClick={handleCloseAbout}>
+                <img src={logoImg} alt="Delt" className="h-10 w-auto object-contain" />
+              </div>
+            </div>
+          </div>
+          <AboutPage onClose={handleCloseAbout} onApplyClick={handleQuizClick} onCalculatorClick={handleCalculatorClick} onReviewsClick={handleReviewsClick} onWinsClick={handleWinsClick} />
+        </div>
+      )}
+      
+      {showReviews && <ReviewsPage onClose={handleCloseReviews} onCalculatorClick={handleCalculatorClick} />}
+      
+      {showBlog && <BlogPage onClose={handleCloseBlog} />}
+
+      {showSupport && <SupportPage onClose={handleCloseSupport} onChatClick={handleChatClick} onFAQClick={handleFAQClick} onQuizClick={handleQuizClick} onBookingClick={handleTalkToSpecialist} />}
+
+      {showWins && (
+        <WinsPage
+          onClose={handleCloseWins}
+          onAboutClick={handleAboutClick}
+          onHowItWorksClick={handleHowItWorksClick}
+          onReviewsClick={handleReviewsClick}
+          onBlogClick={handleBlogClick}
+          onFAQClick={handleFAQClick}
+          onSupportClick={handleSupportClick}
+          onWinsClick={handleWinsClick}
+          onApplyClick={handleApplyClick}
+          onQuizClick={handleQuizClick}
+          onPrivacyClick={() => handleLegalLinkClick('privacy')}
+          onTermsClick={() => handleLegalLinkClick('terms')}
+          onDisclosuresClick={() => handleLegalLinkClick('eca')}
+        />
+      )}
+
+      {showBooking && <BookingPage onClose={() => setShowBooking(false)} />}
+
+      {/* How It Works Page */}
+      {showHowItWorks && (
+        <HowItWorksPage onClose={() => setShowHowItWorks(false)} onApplyClick={handleApplyClick} onCalculatorClick={handleCalculatorClick} />
+      )}
+
+      {/* FAQ Page */}
+      {showFAQ && <FAQPage onClose={() => setShowFAQ(false)} />}
+
+      {/* Calculator Page */}
+      {showCalculator && (
+        <div className="fixed inset-0 bg-[#ededf6] z-50 flex flex-col">
+          {/* Spacer for navbar */}
+          <div className="flex-shrink-0 h-[73px]" />
+          {/* Scrollable content below navbar */}
+          <div className="flex-1 overflow-y-auto">
+            <div className="max-w-6xl mx-auto px-4 py-10">
+              <CapitalCostAnalyzer onApplyClick={handleApplyFromCalculator} onDeltLearnMore={handleDeltLearnMoreClick} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delt Learn More Page */}
+      {showDeltLearnMore && (
+        <div className="fixed inset-0 bg-[#ededf6] z-50 overflow-y-auto">
+          <div className="flex-shrink-0 h-[73px]" />
+          <DeltLearnMorePage onApplyClick={handleApplyClick} calculatorData={calculatorData} />
+        </div>
+      )}
+
+      {/* Login Page */}
+      {showLogin && (
+        <LoginPage
+          onClose={() => setShowLogin(false)}
+          onSignIn={(email) => {
+            setLoggedInEmail(email);
+            setShowLogin(false);
+            setShowDashboard(true);
+          }}
+          onLegalLink={(page) => {
+            handleLegalLinkClick(page);
+          }}
+        />
+      )}
+
+      {/* Loan Dashboard */}
+      {showDashboard && (
+        <LoanDashboard
+          userEmail={loggedInEmail}
+          onLogout={() => {
+            setShowDashboard(false);
+            setLoggedInEmail('');
+          }}
+        />
+      )}
+
+      {/* Legal Pages Overlay */}
+      {legalPage && (
+        <div className="fixed inset-0 bg-[#ededf6] z-[60] overflow-y-auto">
+          {legalPage === 'terms' && <TermsOfUse onClose={() => setLegalPage(null)} />}
+          {legalPage === 'privacy' && <PrivacyPolicy onClose={() => setLegalPage(null)} />}
+          {legalPage === 'eca' && <ElectronicCommunicationsAgreement onClose={() => setLegalPage(null)} />}
+        </div>
+      )}
+
+      {/* Resources Page */}
+      {showResources && (
+        <ResourcesPage
+          onClose={handleCloseResources}
+          onFAQClick={handleFAQClick}
+          onSupportClick={handleSupportClick}
+          onCalculatorClick={handleCalculatorClick}
+          onBlogClick={handleBlogClick}
+          onApplyClick={handleApplyClick}
+        />
+      )}
+
+      {/* Plaid Onboarding Modal — bank connection flow */}
+      <PlaidOnboardingModal
+        open={showPlaidOnboarding}
+        onClose={() => setShowPlaidOnboarding(false)}
+        onComplete={(data) => {
+          setPlaidOnboardingData(data);
+          setShowPlaidOnboarding(false);
+          // Merge Plaid data into quizData so ApplicationPage can pick it up
+          const merged = {
+            ...calculatorData,
+            ...quizData,
+            bankConnected: data.bankConnected,
+            selectedAccounts: data.selectedAccounts,
+            ssnLast4: data.ssnLast4,
+            plaidCompleted: true,
+          };
+          setQuizData(merged);
+          setCalculatorData(merged);
+          // ApplicationPage stays open — it transitions from lead form to the full application
+          if (!showApplication) {
+            setShowApplication(true);
+          }
+        }}
+      />
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <ErrorBoundary>
+      <LanguageProvider>
+        <AppContent />
+      </LanguageProvider>
+    </ErrorBoundary>
+  );
+}
