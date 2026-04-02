@@ -96,16 +96,20 @@ export function PlaidOnboardingModal({ open, onClose, onComplete }: PlaidOnboard
     setStep('loading');
     setError(null);
     fetch('/api/create-link-token')
-      .then((r) => {
-        if (!r.ok) throw new Error('non-2xx');
-        return r.json();
+      .then(async (r) => {
+        const d = await r.json();
+        if (!r.ok) {
+          const msg = d.plaid_error_message || 'Unable to reach Plaid. Please try again.';
+          throw new Error(msg);
+        }
+        return d;
       })
       .then((d) => {
         setLinkToken(d.link_token);
         setStep('connect');
       })
-      .catch(() => {
-        setError('Unable to reach Plaid. Please try again.');
+      .catch((e) => {
+        setError(e.message || 'Unable to reach Plaid. Please try again.');
         setStep('connect');
       });
   }, [open]);
