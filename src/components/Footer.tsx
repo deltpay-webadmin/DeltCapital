@@ -73,7 +73,7 @@ export function Footer({ onAboutClick, onHowItWorksClick, onReviewsClick, onBlog
           {/* Company Info */}
           <div>
             <div className="mb-1">
-              <img src={logoWhiteImg} alt="Delt" className="h-10 w-auto object-contain" />
+              <img src={logoWhiteImg} alt="Delt" className="h-7 w-auto object-contain" />
             </div>
             {/* Social Icons */}
             <div className="flex items-center" style={{ marginTop: 12, marginBottom: 12 }}>
