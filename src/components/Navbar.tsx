@@ -52,7 +52,7 @@ export function Navbar({ onApplyClick, onCalculatorClick, onAboutClick, onHowItW
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }
             }}>
-              <img src={logoWhiteImg} alt="Delt" className="h-10 w-auto object-contain" />
+              <img src={logoWhiteImg} alt="Delt" className="h-7 w-auto object-contain" />
             </div>
             {overlayActive && overlayTitle && (
               <div className="flex items-center gap-2">
