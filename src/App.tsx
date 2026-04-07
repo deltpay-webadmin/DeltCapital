@@ -385,14 +385,15 @@ function AppContent() {
             </div>
           </div>
           <AboutPage onClose={handleCloseAbout} onApplyClick={handleQuizClick} onCalculatorClick={handleCalculatorClick} onReviewsClick={handleReviewsClick} onWinsClick={handleWinsClick} />
+          <Footer onAboutClick={handleAboutClick} onHowItWorksClick={handleHowItWorksClick} onReviewsClick={handleReviewsClick} onBlogClick={handleBlogClick} onFAQClick={handleFAQClick} onSupportClick={handleSupportClick} onWinsClick={handleWinsClick} onApplyClick={handleApplyClick} onQuizClick={handleQuizClick} onResourcesClick={handleResourcesClick} onPrivacyClick={() => handleLegalLinkClick('privacy')} onTermsClick={() => handleLegalLinkClick('terms')} onDisclosuresClick={() => handleLegalLinkClick('eca')} />
         </div>
       )}
       
-      {showReviews && <ReviewsPage onClose={handleCloseReviews} onCalculatorClick={handleCalculatorClick} />}
+      {showReviews && <ReviewsPage onClose={handleCloseReviews} onCalculatorClick={handleCalculatorClick} onAboutClick={handleAboutClick} onHowItWorksClick={handleHowItWorksClick} onReviewsClick={handleReviewsClick} onBlogClick={handleBlogClick} onFAQClick={handleFAQClick} onSupportClick={handleSupportClick} onWinsClick={handleWinsClick} onApplyClick={handleApplyClick} onResourcesClick={handleResourcesClick} onPrivacyClick={() => handleLegalLinkClick('privacy')} onTermsClick={() => handleLegalLinkClick('terms')} onDisclosuresClick={() => handleLegalLinkClick('eca')} />}
       
-      {showBlog && <BlogPage onClose={handleCloseBlog} />}
+      {showBlog && <BlogPage onClose={handleCloseBlog} onAboutClick={handleAboutClick} onHowItWorksClick={handleHowItWorksClick} onReviewsClick={handleReviewsClick} onBlogClick={handleBlogClick} onFAQClick={handleFAQClick} onSupportClick={handleSupportClick} onWinsClick={handleWinsClick} onApplyClick={handleApplyClick} onResourcesClick={handleResourcesClick} onPrivacyClick={() => handleLegalLinkClick('privacy')} onTermsClick={() => handleLegalLinkClick('terms')} onDisclosuresClick={() => handleLegalLinkClick('eca')} />}
 
-      {showSupport && <SupportPage onClose={handleCloseSupport} onChatClick={handleChatClick} onFAQClick={handleFAQClick} onQuizClick={handleQuizClick} onBookingClick={handleTalkToSpecialist} />}
+      {showSupport && <SupportPage onClose={handleCloseSupport} onChatClick={handleChatClick} onFAQClick={handleFAQClick} onQuizClick={handleQuizClick} onBookingClick={handleTalkToSpecialist} onAboutClick={handleAboutClick} onHowItWorksClick={handleHowItWorksClick} onReviewsClick={handleReviewsClick} onBlogClick={handleBlogClick} onSupportClick={handleSupportClick} onWinsClick={handleWinsClick} onApplyClick={handleApplyClick} onResourcesClick={handleResourcesClick} onPrivacyClick={() => handleLegalLinkClick('privacy')} onTermsClick={() => handleLegalLinkClick('terms')} onDisclosuresClick={() => handleLegalLinkClick('eca')} />}
 
       {showWins && (
         <WinsPage
@@ -416,11 +417,11 @@ function AppContent() {
 
       {/* How It Works Page */}
       {showHowItWorks && (
-        <HowItWorksPage onClose={() => setShowHowItWorks(false)} onApplyClick={handleApplyClick} onCalculatorClick={handleCalculatorClick} />
+        <HowItWorksPage onClose={() => setShowHowItWorks(false)} onApplyClick={handleApplyClick} onCalculatorClick={handleCalculatorClick} onAboutClick={handleAboutClick} onHowItWorksClick={handleHowItWorksClick} onReviewsClick={handleReviewsClick} onBlogClick={handleBlogClick} onFAQClick={handleFAQClick} onSupportClick={handleSupportClick} onWinsClick={handleWinsClick} onResourcesClick={handleResourcesClick} onPrivacyClick={() => handleLegalLinkClick('privacy')} onTermsClick={() => handleLegalLinkClick('terms')} onDisclosuresClick={() => handleLegalLinkClick('eca')} />
       )}
 
       {/* FAQ Page */}
-      {showFAQ && <FAQPage onClose={() => setShowFAQ(false)} />}
+      {showFAQ && <FAQPage onClose={() => setShowFAQ(false)} onAboutClick={handleAboutClick} onHowItWorksClick={handleHowItWorksClick} onReviewsClick={handleReviewsClick} onBlogClick={handleBlogClick} onFAQClick={handleFAQClick} onSupportClick={handleSupportClick} onWinsClick={handleWinsClick} onApplyClick={handleApplyClick} onResourcesClick={handleResourcesClick} onPrivacyClick={() => handleLegalLinkClick('privacy')} onTermsClick={() => handleLegalLinkClick('terms')} onDisclosuresClick={() => handleLegalLinkClick('eca')} />}
 
       {/* Calculator Page */}
       {showCalculator && (
@@ -440,7 +441,7 @@ function AppContent() {
       {showDeltLearnMore && (
         <div className="fixed inset-0 bg-[#ededf6] z-50 overflow-y-auto">
           <div className="flex-shrink-0 h-[73px]" />
-          <DeltLearnMorePage onApplyClick={handleApplyClick} calculatorData={calculatorData} />
+          <DeltLearnMorePage onApplyClick={handleApplyClick} calculatorData={calculatorData} onAboutClick={handleAboutClick} onHowItWorksClick={handleHowItWorksClick} onReviewsClick={handleReviewsClick} onBlogClick={handleBlogClick} onFAQClick={handleFAQClick} onSupportClick={handleSupportClick} onWinsClick={handleWinsClick} onResourcesClick={handleResourcesClick} onPrivacyClick={() => handleLegalLinkClick('privacy')} onTermsClick={() => handleLegalLinkClick('terms')} onDisclosuresClick={() => handleLegalLinkClick('eca')} />
         </div>
       )}
 
@@ -488,6 +489,14 @@ function AppContent() {
           onCalculatorClick={handleCalculatorClick}
           onBlogClick={handleBlogClick}
           onApplyClick={handleApplyClick}
+          onAboutClick={handleAboutClick}
+          onHowItWorksClick={handleHowItWorksClick}
+          onReviewsClick={handleReviewsClick}
+          onWinsClick={handleWinsClick}
+          onResourcesClick={handleResourcesClick}
+          onPrivacyClick={() => handleLegalLinkClick('privacy')}
+          onTermsClick={() => handleLegalLinkClick('terms')}
+          onDisclosuresClick={() => handleLegalLinkClick('eca')}
         />
       )}
 

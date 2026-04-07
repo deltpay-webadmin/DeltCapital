@@ -1,9 +1,23 @@
-import { Star, ChevronLeft, ChevronRight, X, Calculator } from 'lucide-react';
+import { Star, ChevronLeft, ChevronRight, Calculator } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
+import { Footer } from './Footer';
+import logoImg from 'figma:asset/d59993d0ec9040f5cac8ad4361f161b6a4b3a746.png';
 
 interface ReviewsPageProps {
   onClose: () => void;
   onCalculatorClick?: () => void;
+  onAboutClick?: () => void;
+  onHowItWorksClick?: () => void;
+  onReviewsClick?: () => void;
+  onBlogClick?: () => void;
+  onFAQClick?: () => void;
+  onSupportClick?: () => void;
+  onWinsClick?: () => void;
+  onApplyClick?: () => void;
+  onPrivacyClick?: () => void;
+  onTermsClick?: () => void;
+  onDisclosuresClick?: () => void;
+  onResourcesClick?: () => void;
 }
 
 interface Review {
@@ -100,7 +114,7 @@ const reviews: Review[] = [
   }
 ];
 
-export function ReviewsPage({ onClose, onCalculatorClick }: ReviewsPageProps) {
+export function ReviewsPage({ onClose, onCalculatorClick, onAboutClick, onHowItWorksClick, onReviewsClick, onBlogClick, onFAQClick, onSupportClick, onWinsClick, onApplyClick, onPrivacyClick, onTermsClick, onDisclosuresClick, onResourcesClick }: ReviewsPageProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [slidesToShow, setSlidesToShow] = useState(3);
 
@@ -159,19 +173,17 @@ export function ReviewsPage({ onClose, onCalculatorClick }: ReviewsPageProps) {
   const totalDots = reviews.length - slidesToShow + 1;
 
   return (
-    <div
-      className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto"
-      onClick={handleBackdropClick}
-    >
-      <div className="w-full max-w-7xl relative">
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute -top-4 -right-4 w-12 h-12 bg-white hover:bg-gray-100 rounded-full shadow-2xl flex items-center justify-center z-10 transition-all hover:scale-110"
-        >
-          <X className="w-6 h-6 text-gray-600" />
-        </button>
+    <div className="fixed inset-0 bg-[#ededf6] z-50 overflow-y-auto">
+      {/* Sticky header */}
+      <div className="sticky top-0 z-10 bg-[#ededf6] border-b border-[#041E42]/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+          <div className="flex items-center gap-0 h-14 w-auto cursor-pointer" onClick={onClose}>
+            <img src={logoImg} alt="Delt" className="h-10 w-auto object-contain" />
+          </div>
+        </div>
+      </div>
 
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16">
         {/* Main Content */}
         <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-16 relative overflow-hidden">
           {/* Gradient Background Effect */}
@@ -313,6 +325,21 @@ export function ReviewsPage({ onClose, onCalculatorClick }: ReviewsPageProps) {
           </div>
         </div>
       </div>
+
+      <Footer
+        onAboutClick={onAboutClick || (() => {})}
+        onHowItWorksClick={onHowItWorksClick || (() => {})}
+        onReviewsClick={onReviewsClick || (() => {})}
+        onBlogClick={onBlogClick || (() => {})}
+        onFAQClick={onFAQClick || (() => {})}
+        onSupportClick={onSupportClick || (() => {})}
+        onWinsClick={onWinsClick || (() => {})}
+        onApplyClick={onApplyClick || (() => {})}
+        onPrivacyClick={onPrivacyClick}
+        onTermsClick={onTermsClick}
+        onDisclosuresClick={onDisclosuresClick}
+        onResourcesClick={onResourcesClick}
+      />
     </div>
   );
 }

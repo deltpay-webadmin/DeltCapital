@@ -3,12 +3,25 @@ import { Plus, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useLanguage } from '../contexts/LanguageContext';
 import logoImg from 'figma:asset/d59993d0ec9040f5cac8ad4361f161b6a4b3a746.png';
+import { Footer } from './Footer';
 
 interface FAQPageProps {
   onClose: () => void;
+  onAboutClick?: () => void;
+  onHowItWorksClick?: () => void;
+  onReviewsClick?: () => void;
+  onBlogClick?: () => void;
+  onFAQClick?: () => void;
+  onSupportClick?: () => void;
+  onWinsClick?: () => void;
+  onApplyClick?: () => void;
+  onPrivacyClick?: () => void;
+  onTermsClick?: () => void;
+  onDisclosuresClick?: () => void;
+  onResourcesClick?: () => void;
 }
 
-export function FAQPage({ onClose }: FAQPageProps) {
+export function FAQPage({ onClose, onAboutClick, onHowItWorksClick, onReviewsClick, onBlogClick, onFAQClick, onSupportClick, onWinsClick, onApplyClick, onPrivacyClick, onTermsClick, onDisclosuresClick, onResourcesClick }: FAQPageProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const { t } = useLanguage();
 
@@ -112,8 +125,20 @@ export function FAQPage({ onClose }: FAQPageProps) {
         </div>
       </div>
 
-      {/* Bottom accent bar */}
-      <div className="h-1 bg-gradient-to-r from-[#4945ff] to-[#041E42]" />
+      <Footer
+        onAboutClick={onAboutClick || (() => {})}
+        onHowItWorksClick={onHowItWorksClick || (() => {})}
+        onReviewsClick={onReviewsClick || (() => {})}
+        onBlogClick={onBlogClick || (() => {})}
+        onFAQClick={onFAQClick || (() => {})}
+        onSupportClick={onSupportClick || (() => {})}
+        onWinsClick={onWinsClick || (() => {})}
+        onApplyClick={onApplyClick || (() => {})}
+        onPrivacyClick={onPrivacyClick}
+        onTermsClick={onTermsClick}
+        onDisclosuresClick={onDisclosuresClick}
+        onResourcesClick={onResourcesClick}
+      />
     </div>
   );
 }

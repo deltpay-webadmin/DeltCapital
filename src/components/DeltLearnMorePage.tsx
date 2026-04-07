@@ -4,6 +4,7 @@ import {
   CreditCard, BarChart3, DollarSign, Monitor, Globe, Headphones,
   ArrowRight, Lock,
 } from 'lucide-react';
+import { Footer } from './Footer';
 
 // ── Delt brand tokens ──
 const C = {
@@ -156,6 +157,17 @@ function FeatureRow({ icon, title, description }: { icon: React.ReactNode; title
 
 interface DeltLearnMorePageProps {
   onApplyClick?: () => void;
+  onAboutClick?: () => void;
+  onHowItWorksClick?: () => void;
+  onReviewsClick?: () => void;
+  onBlogClick?: () => void;
+  onFAQClick?: () => void;
+  onSupportClick?: () => void;
+  onWinsClick?: () => void;
+  onPrivacyClick?: () => void;
+  onTermsClick?: () => void;
+  onDisclosuresClick?: () => void;
+  onResourcesClick?: () => void;
   calculatorData?: {
     monthlyRevenue?: string;
     timeInBusiness?: string;
@@ -166,7 +178,7 @@ interface DeltLearnMorePageProps {
   };
 }
 
-export function DeltLearnMorePage({ onApplyClick, calculatorData }: DeltLearnMorePageProps) {
+export function DeltLearnMorePage({ onApplyClick, onAboutClick, onHowItWorksClick, onReviewsClick, onBlogClick, onFAQClick, onSupportClick, onWinsClick, onPrivacyClick, onTermsClick, onDisclosuresClick, onResourcesClick, calculatorData }: DeltLearnMorePageProps) {
   const [loaded, setLoaded] = useState(false);
   useEffect(() => { setLoaded(true); }, []);
 
@@ -558,6 +570,20 @@ export function DeltLearnMorePage({ onApplyClick, calculatorData }: DeltLearnMor
       </Section>
 
       </div>
+      <Footer
+        onAboutClick={onAboutClick || (() => {})}
+        onHowItWorksClick={onHowItWorksClick || (() => {})}
+        onReviewsClick={onReviewsClick || (() => {})}
+        onBlogClick={onBlogClick || (() => {})}
+        onFAQClick={onFAQClick || (() => {})}
+        onSupportClick={onSupportClick || (() => {})}
+        onWinsClick={onWinsClick || (() => {})}
+        onApplyClick={onApplyClick || (() => {})}
+        onPrivacyClick={onPrivacyClick}
+        onTermsClick={onTermsClick}
+        onDisclosuresClick={onDisclosuresClick}
+        onResourcesClick={onResourcesClick}
+      />
     </div>
   );
 }
