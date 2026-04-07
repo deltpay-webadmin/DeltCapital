@@ -304,7 +304,7 @@ function AppContent() {
     null;
 
   return (
-    <div className="relative min-h-screen bg-[#ededf6] transition-colors duration-300" style={{ paddingBottom: 70 }}>
+    <div className="relative min-h-screen bg-[#ededf6] transition-colors duration-300">
       {!overlayMap && <ScrollProgressBar />}
       <Navbar
         onApplyClick={handleApplyClick}

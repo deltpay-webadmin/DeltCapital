@@ -9,6 +9,7 @@ export function StickyCTA({ onApplyClick }: StickyCTAProps) {
   const [visible, setVisible] = useState(false);
   const footerObserverRef = useRef<IntersectionObserver | null>(null);
   const footerInViewRef = useRef(false);
+  const hasScrolledPastHero = useRef(false);
 
   useEffect(() => {
     // Observe footer visibility
@@ -17,9 +18,7 @@ export function StickyCTA({ onApplyClick }: StickyCTAProps) {
       footerObserverRef.current = new IntersectionObserver(
         ([entry]) => {
           footerInViewRef.current = entry.isIntersecting;
-          // Re-evaluate visibility
-          const pastHero = window.scrollY > window.innerHeight;
-          setVisible(pastHero && !entry.isIntersecting);
+          setVisible(hasScrolledPastHero.current && !entry.isIntersecting);
         },
         { threshold: 0.05 }
       );
@@ -28,7 +27,8 @@ export function StickyCTA({ onApplyClick }: StickyCTAProps) {
 
     const handleScroll = () => {
       const pastHero = window.scrollY > window.innerHeight;
-      setVisible(pastHero && !footerInViewRef.current);
+      if (pastHero) hasScrolledPastHero.current = true;
+      setVisible(hasScrolledPastHero.current && !footerInViewRef.current);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
