@@ -384,7 +384,7 @@ function AppContent() {
               </div>
             </div>
           </div>
-          <AboutPage onClose={handleCloseAbout} onApplyClick={handleQuizClick} onCalculatorClick={handleCalculatorClick} onReviewsClick={handleReviewsClick} onWinsClick={handleWinsClick} />
+          <AboutPage onClose={handleCloseAbout} onApplyClick={handleApplyClick} onCalculatorClick={handleCalculatorClick} onReviewsClick={handleReviewsClick} onWinsClick={handleWinsClick} />
         </div>
       )}
       
