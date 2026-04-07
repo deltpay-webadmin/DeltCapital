@@ -7,28 +7,13 @@ interface StickyCTAProps {
 
 export function StickyCTA({ onApplyClick }: StickyCTAProps) {
   const [visible, setVisible] = useState(false);
-  const footerObserverRef = useRef<IntersectionObserver | null>(null);
-  const footerInViewRef = useRef(false);
   const hasScrolledPastHero = useRef(false);
 
   useEffect(() => {
-    // Observe footer visibility
-    const footer = document.querySelector('footer');
-    if (footer) {
-      footerObserverRef.current = new IntersectionObserver(
-        ([entry]) => {
-          footerInViewRef.current = entry.isIntersecting;
-          setVisible(hasScrolledPastHero.current && !entry.isIntersecting);
-        },
-        { threshold: 0.05 }
-      );
-      footerObserverRef.current.observe(footer);
-    }
-
     const handleScroll = () => {
       const pastHero = window.scrollY > window.innerHeight;
       if (pastHero) hasScrolledPastHero.current = true;
-      setVisible(hasScrolledPastHero.current && !footerInViewRef.current);
+      setVisible(hasScrolledPastHero.current);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -36,7 +21,6 @@ export function StickyCTA({ onApplyClick }: StickyCTAProps) {
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      footerObserverRef.current?.disconnect();
     };
   }, []);
 
