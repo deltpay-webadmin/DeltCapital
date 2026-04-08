@@ -304,7 +304,7 @@ function AppContent() {
     null;
 
   return (
-    <div className="relative min-h-screen bg-[#ededf6] transition-colors duration-300" style={{ paddingBottom: 70 }}>
+    <div className="relative min-h-screen bg-[#ededf6] transition-colors duration-300">
       {!overlayMap && <ScrollProgressBar />}
       <Navbar
         onApplyClick={handleApplyClick}
@@ -386,6 +386,7 @@ function AppContent() {
           </div>
           <AboutPage onClose={handleCloseAbout} onApplyClick={handleQuizClick} onCalculatorClick={handleCalculatorClick} onReviewsClick={handleReviewsClick} onWinsClick={handleWinsClick} />
           <Footer onAboutClick={handleAboutClick} onHowItWorksClick={handleHowItWorksClick} onReviewsClick={handleReviewsClick} onBlogClick={handleBlogClick} onFAQClick={handleFAQClick} onSupportClick={handleSupportClick} onWinsClick={handleWinsClick} onApplyClick={handleApplyClick} onQuizClick={handleQuizClick} onResourcesClick={handleResourcesClick} onPrivacyClick={() => handleLegalLinkClick('privacy')} onTermsClick={() => handleLegalLinkClick('terms')} onDisclosuresClick={() => handleLegalLinkClick('eca')} />
+          <AboutPage onClose={handleCloseAbout} onApplyClick={handleCalculatorClick} onCalculatorClick={handleCalculatorClick} onReviewsClick={handleReviewsClick} onWinsClick={handleWinsClick} />
         </div>
       )}
       
