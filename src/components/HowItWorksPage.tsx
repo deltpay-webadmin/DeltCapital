@@ -2,11 +2,23 @@ import React, { useState, useRef, useEffect } from 'react';
 import { X, FileText, BarChart3, DollarSign, Clock, Shield, Zap, CheckCircle2, TrendingUp, CreditCard, Banknote, ArrowRight, Landmark, RefreshCw, PieChart, Users } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import logoImg from 'figma:asset/d59993d0ec9040f5cac8ad4361f161b6a4b3a746.png';
+import { Footer } from './Footer';
 
 interface HowItWorksPageProps {
   onClose: () => void;
   onApplyClick?: () => void;
   onCalculatorClick?: () => void;
+  onAboutClick?: () => void;
+  onHowItWorksClick?: () => void;
+  onReviewsClick?: () => void;
+  onBlogClick?: () => void;
+  onFAQClick?: () => void;
+  onSupportClick?: () => void;
+  onWinsClick?: () => void;
+  onPrivacyClick?: () => void;
+  onTermsClick?: () => void;
+  onDisclosuresClick?: () => void;
+  onResourcesClick?: () => void;
 }
 
 interface Step {
@@ -67,7 +79,7 @@ const steps: Step[] = [
   },
 ];
 
-export function HowItWorksPage({ onClose, onApplyClick, onCalculatorClick }: HowItWorksPageProps) {
+export function HowItWorksPage({ onClose, onApplyClick, onCalculatorClick, onAboutClick, onHowItWorksClick, onReviewsClick, onBlogClick, onFAQClick, onSupportClick, onWinsClick, onPrivacyClick, onTermsClick, onDisclosuresClick, onResourcesClick }: HowItWorksPageProps) {
   const [expandedStep, setExpandedStep] = useState<number | null>(null);
   const modalCardRef = useRef<HTMLDivElement>(null);
 
@@ -273,6 +285,20 @@ export function HowItWorksPage({ onClose, onApplyClick, onCalculatorClick }: How
             </p>
           </motion.div>
         </section>
+        <Footer
+          onAboutClick={onAboutClick || (() => {})}
+          onHowItWorksClick={onHowItWorksClick || (() => {})}
+          onReviewsClick={onReviewsClick || (() => {})}
+          onBlogClick={onBlogClick || (() => {})}
+          onFAQClick={onFAQClick || (() => {})}
+          onSupportClick={onSupportClick || (() => {})}
+          onWinsClick={onWinsClick || (() => {})}
+          onApplyClick={onApplyClick || (() => {})}
+          onPrivacyClick={onPrivacyClick}
+          onTermsClick={onTermsClick}
+          onDisclosuresClick={onDisclosuresClick}
+          onResourcesClick={onResourcesClick}
+        />
       </div>
 
       {/* ════ Modal Popup Overlay ════ */}

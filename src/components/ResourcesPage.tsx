@@ -2,6 +2,7 @@ import { X, BookOpen, HelpCircle, LifeBuoy, Calculator, FileText, TrendingUp, Ar
 import { motion } from 'motion/react';
 import logoImg from 'figma:asset/d59993d0ec9040f5cac8ad4361f161b6a4b3a746.png';
 import { Button } from './ui/button';
+import { Footer } from './Footer';
 
 interface ResourcesPageProps {
   onClose: () => void;
@@ -10,6 +11,14 @@ interface ResourcesPageProps {
   onCalculatorClick: () => void;
   onBlogClick: () => void;
   onApplyClick: () => void;
+  onAboutClick?: () => void;
+  onHowItWorksClick?: () => void;
+  onReviewsClick?: () => void;
+  onWinsClick?: () => void;
+  onPrivacyClick?: () => void;
+  onTermsClick?: () => void;
+  onDisclosuresClick?: () => void;
+  onResourcesClick?: () => void;
 }
 
 const fadeUp = {
@@ -21,7 +30,7 @@ const fadeUp = {
   }),
 };
 
-export function ResourcesPage({ onClose, onFAQClick, onSupportClick, onCalculatorClick, onBlogClick, onApplyClick }: ResourcesPageProps) {
+export function ResourcesPage({ onClose, onFAQClick, onSupportClick, onCalculatorClick, onBlogClick, onApplyClick, onAboutClick, onHowItWorksClick, onReviewsClick, onWinsClick, onPrivacyClick, onTermsClick, onDisclosuresClick, onResourcesClick }: ResourcesPageProps) {
 
   const categories = [
     {
@@ -284,6 +293,20 @@ export function ResourcesPage({ onClose, onFAQClick, onSupportClick, onCalculato
           </motion.div>
         </div>
       </div>
+      <Footer
+        onAboutClick={onAboutClick || (() => {})}
+        onHowItWorksClick={onHowItWorksClick || (() => {})}
+        onReviewsClick={onReviewsClick || (() => {})}
+        onBlogClick={onBlogClick}
+        onFAQClick={onFAQClick}
+        onSupportClick={onSupportClick}
+        onWinsClick={onWinsClick || (() => {})}
+        onApplyClick={onApplyClick}
+        onPrivacyClick={onPrivacyClick}
+        onTermsClick={onTermsClick}
+        onDisclosuresClick={onDisclosuresClick}
+        onResourcesClick={onResourcesClick}
+      />
     </div>
   );
 }

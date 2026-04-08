@@ -2,6 +2,7 @@ import { X, ArrowLeft, ChevronDown, Filter, Calendar, TrendingUp, Briefcase, Wre
 import { useLanguage } from '../contexts/LanguageContext';
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { Footer } from './Footer';
 import { BlogPostPlaidPartnership } from './blog-posts/BlogPostPlaidPartnership';
 import { BlogPostInterchange } from './blog-posts/BlogPostInterchange';
 import { BlogPostMCAvsLoans } from './blog-posts/BlogPostMCAvsLoans';
@@ -26,6 +27,18 @@ import { BlogPostSupplyChain } from './blog-posts/BlogPostSupplyChain';
 
 interface BlogPageProps {
   onClose: () => void;
+  onAboutClick?: () => void;
+  onHowItWorksClick?: () => void;
+  onReviewsClick?: () => void;
+  onBlogClick?: () => void;
+  onFAQClick?: () => void;
+  onSupportClick?: () => void;
+  onWinsClick?: () => void;
+  onApplyClick?: () => void;
+  onPrivacyClick?: () => void;
+  onTermsClick?: () => void;
+  onDisclosuresClick?: () => void;
+  onResourcesClick?: () => void;
 }
 
 interface BlogPost {
@@ -39,7 +52,7 @@ interface BlogPost {
   component: JSX.Element;
 }
 
-export function BlogPage({ onClose }: BlogPageProps) {
+export function BlogPage({ onClose, onAboutClick, onHowItWorksClick, onReviewsClick, onBlogClick, onFAQClick, onSupportClick, onWinsClick, onApplyClick, onPrivacyClick, onTermsClick, onDisclosuresClick, onResourcesClick }: BlogPageProps) {
   const { t } = useLanguage();
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
@@ -359,6 +372,20 @@ export function BlogPage({ onClose }: BlogPageProps) {
                 {selectedPost.component}
               </motion.div>
             </article>
+            <Footer
+              onAboutClick={onAboutClick || (() => {})}
+              onHowItWorksClick={onHowItWorksClick || (() => {})}
+              onReviewsClick={onReviewsClick || (() => {})}
+              onBlogClick={onBlogClick || (() => {})}
+              onFAQClick={onFAQClick || (() => {})}
+              onSupportClick={onSupportClick || (() => {})}
+              onWinsClick={onWinsClick || (() => {})}
+              onApplyClick={onApplyClick || (() => {})}
+              onPrivacyClick={onPrivacyClick}
+              onTermsClick={onTermsClick}
+              onDisclosuresClick={onDisclosuresClick}
+              onResourcesClick={onResourcesClick}
+            />
           </div>
         </motion.div>
       </AnimatePresence>
@@ -564,9 +591,21 @@ export function BlogPage({ onClose }: BlogPageProps) {
           )}
         </div>
 
-        {/* Bottom Spacing */}
-        <div className="h-24"></div>
       </div>
+      <Footer
+        onAboutClick={onAboutClick || (() => {})}
+        onHowItWorksClick={onHowItWorksClick || (() => {})}
+        onReviewsClick={onReviewsClick || (() => {})}
+        onBlogClick={onBlogClick || (() => {})}
+        onFAQClick={onFAQClick || (() => {})}
+        onSupportClick={onSupportClick || (() => {})}
+        onWinsClick={onWinsClick || (() => {})}
+        onApplyClick={onApplyClick || (() => {})}
+        onPrivacyClick={onPrivacyClick}
+        onTermsClick={onTermsClick}
+        onDisclosuresClick={onDisclosuresClick}
+        onResourcesClick={onResourcesClick}
+      />
     </motion.div>
   );
 }

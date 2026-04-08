@@ -1,6 +1,7 @@
 import { X, MessageCircle, Phone, Mail, Clock, HelpCircle, FileText, CreditCard, TrendingUp, Calendar, ArrowRight } from 'lucide-react';
 import { motion } from 'motion/react';
 import logoImg from 'figma:asset/d59993d0ec9040f5cac8ad4361f161b6a4b3a746.png';
+import { Footer } from './Footer';
 
 interface SupportPageProps {
   onClose: () => void;
@@ -8,9 +9,20 @@ interface SupportPageProps {
   onFAQClick: () => void;
   onQuizClick?: () => void;
   onBookingClick?: () => void;
+  onAboutClick?: () => void;
+  onHowItWorksClick?: () => void;
+  onReviewsClick?: () => void;
+  onBlogClick?: () => void;
+  onSupportClick?: () => void;
+  onWinsClick?: () => void;
+  onApplyClick?: () => void;
+  onPrivacyClick?: () => void;
+  onTermsClick?: () => void;
+  onDisclosuresClick?: () => void;
+  onResourcesClick?: () => void;
 }
 
-export function SupportPage({ onClose, onChatClick, onFAQClick, onQuizClick, onBookingClick }: SupportPageProps) {
+export function SupportPage({ onClose, onChatClick, onFAQClick, onQuizClick, onBookingClick, onAboutClick, onHowItWorksClick, onReviewsClick, onBlogClick, onSupportClick, onWinsClick, onApplyClick, onPrivacyClick, onTermsClick, onDisclosuresClick, onResourcesClick }: SupportPageProps) {
   const handleCallClick = () => {
     window.location.href = 'tel:+18647293358';
   };
@@ -218,6 +230,20 @@ export function SupportPage({ onClose, onChatClick, onFAQClick, onQuizClick, onB
           </button>
         </motion.div>
       </div>
+      <Footer
+        onAboutClick={onAboutClick || (() => {})}
+        onHowItWorksClick={onHowItWorksClick || (() => {})}
+        onReviewsClick={onReviewsClick || (() => {})}
+        onBlogClick={onBlogClick || (() => {})}
+        onFAQClick={onFAQClick}
+        onSupportClick={onSupportClick || (() => {})}
+        onWinsClick={onWinsClick || (() => {})}
+        onApplyClick={onApplyClick || (() => {})}
+        onPrivacyClick={onPrivacyClick}
+        onTermsClick={onTermsClick}
+        onDisclosuresClick={onDisclosuresClick}
+        onResourcesClick={onResourcesClick}
+      />
     </div>
   );
 }
