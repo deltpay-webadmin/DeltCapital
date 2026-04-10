@@ -29,6 +29,7 @@ import { HowItWorksPage } from './components/HowItWorksPage';
 import { DeltLearnMorePage } from './components/DeltLearnMorePage';
 import { PlaidOnboardingModal } from './components/PlaidOnboardingModal';
 import { useViewportScale } from './hooks/useViewportScale';
+import { motion, AnimatePresence } from 'motion/react';
 import logoImg from 'figma:asset/d59993d0ec9040f5cac8ad4361f161b6a4b3a746.png';
 import faviconImg from 'figma:asset/c3c469c594c03c3bfc98fd83feeab8caee9ddef8.png';
 
@@ -282,6 +283,13 @@ function AppContent() {
   const contentYVal = scrollPos <= scrollStart1 ? 80 : scrollPos >= scrollEnd1 ? 0 : 80 - (80 * (scrollPos - scrollStart1) / (scrollEnd1 - scrollStart1));
   const contentOpacityVal = scrollPos <= scrollStart2 ? 0 : scrollPos >= scrollEnd2 ? 1 : (scrollPos - scrollStart2) / (scrollEnd2 - scrollStart2);
 
+  const pageTransitionProps = {
+    initial: { opacity: 0, y: 8 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: 8 },
+    transition: { duration: 0.22, ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number] },
+  };
+
   // Compute active overlay state for Navbar
   const overlayMap: { active: boolean; title: string; close: () => void } | null =
     showApplication ? { active: true, title: 'Application', close: handleCloseApplication } :
@@ -362,143 +370,205 @@ function AppContent() {
       />
 
       {/* Application Page - Fully Embedded */}
-      {showApplication && (
-        <ApplicationPage 
-          onClose={handleCloseApplication}
-          quizData={quizData}
-          calculatorData={calculatorData}
-          fromQuiz={!!quizData}
-          onLegalLinkClick={handleLegalLinkClick}
-          onOpenPlaidOnboarding={() => setShowPlaidOnboarding(true)}
-          plaidCompleted={!!quizData?.plaidCompleted}
-          onDeltLearnMore={handleDeltLearnMoreClick}
-        />
-      )}
+      <AnimatePresence>
+        {showApplication && (
+          <motion.div key="application" {...pageTransitionProps}>
+            <ApplicationPage
+              onClose={handleCloseApplication}
+              quizData={quizData}
+              calculatorData={calculatorData}
+              fromQuiz={!!quizData}
+              onLegalLinkClick={handleLegalLinkClick}
+              onOpenPlaidOnboarding={() => setShowPlaidOnboarding(true)}
+              plaidCompleted={!!quizData?.plaidCompleted}
+              onDeltLearnMore={handleDeltLearnMoreClick}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
       
-      {showAbout && (
-        <div className="fixed inset-0 bg-[#ededf6] z-50 overflow-y-auto">
-          <div className="sticky top-0 z-10 bg-[#ededf6] border-b border-[#041E42]/10">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-              <div className="flex items-center gap-0 h-14 w-auto cursor-pointer" onClick={handleCloseAbout}>
-                <img src={logoImg} alt="Delt" className="h-10 w-auto object-contain" />
+      <AnimatePresence>
+        {showAbout && (
+          <motion.div key="about" className="fixed inset-0 bg-[#ededf6] z-50 overflow-y-auto" {...pageTransitionProps}>
+            <div className="sticky top-0 z-10 bg-[#ededf6] border-b border-[#041E42]/10">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+                <div className="flex items-center gap-0 h-14 w-auto cursor-pointer" onClick={handleCloseAbout}>
+                  <img src={logoImg} alt="Delt" className="h-10 w-auto object-contain" />
+                </div>
               </div>
             </div>
-          </div>
-          <AboutPage onClose={handleCloseAbout} onApplyClick={handleCalculatorClick} onCalculatorClick={handleCalculatorClick} onReviewsClick={handleReviewsClick} onWinsClick={handleWinsClick} />
-          <Footer onAboutClick={handleAboutClick} onHowItWorksClick={handleHowItWorksClick} onReviewsClick={handleReviewsClick} onBlogClick={handleBlogClick} onFAQClick={handleFAQClick} onSupportClick={handleSupportClick} onWinsClick={handleWinsClick} onApplyClick={handleApplyClick} onQuizClick={handleQuizClick} onResourcesClick={handleResourcesClick} onPrivacyClick={() => handleLegalLinkClick('privacy')} onTermsClick={() => handleLegalLinkClick('terms')} onDisclosuresClick={() => handleLegalLinkClick('eca')} />
-        </div>
-      )}
-      
-      {showReviews && <ReviewsPage onClose={handleCloseReviews} onCalculatorClick={handleCalculatorClick} onAboutClick={handleAboutClick} onHowItWorksClick={handleHowItWorksClick} onReviewsClick={handleReviewsClick} onBlogClick={handleBlogClick} onFAQClick={handleFAQClick} onSupportClick={handleSupportClick} onWinsClick={handleWinsClick} onApplyClick={handleApplyClick} onResourcesClick={handleResourcesClick} onPrivacyClick={() => handleLegalLinkClick('privacy')} onTermsClick={() => handleLegalLinkClick('terms')} onDisclosuresClick={() => handleLegalLinkClick('eca')} />}
-      
-      {showBlog && <BlogPage onClose={handleCloseBlog} onAboutClick={handleAboutClick} onHowItWorksClick={handleHowItWorksClick} onReviewsClick={handleReviewsClick} onBlogClick={handleBlogClick} onFAQClick={handleFAQClick} onSupportClick={handleSupportClick} onWinsClick={handleWinsClick} onApplyClick={handleApplyClick} onResourcesClick={handleResourcesClick} onPrivacyClick={() => handleLegalLinkClick('privacy')} onTermsClick={() => handleLegalLinkClick('terms')} onDisclosuresClick={() => handleLegalLinkClick('eca')} />}
+            <AboutPage onClose={handleCloseAbout} onApplyClick={handleCalculatorClick} onCalculatorClick={handleCalculatorClick} onReviewsClick={handleReviewsClick} onWinsClick={handleWinsClick} />
+            <Footer onAboutClick={handleAboutClick} onHowItWorksClick={handleHowItWorksClick} onReviewsClick={handleReviewsClick} onBlogClick={handleBlogClick} onFAQClick={handleFAQClick} onSupportClick={handleSupportClick} onWinsClick={handleWinsClick} onApplyClick={handleApplyClick} onQuizClick={handleQuizClick} onResourcesClick={handleResourcesClick} onPrivacyClick={() => handleLegalLinkClick('privacy')} onTermsClick={() => handleLegalLinkClick('terms')} onDisclosuresClick={() => handleLegalLinkClick('eca')} />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {showSupport && <SupportPage onClose={handleCloseSupport} onChatClick={handleChatClick} onFAQClick={handleFAQClick} onQuizClick={handleQuizClick} onBookingClick={handleTalkToSpecialist} onAboutClick={handleAboutClick} onHowItWorksClick={handleHowItWorksClick} onReviewsClick={handleReviewsClick} onBlogClick={handleBlogClick} onSupportClick={handleSupportClick} onWinsClick={handleWinsClick} onApplyClick={handleApplyClick} onResourcesClick={handleResourcesClick} onPrivacyClick={() => handleLegalLinkClick('privacy')} onTermsClick={() => handleLegalLinkClick('terms')} onDisclosuresClick={() => handleLegalLinkClick('eca')} />}
+      <AnimatePresence>
+        {showReviews && (
+          <motion.div key="reviews" {...pageTransitionProps}>
+            <ReviewsPage onClose={handleCloseReviews} onCalculatorClick={handleCalculatorClick} onAboutClick={handleAboutClick} onHowItWorksClick={handleHowItWorksClick} onReviewsClick={handleReviewsClick} onBlogClick={handleBlogClick} onFAQClick={handleFAQClick} onSupportClick={handleSupportClick} onWinsClick={handleWinsClick} onApplyClick={handleApplyClick} onResourcesClick={handleResourcesClick} onPrivacyClick={() => handleLegalLinkClick('privacy')} onTermsClick={() => handleLegalLinkClick('terms')} onDisclosuresClick={() => handleLegalLinkClick('eca')} />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {showWins && (
-        <WinsPage
-          onClose={handleCloseWins}
-          onAboutClick={handleAboutClick}
-          onHowItWorksClick={handleHowItWorksClick}
-          onReviewsClick={handleReviewsClick}
-          onBlogClick={handleBlogClick}
-          onFAQClick={handleFAQClick}
-          onSupportClick={handleSupportClick}
-          onWinsClick={handleWinsClick}
-          onApplyClick={handleApplyClick}
-          onQuizClick={handleQuizClick}
-          onPrivacyClick={() => handleLegalLinkClick('privacy')}
-          onTermsClick={() => handleLegalLinkClick('terms')}
-          onDisclosuresClick={() => handleLegalLinkClick('eca')}
-        />
-      )}
+      <AnimatePresence>
+        {showBlog && (
+          <motion.div key="blog" {...pageTransitionProps}>
+            <BlogPage onClose={handleCloseBlog} onAboutClick={handleAboutClick} onHowItWorksClick={handleHowItWorksClick} onReviewsClick={handleReviewsClick} onBlogClick={handleBlogClick} onFAQClick={handleFAQClick} onSupportClick={handleSupportClick} onWinsClick={handleWinsClick} onApplyClick={handleApplyClick} onResourcesClick={handleResourcesClick} onPrivacyClick={() => handleLegalLinkClick('privacy')} onTermsClick={() => handleLegalLinkClick('terms')} onDisclosuresClick={() => handleLegalLinkClick('eca')} />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {showBooking && <BookingPage onClose={() => setShowBooking(false)} />}
+      <AnimatePresence>
+        {showSupport && (
+          <motion.div key="support" {...pageTransitionProps}>
+            <SupportPage onClose={handleCloseSupport} onChatClick={handleChatClick} onFAQClick={handleFAQClick} onQuizClick={handleQuizClick} onBookingClick={handleTalkToSpecialist} onAboutClick={handleAboutClick} onHowItWorksClick={handleHowItWorksClick} onReviewsClick={handleReviewsClick} onBlogClick={handleBlogClick} onSupportClick={handleSupportClick} onWinsClick={handleWinsClick} onApplyClick={handleApplyClick} onResourcesClick={handleResourcesClick} onPrivacyClick={() => handleLegalLinkClick('privacy')} onTermsClick={() => handleLegalLinkClick('terms')} onDisclosuresClick={() => handleLegalLinkClick('eca')} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showWins && (
+          <motion.div key="wins" {...pageTransitionProps}>
+            <WinsPage
+              onClose={handleCloseWins}
+              onAboutClick={handleAboutClick}
+              onHowItWorksClick={handleHowItWorksClick}
+              onReviewsClick={handleReviewsClick}
+              onBlogClick={handleBlogClick}
+              onFAQClick={handleFAQClick}
+              onSupportClick={handleSupportClick}
+              onWinsClick={handleWinsClick}
+              onApplyClick={handleApplyClick}
+              onQuizClick={handleQuizClick}
+              onPrivacyClick={() => handleLegalLinkClick('privacy')}
+              onTermsClick={() => handleLegalLinkClick('terms')}
+              onDisclosuresClick={() => handleLegalLinkClick('eca')}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showBooking && (
+          <motion.div key="booking" {...pageTransitionProps}>
+            <BookingPage onClose={() => setShowBooking(false)} />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* How It Works Page */}
-      {showHowItWorks && (
-        <HowItWorksPage onClose={() => setShowHowItWorks(false)} onApplyClick={handleApplyClick} onCalculatorClick={handleCalculatorClick} onAboutClick={handleAboutClick} onHowItWorksClick={handleHowItWorksClick} onReviewsClick={handleReviewsClick} onBlogClick={handleBlogClick} onFAQClick={handleFAQClick} onSupportClick={handleSupportClick} onWinsClick={handleWinsClick} onResourcesClick={handleResourcesClick} onPrivacyClick={() => handleLegalLinkClick('privacy')} onTermsClick={() => handleLegalLinkClick('terms')} onDisclosuresClick={() => handleLegalLinkClick('eca')} />
-      )}
+      <AnimatePresence>
+        {showHowItWorks && (
+          <motion.div key="how-it-works" {...pageTransitionProps}>
+            <HowItWorksPage onClose={() => setShowHowItWorks(false)} onApplyClick={handleApplyClick} onCalculatorClick={handleCalculatorClick} onAboutClick={handleAboutClick} onHowItWorksClick={handleHowItWorksClick} onReviewsClick={handleReviewsClick} onBlogClick={handleBlogClick} onFAQClick={handleFAQClick} onSupportClick={handleSupportClick} onWinsClick={handleWinsClick} onResourcesClick={handleResourcesClick} onPrivacyClick={() => handleLegalLinkClick('privacy')} onTermsClick={() => handleLegalLinkClick('terms')} onDisclosuresClick={() => handleLegalLinkClick('eca')} />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* FAQ Page */}
-      {showFAQ && <FAQPage onClose={() => setShowFAQ(false)} onAboutClick={handleAboutClick} onHowItWorksClick={handleHowItWorksClick} onReviewsClick={handleReviewsClick} onBlogClick={handleBlogClick} onFAQClick={handleFAQClick} onSupportClick={handleSupportClick} onWinsClick={handleWinsClick} onApplyClick={handleApplyClick} onResourcesClick={handleResourcesClick} onPrivacyClick={() => handleLegalLinkClick('privacy')} onTermsClick={() => handleLegalLinkClick('terms')} onDisclosuresClick={() => handleLegalLinkClick('eca')} />}
+      <AnimatePresence>
+        {showFAQ && (
+          <motion.div key="faq" {...pageTransitionProps}>
+            <FAQPage onClose={() => setShowFAQ(false)} onAboutClick={handleAboutClick} onHowItWorksClick={handleHowItWorksClick} onReviewsClick={handleReviewsClick} onBlogClick={handleBlogClick} onFAQClick={handleFAQClick} onSupportClick={handleSupportClick} onWinsClick={handleWinsClick} onApplyClick={handleApplyClick} onResourcesClick={handleResourcesClick} onPrivacyClick={() => handleLegalLinkClick('privacy')} onTermsClick={() => handleLegalLinkClick('terms')} onDisclosuresClick={() => handleLegalLinkClick('eca')} />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Calculator Page */}
-      {showCalculator && (
-        <div className="fixed inset-0 bg-[#ededf6] z-50 flex flex-col">
-          {/* Spacer for navbar */}
-          <div className="flex-shrink-0 h-[73px]" />
-          {/* Scrollable content below navbar */}
-          <div className="flex-1 overflow-y-auto flex flex-col items-center justify-center">
-            <div className="max-w-6xl mx-auto px-4 py-10 w-full">
-              <CapitalCostAnalyzer onApplyClick={handleApplyFromCalculator} onDeltLearnMore={handleDeltLearnMoreClick} />
+      <AnimatePresence>
+        {showCalculator && (
+          <motion.div key="calculator" className="fixed inset-0 bg-[#ededf6] z-50 flex flex-col" {...pageTransitionProps}>
+            {/* Spacer for navbar */}
+            <div className="flex-shrink-0 h-[73px]" />
+            {/* Scrollable content below navbar */}
+            <div className="flex-1 overflow-y-auto flex flex-col items-center justify-center">
+              <div className="max-w-6xl mx-auto px-4 py-10 w-full">
+                <CapitalCostAnalyzer onApplyClick={handleApplyFromCalculator} onDeltLearnMore={handleDeltLearnMoreClick} />
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Delt Learn More Page */}
-      {showDeltLearnMore && (
-        <div className="fixed inset-0 bg-[#ededf6] z-50 overflow-y-auto">
-          <div className="flex-shrink-0 h-[73px]" />
-          <DeltLearnMorePage onApplyClick={handleApplyClick} calculatorData={calculatorData} onAboutClick={handleAboutClick} onHowItWorksClick={handleHowItWorksClick} onReviewsClick={handleReviewsClick} onBlogClick={handleBlogClick} onFAQClick={handleFAQClick} onSupportClick={handleSupportClick} onWinsClick={handleWinsClick} onResourcesClick={handleResourcesClick} onPrivacyClick={() => handleLegalLinkClick('privacy')} onTermsClick={() => handleLegalLinkClick('terms')} onDisclosuresClick={() => handleLegalLinkClick('eca')} />
-        </div>
-      )}
+      <AnimatePresence>
+        {showDeltLearnMore && (
+          <motion.div key="delt-learn-more" className="fixed inset-0 bg-[#ededf6] z-50 overflow-y-auto" {...pageTransitionProps}>
+            <div className="flex-shrink-0 h-[73px]" />
+            <DeltLearnMorePage onApplyClick={handleApplyClick} calculatorData={calculatorData} onAboutClick={handleAboutClick} onHowItWorksClick={handleHowItWorksClick} onReviewsClick={handleReviewsClick} onBlogClick={handleBlogClick} onFAQClick={handleFAQClick} onSupportClick={handleSupportClick} onWinsClick={handleWinsClick} onResourcesClick={handleResourcesClick} onPrivacyClick={() => handleLegalLinkClick('privacy')} onTermsClick={() => handleLegalLinkClick('terms')} onDisclosuresClick={() => handleLegalLinkClick('eca')} />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Login Page */}
-      {showLogin && (
-        <LoginPage
-          onClose={() => setShowLogin(false)}
-          onSignIn={(email) => {
-            setLoggedInEmail(email);
-            setShowLogin(false);
-            setShowDashboard(true);
-          }}
-          onLegalLink={(page) => {
-            handleLegalLinkClick(page);
-          }}
-        />
-      )}
+      <AnimatePresence>
+        {showLogin && (
+          <motion.div key="login" {...pageTransitionProps}>
+            <LoginPage
+              onClose={() => setShowLogin(false)}
+              onSignIn={(email) => {
+                setLoggedInEmail(email);
+                setShowLogin(false);
+                setShowDashboard(true);
+              }}
+              onLegalLink={(page) => {
+                handleLegalLinkClick(page);
+              }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Loan Dashboard */}
-      {showDashboard && (
-        <LoanDashboard
-          userEmail={loggedInEmail}
-          onLogout={() => {
-            setShowDashboard(false);
-            setLoggedInEmail('');
-          }}
-        />
-      )}
+      <AnimatePresence>
+        {showDashboard && (
+          <motion.div key="dashboard" {...pageTransitionProps}>
+            <LoanDashboard
+              userEmail={loggedInEmail}
+              onLogout={() => {
+                setShowDashboard(false);
+                setLoggedInEmail('');
+              }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Legal Pages Overlay */}
-      {legalPage && (
-        <div className="fixed inset-0 bg-[#ededf6] z-[60] overflow-y-auto">
-          {legalPage === 'terms' && <TermsOfUse onClose={() => setLegalPage(null)} />}
-          {legalPage === 'privacy' && <PrivacyPolicy onClose={() => setLegalPage(null)} />}
-          {legalPage === 'eca' && <ElectronicCommunicationsAgreement onClose={() => setLegalPage(null)} />}
-        </div>
-      )}
+      <AnimatePresence>
+        {legalPage && (
+          <motion.div key={legalPage} className="fixed inset-0 bg-[#ededf6] z-[60] overflow-y-auto" {...pageTransitionProps}>
+            {legalPage === 'terms' && <TermsOfUse onClose={() => setLegalPage(null)} />}
+            {legalPage === 'privacy' && <PrivacyPolicy onClose={() => setLegalPage(null)} />}
+            {legalPage === 'eca' && <ElectronicCommunicationsAgreement onClose={() => setLegalPage(null)} />}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Resources Page */}
-      {showResources && (
-        <ResourcesPage
-          onClose={handleCloseResources}
-          onFAQClick={handleFAQClick}
-          onSupportClick={handleSupportClick}
-          onCalculatorClick={handleCalculatorClick}
-          onBlogClick={handleBlogClick}
-          onApplyClick={handleApplyClick}
-          onAboutClick={handleAboutClick}
-          onHowItWorksClick={handleHowItWorksClick}
-          onReviewsClick={handleReviewsClick}
-          onWinsClick={handleWinsClick}
-          onResourcesClick={handleResourcesClick}
-          onPrivacyClick={() => handleLegalLinkClick('privacy')}
-          onTermsClick={() => handleLegalLinkClick('terms')}
-          onDisclosuresClick={() => handleLegalLinkClick('eca')}
-        />
-      )}
+      <AnimatePresence>
+        {showResources && (
+          <motion.div key="resources" {...pageTransitionProps}>
+            <ResourcesPage
+              onClose={handleCloseResources}
+              onFAQClick={handleFAQClick}
+              onSupportClick={handleSupportClick}
+              onCalculatorClick={handleCalculatorClick}
+              onBlogClick={handleBlogClick}
+              onApplyClick={handleApplyClick}
+              onAboutClick={handleAboutClick}
+              onHowItWorksClick={handleHowItWorksClick}
+              onReviewsClick={handleReviewsClick}
+              onWinsClick={handleWinsClick}
+              onResourcesClick={handleResourcesClick}
+              onPrivacyClick={() => handleLegalLinkClick('privacy')}
+              onTermsClick={() => handleLegalLinkClick('terms')}
+              onDisclosuresClick={() => handleLegalLinkClick('eca')}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Plaid Onboarding Modal — bank connection flow */}
       <PlaidOnboardingModal
