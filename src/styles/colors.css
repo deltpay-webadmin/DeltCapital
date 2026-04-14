@@ -59,6 +59,18 @@
   --shadow-md: 0 4px 6px -1px rgba(4, 30, 66, 0.08), 0 2px 4px -1px rgba(4, 30, 66, 0.06);
   --shadow-lg: 0 10px 15px -3px rgba(4, 30, 66, 0.08), 0 4px 6px -2px rgba(4, 30, 66, 0.05);
   --shadow-xl: 0 20px 25px -5px rgba(4, 30, 66, 0.08), 0 10px 10px -5px rgba(4, 30, 66, 0.04);
+
+  /* Homepage Refresh — DeltPay-inspired tokens */
+  --hero-dark-1: #05060F;
+  --hero-dark-2: #0B0F2C;
+  --hero-dark-3: #141853;
+  --glow-indigo: rgba(73, 69, 255, 0.55);
+  --glow-violet: rgba(139, 92, 246, 0.45);
+  --glow-sky: rgba(96, 165, 250, 0.35);
+  --shadow-soft-1: 0 10px 40px -10px rgba(4, 30, 66, 0.12);
+  --shadow-soft-2: 0 30px 80px -20px rgba(73, 69, 255, 0.18);
+  --marquee-pale: #C7C5FF;
+  --font-serif-italic: 'Instrument Serif', 'Playfair Display', Georgia, serif;
 }
 
 /* Dark Mode */

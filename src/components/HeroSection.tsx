@@ -1,86 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import { Star, X } from 'lucide-react';
+import React, { useState } from 'react';
+import { Star, X, ArrowRight, ChevronRight } from 'lucide-react';
+import { motion, useScroll, useTransform } from 'motion/react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { PreQualificationGame } from './PreQualificationGame';
-import { motion } from 'motion/react';
-import businessPeopleImg from 'figma:asset/a03f9a9d95ad3eb3d24430a1c47663d5974d68f8.png';
 import { BBBLogo } from './BBBLogo';
+import { HeroOfferPreview } from './HeroOfferPreview';
 
 interface HeroSectionProps {
   onApplyClick: () => void;
   onApplyFromQuiz?: (data?: any) => void;
   onCalculatorClick?: () => void;
+  onHowItWorksClick?: () => void;
 }
 
-export function HeroSection({ onApplyClick, onApplyFromQuiz, onCalculatorClick }: HeroSectionProps) {
+export function HeroSection({
+  onApplyClick,
+  onApplyFromQuiz,
+  onCalculatorClick,
+  onHowItWorksClick,
+}: HeroSectionProps) {
   const { t } = useLanguage();
   const [showQuiz, setShowQuiz] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [quizData, setQuizData] = useState<any>(null);
-  const [isHovered, setIsHovered] = useState(false);
-  const [initialAnimationComplete, setInitialAnimationComplete] = useState(false);
-  const [fadeDistance, setFadeDistance] = useState(150);
 
-  // Compute fade distance
-  useEffect(() => {
-    const update = () => setFadeDistance(window.innerHeight * 0.5);
-    update();
-    window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
-  }, []);
-
-  // Initial 7-second hover animation on page load
-  useEffect(() => {
-    const button = document.querySelector('.get-offer-button');
-    if (button) {
-      button.classList.add('initial-hover-animation');
-      const timer = setTimeout(() => {
-        button.classList.remove('initial-hover-animation');
-        setInitialAnimationComplete(true);
-      }, 7000);
-      return () => clearTimeout(timer);
-    }
-  }, []);
-
-  // Bounce animation trigger - only starts after initial animation
-  useEffect(() => {
-    if (!initialAnimationComplete) return;
-    const initialTimeout = setTimeout(() => {
-      const button = document.querySelector('.get-offer-button');
-      if (button && !isHovered) {
-        button.classList.add('bouncing');
-        setTimeout(() => button.classList.remove('bouncing'), 600);
-      }
-    }, 3000);
-    const bounceInterval = setInterval(() => {
-      const button = document.querySelector('.get-offer-button');
-      if (button && !isHovered) {
-        button.classList.add('bouncing');
-        setTimeout(() => button.classList.remove('bouncing'), 600);
-      }
-    }, 3000);
-    return () => {
-      clearTimeout(initialTimeout);
-      clearInterval(bounceInterval);
-    };
-  }, [isHovered, initialAnimationComplete]);
-
-  // Scroll-based opacity fade: 1 → 0 over 15vh of scroll
-  const [heroOpacityVal, setHeroOpacityVal] = useState(1);
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
-      const opacity = Math.max(0, 1 - scrollTop / fadeDistance);
-      setHeroOpacityVal(opacity);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [fadeDistance]);
+  // Parallax on the ambient glow blobs
+  const { scrollY } = useScroll();
+  const glow1Y = useTransform(scrollY, [0, 600], [0, -80]);
+  const glow2Y = useTransform(scrollY, [0, 600], [0, -40]);
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) {
-      setShowQuiz(false);
-    }
+    if (e.target === e.currentTarget) setShowQuiz(false);
   };
 
   const handleShowResults = (data?: any) => {
@@ -91,185 +41,186 @@ export function HeroSection({ onApplyClick, onApplyFromQuiz, onCalculatorClick }
 
   const handleStartApplication = () => {
     setShowResults(false);
-    if (onApplyFromQuiz) {
-      onApplyFromQuiz(quizData);
-    } else {
-      onApplyClick();
-    }
+    if (onApplyFromQuiz) onApplyFromQuiz(quizData);
+    else onApplyClick();
   };
 
   return (
     <>
-      {/* Fixed hero: sits behind all content, fades on scroll via opacity only */}
-      <motion.div
-        className="fixed w-full overflow-hidden z-0 bg-black"
-        style={{ 
-          opacity: heroOpacityVal,
-          top: '73px',
-          height: '100vh',
-          left: 0,
-          right: 0
-        }}
+      <section
+        className="relative overflow-hidden hero-bg-gradient"
+        style={{ paddingTop: 'calc(73px + 2.5rem)', paddingBottom: '7rem' }}
       >
-        {/* Fullscreen Background Image */}
-        <img
-          src={businessPeopleImg}
-          alt="Business owners working together"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        {/* Dark overlay for text legibility */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/30" />
-
-        {/* Main Overlay Content - Centered */}
-        <div className="relative z-10 h-full flex flex-col items-center justify-center px-6 sm:px-8 text-center">
-          {/* Headline */}
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white leading-tight max-w-5xl"
-            style={{
-              fontFamily: '"Codec Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-              textShadow: '0 4px 20px rgba(0, 0, 0, 0.5)'
-            }}
-          >
-            <span>{t('hero.animated.capital')}</span>
-            <span>{t('hero.animated.moves')}</span>
-            <span className="inline-block hero-speed-text">{t('hero.animated.speed')}</span>
-          </motion.h1>
-
-          {/* Get Your Offer CTA */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3, ease: 'easeOut' }}
-            className="mt-8"
-          >
-            <button
-              onClick={() => onCalculatorClick?.()}
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-              className="get-offer-button cursor-pointer transition-all duration-200 hover:opacity-90 hover:scale-[1.03]"
-              style={{
-                background: '#4945ff',
-                color: '#fff',
-                borderRadius: '10px',
-                padding: '14px 28px',
-                fontWeight: 600,
-                fontSize: '16px',
-                border: 'none',
-              }}
-            >
-              {t('hero.cta')}
-            </button>
-          </motion.div>
-
-          {/* Trust Badges - 16px gap */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6, ease: 'easeOut' }}
-            className="mt-4 flex flex-wrap items-center justify-center gap-5 sm:gap-6"
-          >
-            <div className="flex items-center gap-2">
-              <BBBLogo className="w-7 h-7 sm:w-8 sm:h-8" />
-              <span className="text-yellow-400 flex">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={`bbb-${i}`} className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
-                ))}
-              </span>
-              <span className="text-sm sm:text-base font-bold text-white">A+</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm sm:text-base font-semibold text-white">Trustpilot</span>
-              <span className="text-green-400 flex">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={`tp-${i}`} className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
-                ))}
-              </span>
-              <span className="text-sm sm:text-base font-bold text-white">4.8</span>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Frosted Stat Badge - Bottom Left */}
+        {/* Ambient glow blobs */}
         <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.7, delay: 0.8, ease: 'easeOut' }}
-          className="absolute bottom-16 left-6 sm:left-8 lg:left-12 z-10"
-          style={{
-            background: 'rgba(0,0,0,0.5)',
-            backdropFilter: 'blur(12px)',
-            WebkitBackdropFilter: 'blur(12px)',
-            borderRadius: '12px',
-            padding: '16px 24px',
-          }}
+          aria-hidden="true"
+          style={{ y: glow1Y }}
+          className="absolute top-[-10%] right-[-5%] w-[55vw] max-w-[900px] aspect-square rounded-full blur-3xl pointer-events-none"
         >
-          <span className="text-white" style={{ fontSize: '14px' }}>
-            $200M+ deployed to U.S. businesses.
-          </span>
+          <div
+            className="w-full h-full"
+            style={{
+              background:
+                'radial-gradient(circle, var(--glow-indigo) 0%, rgba(73,69,255,0.15) 40%, transparent 70%)',
+            }}
+          />
+        </motion.div>
+        <motion.div
+          aria-hidden="true"
+          style={{ y: glow2Y }}
+          className="absolute bottom-[-20%] left-[-10%] w-[60vw] max-w-[900px] aspect-square rounded-full blur-3xl pointer-events-none"
+        >
+          <div
+            className="w-full h-full"
+            style={{
+              background:
+                'radial-gradient(circle, var(--glow-violet) 0%, rgba(139,92,246,0.15) 40%, transparent 70%)',
+            }}
+          />
         </motion.div>
 
-        {/* Disclaimer - Bottom Left, below stat badge */}
-        <div className="absolute bottom-4 left-6 sm:left-8 lg:left-12 z-10 hidden md:block" style={{ maxWidth: 400 }}>
-          <p className="text-[11px] text-white/50 italic leading-snug">
-            Delt provides commercial funding solutions, including merchant cash advances. Funding may be provided directly by Delt or through third-party funding partners.
-          </p>
+        {/* Subtle grain / noise via repeating dots */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 opacity-[0.05] pointer-events-none"
+          style={{
+            backgroundImage:
+              'radial-gradient(rgba(255,255,255,0.5) 1px, transparent 1px)',
+            backgroundSize: '3px 3px',
+          }}
+        />
+
+        <div className="relative max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
+          <div className="grid lg:grid-cols-[1.05fr_1fr] gap-12 lg:gap-16 items-center">
+            {/* Left: copy */}
+            <div className="relative z-10">
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.55, ease: 'easeOut' }}
+                className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 backdrop-blur px-3.5 py-1.5 text-[12px] font-medium text-white/85"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-[#4945ff] shadow-[0_0_10px_2px_rgba(73,69,255,0.7)]" />
+                New · $200M+ deployed to U.S. businesses
+              </motion.div>
+
+              <motion.h1
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: 'easeOut' }}
+                className="mt-6 text-white font-bold tracking-tight leading-[1.02]"
+                style={{
+                  fontFamily:
+                    '"Codec Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                  fontSize: 'clamp(44px, 6vw, 88px)',
+                }}
+              >
+                Capital that moves
+                <br />
+                at your{' '}
+                <span
+                  className="serif-italic serif-shimmer"
+                  style={{ fontSize: '1.05em' }}
+                >
+                  speed.
+                </span>
+              </motion.h1>
+
+              <motion.p
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.15, ease: 'easeOut' }}
+                className="mt-6 text-white/75 text-lg sm:text-xl leading-relaxed max-w-xl"
+              >
+                Flexible funding for real businesses — $10K to $250K, approved in minutes,
+                funded in 24&ndash;48 hours. No personal guarantee.{' '}
+                <span className="text-white/95">Powered by AI that learns your revenue.</span>
+              </motion.p>
+
+              {/* Dual CTAs */}
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.3, ease: 'easeOut' }}
+                className="mt-8 flex flex-wrap items-center gap-3"
+              >
+                <button
+                  onClick={() => onCalculatorClick?.()}
+                  className="group inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-sm sm:text-base font-semibold text-white transition-all duration-200 hover:scale-[1.02] hover:shadow-[0_10px_30px_-10px_rgba(73,69,255,0.8)]"
+                  style={{
+                    background:
+                      'linear-gradient(180deg, #5b57ff 0%, #4945ff 55%, #3e3add 100%)',
+                    boxShadow: '0 10px 30px -12px rgba(73,69,255,0.7), inset 0 1px 0 rgba(255,255,255,0.25)',
+                  }}
+                >
+                  {t('hero.cta') || 'Get your offer'}
+                  <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+                </button>
+
+                <button
+                  onClick={() => onHowItWorksClick?.()}
+                  className="group inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-sm sm:text-base font-semibold text-white/90 border border-white/25 bg-white/5 backdrop-blur transition-all duration-200 hover:bg-white/10 hover:border-white/40"
+                >
+                  See how it works
+                  <ChevronRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+                </button>
+              </motion.div>
+
+              {/* Social proof line */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.55 }}
+                className="mt-5 text-sm text-white/55"
+              >
+                Join 2,850+ businesses funded this year
+              </motion.div>
+
+              {/* Trust badges */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.7 }}
+                className="mt-8 flex flex-wrap items-center gap-5 sm:gap-7"
+              >
+                <div className="flex items-center gap-2">
+                  <BBBLogo className="w-7 h-7" />
+                  <span className="text-yellow-400 flex">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={`bbb-${i}`} className="w-3.5 h-3.5 fill-current" />
+                    ))}
+                  </span>
+                  <span className="text-sm font-bold text-white/95">A+</span>
+                </div>
+                <div className="h-4 w-px bg-white/15" />
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-semibold text-white/95">Trustpilot</span>
+                  <span className="text-green-400 flex">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={`tp-${i}`} className="w-3.5 h-3.5 fill-current" />
+                    ))}
+                  </span>
+                  <span className="text-sm font-bold text-white/95">4.8</span>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Right: floating offer preview */}
+            <div className="relative">
+              <HeroOfferPreview />
+            </div>
+          </div>
         </div>
-      </motion.div>
 
-      {/* Spacer: reserves scroll height so content starts below the hero */}
-      <div style={{ height: '100vh' }} />
-
-      {/* Styles */}
-      <style>{`
-        .hero-speed-text {
-          background: linear-gradient(90deg, #FFFFFF 0%, #8B5CF6 12.5%, #4945ff 25%, #60A5FA 37.5%, #FFFFFF 50%, #8B5CF6 62.5%, #4945ff 75%, #60A5FA 87.5%, #FFFFFF 100%);
-          background-size: 600% 100%;
-          -webkit-background-clip: text;
-          background-clip: text;
-          color: transparent;
-          -webkit-text-fill-color: transparent;
-          animation: gradientWave 16s linear infinite;
-        }
-
-        @keyframes subtleBounce {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-8px); }
-        }
-
-        .get-offer-button {
-          position: relative;
-        }
-
-        .get-offer-button.bouncing:not(:hover) {
-          animation: subtleBounce 0.6s ease-in-out;
-        }
-
-        .get-offer-button .button-text-hero {
-          color: white;
-          text-shadow: 0 2px 8px rgba(0,0,0,0.3);
-          transition: all 0.3s ease;
-        }
-
-        .get-offer-button:hover .button-text-hero,
-        .get-offer-button.initial-hover-animation .button-text-hero {
-          background: linear-gradient(90deg, #FFFFFF 0%, #8B5CF6 15%, #60A5FA 30%, #FFFFFF 45%, #8B5CF6 60%, #60A5FA 75%, #FFFFFF 90%, #8B5CF6 100%);
-          background-size: 300% 100%;
-          -webkit-background-clip: text;
-          background-clip: text;
-          color: transparent;
-          -webkit-text-fill-color: transparent;
-          text-shadow: none;
-          animation: gradientWave 5s linear infinite;
-        }
-
-        .get-offer-button:hover,
-        .get-offer-button.initial-hover-animation {
-          transform: scale(1.02);
-        }
-      `}</style>
+        {/* Soft fade into the next (white) section */}
+        <div
+          aria-hidden="true"
+          className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none"
+          style={{
+            background: 'linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.06) 60%, rgba(255,255,255,0.12) 100%)',
+          }}
+        />
+      </section>
 
       {/* Quiz Modal */}
       {showQuiz && (
