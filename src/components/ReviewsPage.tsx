@@ -173,9 +173,9 @@ export function ReviewsPage({ onClose, onCalculatorClick, onAboutClick, onHowItW
   const totalDots = reviews.length - slidesToShow + 1;
 
   return (
-    <div className="fixed inset-0 bg-[#ededf6] z-50 overflow-y-auto">
+    <div className="fixed inset-0 bg-white z-50 overflow-y-auto">
       {/* Sticky header */}
-      <div className="sticky top-0 z-10 bg-[#ededf6] border-b border-[#041E42]/10">
+      <div className="sticky top-0 z-10 bg-white/95 backdrop-blur border-b border-[#041E42]/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <div className="flex items-center gap-0 h-14 w-auto cursor-pointer" onClick={onClose}>
             <img src={logoImg} alt="Delt" className="h-10 w-auto object-contain" />
@@ -199,8 +199,11 @@ export function ReviewsPage({ onClose, onCalculatorClick, onAboutClick, onHowItW
             </div>
 
             {/* Title */}
-            <h1 className="text-4xl md:text-5xl font-bold text-[#041E42] text-center mb-4">
-              Real Merchants, Real Savings
+            <h1
+              className="text-4xl md:text-6xl font-bold text-[#041E42] text-center mb-4 tracking-tight leading-[1.05]"
+              style={{ fontFamily: '"Codec Pro", sans-serif' }}
+            >
+              Real merchants, <span className="serif-italic text-[#4945ff]">real</span> savings.
             </h1>
 
             {/* Rating */}

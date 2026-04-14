@@ -2,6 +2,7 @@ import { ArrowLeft, X, TrendingUp, Calendar, Users, Star, DollarSign, Quote, Arr
 import { Button } from './ui/button';
 import { Footer } from './Footer';
 import { useLanguage } from '../contexts/LanguageContext';
+import { PageHero } from './ui/PageHero';
 import logoImg from 'figma:asset/d59993d0ec9040f5cac8ad4361f161b6a4b3a746.png';
 import poweredByDelt from 'figma:asset/4c27a0458c6dd6bcc420848937c08b3e8f4294bf.png';
 import mariaImage from 'figma:asset/1b2c405c96e51ef33438f967ca73fc1dc4c6466d.png';
@@ -157,9 +158,9 @@ export function WinsPage({ onClose, onAboutClick, onHowItWorksClick, onReviewsCl
   ];
 
   return (
-    <div className="fixed inset-0 bg-[#ededf6] dark:bg-[#0A1F35] z-50 overflow-y-auto">
+    <div className="fixed inset-0 bg-white dark:bg-[#0A1F35] z-50 overflow-y-auto">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-[#ededf6] dark:bg-[#0a1929] border-b border-[#041E42]/10 dark:border-gray-700">
+      <div className="sticky top-0 z-10 bg-white/95 dark:bg-[#0a1929] backdrop-blur border-b border-[#041E42]/10 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <div className="flex items-center gap-0 h-14 w-auto cursor-pointer" onClick={onClose}>
             <img src={logoImg} alt="Delt Capital" className="h-10 w-auto object-contain" />
@@ -167,25 +168,17 @@ export function WinsPage({ onClose, onAboutClick, onHowItWorksClick, onReviewsCl
         </div>
       </div>
 
-      {/* Hero Section */}
-      <div className="bg-[#ededf6] dark:bg-[#0A1F35] pt-16 pb-12 md:pt-20 md:pb-14">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="max-w-4xl mx-auto">
-            <p className="text-xl md:text-2xl lg:text-3xl text-gray-500 dark:text-gray-400 font-light mb-2">
-              Capital is the start.
-            </p>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl text-[#041E42] dark:text-white mb-6 tracking-tight" style={{ fontWeight: 700 }}>
-              The <em className="text-[#4945ff] not-italic" style={{ fontStyle: 'italic' }}>relationship</em> is the point.
-            </h1>
-            <p className="text-sm md:text-base text-gray-500 dark:text-gray-400 font-light">
-              Real merchants. Real results.
-            </p>
-          </div>
-        </div>
-      </div>
+      {/* Hero */}
+      <PageHero
+        eyebrow="Capital is the start"
+        lead="The"
+        accent="relationship"
+        trail="is the point."
+        subcopy="Real merchants. Real results."
+      />
 
       {/* Aggregate Stats */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {aggregateStats.map((stat, index) => {
             const Icon = stat.icon;

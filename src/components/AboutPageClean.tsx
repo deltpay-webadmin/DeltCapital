@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { ChevronLeft, ChevronRight, Calculator, TrendingUp } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calculator, TrendingUp, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { PageHero } from './ui/PageHero';
 import aboutImg1 from 'figma:asset/68f86b0d89444881cf06380344679174c53eeb19.png';
 import aboutImg2 from 'figma:asset/d73b4dddaa745c3faa72080f1499fd21a9cf54e8.png';
 import aboutImg3 from 'figma:asset/f5ccd74163d0490f9ca85ece7845b949e8675f69.png';
@@ -91,21 +92,15 @@ export function AboutPage({ onClose, onApplyClick, onCalculatorClick, onReviewsC
   };
 
   return (
-    <div className="min-h-screen bg-[#ededf6]">
-      {/* Hero Section */}
-      <section className="py-24 px-4 text-center bg-[#ededf6]">
-        <h1
-          className="text-4xl sm:text-5xl md:text-6xl text-[#041E42] dark:text-white mb-4 tracking-tight max-w-6xl mx-auto"
-          style={{ fontWeight: 700 }}
-        >
-          {t.hero.title}
-          <br />
-          {t.hero.subtitle} <em className="text-[#4945ff] not-italic" style={{ fontStyle: 'italic' }}>{t.hero.accent}</em>
-        </h1>
-      </section>
+    <div className="min-h-screen bg-white">
+      <PageHero
+        eyebrow="About Delt"
+        lead={`${t.hero.title} ${t.hero.subtitle}`}
+        accent={t.hero.accent}
+      />
 
       {/* Who We Are Section */}
-      <section className="py-16 px-4 bg-[#F7F8FC]">
+      <section className="py-24 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-[#041E42] dark:text-white mb-16">
             {t.whoWeAre}
@@ -176,60 +171,62 @@ export function AboutPage({ onClose, onApplyClick, onCalculatorClick, onReviewsC
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 bg-[#ededf6] text-center">
+      <section className="py-24 px-4 bg-white text-center">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-[#041E42] dark:text-white mb-8">
-            Ready to grow your business?
+          <h2
+            className="text-4xl md:text-5xl font-bold text-[#041E42] mb-5 tracking-tight leading-[1.05]"
+            style={{ fontFamily: '"Codec Pro", sans-serif' }}
+          >
+            Ready to <span className="serif-italic text-[#4945ff]">grow</span> your business?
           </h2>
-          <p className="text-base md:text-lg lg:text-xl text-gray-600 dark:text-gray-400 mb-10">
+          <p className="text-lg md:text-xl text-[#52606D] mb-10 max-w-2xl mx-auto">
             Join thousands of businesses that trust Delt Capital for fast, flexible funding solutions.
           </p>
-          
+
           {/* Primary CTA */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button
               onClick={() => {
                 onClose();
-                setTimeout(() => {
-                  onApplyClick();
-                }, 100);
+                setTimeout(() => onApplyClick(), 100);
               }}
-              className="bg-[#4945ff] hover:bg-[#3b38d9] text-white px-6 py-3 rounded-xl font-semibold text-base transition-all shadow-lg hover:shadow-xl"
+              className="group inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-white font-semibold transition-all hover:scale-[1.02] hover:shadow-[0_10px_30px_-10px_rgba(73,69,255,0.8)]"
+              style={{
+                background: 'linear-gradient(180deg, #5b57ff 0%, #4945ff 55%, #3e3add 100%)',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.22), 0 8px 24px -10px rgba(73,69,255,0.6)',
+              }}
             >
-              Get Your Funding Offer
+              Get your funding offer
+              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
             </button>
           </div>
 
           {/* Secondary Options */}
-          <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto mt-12">
-            {/* Calculator Button */}
+          <div className="grid md:grid-cols-2 gap-4 max-w-2xl mx-auto mt-10">
             {onCalculatorClick && (
               <button
                 onClick={() => {
                   onClose();
-                  setTimeout(() => {
-                    onCalculatorClick();
-                  }, 100);
+                  setTimeout(() => onCalculatorClick(), 100);
                 }}
-                className="bg-[#F7F8FC] border border-[#4945ff]/20 text-[#4945ff] px-6 py-4 rounded-xl font-semibold hover:bg-[#4945ff] hover:text-white transition-all shadow-sm hover:shadow-lg flex items-center justify-center gap-2"
+                className="card-lift bg-white border border-[#E4E7EB] text-[#041E42] px-6 py-4 rounded-2xl font-semibold hover:border-[#4945ff]/40 transition-all flex items-center justify-center gap-2"
+                style={{ boxShadow: 'var(--shadow-soft-1)' }}
               >
-                <Calculator className="w-5 h-5" />
+                <Calculator className="w-5 h-5 text-[#4945ff]" />
                 Calculator
               </button>
             )}
 
-            {/* Success Stories Button */}
             {onWinsClick && (
               <button
                 onClick={() => {
                   onClose();
-                  setTimeout(() => {
-                    onWinsClick();
-                  }, 100);
+                  setTimeout(() => onWinsClick(), 100);
                 }}
-                className="bg-[#F7F8FC] border border-[#4945ff]/20 text-[#4945ff] px-6 py-4 rounded-xl font-semibold hover:bg-[#4945ff] hover:text-white transition-all shadow-sm hover:shadow-lg flex items-center justify-center gap-2"
+                className="card-lift bg-white border border-[#E4E7EB] text-[#041E42] px-6 py-4 rounded-2xl font-semibold hover:border-[#4945ff]/40 transition-all flex items-center justify-center gap-2"
+                style={{ boxShadow: 'var(--shadow-soft-1)' }}
               >
-                <TrendingUp className="w-5 h-5" />
+                <TrendingUp className="w-5 h-5 text-[#4945ff]" />
                 View Success Stories
               </button>
             )}

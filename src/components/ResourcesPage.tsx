@@ -1,8 +1,8 @@
 import { X, BookOpen, HelpCircle, LifeBuoy, Calculator, FileText, TrendingUp, ArrowRight, Phone, DollarSign, Clock, ShieldCheck } from 'lucide-react';
 import { motion } from 'motion/react';
-import logoImg from 'figma:asset/d59993d0ec9040f5cac8ad4361f161b6a4b3a746.png';
 import { Button } from './ui/button';
 import { Footer } from './Footer';
+import { PageHero } from './ui/PageHero';
 
 interface ResourcesPageProps {
   onClose: () => void;
@@ -97,45 +97,21 @@ export function ResourcesPage({ onClose, onFAQClick, onSupportClick, onCalculato
   ];
 
   return (
-    <div className="fixed inset-0 bg-[#ededf6] z-50 overflow-y-auto">
-      {/* Header */}
-      <div className="sticky top-0 z-10 bg-[#ededf6] border-b border-[#041E42]/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <div className="flex items-center h-14 w-auto cursor-pointer" onClick={onClose}>
-            <img src={logoImg} alt="Delt" className="h-8 w-auto object-contain" />
-          </div>
-        </div>
-      </div>
-
-      {/* Hero */}
-      <div className="bg-[#ededf6]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28 text-center">
-          <motion.h1
-            className="text-4xl md:text-5xl lg:text-6xl text-[#041E42] mb-5"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <em className="text-[#4945ff] not-italic" style={{ fontStyle: 'italic' }}>Resources</em> for every stage{'\n'}
-            <br className="hidden sm:block" />
-            of your Delt journey.
-          </motion.h1>
-          <motion.p
-            className="text-lg text-[#041E42]/70 max-w-2xl mx-auto"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.15 }}
-          >
-            Read through guides and FAQs to get quick answers to your questions.
-          </motion.p>
-        </div>
-      </div>
+    <div className="fixed inset-0 bg-white z-50 overflow-y-auto">
+      <PageHero
+        eyebrow="Library"
+        lead=""
+        accent="Resources"
+        trail="for every stage of your Delt journey."
+        subcopy="Read through guides and FAQs to get quick answers to your questions."
+      />
 
       {/* Category Cards */}
-      <div className="bg-[#041E42]">
+      <div className="bg-[#F7F8FC]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
           <motion.h2
-            className="text-3xl md:text-4xl text-white mb-12"
+            className="text-3xl md:text-4xl font-bold text-[#041E42] mb-12 tracking-tight"
+            style={{ fontFamily: '"Codec Pro", sans-serif' }}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: '-80px' }}
@@ -226,7 +202,7 @@ export function ResourcesPage({ onClose, onFAQClick, onSupportClick, onCalculato
       </div>
 
       {/* Bottom CTA */}
-      <div className="bg-[#ededf6]">
+      <div className="bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
           <motion.h2
             className="text-2xl md:text-3xl lg:text-4xl text-[#041E42] mb-8"

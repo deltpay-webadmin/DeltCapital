@@ -3,6 +3,7 @@ import { X, FileText, BarChart3, DollarSign, Clock, Shield, Zap, CheckCircle2, T
 import { motion, AnimatePresence } from 'motion/react';
 import logoImg from 'figma:asset/d59993d0ec9040f5cac8ad4361f161b6a4b3a746.png';
 import { Footer } from './Footer';
+import { PageHero } from './ui/PageHero';
 
 interface HowItWorksPageProps {
   onClose: () => void;
@@ -124,37 +125,19 @@ export function HowItWorksPage({ onClose, onApplyClick, onCalculatorClick, onAbo
   }, [expandedStep]);
 
   return (
-    <div className="fixed inset-0 bg-[#ededf6] z-50 flex flex-col">
-      {/* Spacer for navbar */}
-      <div className="flex-shrink-0 h-[73px]" />
-      {/* Scrollable content below navbar */}
+    <div className="fixed inset-0 bg-white z-50 flex flex-col">
+      {/* Scrollable content — PageHero absorbs navbar offset */}
       <div className="flex-1 overflow-y-auto">
-        {/* Hero */}
-        <section className="pt-20 pb-12 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto text-center">
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="text-4xl sm:text-5xl md:text-6xl text-[#041E42] mb-5 tracking-tight"
-              style={{ fontWeight: 700 }}
-            >
-              How it <em className="text-[#4945ff] not-italic" style={{ fontStyle: 'italic' }}>works</em>
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.15 }}
-              className="text-[#041E42]/60 max-w-xl mx-auto"
-              style={{ fontSize: '1.05rem', lineHeight: 1.7 }}
-            >
-              Getting revenue-based financing shouldn't be complicated. We've simplified the process so you can focus on what matters — growing your business.
-            </motion.p>
-          </div>
-        </section>
+        <PageHero
+          compact
+          eyebrow="The process"
+          lead="How it"
+          accent="works"
+          subcopy="Getting revenue-based financing shouldn't be complicated. We've simplified the process so you can focus on what matters — growing your business."
+        />
 
         {/* Steps overview — numbered circles with dashed connectors */}
-        <section className="pb-16 px-4 sm:px-6 lg:px-8">
+        <section className="pt-20 pb-16 px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
             {/* Desktop timeline row */}
             <div className="hidden md:flex items-start justify-center gap-0 mb-4">

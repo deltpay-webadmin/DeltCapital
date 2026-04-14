@@ -1,7 +1,7 @@
 import { X, MessageCircle, Phone, Mail, Clock, HelpCircle, FileText, CreditCard, TrendingUp, Calendar, ArrowRight } from 'lucide-react';
 import { motion } from 'motion/react';
-import logoImg from 'figma:asset/d59993d0ec9040f5cac8ad4361f161b6a4b3a746.png';
 import { Footer } from './Footer';
+import { PageHero } from './ui/PageHero';
 
 interface SupportPageProps {
   onClose: () => void;
@@ -56,34 +56,13 @@ export function SupportPage({ onClose, onChatClick, onFAQClick, onQuizClick, onB
   };
 
   return (
-    <div className="fixed inset-0 bg-[#ededf6] z-50 overflow-y-auto">
-      {/* Header */}
-      <div className="sticky top-0 z-10 bg-[#ededf6] border-b border-[#041E42]/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-0 h-14 w-auto cursor-pointer" onClick={onClose}>
-            <img src={logoImg} alt="Delt Capital" className="h-10 w-auto object-contain" />
-          </div>
-        </div>
-      </div>
-
-      {/* Hero Section */}
-      <div className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-center"
-          >
-            <h1 className="text-5xl md:text-6xl text-[#041E42] mb-6">
-              We're here to <span className="text-[#4945ff]">help</span>
-            </h1>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Get in touch with our dedicated support team. We're available to answer your questions and help you get the funding you need.
-            </p>
-          </motion.div>
-        </div>
-      </div>
+    <div className="fixed inset-0 bg-white z-50 overflow-y-auto">
+      <PageHero
+        eyebrow="Support"
+        lead="We're here to"
+        accent="help."
+        subcopy="Get in touch with our dedicated support team. We're available to answer your questions and help you get the funding you need."
+      />
 
       {/* Contact Options */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

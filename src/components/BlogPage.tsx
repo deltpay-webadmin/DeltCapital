@@ -396,19 +396,22 @@ export function BlogPage({ onClose, onAboutClick, onHowItWorksClick, onReviewsCl
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="fixed inset-0 bg-[#ededf6] z-50 overflow-y-auto"
+      className="fixed inset-0 bg-white z-50 overflow-y-auto"
     >
       <div className="min-h-screen">
         {/* Header */}
-        <div className="sticky top-0 bg-[#ededf6] border-b border-[#041E42]/10 z-10">
+        <div className="sticky top-0 bg-white/95 backdrop-blur border-b border-[#041E42]/10 z-10">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="flex items-center justify-between mb-6">
               <motion.div
                 initial={{ y: -10, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
               >
-                <h1 className="text-4xl text-[#041E42] mb-1">
-                  What's new
+                <h1
+                  className="text-4xl sm:text-5xl font-bold text-[#041E42] mb-1 tracking-tight leading-[1.05]"
+                  style={{ fontFamily: '"Codec Pro", sans-serif' }}
+                >
+                  What&apos;s <span className="serif-italic text-[#4945ff]">new</span>
                 </h1>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
                   {filteredAndSortedPosts.length} {filteredAndSortedPosts.length === 1 ? 'article' : 'articles'}

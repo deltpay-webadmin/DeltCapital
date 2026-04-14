@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { Plus, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useLanguage } from '../contexts/LanguageContext';
-import logoImg from 'figma:asset/d59993d0ec9040f5cac8ad4361f161b6a4b3a746.png';
 import { Footer } from './Footer';
+import { PageHero } from './ui/PageHero';
 
 interface FAQPageProps {
   onClose: () => void;
@@ -88,29 +88,17 @@ export function FAQPage({ onClose, onAboutClick, onHowItWorksClick, onReviewsCli
   );
 
   return (
-    <div className="fixed inset-0 bg-[#ededf6] z-50 overflow-y-auto">
-      {/* Sticky header */}
-      <div className="sticky top-0 z-10 bg-[#ededf6] border-b border-[#041E42]/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-0 h-14 w-auto cursor-pointer" onClick={onClose}>
-            <img src={logoImg} alt="Delt" className="h-10 w-auto object-contain" />
-          </div>
-        </div>
-      </div>
+    <div className="fixed inset-0 bg-white z-50 overflow-y-auto">
+      <PageHero
+        compact
+        eyebrow="Questions"
+        lead="Everything you need to"
+        accent="know."
+        subcopy="Short, honest answers about how Delt's capital actually works."
+      />
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 pb-24">
-        {/* Title */}
-        <motion.h1
-          className="text-4xl md:text-5xl font-bold text-[#041E42] mb-14"
-          initial={{ opacity: 0, x: -40 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-        >
-          FAQ
-          <span className="text-[#4945ff]">.</span>
-        </motion.h1>
-
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 pb-24">
         {/* Two Column FAQ Layout */}
         <div className="grid md:grid-cols-2 gap-x-16 gap-y-8">
           {/* Left Column */}
