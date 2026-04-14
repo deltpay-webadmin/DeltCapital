@@ -240,6 +240,64 @@ html {
 }
 
 /* ═══════════════════════════════════════════════════
+   Homepage Refresh — DeltPay-inspired utilities
+   ═══════════════════════════════════════════════════ */
+
+.serif-italic {
+  font-family: var(--font-serif-italic);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.card-lift {
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.28s ease;
+}
+.card-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-soft-2);
+}
+
+.hero-bg-gradient {
+  background: linear-gradient(135deg, var(--hero-dark-1) 0%, var(--hero-dark-2) 55%, var(--hero-dark-3) 100%);
+}
+
+.serif-shimmer {
+  background: linear-gradient(90deg, #FFFFFF 0%, #C7C5FF 20%, #8B5CF6 40%, #60A5FA 60%, #FFFFFF 80%, #C7C5FF 100%);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: gradientWave 14s linear infinite;
+}
+
+@keyframes marqueeLeft {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes marqueeRight {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+.marquee-track {
+  display: flex;
+  gap: 3rem;
+  width: max-content;
+  will-change: transform;
+}
+.marquee-left { animation: marqueeLeft 48s linear infinite; }
+.marquee-right { animation: marqueeRight 48s linear infinite; }
+.marquee-group:hover .marquee-track { animation-play-state: paused; }
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(0.5deg); }
+}
+.float-slow { animation: float-slow 7s ease-in-out infinite; }
+
+/* ═══════════════════════════════════════════════════
    Custom Scrollbar — Delt Capital Branding
    ═══════════════════════════════════════════════════ */
 

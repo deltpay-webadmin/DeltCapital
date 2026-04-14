@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button } from './ui/button';
-import { Globe, X, ArrowLeft } from 'lucide-react';
+import { Globe, ChevronDown, Search, ArrowRight } from 'lucide-react';
 import logoWhiteImg from 'figma:asset/7f25ee6fe5a55b9182a00e3c5b80e1a42079fc74.png';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -16,131 +15,136 @@ interface NavbarProps {
   onOverlayClose?: () => void;
 }
 
-export function Navbar({ onApplyClick, onCalculatorClick, onAboutClick, onHowItWorksClick, onLoginClick, overlayActive, overlayTitle, onOverlayClose }: NavbarProps) {
-  const { language, toggleLanguage, t } = useLanguage();
-  const [isScrolling, setIsScrolling] = useState(false);
+export function Navbar({
+  onApplyClick,
+  onCalculatorClick,
+  onAboutClick,
+  onHowItWorksClick,
+  onLoginClick,
+  overlayActive,
+  overlayTitle,
+  onOverlayClose,
+}: NavbarProps) {
+  const { language, toggleLanguage } = useLanguage();
+  const [isAtTop, setIsAtTop] = useState(true);
 
   useEffect(() => {
-    let scrollTimeout: NodeJS.Timeout;
-
     const handleScroll = () => {
-      setIsScrolling(true);
-      
-      clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(() => {
-        setIsScrolling(false);
-      }, 150);
+      setIsAtTop((window.scrollY || document.documentElement.scrollTop || 0) < 40);
     };
-
-    window.addEventListener('scroll', handleScroll);
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      clearTimeout(scrollTimeout);
-    };
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Transparent only when at the very top of the page AND no overlay is active
+  const transparent = isAtTop && !overlayActive;
+
+  const navStyle: React.CSSProperties = transparent
+    ? { background: 'transparent', backdropFilter: 'none', WebkitBackdropFilter: 'none' }
+    : { background: 'rgba(4, 30, 66, 0.85)', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)' };
+
+  const borderClass = transparent ? 'border-transparent' : 'border-white/10';
+
+  const navLinkClass = (active: boolean) =>
+    `transition-colors font-medium inline-flex items-center gap-1 ${
+      active
+        ? 'text-white'
+        : transparent
+        ? 'text-white/80 hover:text-white'
+        : 'text-white/70 hover:text-white'
+    }`;
+
   return (
-    <nav className="fixed top-0 left-0 right-0 z-[70] border-b border-white/10 transition-colors duration-300 overflow-visible" style={{ background: '#041E42', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}>
+    <nav
+      className={`fixed top-0 left-0 right-0 z-[70] border-b ${borderClass} transition-all duration-300 overflow-visible`}
+      style={navStyle}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-4">
+        <div className="flex items-center py-4 gap-6">
+          {/* Left: logo */}
           <div className="flex items-center gap-3 flex-shrink-0">
-            <div className="flex items-center gap-0 h-14 w-auto cursor-pointer" onClick={() => {
-              if (overlayActive && onOverlayClose) {
-                onOverlayClose();
-              } else {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }
-            }}>
+            <div
+              className="flex items-center gap-0 h-14 w-auto cursor-pointer"
+              onClick={() => {
+                if (overlayActive && onOverlayClose) onOverlayClose();
+                else window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            >
               <img src={logoWhiteImg} alt="Delt" className="h-7 w-auto object-contain" />
             </div>
-            {overlayActive && overlayTitle && (
-              <div className="flex items-center gap-2">
-                <div className="w-px h-6 bg-white/20" />
-              </div>
-            )}
           </div>
 
-          {/* Nav Links - Hidden on mobile, always visible */}
-            <div className="hidden md:flex items-center gap-6 ml-8">
-              <button
-                onClick={onHowItWorksClick}
-                className={`transition-colors font-medium ${overlayTitle === 'How It Works' ? 'text-white border-b-2 border-[#4945ff] pb-0.5' : 'text-white/70 hover:text-white'}`}
-                style={{ fontSize: '0.9375rem' }}
-              >
-                How It Works
-              </button>
-              <button
-                onClick={onCalculatorClick}
-                className={`transition-colors font-medium ${overlayTitle === 'Calculator' ? 'text-white border-b-2 border-[#4945ff] pb-0.5' : 'text-white/70 hover:text-white'}`}
-                style={{ fontSize: '0.9375rem' }}
-              >
-                Calculator
-              </button>
-              <button
-                onClick={onAboutClick}
-                className={`transition-colors font-medium ${overlayTitle === 'About' ? 'text-white border-b-2 border-[#4945ff] pb-0.5' : 'text-white/70 hover:text-white'}`}
-                style={{ fontSize: '0.9375rem' }}
-              >
-                About
-              </button>
-            </div>
+          {/* Center: nav cluster */}
+          <div className="hidden md:flex flex-1 justify-center items-center gap-7" style={{ fontSize: '0.9375rem' }}>
+            <button
+              onClick={onHowItWorksClick}
+              className={navLinkClass(overlayTitle === 'How It Works')}
+            >
+              How it works
+              <ChevronDown className="w-3.5 h-3.5 opacity-60" />
+            </button>
+            <button
+              onClick={onCalculatorClick}
+              className={navLinkClass(overlayTitle === 'Calculator')}
+            >
+              Calculator
+              <ChevronDown className="w-3.5 h-3.5 opacity-60" />
+            </button>
+            <button
+              onClick={onAboutClick}
+              className={navLinkClass(overlayTitle === 'About')}
+            >
+              About
+              <ChevronDown className="w-3.5 h-3.5 opacity-60" />
+            </button>
+          </div>
 
-          <div className="flex items-center gap-3 flex-shrink-0 ml-auto">
-            {/* Language Toggle - Hidden on mobile */}
+          {/* Right cluster */}
+          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0 ml-auto md:ml-0">
+            <button
+              type="button"
+              aria-label="Search"
+              className="hidden md:inline-flex w-9 h-9 items-center justify-center rounded-full text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+            >
+              <Search className="w-4 h-4" />
+            </button>
+
             {!overlayActive && (
               <button
                 onClick={toggleLanguage}
-                className="hidden md:flex items-center gap-2 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors border border-white/20"
+                className="hidden lg:inline-flex items-center gap-1.5 h-9 px-3 rounded-full bg-white/5 hover:bg-white/10 transition-colors border border-white/15"
                 aria-label="Toggle Language"
               >
-                <Globe className="w-4 h-4 text-white/80" />
-                <span className="text-sm font-semibold text-white/90">
-                  {language.toUpperCase()}
-                </span>
+                <Globe className="w-3.5 h-3.5 text-white/80" />
+                <span className="text-xs font-semibold text-white/90">{language.toUpperCase()}</span>
               </button>
             )}
 
-            <button 
-              onClick={onApplyClick}
-              className="text-white font-semibold whitespace-nowrap cursor-pointer flex-shrink-0 transition-all duration-200 hover:opacity-90 hover:scale-[1.03]"
-              style={{
-                background: '#4945ff',
-                borderRadius: '8px',
-                padding: '8px 18px',
-                fontSize: '0.875rem',
-                fontFamily: "'Open Sauce Sans', 'Codec Pro', sans-serif",
-              }}
+            <button
+              onClick={() => onLoginClick?.()}
+              className="hidden sm:inline-flex items-center gap-1 h-9 px-3 text-sm font-semibold text-white/90 hover:text-white transition-colors"
+              style={{ fontFamily: "'Open Sauce Sans', 'Codec Pro', sans-serif" }}
             >
-              Get Funded
+              Sign in
+              <span className="opacity-70">›</span>
             </button>
 
-            <button 
-              className={`login-button ${isScrolling ? 'scrolling' : ''} bg-transparent px-4 py-2 rounded-lg outline-none cursor-pointer flex-shrink-0 relative whitespace-nowrap`}
+            <button
+              onClick={onApplyClick}
+              className="group inline-flex items-center gap-1.5 text-white font-semibold whitespace-nowrap cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:shadow-[0_10px_28px_-10px_rgba(73,69,255,0.8)]"
               style={{
+                background: 'linear-gradient(180deg, #5b57ff 0%, #4945ff 55%, #3e3add 100%)',
+                borderRadius: '999px',
+                padding: '9px 18px',
                 fontSize: '0.875rem',
-                fontWeight: 600,
                 fontFamily: "'Open Sauce Sans', 'Codec Pro', sans-serif",
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.22), 0 8px 24px -10px rgba(73,69,255,0.6)',
               }}
-              onClick={() => onLoginClick?.()}
             >
-              Login
+              Get funded
+              <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
             </button>
-            <style>{`
-              .login-button {
-                color: #ffffff;
-              }
-              
-              .login-button:hover,
-              .login-button.scrolling {
-                background: linear-gradient(90deg, #4F46E5 0%, #8B5CF6 15%, #4945ff 30%, #60A5FA 45%, #4F46E5 60%, #8B5CF6 75%, #4945ff 90%, #60A5FA 100%);
-                background-size: 300% 100%;
-                -webkit-background-clip: text;
-                background-clip: text;
-                color: transparent;
-                animation: gradientWave 5s linear infinite;
-              }
-            `}</style>
           </div>
         </div>
       </div>

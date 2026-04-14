@@ -25,6 +25,8 @@ import { ResourcesPage } from './components/ResourcesPage';
 import { ScrollProgressBar, ScrollReveal } from './components/ScrollNarrative';
 import { TestimonialsSection } from './components/TestimonialsSection';
 import { StickyCTA } from './components/StickyCTA';
+import { LogoWall } from './components/LogoWall';
+import { MarqueeBand } from './components/MarqueeBand';
 import { HowItWorksPage } from './components/HowItWorksPage';
 import { DeltLearnMorePage } from './components/DeltLearnMorePage';
 import { PlaidOnboardingModal } from './components/PlaidOnboardingModal';
@@ -259,30 +261,6 @@ function AppContent() {
     setShowResources(false);
   };
 
-  // Scroll-linked snap-up for content wrapper
-  // Content starts 80px below and translates up as hero fades (scroll 30vh → 75vh)
-  const [scrollPos, setScrollPos] = useState(0);
-  const [vh, setVh] = useState(800);
-  useEffect(() => {
-    const update = () => setVh(window.innerHeight);
-    update();
-    window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
-  }, []);
-  useEffect(() => {
-    const handleScroll = () => setScrollPos(window.scrollY || document.documentElement.scrollTop || 0);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Compute scroll-driven transforms manually (avoids Motion's useScroll container issue in iframes)
-  const scrollStart1 = vh * 0.25;
-  const scrollEnd1 = vh * 0.7;
-  const scrollStart2 = vh * 0.25;
-  const scrollEnd2 = vh * 0.55;
-  const contentYVal = scrollPos <= scrollStart1 ? 80 : scrollPos >= scrollEnd1 ? 0 : 80 - (80 * (scrollPos - scrollStart1) / (scrollEnd1 - scrollStart1));
-  const contentOpacityVal = scrollPos <= scrollStart2 ? 0 : scrollPos >= scrollEnd2 ? 1 : (scrollPos - scrollStart2) / (scrollEnd2 - scrollStart2);
-
   const pageTransitionProps = {
     initial: { opacity: 0, y: 8 },
     animate: { opacity: 1, y: 0 },
@@ -312,7 +290,7 @@ function AppContent() {
     null;
 
   return (
-    <div className="relative min-h-screen bg-[#ededf6] transition-colors duration-300">
+    <div className="relative min-h-screen bg-white transition-colors duration-300">
       {!overlayMap && <ScrollProgressBar />}
       <Navbar
         onApplyClick={handleApplyClick}
@@ -326,37 +304,35 @@ function AppContent() {
       />
       
       <main className="relative">
-        <HeroSection onApplyClick={handleApplyClick} onApplyFromQuiz={handleApplyFromQuiz} onCalculatorClick={() => setShowCalculator(true)} />
-        {/* Everything after hero needs relative + z-index to scroll over the fixed hero */}
-        <div
-          className="relative z-10 bg-[#ededf6]"
-          style={{ transform: `translateY(${contentYVal}px)`, opacity: contentOpacityVal }}
-        >
-        <div style={{ zoom: viewportZoom } as React.CSSProperties}>
-          <section className="py-20 bg-[#ededf6]">
-            <ScrollReveal direction="up" distance={50}>
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <CapitalCostAnalyzer onApplyClick={handleApplyFromCalculator} onDeltLearnMore={handleDeltLearnMoreClick} />
-              </div>
-            </ScrollReveal>
-          </section>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div className="h-px bg-[#4945ff0F]" /></div>
-          <ComparisonTable />
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div className="h-px bg-[#4945ff0F]" /></div>
-          <UseCapitalSection onTalkToSpecialist={handleTalkToSpecialist} />
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div className="h-px bg-[#4945ff0F]" /></div>
-          <StatsSection />
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div className="h-px bg-[#4945ff0F]" /></div>
-          <PreQualificationSection ref={preQualSectionRef} onApplyClick={handleApplyClick} onApplyFromQuiz={handleApplyFromQuiz} onCalculatorClick={handleCalculatorClick} />
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div className="h-px bg-[#4945ff0F]" /></div>
-          <TestimonialsSection />
-        </div>
+        <HeroSection
+          onApplyClick={handleApplyClick}
+          onApplyFromQuiz={handleApplyFromQuiz}
+          onCalculatorClick={() => setShowCalculator(true)}
+          onHowItWorksClick={handleHowItWorksClick}
+        />
+        <LogoWall />
+        <div className="relative z-10 bg-white">
+          <div style={{ zoom: viewportZoom } as React.CSSProperties}>
+            <section className="py-24 md:py-32 bg-white">
+              <ScrollReveal direction="up" distance={50}>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                  <CapitalCostAnalyzer onApplyClick={handleApplyFromCalculator} onDeltLearnMore={handleDeltLearnMoreClick} />
+                </div>
+              </ScrollReveal>
+            </section>
+            <ComparisonTable />
+            <UseCapitalSection onTalkToSpecialist={handleTalkToSpecialist} />
+            <StatsSection />
+            <PreQualificationSection ref={preQualSectionRef} onApplyClick={handleApplyClick} onApplyFromQuiz={handleApplyFromQuiz} onCalculatorClick={handleCalculatorClick} />
+            <TestimonialsSection />
+            <MarqueeBand />
+          </div>
         </div>
       </main>
 
-      <div className="relative z-10" style={{ transform: `translateY(${contentYVal}px)` }}>
+      <div className="relative z-10">
         <div style={{ zoom: viewportZoom } as React.CSSProperties}>
-        <Footer onAboutClick={handleAboutClick} onHowItWorksClick={handleHowItWorksClick} onReviewsClick={handleReviewsClick} onBlogClick={handleBlogClick} onFAQClick={handleFAQClick} onSupportClick={handleSupportClick} onWinsClick={handleWinsClick} onApplyClick={handleApplyClick} onQuizClick={handleQuizClick} onResourcesClick={handleResourcesClick} onPrivacyClick={() => handleLegalLinkClick('privacy')} onTermsClick={() => handleLegalLinkClick('terms')} onDisclosuresClick={() => handleLegalLinkClick('eca')} />
+          <Footer onAboutClick={handleAboutClick} onHowItWorksClick={handleHowItWorksClick} onReviewsClick={handleReviewsClick} onBlogClick={handleBlogClick} onFAQClick={handleFAQClick} onSupportClick={handleSupportClick} onWinsClick={handleWinsClick} onApplyClick={handleApplyClick} onQuizClick={handleQuizClick} onResourcesClick={handleResourcesClick} onPrivacyClick={() => handleLegalLinkClick('privacy')} onTermsClick={() => handleLegalLinkClick('terms')} onDisclosuresClick={() => handleLegalLinkClick('eca')} />
         </div>
       </div>
 
