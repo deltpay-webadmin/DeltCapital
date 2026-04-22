@@ -46,41 +46,25 @@ const TIB_MULTIPLIERS: Record<string, { low: number; high: number } | 'redirect'
 };
 
 /* ─────────────────────────────────────────────────
- * Shared shell — gradient-ring card with mesh halo
+ * Shared shell — flat editorial card with hairline
  * ─────────────────────────────────────────────── */
 function QuizShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="relative max-w-3xl mx-auto">
-      {/* Behind-card mesh halo */}
-      <div aria-hidden className="bg-mesh absolute -inset-6 md:-inset-10 opacity-40 pointer-events-none" />
       <div
-        className="relative rounded-3xl bg-white overflow-hidden"
+        className="relative rounded-2xl bg-white overflow-hidden border border-[#dcdfe4]"
         style={{
-          boxShadow:
-            '0 30px 80px -28px rgba(12,102,228,0.30), 0 8px 28px -10px rgba(110,93,198,0.18)',
+          boxShadow: '0 1px 1px rgba(10,37,64,0.04), 0 24px 48px -24px rgba(10,37,64,0.18)',
         }}
       >
-        {/* Gradient ring (mask-composite) */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 rounded-3xl"
-          style={{
-            padding: 1.5,
-            background:
-              'rgba(12,102,228,0.35)',
-            WebkitMask: 'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
-            WebkitMaskComposite: 'xor',
-            maskComposite: 'exclude',
-          }}
-        />
-        <div className="relative">{children}</div>
+        {children}
       </div>
     </div>
   );
 }
 
 /* ─────────────────────────────────────────────────
- * Stepper — 4 segments, gradient fill on done/active
+ * Stepper — 4 segments, solid primary fill
  * ─────────────────────────────────────────────── */
 function QuizStepper({ stepIndex, totalSteps = 4, kicker, percent }: {
   stepIndex: number;
@@ -92,12 +76,21 @@ function QuizStepper({ stepIndex, totalSteps = 4, kicker, percent }: {
     <div className="px-8 md:px-12 pt-7">
       <div className="flex items-center justify-between mb-3">
         <span
-          className="uppercase text-[#0c66e4]"
-          style={{ fontSize: 11, letterSpacing: '0.32em', fontWeight: 700 }}
+          className="inline-flex items-center gap-2 uppercase text-[#0c66e4]"
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: 11,
+            fontWeight: 600,
+            letterSpacing: '0.18em',
+          }}
         >
+          <span aria-hidden className="inline-block w-3 h-px" style={{ background: '#0c66e4' }} />
           {kicker}
         </span>
-        <span className="text-[#44546f] tabular-nums" style={{ fontSize: 12, fontWeight: 600 }}>
+        <span
+          className="text-[#697386] tabular-nums"
+          style={{ fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 500, letterSpacing: '0.04em' }}
+        >
           {Math.round(percent)}% complete
         </span>
       </div>
@@ -106,22 +99,13 @@ function QuizStepper({ stepIndex, totalSteps = 4, kicker, percent }: {
           const isDone = i < stepIndex;
           const isActive = i === stepIndex;
           return (
-            <div key={i} className="flex-1 h-1.5 rounded-full bg-[#dcdfe4] overflow-hidden">
+            <div key={i} className="flex-1 h-1 rounded-full bg-[#dcdfe4] overflow-hidden">
               <motion.div
                 initial={false}
-                animate={{
-                  width: isDone || isActive ? '100%' : '0%',
-                }}
+                animate={{ width: isDone || isActive ? '100%' : '0%' }}
                 transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
                 className="h-full rounded-full"
-                style={{
-                  background:
-                    isDone
-                      ? '#0c66e4'
-                      : isActive
-                        ? '#0c66e4'
-                        : 'transparent',
-                }}
+                style={{ background: isDone || isActive ? '#0c66e4' : 'transparent' }}
               />
             </div>
           );
@@ -132,7 +116,7 @@ function QuizStepper({ stepIndex, totalSteps = 4, kicker, percent }: {
 }
 
 /* ─────────────────────────────────────────────────
- * Question header — eyebrow + headline + optional sub
+ * Question header — bordered icon tile + eyebrow + headline
  * ─────────────────────────────────────────────── */
 function QuestionHeader({
   Icon,
@@ -147,32 +131,31 @@ function QuestionHeader({
 }) {
   return (
     <div className="px-8 md:px-12 pt-8">
-      <motion.div
-        initial={{ opacity: 0, y: 10, scale: 0.96 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-5 text-white"
-        style={{
-          background: '#0c66e4',
-          boxShadow: '0 12px 28px -10px rgba(12,102,228,0.55), inset 0 1px 0 rgba(255,255,255,0.18)',
-        }}
+      <div
+        className="inline-flex items-center justify-center w-12 h-12 rounded-xl mb-5"
+        style={{ background: '#e9f2ff', border: '1px solid #d6e6ff' }}
       >
-        <Icon className="w-6 h-6" />
-      </motion.div>
+        <Icon className="w-5 h-5 text-[#0c66e4]" />
+      </div>
 
       <span
-        className="block uppercase text-[#758195]"
-        style={{ fontSize: 11, letterSpacing: '0.28em', fontWeight: 700 }}
+        className="block uppercase text-[#697386]"
+        style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: 11,
+          letterSpacing: '0.18em',
+          fontWeight: 600,
+        }}
       >
         {eyebrow}
       </span>
 
       <h3
-        className="mt-2.5 text-[#172b4d]"
+        className="mt-3 text-[#0a2540]"
         style={{
           fontFamily: 'var(--font-display)',
           fontSize: 'clamp(1.6rem, 3.2vw, 2.25rem)',
-          fontWeight: 700,
+          fontWeight: 600,
           letterSpacing: '-0.025em',
           lineHeight: 1.15,
           maxWidth: '24ch',
@@ -182,7 +165,7 @@ function QuestionHeader({
       </h3>
 
       {subtitle && (
-        <p className="mt-2 text-[#44546f]" style={{ fontSize: 15, lineHeight: 1.55 }}>
+        <p className="mt-3 text-[#425466]" style={{ fontSize: 15, lineHeight: 1.55 }}>
           {subtitle}
         </p>
       )}
@@ -344,7 +327,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
-            className="text-[#172b4d]"
+            className="text-[#0a2540]"
             style={{
               fontFamily: 'var(--font-display)',
               fontSize: 'clamp(1.5rem, 3vw, 2rem)',
@@ -359,7 +342,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25 }}
-            className="text-[#44546f] mt-2.5"
+            className="text-[#425466] mt-2.5"
             style={{ fontSize: 15 }}
           >
             Analyzing your business profile…
@@ -385,7 +368,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
               <Sparkles className="w-3.5 h-3.5" />
               Estimated funding range
             </span>
-            <p className="text-[#44546f] mt-3" style={{ fontSize: 14 }}>
+            <p className="text-[#425466] mt-3" style={{ fontSize: 14 }}>
               Based on your business profile
             </p>
           </div>
@@ -398,7 +381,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.3 }}
-                className="text-center text-[#758195] mb-1.5"
+                className="text-center text-[#697386] mb-1.5"
                 style={{
                   fontSize: 20,
                   fontWeight: 600,
@@ -420,12 +403,12 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
               exit={{ opacity: 0, y: -8, scale: 0.97 }}
               transition={{ type: 'spring', stiffness: 180, damping: 18 }}
               className={`text-center tabular-nums ${
-                isDeltBoosted ? 'text-gradient-primary' : 'text-[#172b4d]'
+                isDeltBoosted ? 'text-[#0c66e4]' : 'text-[#0a2540]'
               }`}
               style={{
                 fontFamily: 'var(--font-display)',
                 fontSize: 'clamp(3rem, 8vw, 4.75rem)',
-                fontWeight: 800,
+                fontWeight: 600,
                 letterSpacing: '-0.045em',
                 lineHeight: 1.0,
               }}
@@ -436,7 +419,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
             </motion.div>
           </AnimatePresence>
 
-          <p className="text-center text-[#44546f] mt-3 mb-8" style={{ fontSize: 13.5 }}>
+          <p className="text-center text-[#425466] mt-3 mb-8" style={{ fontSize: 13.5 }}>
             {isDeltBoosted ? 'With Delt processing' : 'Based on your monthly revenue'}
           </p>
 
@@ -459,10 +442,10 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                   <Rocket className="w-5 h-5" />
                 </div>
                 <div className="flex-1">
-                  <div className="text-[#172b4d]" style={{ fontSize: 15.5, fontWeight: 700, lineHeight: 1.35 }}>
+                  <div className="text-[#0a2540]" style={{ fontSize: 15.5, fontWeight: 700, lineHeight: 1.35 }}>
                     Enable payment processing with Delt
                   </div>
-                  <div className="text-[#44546f] mt-1.5" style={{ fontSize: 13.5, lineHeight: 1.5 }}>
+                  <div className="text-[#425466] mt-1.5" style={{ fontSize: 13.5, lineHeight: 1.5 }}>
                     Unlock up to <span className="font-semibold text-[#0c66e4]">2× more capital</span> as your business grows
                   </div>
                 </div>
@@ -492,7 +475,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                     background: deltToggle
                       ? '#0c66e4'
                       : '#dcdfe4',
-                    color: deltToggle ? '#fff' : '#758195',
+                    color: deltToggle ? '#fff' : '#697386',
                     boxShadow: deltToggle
                       ? '0 6px 16px -4px rgba(12,102,228,0.45)'
                       : 'none',
@@ -501,10 +484,10 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                   <Zap className="w-5 h-5" />
                 </div>
                 <div className="flex-1 pt-0.5">
-                  <div className="text-[#172b4d]" style={{ fontSize: 16, fontWeight: 700, lineHeight: 1.35 }}>
+                  <div className="text-[#0a2540]" style={{ fontSize: 16, fontWeight: 700, lineHeight: 1.35 }}>
                     {isRedirectCase ? 'Enable payment processing with Delt' : 'Switch payment processing to Delt'}
                   </div>
-                  <div className="text-[#44546f] mt-1.5" style={{ fontSize: 13.5, lineHeight: 1.5 }}>
+                  <div className="text-[#425466] mt-1.5" style={{ fontSize: 13.5, lineHeight: 1.5 }}>
                     Unlock up to <span className="font-semibold text-[#0c66e4]">2× more capital</span> as your business grows
                   </div>
                 </div>
@@ -563,12 +546,13 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
           {/* CTA */}
           <button
             onClick={() => onApplyClick?.(getCalculatorData())}
-            className="card-hover-lift w-full text-white inline-flex items-center justify-center gap-2 rounded-xl py-4"
+            onMouseEnter={(e) => { e.currentTarget.style.background = '#0c66e4'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = '#0a2540'; }}
+            className="w-full text-white inline-flex items-center justify-center gap-2 rounded-lg py-4 transition-colors"
             style={{
-              background: '#0c66e4',
-              boxShadow: '0 12px 28px -10px rgba(12,102,228,0.55), inset 0 1px 0 rgba(255,255,255,0.18)',
-              fontSize: 16,
-              fontWeight: 700,
+              background: '#0a2540',
+              fontSize: 15,
+              fontWeight: 600,
               letterSpacing: '-0.005em',
             }}
           >
@@ -577,7 +561,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
           </button>
 
           {/* Trust line */}
-          <div className="mt-3 flex items-center justify-center gap-1.5 text-[#758195]" style={{ fontSize: 13 }}>
+          <div className="mt-3 flex items-center justify-center gap-1.5 text-[#697386]" style={{ fontSize: 13 }}>
             <Lock className="w-3 h-3" />
             No impact to your credit · Takes 2 minutes
           </div>
@@ -595,10 +579,10 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                 }}
               >
                 <Rocket className="w-5 h-5 mb-2 text-[#0c66e4]" />
-                <p className="text-[#172b4d] mb-1" style={{ fontSize: 14, fontWeight: 700, lineHeight: 1.35 }}>
+                <p className="text-[#0a2540] mb-1" style={{ fontSize: 14, fontWeight: 700, lineHeight: 1.35 }}>
                   Get started with Delt today.
                 </p>
-                <p className="text-[#44546f]" style={{ fontSize: 13, lineHeight: 1.5 }}>
+                <p className="text-[#425466]" style={{ fontSize: 13, lineHeight: 1.5 }}>
                   New businesses that process with Delt get a pre-approved offer and up to 2× more capital as they grow.
                 </p>
               </motion.div>
@@ -619,7 +603,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
             <button
               type="button"
               onClick={handleReset}
-              className="inline-flex items-center gap-1.5 text-[#758195] hover:text-[#0c66e4] transition-colors"
+              className="inline-flex items-center gap-1.5 text-[#697386] hover:text-[#0c66e4] transition-colors"
               style={{ fontSize: 13, fontWeight: 500 }}
             >
               <RefreshCcw className="w-3 h-3" />
@@ -687,13 +671,13 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                     <div className="flex items-center justify-between gap-3">
                       <div>
                         <div
-                          className="text-[#172b4d]"
+                          className="text-[#0a2540]"
                           style={{ fontSize: 16, fontWeight: 700, letterSpacing: '-0.01em' }}
                         >
                           {opt.label}
                         </div>
                         <div
-                          className="uppercase text-[#758195] mt-1"
+                          className="uppercase text-[#697386] mt-1"
                           style={{ fontSize: 10, letterSpacing: '0.22em', fontWeight: 700 }}
                         >
                           {opt.sub}
@@ -742,12 +726,13 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
               >
                 <button
                   onClick={handleRevenueContinue}
-                  className="card-hover-lift inline-flex items-center justify-center gap-2 text-white rounded-xl px-7 py-3.5"
+                  onMouseEnter={(e) => { e.currentTarget.style.background = '#0c66e4'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = '#0a2540'; }}
+                  className="inline-flex items-center justify-center gap-2 text-white rounded-lg px-7 py-3.5 transition-colors"
                   style={{
-                    background: '#0c66e4',
-                    boxShadow: '0 10px 24px -10px rgba(12,102,228,0.55), inset 0 1px 0 rgba(255,255,255,0.18)',
+                    background: '#0a2540',
                     fontSize: 15,
-                    fontWeight: 700,
+                    fontWeight: 600,
                   }}
                 >
                   Continue
@@ -809,13 +794,13 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                     <opt.Icon className="w-5 h-5" strokeWidth={2.5} />
                   </span>
                   <div
-                    className="text-[#172b4d] mt-1"
+                    className="text-[#0a2540] mt-1"
                     style={{ fontSize: 18, fontWeight: 700, letterSpacing: '-0.015em' }}
                   >
                     {opt.label}
                   </div>
                   <div
-                    className="uppercase text-[#758195]"
+                    className="uppercase text-[#697386]"
                     style={{ fontSize: 10, letterSpacing: '0.22em', fontWeight: 700 }}
                   >
                     {opt.sub}
@@ -860,12 +845,13 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
               >
                 <button
                   onClick={handleCardSalesContinue}
-                  className="card-hover-lift inline-flex items-center justify-center gap-2 text-white rounded-xl px-7 py-3.5"
+                  onMouseEnter={(e) => { e.currentTarget.style.background = '#0c66e4'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = '#0a2540'; }}
+                  className="inline-flex items-center justify-center gap-2 text-white rounded-lg px-7 py-3.5 transition-colors"
                   style={{
-                    background: '#0c66e4',
-                    boxShadow: '0 10px 24px -10px rgba(12,102,228,0.55), inset 0 1px 0 rgba(255,255,255,0.18)',
+                    background: '#0a2540',
                     fontSize: 15,
-                    fontWeight: 700,
+                    fontWeight: 600,
                   }}
                 >
                   See my estimate

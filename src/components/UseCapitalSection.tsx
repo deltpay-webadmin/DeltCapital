@@ -241,7 +241,7 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
       backgroundColor: '#ffffff',
       border: '1px solid #dcdfe4',
       borderRadius: '8px',
-      color: '#172b4d',
+      color: '#0a2540',
       fontSize: '12px',
       boxShadow: '0 4px 12px rgba(4,30,66,0.08)',
     };
@@ -270,10 +270,10 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
             </PieChart>
             <div className="ml-4 space-y-2">
               {cat.chartData.map((d: any, i: number) => (
-                <div key={i} className="flex items-center gap-2 text-sm text-[#172b4d]/70">
+                <div key={i} className="flex items-center gap-2 text-sm text-[#0a2540]/70">
                   <div className="w-3 h-3 rounded-full" style={{ backgroundColor: CHART_COLORS[i % CHART_COLORS.length] }} />
                   <span>{d.name}</span>
-                  <span className="text-[#172b4d]/40 ml-auto">{d.value}%</span>
+                  <span className="text-[#0a2540]/40 ml-auto">{d.value}%</span>
                 </div>
               ))}
             </div>
@@ -357,43 +357,43 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
   };
 
   return (
-    <section ref={sectionRef} className="py-20 md:py-24 lg:py-28 bg-[#fafbfc] overflow-hidden relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section ref={sectionRef} className="py-20 md:py-24 lg:py-28 bg-[#f6f9fc] relative">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
 
-        {/* ─── Header — eyebrow + bold display headline + sub ─── */}
+        {/* ─── Header — eyebrow + display headline + sub ─── */}
         <div className="max-w-3xl mb-12 lg:mb-16">
           <motion.span
-            className="block uppercase text-[#0c66e4]"
-            style={{ fontSize: 11, letterSpacing: '0.32em', fontWeight: 700 }}
+            className="inline-flex items-center gap-2 uppercase text-[#0c66e4]"
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: 11.5,
+              fontWeight: 600,
+              letterSpacing: '0.18em',
+            }}
             initial={{ opacity: 0, y: 8 }}
             animate={isInView ? { opacity: 1, y: 0 } : undefined}
             transition={{ duration: 0.5 }}
           >
+            <span aria-hidden className="inline-block w-4 h-px" style={{ background: '#0c66e4' }} />
             Use cases
           </motion.span>
           <motion.h2
-            className="mt-4 text-[#172b4d]"
+            className="mt-5 text-[#0a2540]"
             style={{
               fontFamily: 'var(--font-display)',
-              fontSize: 'clamp(2.25rem, 5vw, 4rem)',
-              fontWeight: 700,
+              fontSize: 'clamp(2rem, 4.5vw, 3.5rem)',
+              fontWeight: 600,
               letterSpacing: '-0.035em',
-              lineHeight: 1.0,
+              lineHeight: 1.05,
             }}
             initial={{ opacity: 0, y: 14 }}
             animate={isInView ? { opacity: 1, y: 0 } : undefined}
             transition={{ duration: 0.85, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           >
-            {t('capital.title').split(' ').map((word, i, arr) =>
-              i === arr.length - 1 ? (
-                <span key={i} className="text-gradient-primary">{word}</span>
-              ) : (
-                <span key={i}>{word} </span>
-              )
-            )}
+            {t('capital.title')}
           </motion.h2>
           <motion.p
-            className="mt-5 text-[#44546f] max-w-2xl"
+            className="mt-5 text-[#425466] max-w-2xl"
             style={{ fontSize: 17, lineHeight: 1.6 }}
             initial={{ opacity: 0, y: 12 }}
             animate={isInView ? { opacity: 1, y: 0 } : undefined}
@@ -404,53 +404,32 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
         </div>
 
         {/* ═══════════════════════════════════════════════════
-            MAIN EXPLORER — Gradient-ring shell with mesh halo
+            MAIN EXPLORER — Editorial shell, hairline border, no halos
             ═══════════════════════════════════════════════════ */}
-        <div className="relative">
-          {/* Mesh halo */}
-          <div aria-hidden className="bg-mesh absolute -inset-6 md:-inset-10 opacity-35 pointer-events-none" />
-
-          <motion.div
-            className="relative rounded-2xl lg:rounded-3xl overflow-hidden bg-white"
-            style={{
-              boxShadow:
-                '0 30px 80px -28px rgba(12,102,228,0.30), 0 8px 28px -10px rgba(110,93,198,0.18)',
-            }}
-            initial={{ opacity: 0, y: 32 }}
-            animate={isInView ? { opacity: 1, y: 0 } : undefined}
-            transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          >
-            {/* Gradient ring (mask-composite) */}
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-0 rounded-2xl lg:rounded-3xl z-20"
-              style={{
-                padding: 1.5,
-                background:
-                  'rgba(12,102,228,0.35)',
-                WebkitMask: 'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
-                WebkitMaskComposite: 'xor',
-                maskComposite: 'exclude',
-              }}
-            />
-
+        <motion.div
+          className="relative rounded-2xl lg:rounded-3xl overflow-hidden bg-white border border-[#dcdfe4]"
+          style={{
+            boxShadow: '0 1px 1px rgba(10,37,64,0.04), 0 24px 48px -24px rgba(10,37,64,0.18)',
+          }}
+          initial={{ opacity: 0, y: 32 }}
+          animate={isInView ? { opacity: 1, y: 0 } : undefined}
+          transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+        >
             <div className="grid lg:grid-cols-[320px_1fr] xl:grid-cols-[360px_1fr] min-h-[460px] lg:min-h-[520px]">
 
-              {/* ═══ LEFT: Feature list — dark navy with mesh glow ═══ */}
-              <div className="relative px-5 lg:px-6 xl:px-8 py-7 lg:py-9 flex flex-col bg-[#172b4d] overflow-hidden">
-                {/* Mesh-screen glow */}
-                <div
-                  aria-hidden
-                  className="bg-mesh absolute inset-0 opacity-25 pointer-events-none"
-                  style={{ mixBlendMode: 'screen' }}
-                />
-
+              {/* ═══ LEFT: Feature list — flat dark navy ═══ */}
+              <div className="relative px-5 lg:px-6 xl:px-8 py-7 lg:py-9 flex flex-col bg-[#0a2540]">
                 <div className="relative flex flex-col h-full">
                   {/* Column kicker */}
                   <div className="flex items-center justify-between mb-5">
                     <span
                       className="uppercase text-[#85B8FF]"
-                      style={{ fontSize: 10, letterSpacing: '0.32em', fontWeight: 700 }}
+                      style={{
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: 10.5,
+                        fontWeight: 600,
+                        letterSpacing: '0.18em',
+                      }}
                     >
                       Browse · {totalItems} use cases
                     </span>
@@ -504,33 +483,17 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
                             animate={{ x: 0 }}
                             transition={{ duration: 0.2 }}
                           >
-                            {/* Active gradient left bar */}
-                            {isActive && (
-                              <motion.span
-                                layoutId="capitalActiveBar"
-                                aria-hidden
-                                className="absolute left-1 top-2 bottom-2 w-[3px] rounded-full"
-                                style={{
-                                  background: '#0c66e4',
-                                  boxShadow: '0 0 12px rgba(12,102,228,0.55)',
-                                }}
-                                transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                              />
-                            )}
-
-                            {/* Plus / Minus circle — gradient when active */}
+                            {/* Plus / Minus circle — solid primary when active.
+                                (Active state is also conveyed by bg-fill on the
+                                 button, so no left-stripe accent is needed —
+                                 impeccable bans border-left > 1px decoration.) */}
                             <div
-                              className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 transition-all"
+                              className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 transition-colors"
                               style={{
-                                background: isActive
-                                  ? '#0c66e4'
-                                  : 'transparent',
+                                background: isActive ? '#0c66e4' : 'transparent',
                                 border: isActive
                                   ? '1px solid transparent'
-                                  : '1px solid rgba(255,255,255,0.2)',
-                                boxShadow: isActive
-                                  ? '0 6px 16px -4px rgba(12,102,228,0.5)'
-                                  : 'none',
+                                  : '1px solid rgba(255,255,255,0.18)',
                               }}
                             >
                               {isActive ? (
@@ -542,11 +505,11 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
 
                             {/* Title */}
                             <span
-                              className="transition-all"
+                              className="transition-colors"
                               style={{
-                                fontSize: isActive ? 15.5 : 14,
-                                fontWeight: isActive ? 700 : 500,
-                                letterSpacing: isActive ? '-0.01em' : '0',
+                                fontSize: 15,
+                                fontWeight: isActive ? 600 : 500,
+                                letterSpacing: '-0.005em',
                                 color: isActive ? '#FFFFFF' : 'rgba(255,255,255,0.62)',
                               }}
                             >
@@ -565,14 +528,11 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
                                 className="overflow-hidden"
                               >
                                 <div className="pl-12 pr-4 pt-2 pb-4">
-                                  {/* Gradient hairline divider */}
+                                  {/* Hairline divider */}
                                   <div
                                     aria-hidden
-                                    className="h-[2px] w-10 rounded-full mb-3"
-                                    style={{
-                                      background:
-                                        '#0c66e4',
-                                    }}
+                                    className="h-px w-10 mb-3"
+                                    style={{ background: 'rgba(255,255,255,0.18)' }}
                                   />
 
                                   {/* Description */}
@@ -586,11 +546,11 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
                                   {/* Stat */}
                                   <div className="mt-4 flex items-baseline gap-3">
                                     <span
-                                      className="text-gradient-primary tabular-nums"
+                                      className="text-[#85B8FF] tabular-nums"
                                       style={{
                                         fontFamily: 'var(--font-display)',
-                                        fontSize: 24,
-                                        fontWeight: 800,
+                                        fontSize: 26,
+                                        fontWeight: 600,
                                         letterSpacing: '-0.025em',
                                         lineHeight: 1.0,
                                       }}
@@ -599,7 +559,12 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
                                     </span>
                                     <span
                                       className="uppercase text-white/45"
-                                      style={{ fontSize: 9.5, letterSpacing: '0.22em', fontWeight: 700 }}
+                                      style={{
+                                        fontFamily: 'var(--font-mono)',
+                                        fontSize: 10,
+                                        letterSpacing: '0.18em',
+                                        fontWeight: 600,
+                                      }}
                                     >
                                       {cat.statLabel}
                                     </span>
@@ -644,10 +609,7 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
               </div>
 
               {/* ═══ RIGHT: Data visualization (light surface) ═══ */}
-              <div className="relative border-t lg:border-t-0 lg:border-l border-[#dcdfe4] px-5 lg:px-7 xl:px-10 py-7 lg:py-9 flex flex-col overflow-hidden bg-white">
-                {/* Subtle ambient mesh */}
-                <div aria-hidden className="bg-mesh absolute inset-0 opacity-[0.10] pointer-events-none" />
-
+              <div className="relative border-t lg:border-t-0 lg:border-l border-[#dcdfe4] px-5 lg:px-7 xl:px-10 py-7 lg:py-9 flex flex-col bg-white">
                 <div className="relative flex flex-col h-full">
                   {/* KPI cards row */}
                   <AnimatePresence mode="wait">
@@ -665,14 +627,14 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
                           className="card-hover-lift rounded-xl border border-[#dcdfe4] bg-white px-3.5 py-3"
                         >
                           <p
-                            className="uppercase text-[#758195] mb-1.5"
+                            className="uppercase text-[#697386] mb-1.5"
                             style={{ fontSize: 9, letterSpacing: '0.22em', fontWeight: 700 }}
                           >
                             {kpi.label}
                           </p>
                           <div className="flex items-center gap-2">
                             <span
-                              className="text-[#172b4d] tabular-nums"
+                              className="text-[#0a2540] tabular-nums"
                               style={{
                                 fontFamily: 'var(--font-display)',
                                 fontSize: 20,
@@ -708,29 +670,28 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
                       className="mb-4 flex items-center gap-3"
                     >
                       <div className="flex items-center gap-2">
-                        <span
-                          className="inline-flex items-center justify-center rounded-lg w-7 h-7"
-                          style={{
-                            background:
-                              'rgba(12,102,228,0.10)',
-                          }}
-                        >
+                        <span className="inline-flex items-center justify-center rounded-lg w-7 h-7 bg-[#e9f2ff]">
                           <active.icon className="w-3.5 h-3.5 text-[#0c66e4]" />
                         </span>
                         <span
                           className="uppercase text-[#0c66e4]"
-                          style={{ fontSize: 10.5, letterSpacing: '0.28em', fontWeight: 700 }}
+                          style={{
+                            fontFamily: 'var(--font-mono)',
+                            fontSize: 10.5,
+                            letterSpacing: '0.18em',
+                            fontWeight: 600,
+                          }}
                         >
                           {active.chartLabel}
                         </span>
                       </div>
-                      <div className="flex-1 h-px bg-gradient-to-r from-[#dcdfe4]/0 via-[#dcdfe4] to-[#dcdfe4]/0" />
+                      <div className="flex-1 h-px bg-[#dcdfe4]" />
                       <span
-                        className="text-gradient-primary tabular-nums"
+                        className="text-[#0a2540] tabular-nums"
                         style={{
                           fontFamily: 'var(--font-display)',
-                          fontSize: 18,
-                          fontWeight: 800,
+                          fontSize: 20,
+                          fontWeight: 600,
                           letterSpacing: '-0.025em',
                         }}
                       >
@@ -761,27 +722,25 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -8 }}
                       transition={{ duration: 0.35, delay: 0.1 }}
-                      className="mt-5 flex items-start gap-3 rounded-2xl bg-white border border-[#dcdfe4] px-4 py-3.5"
-                      style={{ boxShadow: '0 6px 20px -10px rgba(9,30,66,0.08)' }}
+                      className="mt-5 flex items-start gap-3 rounded-xl bg-[#f6f9fc] border border-[#dcdfe4] px-4 py-3.5"
                     >
-                      <span
-                        className="inline-flex items-center justify-center rounded-xl w-9 h-9 flex-shrink-0 mt-0.5"
-                        style={{
-                          background:
-                            'rgba(12,102,228,0.12)',
-                        }}
-                      >
+                      <span className="inline-flex items-center justify-center rounded-lg w-9 h-9 flex-shrink-0 mt-0.5 bg-[#e9f2ff]">
                         <Lightbulb className="w-4 h-4 text-[#0c66e4]" />
                       </span>
                       <div>
                         <span
                           className="uppercase text-[#0c66e4]"
-                          style={{ fontSize: 9.5, letterSpacing: '0.28em', fontWeight: 700 }}
+                          style={{
+                            fontFamily: 'var(--font-mono)',
+                            fontSize: 10.5,
+                            letterSpacing: '0.18em',
+                            fontWeight: 600,
+                          }}
                         >
                           Insight
                         </span>
                         <p
-                          className="text-[#44546f] mt-1"
+                          className="text-[#425466] mt-1"
                           style={{ fontSize: 14, lineHeight: 1.6 }}
                         >
                           {active.insight}
@@ -792,8 +751,7 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
                 </div>
               </div>
             </div>
-          </motion.div>
-        </div>
+        </motion.div>
 
         {/* ── Bottom dot navigation (mobile only) ── */}
         <div className="flex items-center justify-center gap-2.5 mt-8 lg:hidden">

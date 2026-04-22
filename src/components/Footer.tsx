@@ -35,34 +35,36 @@ export function Footer({
   const ctaRest = ctaWords.slice(1).join(' ');
 
   return (
-    <footer className="relative bg-[#172B4D] dark:bg-[#0D1B2D] text-white overflow-hidden">
+    <footer className="relative bg-[#0a2540] dark:bg-[#0D1B2D] text-white overflow-hidden">
       {/* ─────────────────────────────────────────
           CTA Section — solid primary band
          ───────────────────────────────────────── */}
       {!hideCTA && (
-        <div className="relative overflow-hidden bg-[#0c66e4]">
-          {/* Grain overlay */}
-          <div aria-hidden className="bg-grain absolute inset-0 pointer-events-none" />
-
-          <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
+        <div className="relative bg-[#0c66e4]">
+          <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-10 py-24 md:py-32">
             <ScrollReveal direction="up" distance={24}>
               <span
                 className="inline-flex items-center gap-2 uppercase text-white/85"
-                style={{ fontSize: 11, letterSpacing: '0.32em', fontWeight: 700 }}
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 11.5,
+                  fontWeight: 600,
+                  letterSpacing: '0.18em',
+                }}
               >
-                <Sparkles className="w-3.5 h-3.5" />
+                <span aria-hidden className="inline-block w-4 h-px bg-white/85" />
                 Your offer is waiting
               </span>
             </ScrollReveal>
 
             <ScrollReveal direction="up" distance={28} delay={0.1}>
               <h2
-                className="mt-5 text-white"
+                className="mt-6 text-white"
                 style={{
                   fontFamily: 'var(--font-display)',
                   fontSize: 'clamp(2.75rem, 7vw, 5.5rem)',
-                  fontWeight: 700,
-                  letterSpacing: '-0.04em',
+                  fontWeight: 600,
+                  letterSpacing: '-0.045em',
                   lineHeight: 1.0,
                   maxWidth: '20ch',
                 }}
@@ -198,7 +200,7 @@ export function Footer({
                   }}
                 >
                   Capital that moves at the{' '}
-                  <span className="text-gradient-primary">speed of business.</span>
+                  <span className="text-[#85B8FF]">speed of business.</span>
                 </p>
                 <p className="text-gray-400 text-sm leading-relaxed mt-3 max-w-md">
                   {t('footer.description')}

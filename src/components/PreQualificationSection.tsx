@@ -125,7 +125,7 @@ function ApprovedPhone() {
               </span>
               <button
                 aria-label="Close"
-                className="w-7 h-7 rounded-full bg-[#f1f2f4] flex items-center justify-center text-[#44546f]"
+                className="w-7 h-7 rounded-full bg-[#f1f2f4] flex items-center justify-center text-[#425466]"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -153,7 +153,7 @@ function ApprovedPhone() {
               className="mt-3"
             >
               <div
-                className="uppercase text-[#758195]"
+                className="uppercase text-[#697386]"
                 style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700 }}
               >
                 Approved funding
@@ -170,7 +170,7 @@ function ApprovedPhone() {
               >
                 ${Math.round(amount).toLocaleString()}
               </div>
-              <div className="text-[#44546f] mt-1.5 text-xs">
+              <div className="text-[#425466] mt-1.5 text-xs">
                 Up to · 6 month term
               </div>
             </motion.div>
@@ -192,13 +192,13 @@ function ApprovedPhone() {
                   className="rounded-lg border border-[#dcdfe4] bg-white px-2 py-2"
                 >
                   <div
-                    className="uppercase text-[#758195]"
+                    className="uppercase text-[#697386]"
                     style={{ fontSize: 8, letterSpacing: '0.18em', fontWeight: 700 }}
                   >
                     {s.label}
                   </div>
                   <div
-                    className="text-[#172b4d] tabular-nums mt-0.5"
+                    className="text-[#0a2540] tabular-nums mt-0.5"
                     style={{ fontSize: 14, fontWeight: 700, letterSpacing: '-0.015em' }}
                   >
                     {s.value}
@@ -212,11 +212,11 @@ function ApprovedPhone() {
               initial={{ opacity: 0, y: 10 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.55 }}
-              className="mt-4 rounded-xl border border-[#dcdfe4] bg-[#fafbfc] p-3"
+              className="mt-4 rounded-xl border border-[#dcdfe4] bg-[#f6f9fc] p-3"
             >
               <div className="flex items-center justify-between mb-2">
                 <span
-                  className="uppercase text-[#44546f]"
+                  className="uppercase text-[#425466]"
                   style={{ fontSize: 9, letterSpacing: '0.22em', fontWeight: 700 }}
                 >
                   Revenue · 12 mo
@@ -264,7 +264,7 @@ function ApprovedPhone() {
             </motion.button>
 
             {/* Security strip */}
-            <div className="flex items-center justify-center gap-1.5 text-[#758195]">
+            <div className="flex items-center justify-center gap-1.5 text-[#697386]">
               <Lock className="w-2.5 h-2.5" />
               <span style={{ fontSize: 9.5, letterSpacing: '0.04em' }}>Secured by Plaid</span>
             </div>
@@ -348,16 +348,9 @@ export const PreQualificationSection = forwardRef<
     <>
       <section
         ref={sectionRef}
-        className="relative bg-[#172b4d] text-white overflow-hidden py-24 md:py-32"
+        className="relative bg-[#0a2540] text-white py-24 md:py-32"
       >
-        {/* Mesh chromatic glow */}
-        <div
-          aria-hidden
-          className="bg-mesh absolute inset-0 opacity-50 pointer-events-none"
-          style={{ mixBlendMode: 'screen' }}
-        />
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
           <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             {/* ═══════ LEFT — Content ═══════ */}
             <div className="lg:col-span-7">
@@ -367,9 +360,14 @@ export const PreQualificationSection = forwardRef<
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ duration: 0.6 }}
                 className="inline-flex items-center gap-2 uppercase text-[#85B8FF]"
-                style={{ fontSize: 11, letterSpacing: '0.32em', fontWeight: 700 }}
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 11.5,
+                  fontWeight: 600,
+                  letterSpacing: '0.18em',
+                }}
               >
-                <Sparkles className="w-3.5 h-3.5" />
+                <span aria-hidden className="inline-block w-4 h-px" style={{ background: '#85B8FF' }} />
                 Pre-qualification
               </motion.span>
 
@@ -378,27 +376,17 @@ export const PreQualificationSection = forwardRef<
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ duration: 0.85, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                className="mt-5 text-white"
+                className="mt-6 text-white"
                 style={{
                   fontFamily: 'var(--font-display)',
                   fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
-                  fontWeight: 700,
-                  letterSpacing: '-0.035em',
+                  fontWeight: 600,
+                  letterSpacing: '-0.04em',
                   lineHeight: 1.0,
                   maxWidth: '20ch',
                 }}
               >
-                {t('preQual.title')
-                  .split(' ')
-                  .map((word, i, arr) =>
-                    i === arr.length - 1 ? (
-                      <span key={i} className="text-gradient-primary">
-                        {word}
-                      </span>
-                    ) : (
-                      <React.Fragment key={i}>{word} </React.Fragment>
-                    )
-                  )}
+                {t('preQual.title')}
               </motion.h2>
 
               <motion.p
@@ -521,7 +509,7 @@ export const PreQualificationSection = forwardRef<
 
       {/* ── Results full-page ── */}
       {showResults && (
-        <div className="fixed inset-0 bg-[#fafbfc] dark:bg-[#0A1F35] z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-[#f6f9fc] dark:bg-[#0A1F35] z-50 flex items-center justify-center p-4">
           <div className="w-full max-w-4xl">
             <PreQualificationGame
               startWithQuiz={true}

@@ -102,11 +102,8 @@ export function TestimonialsSection() {
   }, [isPaused]);
 
   return (
-    <section className="relative bg-[#fafbfc] py-24 md:py-28 overflow-hidden">
-      {/* Soft mesh tint */}
-      <div aria-hidden className="bg-mesh absolute inset-0 opacity-25 pointer-events-none" />
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="relative bg-[#f6f9fc] py-24 md:py-28 overflow-hidden">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
         {/* Heading */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -116,13 +113,19 @@ export function TestimonialsSection() {
           className="max-w-2xl mb-14"
         >
           <span
-            className="block uppercase text-[#0c66e4]"
-            style={{ fontSize: 11, letterSpacing: '0.32em', fontWeight: 700 }}
+            className="inline-flex items-center gap-2 uppercase text-[#0c66e4]"
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: 11.5,
+              fontWeight: 600,
+              letterSpacing: '0.18em',
+            }}
           >
+            <span aria-hidden className="inline-block w-4 h-px" style={{ background: '#0c66e4' }} />
             What our merchants say
           </span>
           <h2
-            className="mt-4 text-[#172b4d]"
+            className="mt-5 text-[#0a2540]"
             style={{
               fontFamily: 'var(--font-display)',
               fontSize: 'clamp(2rem, 4.2vw, 3.25rem)',
@@ -131,10 +134,9 @@ export function TestimonialsSection() {
               lineHeight: 1.1,
             }}
           >
-            Stories from{' '}
-            <span className="text-gradient-primary">the field.</span>
+            Stories from the field.
           </h2>
-          <p className="mt-4 text-[#44546f]" style={{ fontSize: 17, lineHeight: 1.55 }}>
+          <p className="mt-4 text-[#425466]" style={{ fontSize: 17, lineHeight: 1.55 }}>
             Real operators. Real funding. Real outcomes.
           </p>
         </motion.div>
@@ -149,11 +151,11 @@ export function TestimonialsSection() {
         {/* Wider gradient fade edges */}
         <div
           className="pointer-events-none absolute inset-y-0 left-0 w-32 md:w-48 z-10"
-          style={{ background: 'linear-gradient(to right, #fafbfc 10%, rgba(250,251,252,0))' }}
+          style={{ background: 'linear-gradient(to right, #f6f9fc 10%, rgba(250,251,252,0))' }}
         />
         <div
           className="pointer-events-none absolute inset-y-0 right-0 w-32 md:w-48 z-10"
-          style={{ background: 'linear-gradient(to left, #fafbfc 10%, rgba(250,251,252,0))' }}
+          style={{ background: 'linear-gradient(to left, #f6f9fc 10%, rgba(250,251,252,0))' }}
         />
 
         <div ref={trackRef} className="flex gap-6 px-6" style={{ willChange: 'transform' }}>
@@ -185,7 +187,7 @@ export function TestimonialsSection() {
 
               {/* Quote */}
               <p
-                className="text-[#172b4d] leading-relaxed flex-1"
+                className="text-[#0a2540] leading-relaxed flex-1"
                 style={{ fontSize: 16, fontWeight: 500, lineHeight: 1.55 }}
               >
                 "{tst.quote}"
@@ -195,30 +197,35 @@ export function TestimonialsSection() {
               <div className="mt-6 pt-5 border-t border-[#dcdfe4] flex items-center justify-between">
                 <div>
                   <div
-                    className="text-[#172b4d]"
+                    className="text-[#0a2540]"
                     style={{ fontSize: 14, fontWeight: 600, letterSpacing: '-0.005em' }}
                   >
                     {tst.name}
                   </div>
-                  <div className="text-[#44546f] text-xs mt-0.5">
+                  <div className="text-[#425466] text-xs mt-0.5">
                     {tst.business} · {tst.industry}
                   </div>
                 </div>
                 <div className="flex flex-col items-end">
                   <span
-                    className="text-gradient-primary tabular-nums"
+                    className="text-[#0c66e4] tabular-nums"
                     style={{
                       fontFamily: 'var(--font-display)',
-                      fontSize: 18,
-                      fontWeight: 700,
-                      letterSpacing: '-0.02em',
+                      fontSize: 20,
+                      fontWeight: 600,
+                      letterSpacing: '-0.025em',
                     }}
                   >
                     {tst.funded}
                   </span>
                   <span
-                    className="uppercase text-[#758195]"
-                    style={{ fontSize: 9, letterSpacing: '0.22em', fontWeight: 700 }}
+                    className="uppercase text-[#697386]"
+                    style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: 9.5,
+                      letterSpacing: '0.18em',
+                      fontWeight: 600,
+                    }}
                   >
                     Funded
                   </span>

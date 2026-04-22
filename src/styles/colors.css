@@ -12,17 +12,17 @@
   --color-accent-purple: #6E5DC6;
   --color-accent-purple-subtle: #F3F0FF;
 
-  /* Neutrals (warm navy-grays, Atlassian-style) */
+  /* Neutrals — warm Stripe-style navy-grays */
   --color-gray-900: #091E42;
-  --color-gray-800: #172B4D;
-  --color-gray-700: #44546F;
-  --color-gray-600: #626F86;
-  --color-gray-500: #758195;
+  --color-gray-800: #0A2540;
+  --color-gray-700: #425466;
+  --color-gray-600: #525F7F;
+  --color-gray-500: #697386;
   --color-gray-400: #8590A2;
   --color-gray-300: #C1C7D0;
   --color-gray-200: #DCDFE4;
   --color-gray-100: #F1F2F4;
-  --color-gray-50: #FAFBFC;
+  --color-gray-50: #F6F9FC;
   --color-white: #FFFFFF;
 
   /* Status Colors */
@@ -36,11 +36,11 @@
   --color-info-bg: #E9F2FF;
 
   /* Surface Colors */
-  --surface-background: #FAFBFC;
+  --surface-background: #F6F9FC;
   --surface-card: #FFFFFF;
   --surface-card-secondary: #F1F2F4;
   --surface-elevated: #FFFFFF;
-  --surface-sunken: #F7F8F9;
+  --surface-sunken: #F1F2F4;
 
   /* Border Colors */
   --border-default: #DCDFE4;
@@ -48,10 +48,10 @@
   --border-strong: #C1C7D0;
   --border-focus: #0C66E4;
 
-  /* Text Colors */
-  --text-primary: #172B4D;
-  --text-secondary: #44546F;
-  --text-tertiary: #758195;
+  /* Text Colors — warm Stripe-style */
+  --text-primary: #0A2540;
+  --text-secondary: #425466;
+  --text-tertiary: #697386;
   --text-inverse: #FFFFFF;
   --text-link: #0C66E4;
   --text-link-hover: #0055CC;

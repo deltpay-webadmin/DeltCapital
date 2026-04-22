@@ -1,4 +1,4 @@
-import { Check, X, Zap, CreditCard, BarChart3, FileText, TrendingDown, Shield, ArrowRight, Sparkles } from 'lucide-react';
+import { Check, X, Zap, CreditCard, BarChart3, FileText, TrendingDown, Shield } from 'lucide-react';
 import { motion, useInView } from 'motion/react';
 import { useRef } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -22,11 +22,8 @@ export function ComparisonTable() {
   const inView = useInView(sectionRef, { once: true, amount: 0.1 });
 
   return (
-    <section ref={sectionRef} className="relative py-24 md:py-32 bg-[#fafbfc] overflow-hidden">
-      {/* Soft mesh tint */}
-      <div aria-hidden className="bg-mesh absolute inset-0 opacity-20 pointer-events-none" />
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section ref={sectionRef} className="relative py-24 md:py-32 bg-[#f6f9fc]">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
         {/* ─── Heading ─── */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -35,25 +32,30 @@ export function ComparisonTable() {
           className="max-w-3xl mb-14 md:mb-20"
         >
           <span
-            className="block uppercase text-[#0c66e4]"
-            style={{ fontSize: 11, letterSpacing: '0.32em', fontWeight: 700 }}
+            className="inline-flex items-center gap-2 uppercase text-[#0c66e4]"
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: 11.5,
+              fontWeight: 600,
+              letterSpacing: '0.18em',
+            }}
           >
+            <span aria-hidden className="inline-block w-4 h-px" style={{ background: '#0c66e4' }} />
             Banks vs Delt
           </span>
           <h2
-            className="mt-4 text-[#172b4d]"
+            className="mt-5 text-[#0a2540]"
             style={{
               fontFamily: 'var(--font-display)',
-              fontSize: 'clamp(2.25rem, 5vw, 4rem)',
-              fontWeight: 700,
+              fontSize: 'clamp(2rem, 4.5vw, 3.5rem)',
+              fontWeight: 600,
               letterSpacing: '-0.035em',
-              lineHeight: 1.0,
+              lineHeight: 1.05,
             }}
           >
-            Why Delt beats{' '}
-            <span className="text-gradient-primary">the bank.</span>
+            Why Delt beats the bank.
           </h2>
-          <p className="mt-5 text-[#44546f] max-w-xl" style={{ fontSize: 17, lineHeight: 1.6 }}>
+          <p className="mt-5 text-[#425466] max-w-xl" style={{ fontSize: 17, lineHeight: 1.6 }}>
             {t('comparison.subtitle')}
           </p>
         </motion.div>
@@ -71,25 +73,31 @@ export function ComparisonTable() {
               {/* Column header */}
               <div className="px-7 md:px-9 pt-9 pb-7 border-b border-[#dcdfe4]">
                 <span
-                  className="uppercase text-[#758195]"
-                  style={{ fontSize: 10, letterSpacing: '0.32em', fontWeight: 700 }}
+                  className="inline-flex items-center gap-2 uppercase text-[#697386]"
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 11,
+                    fontWeight: 600,
+                    letterSpacing: '0.18em',
+                  }}
                 >
+                  <span aria-hidden className="inline-block w-3 h-px" style={{ background: '#697386' }} />
                   The traditional way
                 </span>
-                <div className="flex items-baseline gap-3 mt-3">
+                <div className="flex items-baseline gap-3 mt-4">
                   <h3
-                    className="text-[#758195]"
+                    className="text-[#697386]"
                     style={{
                       fontFamily: 'var(--font-display)',
                       fontSize: 'clamp(2rem, 3.5vw, 2.75rem)',
-                      fontWeight: 700,
+                      fontWeight: 600,
                       letterSpacing: '-0.025em',
                       lineHeight: 1.0,
                     }}
                   >
                     Banks
                   </h3>
-                  <span className="text-[#9aa5b1] text-sm">slow · gatekept · expensive</span>
+                  <span className="text-[#697386]/60 text-sm">slow · gatekept · expensive</span>
                 </div>
               </div>
 
@@ -108,12 +116,18 @@ export function ComparisonTable() {
                     </span>
                     <div className="flex-1 min-w-0">
                       <div
-                        className="text-[#44546f]"
-                        style={{ fontSize: 11, letterSpacing: '0.18em', fontWeight: 700, textTransform: 'uppercase' }}
+                        className="text-[#697386]"
+                        style={{
+                          fontFamily: 'var(--font-mono)',
+                          fontSize: 10.5,
+                          letterSpacing: '0.18em',
+                          fontWeight: 600,
+                          textTransform: 'uppercase',
+                        }}
                       >
                         {t(row.featureKey)}
                       </div>
-                      <div className="mt-1 text-[#758195]" style={{ fontSize: 15, lineHeight: 1.5 }}>
+                      <div className="mt-1.5 text-[#697386]" style={{ fontSize: 15, lineHeight: 1.5 }}>
                         {t(row.traditionalKey)}
                       </div>
                     </div>
@@ -123,35 +137,29 @@ export function ComparisonTable() {
             </motion.div>
           </div>
 
-          {/* ═══════════ DELT column — vibrant, dark, glowing ═══════════ */}
-          <div className="lg:col-span-6 lg:pl-3 relative">
-            {/* Behind-card mesh halo */}
-            <div
-              aria-hidden
-              className="absolute -inset-6 lg:-inset-8 pointer-events-none"
-            >
-              <div className="bg-mesh absolute inset-0 opacity-60" />
-            </div>
-
+          {/* ═══════════ DELT column — flat dark navy, hairline, no halo ═══════════ */}
+          <div className="lg:col-span-6 lg:pl-3">
             <motion.div
               initial={{ opacity: 0, x: 28 }}
               animate={inView ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="relative h-full rounded-3xl overflow-hidden bg-[#172b4d] text-white border border-[#0c66e4]/45"
-              style={{
-                boxShadow: '0 18px 48px -16px rgba(12,102,228,0.35)',
-              }}
+              className="relative h-full rounded-3xl overflow-hidden bg-[#0a2540] text-white border border-white/[0.08]"
             >
-
               {/* Column header */}
-              <div className="relative px-7 md:px-9 pt-9 pb-7 border-b border-white/10">
+              <div className="relative px-7 md:px-9 pt-9 pb-7 border-b border-white/[0.08]">
                 <span
-                  className="uppercase text-[#85B8FF]"
-                  style={{ fontSize: 10, letterSpacing: '0.32em', fontWeight: 700 }}
+                  className="inline-flex items-center gap-2 uppercase text-[#85B8FF]"
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 11,
+                    fontWeight: 600,
+                    letterSpacing: '0.18em',
+                  }}
                 >
+                  <span aria-hidden className="inline-block w-3 h-px" style={{ background: '#85B8FF' }} />
                   The Delt way
                 </span>
-                <div className="flex items-center gap-4 mt-3">
+                <div className="flex items-center gap-4 mt-4">
                   <img src={deltLogo} alt="Delt Capital" className="h-9 w-auto object-contain" />
                   <span className="text-white/55 text-sm hidden sm:inline">
                     fast · transparent · revenue-first
@@ -170,25 +178,28 @@ export function ComparisonTable() {
                       initial={{ opacity: 0, x: 16 }}
                       animate={inView ? { opacity: 1, x: 0 } : {}}
                       transition={{ duration: 0.5, delay: 0.3 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
-                      className="flex items-start gap-4 group"
+                      className="flex items-start gap-4"
                     >
                       <span
                         className="mt-0.5 w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 text-white"
-                        style={{
-                          background: '#0c66e4',
-                          boxShadow: '0 4px 14px -4px rgba(12,102,228,0.45)',
-                        }}
+                        style={{ background: '#0c66e4' }}
                       >
                         <Icon className="w-4 h-4" />
                       </span>
                       <div className="flex-1 min-w-0">
                         <div
                           className="text-[#85B8FF]"
-                          style={{ fontSize: 11, letterSpacing: '0.18em', fontWeight: 700, textTransform: 'uppercase' }}
+                          style={{
+                            fontFamily: 'var(--font-mono)',
+                            fontSize: 10.5,
+                            letterSpacing: '0.18em',
+                            fontWeight: 600,
+                            textTransform: 'uppercase',
+                          }}
                         >
                           {t(row.featureKey)}
                         </div>
-                        <div className="mt-1 text-white flex items-center flex-wrap gap-x-2" style={{ fontSize: 15.5, fontWeight: 600, lineHeight: 1.5 }}>
+                        <div className="mt-1.5 text-white flex items-center flex-wrap gap-x-2" style={{ fontSize: 15.5, fontWeight: 500, lineHeight: 1.5 }}>
                           <Check className="w-4 h-4 text-[#1F845A] flex-shrink-0" strokeWidth={2.5} />
                           {isPlaid ? (
                             <span className="inline-flex items-center gap-0">
@@ -211,32 +222,8 @@ export function ComparisonTable() {
             </motion.div>
           </div>
 
-          {/* "VS" badge — only visible on lg+, sits over the column gap */}
-          <div className="hidden lg:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-10">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.6, rotate: -8 }}
-              animate={inView ? { opacity: 1, scale: 1, rotate: 0 } : {}}
-              transition={{ duration: 0.7, delay: 0.45, type: 'spring', stiffness: 220, damping: 18 }}
-              className="w-16 h-16 rounded-full bg-white border border-[#dcdfe4] flex items-center justify-center"
-              style={{
-                boxShadow:
-                  '0 12px 32px -8px rgba(9,30,66,0.25), 0 0 0 6px rgba(255,255,255,0.6)',
-              }}
-            >
-              <span
-                className="text-gradient-primary"
-                style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: 18,
-                  fontWeight: 800,
-                  letterSpacing: '-0.02em',
-                  lineHeight: 1,
-                }}
-              >
-                VS
-              </span>
-            </motion.div>
-          </div>
+          {/* "VS" badge dropped — the contrast between left grey and right navy
+              carries the story on its own. */}
         </div>
 
         {/* ─── Result strip ─── */}
@@ -253,21 +240,26 @@ export function ComparisonTable() {
           ].map((s, i) => (
             <div
               key={i}
-              className="card-hover-lift relative rounded-2xl border border-[#dcdfe4] bg-white px-6 py-5 flex items-center justify-between"
+              className="rounded-2xl border border-[#dcdfe4] bg-white px-6 py-5 flex items-center justify-between"
             >
               <div>
                 <div
-                  className="uppercase text-[#758195]"
-                  style={{ fontSize: 10, letterSpacing: '0.28em', fontWeight: 700 }}
+                  className="uppercase text-[#697386]"
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 10.5,
+                    letterSpacing: '0.18em',
+                    fontWeight: 600,
+                  }}
                 >
                   {s.label}
                 </div>
                 <div
-                  className="text-gradient-primary tabular-nums mt-1.5"
+                  className="text-[#0a2540] tabular-nums mt-2"
                   style={{
                     fontFamily: 'var(--font-display)',
-                    fontSize: 28,
-                    fontWeight: 700,
+                    fontSize: 30,
+                    fontWeight: 600,
                     letterSpacing: '-0.025em',
                     lineHeight: 1,
                   }}
@@ -275,7 +267,7 @@ export function ComparisonTable() {
                   {s.value}
                 </div>
               </div>
-              <Sparkles className="w-4 h-4 text-[#0c66e4]/45" />
+              <span aria-hidden className="inline-block w-2 h-2 rounded-full bg-[#0c66e4]" />
             </div>
           ))}
         </motion.div>

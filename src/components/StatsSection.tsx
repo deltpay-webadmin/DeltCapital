@@ -85,12 +85,9 @@ export function StatsSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden bg-[#fafbfc] py-24 md:py-28"
+      className="relative bg-[#f6f9fc] py-24 md:py-28"
     >
-      {/* Soft mesh tint */}
-      <div aria-hidden className="bg-mesh absolute inset-0 opacity-25 pointer-events-none" />
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
         {/* ─── Top: hero headline + supporting copy ─── */}
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-16 lg:mb-20">
           <div className="lg:col-span-7">
@@ -98,33 +95,44 @@ export function StatsSection() {
               initial={{ opacity: 0, y: 8 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6 }}
-              className="block uppercase text-[#0c66e4]"
-              style={{ fontSize: 11, letterSpacing: '0.32em', fontWeight: 700 }}
+              className="inline-flex items-center gap-2 uppercase text-[#0c66e4]"
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: 11.5,
+                fontWeight: 600,
+                letterSpacing: '0.18em',
+              }}
             >
+              <span aria-hidden className="inline-block w-4 h-px" style={{ background: '#0c66e4' }} />
               By the numbers
             </motion.span>
             <motion.h2
               initial={{ opacity: 0, y: 14 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.85, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="text-gradient-primary tabular-nums mt-5"
+              className="text-[#0a2540] tabular-nums mt-6"
               style={{
                 fontFamily: 'var(--font-display)',
                 fontSize: 'clamp(3.25rem, 9vw, 7rem)',
-                fontWeight: 800,
-                letterSpacing: '-0.04em',
+                fontWeight: 700,
+                letterSpacing: '-0.045em',
                 lineHeight: 0.95,
               }}
             >
               ${Math.round(headline)}M+
-              <sup className="text-[0.25em] ml-2 align-top opacity-60">1</sup>
+              <sup
+                className="ml-2 align-top text-[#697386]"
+                style={{ fontFamily: 'var(--font-mono)', fontSize: '0.22em', fontWeight: 500 }}
+              >
+                1
+              </sup>
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 10 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.7, delay: 0.25 }}
-              className="mt-5 text-[#172b4d] max-w-xl"
-              style={{ fontSize: 19, fontWeight: 500, lineHeight: 1.4 }}
+              className="mt-6 text-[#0a2540] max-w-xl"
+              style={{ fontSize: 19, fontWeight: 400, lineHeight: 1.5 }}
             >
               {t('stats.capitalDelivered')}
             </motion.p>
@@ -136,10 +144,10 @@ export function StatsSection() {
             transition={{ duration: 0.7, delay: 0.35 }}
             className="lg:col-span-5"
           >
-            <p className="text-[#44546f]" style={{ fontSize: 16, lineHeight: 1.7 }}>
+            <p className="text-[#425466]" style={{ fontSize: 16, lineHeight: 1.7 }}>
               {t('stats.joinText')}
             </p>
-            <p className="text-[#758195] mt-4" style={{ fontSize: 14, lineHeight: 1.7 }}>
+            <p className="text-[#697386] mt-4" style={{ fontSize: 14, lineHeight: 1.7 }}>
               {t('stats.industryText')}
             </p>
           </motion.div>
@@ -162,62 +170,35 @@ export function StatsSection() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.6, delay: 0.4 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
-                className={`card-hover-lift relative rounded-2xl border bg-white p-6 md:p-7 ${
+                className={`relative rounded-2xl bg-white p-6 md:p-7 ${
                   card.isHero
-                    ? 'border-[#0c66e4]/25'
-                    : 'border-[#dcdfe4]'
+                    ? 'border-2 border-[#0c66e4]'
+                    : 'border border-[#dcdfe4]'
                 }`}
-                style={
-                  card.isHero
-                    ? {
-                        boxShadow:
-                          '0 8px 32px rgba(12,102,228,0.10), 0 2px 6px rgba(110,93,198,0.06)',
-                      }
-                    : undefined
-                }
               >
-                {/* Gradient ring on the hero tile */}
-                {card.isHero && (
-                  <div
-                    aria-hidden
-                    className="pointer-events-none absolute inset-0 rounded-2xl"
-                    style={{
-                      padding: 1,
-                      background:
-                        'rgba(12,102,228,0.40)',
-                      WebkitMask:
-                        'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
-                      WebkitMaskComposite: 'xor',
-                      maskComposite: 'exclude',
-                    }}
-                  />
-                )}
-
                 <div
-                  className={`tabular-nums ${card.isHero ? 'text-gradient-primary' : 'text-[#172b4d]'}`}
+                  className={`tabular-nums ${card.isHero ? 'text-[#0c66e4]' : 'text-[#0a2540]'}`}
                   style={{
                     fontFamily: 'var(--font-display)',
                     fontSize: 'clamp(2rem, 4.5vw, 3rem)',
-                    fontWeight: 700,
-                    letterSpacing: '-0.03em',
+                    fontWeight: 600,
+                    letterSpacing: '-0.035em',
                     lineHeight: 1.0,
                   }}
                 >
                   {display}
                 </div>
 
-                {/* Accent underline */}
                 <div
-                  className="h-[2px] rounded-full mt-3 mb-3"
+                  className="text-[#697386] mt-4"
                   style={{
-                    width: card.isHero ? 56 : 36,
-                    background: card.isHero
-                      ? '#0c66e4'
-                      : '#0c66e4',
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 11,
+                    letterSpacing: '0.14em',
+                    fontWeight: 600,
+                    textTransform: 'uppercase',
                   }}
-                />
-
-                <div className="text-[#44546f] text-sm leading-relaxed">
+                >
                   {card.label}
                 </div>
 
@@ -238,7 +219,7 @@ export function StatsSection() {
           transition={{ duration: 0.6, delay: 0.9 }}
           className="mt-12 pt-6 border-t border-[#dcdfe4]"
         >
-          <p className="text-[#758195] italic text-xs leading-relaxed mt-4">
+          <p className="text-[#697386] italic text-xs leading-relaxed mt-4">
             <sup className="not-italic">1</sup> {t('stats.disclaimer')}
           </p>
         </motion.div>
