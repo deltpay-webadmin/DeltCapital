@@ -284,3 +284,96 @@ html {
   scrollbar-width: thin;
   scrollbar-color: rgba(12, 102, 228, 0.22) transparent;
 }
+
+/* ═══════════════════════════════════════════════════
+   Modern Vercel/Bolder utilities
+   ═══════════════════════════════════════════════════ */
+
+@keyframes scrollReveal {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes meshDrift {
+  0%   { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50%  { transform: translate3d(2%, -2%, 0) rotate(8deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+}
+
+@keyframes processingDot {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40%           { transform: scale(1);   opacity: 1; }
+}
+
+@keyframes underlineGrow {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+/* Vercel-style ambient mesh-gradient backdrop. */
+.bg-mesh {
+  background-image:
+    radial-gradient(at 18% 22%, rgba(12, 102, 228, 0.55) 0px, transparent 55%),
+    radial-gradient(at 82% 14%, rgba(110, 93, 198, 0.45) 0px, transparent 55%),
+    radial-gradient(at 28% 88%, rgba(31, 132, 90, 0.30)  0px, transparent 55%),
+    radial-gradient(at 78% 78%, rgba(12, 102, 228, 0.40) 0px, transparent 55%);
+  filter: blur(48px) saturate(120%);
+  animation: meshDrift 22s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Primary -> accent gradient text. */
+.text-gradient-primary {
+  background-image: linear-gradient(110deg, #0c66e4 0%, #1d7afc 45%, #6e5dc6 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* In-view reveal — pair with `data-reveal` on parents that stagger via inline delay. */
+.scroll-reveal {
+  animation: scrollReveal 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+/* Emil-style hover lift used on cards / tiles. */
+.card-hover-lift {
+  transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 240ms cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 240ms ease;
+  will-change: transform;
+}
+.card-hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px -8px rgba(9, 30, 66, 0.18),
+              0 2px 4px rgba(9, 30, 66, 0.06);
+}
+
+/* Animated processing dots used inside the hero payment card. */
+.processing-dot {
+  animation: processingDot 1.4s ease-in-out infinite both;
+}
+
+/* SVG noise overlay (reusable on gradient bands) — pure CSS, no asset. */
+.bg-grain {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  background-size: 220px 220px;
+  mix-blend-mode: overlay;
+  opacity: 0.08;
+}
+
+/* Gradient pill underline used by Navbar active route. */
+.gradient-underline {
+  background-image: linear-gradient(90deg, #0c66e4 0%, #6e5dc6 100%);
+  transform-origin: left center;
+  animation: underlineGrow 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-mesh        { animation: none; }
+  .scroll-reveal  { animation: none; opacity: 1; transform: none; }
+  .card-hover-lift { transition: none; }
+  .card-hover-lift:hover { transform: none; }
+  .processing-dot { animation: none; opacity: 1; transform: none; }
+  .gradient-underline { animation: none; transform: none; }
+}

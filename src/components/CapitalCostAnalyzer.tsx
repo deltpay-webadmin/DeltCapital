@@ -487,11 +487,25 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                 ? '1.5px solid rgba(12,102,228,0.18)'
                 : '1px solid #DCDFE4',
               boxShadow: hasRevenue && isDeltBoosted
-                ? '0 4px 24px rgba(12,102,228,0.10)'
+                ? '0 8px 32px rgba(12,102,228,0.18), 0 2px 6px rgba(110,93,198,0.10)'
                 : '0 1px 4px rgba(0,0,0,0.04)',
               transition: 'background 0.4s, border 0.4s, box-shadow 0.4s',
             }}
           >
+            {/* Gradient ring accent — only when boosted */}
+            {hasRevenue && isDeltBoosted && (
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 rounded-xl md:rounded-2xl"
+                style={{
+                  padding: 1,
+                  background: 'linear-gradient(135deg, rgba(12,102,228,0.55) 0%, rgba(110,93,198,0.4) 100%)',
+                  WebkitMask: 'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
+                  WebkitMaskComposite: 'xor',
+                  maskComposite: 'exclude',
+                }}
+              />
+            )}
             <div className="p-5 sm:p-6 md:p-7 flex-1 flex flex-col">
               {/* Estimate display */}
               <div className="flex-1 flex flex-col justify-center">
@@ -517,11 +531,12 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                     className="py-1"
                   >
                     <span
-                      className="tabular-nums tracking-tight block"
+                      className="tabular-nums block"
                       style={{
-                        fontSize: 'clamp(2rem, 5vw, 2.75rem)',
+                        fontSize: 'clamp(2.25rem, 5.6vw, 3.25rem)',
                         fontWeight: 800,
-                        lineHeight: 1.1,
+                        lineHeight: 1.05,
+                        letterSpacing: '-0.025em',
                         color: !hasRevenue
                           ? '#d1d5db'
                           : customFundingAmount

@@ -31,9 +31,17 @@ export function Navbar({ onApplyClick, onCalculatorClick, onAboutClick, onHowItW
   // Over-hero = transparent; scrolled or overlay-open = opaque dark.
   const opaque = scrolled || overlayActive;
 
-  const linkBase = 'uppercase tracking-[0.18em] text-[11px] font-semibold transition-colors';
+  const linkBase = 'relative uppercase tracking-[0.18em] text-[11px] font-semibold transition-colors py-1';
   const linkIdle = 'text-white/70 hover:text-white';
   const linkActive = 'text-white';
+
+  const renderUnderline = (active: boolean) =>
+    active ? (
+      <span
+        aria-hidden
+        className="gradient-underline absolute left-1/2 -translate-x-1/2 bottom-[-6px] h-[2px] w-7 rounded-full"
+      />
+    ) : null;
 
   return (
     <nav
@@ -67,18 +75,21 @@ export function Navbar({ onApplyClick, onCalculatorClick, onAboutClick, onHowItW
               className={`${linkBase} ${overlayTitle === 'How It Works' ? linkActive : linkIdle}`}
             >
               How It Works
+              {renderUnderline(overlayTitle === 'How It Works')}
             </button>
             <button
               onClick={onCalculatorClick}
               className={`${linkBase} ${overlayTitle === 'Calculator' ? linkActive : linkIdle}`}
             >
               Calculator
+              {renderUnderline(overlayTitle === 'Calculator')}
             </button>
             <button
               onClick={onAboutClick}
               className={`${linkBase} ${overlayTitle === 'About' ? linkActive : linkIdle}`}
             >
               About
+              {renderUnderline(overlayTitle === 'About')}
             </button>
           </div>
 
@@ -106,7 +117,7 @@ export function Navbar({ onApplyClick, onCalculatorClick, onAboutClick, onHowItW
 
             <button
               onClick={onApplyClick}
-              className="text-white cursor-pointer whitespace-nowrap transition-all duration-200 hover:bg-white hover:text-[#0D1B2D] uppercase"
+              className="card-hover-lift text-white cursor-pointer whitespace-nowrap transition-all duration-200 hover:bg-white hover:text-[#0D1B2D] uppercase"
               style={{
                 background: 'transparent',
                 border: '1px solid rgba(255,255,255,0.8)',

@@ -82,6 +82,14 @@ export function HeroSection({ onApplyClick, onApplyFromQuiz, onCalculatorClick }
           background: 'linear-gradient(180deg, rgba(13,27,45,0.45) 0%, rgba(13,27,45,0.20) 35%, rgba(13,27,45,0.55) 75%, rgba(13,27,45,0.92) 100%)'
         }} />
 
+        {/* Vercel-style chromatic mesh — sits over the cinematic overlay,
+            screens onto the dark areas to add a tinted glow. */}
+        <div
+          aria-hidden
+          className="bg-mesh absolute inset-0 pointer-events-none"
+          style={{ mixBlendMode: 'screen', opacity: 0.55 }}
+        />
+
         {/* Hero content — bottom-positioned, SpaceX-style */}
         <div className="relative z-10 h-full flex flex-col px-6 sm:px-8 lg:px-12">
           {/* Centered block, pushed toward lower-third */}
@@ -166,6 +174,77 @@ export function HeroSection({ onApplyClick, onApplyFromQuiz, onCalculatorClick }
             </motion.div>
           </div>
         </div>
+
+        {/* Floating payment-processing card — modern Vercel/Linear flourish.
+            Hidden on small screens to keep the headline breathing. */}
+        <motion.div
+          initial={{ opacity: 0, y: 30, scale: 0.96 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 1.0, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
+          aria-hidden
+          className="hidden lg:block absolute z-10 pointer-events-none"
+          style={{ right: '4vw', top: '36vh', width: 320 }}
+        >
+          <div
+            className="rounded-2xl p-5 backdrop-blur-xl border border-white/15 shadow-2xl"
+            style={{
+              background: 'linear-gradient(160deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.04) 100%)',
+              boxShadow: '0 20px 50px -12px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.10)',
+            }}
+          >
+            {/* Header row */}
+            <div className="flex items-center justify-between mb-4">
+              <span
+                className="uppercase text-white/85"
+                style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700 }}
+              >
+                Processing
+              </span>
+              <div className="flex items-center gap-1">
+                <span className="processing-dot w-1.5 h-1.5 rounded-full bg-[#1F845A]" style={{ animationDelay: '-0.32s' }} />
+                <span className="processing-dot w-1.5 h-1.5 rounded-full bg-[#1F845A]" style={{ animationDelay: '-0.16s' }} />
+                <span className="processing-dot w-1.5 h-1.5 rounded-full bg-[#1F845A]" />
+              </div>
+            </div>
+
+            {/* Faux card chip */}
+            <div className="flex items-center gap-3 mb-5">
+              <div
+                className="w-10 h-7 rounded-md"
+                style={{
+                  background: 'linear-gradient(135deg, #d4b15a 0%, #f0d68a 50%, #b8954e 100%)',
+                  boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.2)',
+                }}
+              />
+              <div className="flex-1">
+                <div className="text-white/60" style={{ fontSize: 10, letterSpacing: '0.18em' }}>
+                  •••• •••• •••• 4242
+                </div>
+              </div>
+            </div>
+
+            {/* Amount */}
+            <div className="mb-1">
+              <div className="text-white/55 uppercase" style={{ fontSize: 9, letterSpacing: '0.22em', fontWeight: 600 }}>
+                Funded today
+              </div>
+              <div
+                className="text-white tabular-nums mt-1"
+                style={{ fontSize: 28, fontWeight: 700, letterSpacing: '-0.02em' }}
+              >
+                $48,500.00
+              </div>
+            </div>
+
+            {/* Status row */}
+            <div className="flex items-center justify-between mt-4 pt-3 border-t border-white/10">
+              <span className="text-[#85B8FF]" style={{ fontSize: 11, fontWeight: 600 }}>
+                Approved · 2 min ago
+              </span>
+              <ArrowRight className="w-3.5 h-3.5 text-white/60" />
+            </div>
+          </div>
+        </motion.div>
 
         {/* Footer strip — SpaceX-style three-column bottom band */}
         <motion.div

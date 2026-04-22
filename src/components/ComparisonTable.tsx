@@ -120,7 +120,7 @@ export function ComparisonTable() {
                   <th className="px-8 py-6 text-center text-lg font-semibold text-gray-700 dark:text-gray-300">
                     {t('comparison.traditional')}
                   </th>
-                  <th className="px-8 py-6 text-center text-lg font-semibold bg-[#0C66E4]/5 dark:bg-[#0C66E4]/10">
+                  <th className="px-8 py-6 text-center text-lg font-semibold bg-gradient-to-b from-[#0C66E4]/[0.10] to-[#0C66E4]/[0.04] dark:bg-[#0C66E4]/10 border-l border-[#0C66E4]/15">
                     <img src={deltLogo} alt="Delt Capital" className="h-7 w-auto mx-auto object-contain" />
                   </th>
                 </motion.tr>
@@ -128,11 +128,14 @@ export function ComparisonTable() {
               <tbody>
                 {comparisonData.map((row, index) => {
                   const Icon = icons[index];
-                  
+                  const isEven = index % 2 === 0;
+
                   return (
                     <motion.tr
                       key={index}
-                      className="border-t border-[#0C66E40F] hover:bg-[#FAFBFC]/50 transition-colors"
+                      className={`border-t border-[#0C66E40F] hover:bg-[#FAFBFC] transition-colors ${
+                        isEven ? 'bg-[#FAFBFC]/40' : ''
+                      }`}
                       initial={{ opacity: 0, x: -40 }}
                       animate={isTableInView ? { opacity: 1, x: 0 } : {}}
                       transition={{
@@ -177,7 +180,7 @@ export function ComparisonTable() {
                           <span>{t(row.traditionalKey)}</span>
                         </motion.div>
                       </td>
-                      <td className="px-8 py-6 text-center bg-[#0C66E4]/5 dark:bg-[#0C66E4]/10">
+                      <td className="px-8 py-6 text-center bg-gradient-to-b from-[#0C66E4]/[0.04] via-[#6E5DC6]/[0.08] to-[#0C66E4]/[0.04] dark:bg-[#0C66E4]/10 border-l border-[#0C66E4]/15">
                         <motion.div
                           className="flex items-center justify-center gap-2"
                           initial={{ opacity: 0, scale: 0.8 }}
