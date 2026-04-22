@@ -1,269 +1,305 @@
-import { Check, X, Zap, CreditCard, BarChart3, FileText, TrendingDown, Shield } from 'lucide-react';
+import { Check, X, Zap, CreditCard, BarChart3, FileText, TrendingDown, Shield, ArrowRight, Sparkles } from 'lucide-react';
 import { motion, useInView } from 'motion/react';
-import { useRef, useState, useEffect, useCallback } from 'react';
+import { useRef } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
-import { ScrollReveal, TextReveal } from './ScrollNarrative';
 import plaidLogo from 'figma:asset/3d56d8057bf3175de1bdd9e78d2cb0a4f9e0dc87.png';
 import deltLogo from 'figma:asset/d59993d0ec9040f5cac8ad4361f161b6a4b3a746.png';
+
+const ICONS = [Zap, CreditCard, BarChart3, FileText, TrendingDown, Shield];
+
+const ROWS = [
+  { featureKey: 'comparison.getFunded',  descriptionKey: 'comparison.getFunded.desc',  traditionalKey: 'comparison.getFunded.traditional',  deltKey: 'comparison.getFunded.delt' },
+  { featureKey: 'comparison.repayment',  descriptionKey: 'comparison.repayment.desc',  traditionalKey: 'comparison.repayment.traditional',  deltKey: 'comparison.repayment.delt' },
+  { featureKey: 'comparison.credit',     descriptionKey: 'comparison.credit.desc',     traditionalKey: 'comparison.credit.traditional',     deltKey: 'comparison.credit.delt' },
+  { featureKey: 'comparison.paperwork',  descriptionKey: 'comparison.paperwork.desc',  traditionalKey: 'comparison.paperwork.traditional',  deltKey: 'comparison.paperwork.delt' },
+  { featureKey: 'comparison.slowMonths', descriptionKey: 'comparison.slowMonths.desc', traditionalKey: 'comparison.slowMonths.traditional', deltKey: 'comparison.slowMonths.delt' },
+  { featureKey: 'comparison.collateral', descriptionKey: 'comparison.collateral.desc', traditionalKey: 'comparison.collateral.traditional', deltKey: 'comparison.collateral.delt' },
+];
 
 export function ComparisonTable() {
   const { t } = useLanguage();
   const sectionRef = useRef<HTMLDivElement>(null);
-  const tableRef = useRef<HTMLDivElement>(null);
-  const isTableInView = useInView(tableRef, { once: true, amount: 0.05 });
-
-  // Manual scroll-linked parallax (avoids Motion useScroll iframe issues)
-  const [headerYVal, setHeaderYVal] = useState(60);
-  const [headerOpacityVal, setHeaderOpacityVal] = useState(0);
-
-  const handleScroll = useCallback(() => {
-    const el = sectionRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const vh = window.innerHeight;
-    // progress 0 = element top at viewport bottom, 1 = element bottom at viewport top
-    const progress = Math.min(1, Math.max(0, (vh - rect.top) / (vh + rect.height)));
-    setHeaderYVal(progress <= 0.3 ? 60 - (60 * progress / 0.3) : 0);
-    setHeaderOpacityVal(progress <= 0.2 ? progress / 0.2 : 1);
-  }, []);
-
-  useEffect(() => {
-    handleScroll();
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    window.addEventListener('resize', handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', handleScroll);
-    };
-  }, [handleScroll]);
-
-  const comparisonData = [
-    {
-      featureKey: 'comparison.getFunded',
-      descriptionKey: 'comparison.getFunded.desc',
-      traditionalKey: 'comparison.getFunded.traditional',
-      deltKey: 'comparison.getFunded.delt',
-      isHighlight: true,
-    },
-    {
-      featureKey: 'comparison.repayment',
-      descriptionKey: 'comparison.repayment.desc',
-      traditionalKey: 'comparison.repayment.traditional',
-      deltKey: 'comparison.repayment.delt',
-      isHighlight: true,
-    },
-    {
-      featureKey: 'comparison.credit',
-      descriptionKey: 'comparison.credit.desc',
-      traditionalKey: 'comparison.credit.traditional',
-      deltKey: 'comparison.credit.delt',
-      isHighlight: true,
-    },
-    {
-      featureKey: 'comparison.paperwork',
-      descriptionKey: 'comparison.paperwork.desc',
-      traditionalKey: 'comparison.paperwork.traditional',
-      deltKey: 'comparison.paperwork.delt',
-      isHighlight: true,
-    },
-    {
-      featureKey: 'comparison.slowMonths',
-      descriptionKey: 'comparison.slowMonths.desc',
-      traditionalKey: 'comparison.slowMonths.traditional',
-      deltKey: 'comparison.slowMonths.delt',
-      isHighlight: true,
-    },
-    {
-      featureKey: 'comparison.collateral',
-      descriptionKey: 'comparison.collateral.desc',
-      traditionalKey: 'comparison.collateral.traditional',
-      deltKey: 'comparison.collateral.delt',
-      isHighlight: true,
-    },
-  ];
-
-  const icons = [Zap, CreditCard, BarChart3, FileText, TrendingDown, Shield];
+  const inView = useInView(sectionRef, { once: true, amount: 0.1 });
 
   return (
-    <section ref={sectionRef} className="relative py-20 bg-[#FAFBFC] overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header with scroll-linked parallax */}
+    <section ref={sectionRef} className="relative py-24 md:py-32 bg-[#fafbfc] overflow-hidden">
+      {/* Soft mesh tint */}
+      <div aria-hidden className="bg-mesh absolute inset-0 opacity-20 pointer-events-none" />
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* ─── Heading ─── */}
         <motion.div
-          style={{ transform: `translateY(${headerYVal}px)`, opacity: headerOpacityVal }}
-          className="text-center mb-12"
+          initial={{ opacity: 0, y: 16 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="max-w-3xl mb-14 md:mb-20"
         >
-          <h2
-            className="mb-3"
-            style={{ fontSize: '2rem', fontWeight: 700, color: '#172B4D' }}
+          <span
+            className="block uppercase text-[#0c66e4]"
+            style={{ fontSize: 11, letterSpacing: '0.32em', fontWeight: 700 }}
           >
-            Why Delt beats the bank.
+            Banks vs Delt
+          </span>
+          <h2
+            className="mt-4 text-[#172b4d]"
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(2.25rem, 5vw, 4rem)',
+              fontWeight: 700,
+              letterSpacing: '-0.035em',
+              lineHeight: 1.0,
+            }}
+          >
+            Why Delt beats{' '}
+            <span className="text-gradient-primary">the bank.</span>
           </h2>
-          <p style={{ fontSize: '16px', color: 'rgba(0,0,0,0.5)' }}>
+          <p className="mt-5 text-[#44546f] max-w-xl" style={{ fontSize: 17, lineHeight: 1.6 }}>
             {t('comparison.subtitle')}
           </p>
         </motion.div>
 
-        <div ref={tableRef} className="max-w-5xl mx-auto">
-          {/* Desktop Table — rows build progressively */}
-          <div className="hidden md:block bg-[#FFFFFF] rounded-2xl shadow-2xl overflow-hidden border border-[#0C66E40F]">
-            <table className="w-full">
-              <thead>
-                <motion.tr
-                  className="bg-gradient-to-r from-[#FAFBFC] to-[#F1F2F4]"
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={isTableInView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.5 }}
+        {/* ─── Versus battle layout ─── */}
+        <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-3 lg:gap-0">
+          {/* ═══════════ BANKS column — dim, monochrome ═══════════ */}
+          <div className="lg:col-span-6 lg:pr-3">
+            <motion.div
+              initial={{ opacity: 0, x: -28 }}
+              animate={inView ? { opacity: 1, x: 0 } : {}}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="relative h-full rounded-3xl overflow-hidden border border-[#dcdfe4] bg-[#f1f2f4]"
+            >
+              {/* Column header */}
+              <div className="px-7 md:px-9 pt-9 pb-7 border-b border-[#dcdfe4]">
+                <span
+                  className="uppercase text-[#758195]"
+                  style={{ fontSize: 10, letterSpacing: '0.32em', fontWeight: 700 }}
                 >
-                  <th className="px-8 py-6 text-left text-lg font-semibold text-[#172B4D] dark:text-white">
-                    {t('comparison.feature')}
-                  </th>
-                  <th className="px-8 py-6 text-center text-lg font-semibold text-gray-700 dark:text-gray-300">
-                    {t('comparison.traditional')}
-                  </th>
-                  <th className="px-8 py-6 text-center text-lg font-semibold bg-gradient-to-b from-[#0C66E4]/[0.10] to-[#0C66E4]/[0.04] dark:bg-[#0C66E4]/10 border-l border-[#0C66E4]/15">
-                    <img src={deltLogo} alt="Delt Capital" className="h-7 w-auto mx-auto object-contain" />
-                  </th>
-                </motion.tr>
-              </thead>
-              <tbody>
-                {comparisonData.map((row, index) => {
-                  const Icon = icons[index];
-                  const isEven = index % 2 === 0;
+                  The traditional way
+                </span>
+                <div className="flex items-baseline gap-3 mt-3">
+                  <h3
+                    className="text-[#758195]"
+                    style={{
+                      fontFamily: 'var(--font-display)',
+                      fontSize: 'clamp(2rem, 3.5vw, 2.75rem)',
+                      fontWeight: 700,
+                      letterSpacing: '-0.025em',
+                      lineHeight: 1.0,
+                    }}
+                  >
+                    Banks
+                  </h3>
+                  <span className="text-[#9aa5b1] text-sm">slow · gatekept · expensive</span>
+                </div>
+              </div>
 
+              {/* Friction list */}
+              <ul className="p-7 md:p-9 space-y-5">
+                {ROWS.map((row, i) => (
+                  <motion.li
+                    key={i}
+                    initial={{ opacity: 0, x: -16 }}
+                    animate={inView ? { opacity: 1, x: 0 } : {}}
+                    transition={{ duration: 0.5, delay: 0.25 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
+                    className="flex items-start gap-4 group"
+                  >
+                    <span className="mt-0.5 w-9 h-9 rounded-lg bg-[#c9372c]/[0.08] text-[#c9372c] flex items-center justify-center flex-shrink-0">
+                      <X className="w-4 h-4" strokeWidth={2.5} />
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <div
+                        className="text-[#44546f]"
+                        style={{ fontSize: 11, letterSpacing: '0.18em', fontWeight: 700, textTransform: 'uppercase' }}
+                      >
+                        {t(row.featureKey)}
+                      </div>
+                      <div className="mt-1 text-[#758195]" style={{ fontSize: 15, lineHeight: 1.5 }}>
+                        {t(row.traditionalKey)}
+                      </div>
+                    </div>
+                  </motion.li>
+                ))}
+              </ul>
+            </motion.div>
+          </div>
+
+          {/* ═══════════ DELT column — vibrant, dark, glowing ═══════════ */}
+          <div className="lg:col-span-6 lg:pl-3 relative">
+            {/* Behind-card mesh halo */}
+            <div
+              aria-hidden
+              className="absolute -inset-6 lg:-inset-8 pointer-events-none"
+            >
+              <div className="bg-mesh absolute inset-0 opacity-60" />
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 28 }}
+              animate={inView ? { opacity: 1, x: 0 } : {}}
+              transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+              className="relative h-full rounded-3xl overflow-hidden bg-[#172b4d] text-white"
+              style={{
+                boxShadow:
+                  '0 24px 60px -16px rgba(12,102,228,0.45), 0 4px 12px rgba(110,93,198,0.18)',
+              }}
+            >
+              {/* Gradient ring */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 rounded-3xl"
+                style={{
+                  padding: 1.5,
+                  background:
+                    'linear-gradient(135deg, rgba(12,102,228,0.85) 0%, rgba(133,184,255,0.5) 35%, rgba(110,93,198,0.85) 100%)',
+                  WebkitMask: 'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
+                  WebkitMaskComposite: 'xor',
+                  maskComposite: 'exclude',
+                }}
+              />
+
+              {/* Internal mesh-screen tint */}
+              <div
+                aria-hidden
+                className="bg-mesh absolute inset-0 opacity-30 pointer-events-none"
+                style={{ mixBlendMode: 'screen' }}
+              />
+
+              {/* Column header */}
+              <div className="relative px-7 md:px-9 pt-9 pb-7 border-b border-white/10">
+                <span
+                  className="uppercase text-[#85B8FF]"
+                  style={{ fontSize: 10, letterSpacing: '0.32em', fontWeight: 700 }}
+                >
+                  The Delt way
+                </span>
+                <div className="flex items-center gap-4 mt-3">
+                  <img src={deltLogo} alt="Delt Capital" className="h-9 w-auto object-contain" />
+                  <span className="text-white/55 text-sm hidden sm:inline">
+                    fast · transparent · revenue-first
+                  </span>
+                </div>
+              </div>
+
+              {/* Win list */}
+              <ul className="relative p-7 md:p-9 space-y-5">
+                {ROWS.map((row, i) => {
+                  const Icon = ICONS[i];
+                  const isPlaid = row.deltKey === 'comparison.paperwork.delt';
                   return (
-                    <motion.tr
-                      key={index}
-                      className={`border-t border-[#0C66E40F] hover:bg-[#FAFBFC] transition-colors ${
-                        isEven ? 'bg-[#FAFBFC]/40' : ''
-                      }`}
-                      initial={{ opacity: 0, x: -40 }}
-                      animate={isTableInView ? { opacity: 1, x: 0 } : {}}
-                      transition={{
-                        duration: 0.5,
-                        delay: 0.15 + index * 0.12,
-                        ease: [0.25, 0.46, 0.45, 0.94],
-                      }}
+                    <motion.li
+                      key={i}
+                      initial={{ opacity: 0, x: 16 }}
+                      animate={inView ? { opacity: 1, x: 0 } : {}}
+                      transition={{ duration: 0.5, delay: 0.3 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
+                      className="flex items-start gap-4 group"
                     >
-                      <td className="px-8 py-6">
-                        <div className="flex items-start gap-4">
-                          <motion.div
-                            className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#0C66E4] to-[#1D7AFC] flex items-center justify-center flex-shrink-0"
-                            initial={{ scale: 0, rotate: -90 }}
-                            animate={isTableInView ? { scale: 1, rotate: 0 } : {}}
-                            transition={{
-                              type: 'spring',
-                              stiffness: 260,
-                              damping: 20,
-                              delay: 0.3 + index * 0.12,
-                            }}
-                          >
-                            <Icon className="w-6 h-6 text-white" />
-                          </motion.div>
-                          <div>
-                            <div className="text-[#172B4D] dark:text-white font-semibold text-base mb-1">
-                              {t(row.featureKey)}
-                            </div>
-                            <div className="text-sm text-gray-500 dark:text-gray-400">
-                              {t(row.descriptionKey)}
-                            </div>
-                          </div>
+                      <span
+                        className="mt-0.5 w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 text-white shadow-lg"
+                        style={{
+                          background: 'linear-gradient(135deg, #0c66e4 0%, #6e5dc6 100%)',
+                          boxShadow: '0 4px 14px -4px rgba(12,102,228,0.55)',
+                        }}
+                      >
+                        <Icon className="w-4 h-4" />
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <div
+                          className="text-[#85B8FF]"
+                          style={{ fontSize: 11, letterSpacing: '0.18em', fontWeight: 700, textTransform: 'uppercase' }}
+                        >
+                          {t(row.featureKey)}
                         </div>
-                      </td>
-                      <td className="px-8 py-6 text-center text-gray-600 dark:text-gray-400">
-                        <motion.div
-                          className="flex items-center justify-center gap-2"
-                          initial={{ opacity: 0 }}
-                          animate={isTableInView ? { opacity: 1 } : {}}
-                          transition={{ duration: 0.4, delay: 0.5 + index * 0.12 }}
-                        >
-                          <X className="w-5 h-5 text-red-500 flex-shrink-0" />
-                          <span>{t(row.traditionalKey)}</span>
-                        </motion.div>
-                      </td>
-                      <td className="px-8 py-6 text-center bg-gradient-to-b from-[#0C66E4]/[0.04] via-[#6E5DC6]/[0.08] to-[#0C66E4]/[0.04] dark:bg-[#0C66E4]/10 border-l border-[#0C66E4]/15">
-                        <motion.div
-                          className="flex items-center justify-center gap-2"
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={isTableInView ? { opacity: 1, scale: 1 } : {}}
-                          transition={{
-                            duration: 0.4,
-                            delay: 0.6 + index * 0.12,
-                            type: 'spring',
-                            stiffness: 200,
-                          }}
-                        >
-                          <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
-                          {row.deltKey === 'comparison.paperwork.delt' ? (
-                            <span className="text-[#172B4D] dark:text-white font-semibold flex items-center gap-0">
-                              {t('comparison.paperwork.connectWith')} <img src={plaidLogo} alt="Plaid" className="h-[3.25rem] w-auto inline-block object-contain -ml-1" />
+                        <div className="mt-1 text-white flex items-center flex-wrap gap-x-2" style={{ fontSize: 15.5, fontWeight: 600, lineHeight: 1.5 }}>
+                          <Check className="w-4 h-4 text-[#1F845A] flex-shrink-0" strokeWidth={2.5} />
+                          {isPlaid ? (
+                            <span className="inline-flex items-center gap-0">
+                              {t('comparison.paperwork.connectWith')}
+                              <img
+                                src={plaidLogo}
+                                alt="Plaid"
+                                className="h-12 w-auto inline-block object-contain -ml-1 brightness-0 invert"
+                              />
                             </span>
                           ) : (
-                            <span className="text-[#172B4D] dark:text-white font-semibold">
-                              {t(row.deltKey)}
-                            </span>
+                            <span>{t(row.deltKey)}</span>
                           )}
-                        </motion.div>
-                      </td>
-                    </motion.tr>
+                        </div>
+                      </div>
+                    </motion.li>
                   );
                 })}
-              </tbody>
-            </table>
+              </ul>
+            </motion.div>
           </div>
 
-          {/* Mobile Cards — staggered reveal */}
-          <div className="md:hidden space-y-6">
-            {comparisonData.map((row, index) => {
-              const Icon = icons[index];
-              
-              return (
-                <ScrollReveal key={index} direction="up" delay={index * 0.08} distance={30}>
-                  <div className="bg-[#FFFFFF] rounded-xl shadow-lg overflow-hidden border border-[#0C66E40F]">
-                    <div className="bg-gradient-to-r from-[#FAFBFC] to-[#F1F2F4] px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#0C66E4] to-[#1D7AFC] flex items-center justify-center flex-shrink-0">
-                          <Icon className="w-5 h-5 text-white" />
-                        </div>
-                        <div>
-                          <h3 className="text-base font-semibold text-[#172B4D] dark:text-white">
-                            {t(row.featureKey)}
-                          </h3>
-                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                            {t(row.descriptionKey)}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="p-6 space-y-4">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-500 dark:text-gray-400">{t('comparison.traditional')}</span>
-                        <div className="flex items-center gap-2">
-                          <X className="w-4 h-4 text-red-500" />
-                          <span className="text-gray-600 dark:text-gray-400">{t(row.traditionalKey)}</span>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between bg-[#0C66E4]/5 dark:bg-[#0C66E4]/10 rounded-lg p-3">
-                        <img src={deltLogo} alt="Delt Capital" className="h-5 w-auto object-contain" />
-                        <div className="flex items-center gap-2">
-                          <Check className="w-4 h-4 text-green-500" />
-                          {row.deltKey === 'comparison.paperwork.delt' ? (
-                            <span className="text-[#172B4D] dark:text-white font-semibold flex items-center gap-0">
-                              {t('comparison.paperwork.connectWith')} <img src={plaidLogo} alt="Plaid" className="h-[3.25rem] w-auto inline-block object-contain -ml-1" />
-                            </span>
-                          ) : (
-                            <span className="text-[#172B4D] dark:text-white font-semibold">
-                              {t(row.deltKey)}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </ScrollReveal>
-              );
-            })}
+          {/* "VS" badge — only visible on lg+, sits over the column gap */}
+          <div className="hidden lg:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-10">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.6, rotate: -8 }}
+              animate={inView ? { opacity: 1, scale: 1, rotate: 0 } : {}}
+              transition={{ duration: 0.7, delay: 0.45, type: 'spring', stiffness: 220, damping: 18 }}
+              className="w-16 h-16 rounded-full bg-white border border-[#dcdfe4] flex items-center justify-center"
+              style={{
+                boxShadow:
+                  '0 12px 32px -8px rgba(9,30,66,0.25), 0 0 0 6px rgba(255,255,255,0.6)',
+              }}
+            >
+              <span
+                className="text-gradient-primary"
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 18,
+                  fontWeight: 800,
+                  letterSpacing: '-0.02em',
+                  lineHeight: 1,
+                }}
+              >
+                VS
+              </span>
+            </motion.div>
           </div>
         </div>
+
+        {/* ─── Result strip ─── */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7, delay: 0.85 }}
+          className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-3"
+        >
+          {[
+            { label: 'Time to fund',     value: 'Same day' },
+            { label: 'Credit impact',    value: '0%' },
+            { label: 'Collateral',       value: 'None' },
+          ].map((s, i) => (
+            <div
+              key={i}
+              className="card-hover-lift relative rounded-2xl border border-[#dcdfe4] bg-white px-6 py-5 flex items-center justify-between"
+            >
+              <div>
+                <div
+                  className="uppercase text-[#758195]"
+                  style={{ fontSize: 10, letterSpacing: '0.28em', fontWeight: 700 }}
+                >
+                  {s.label}
+                </div>
+                <div
+                  className="text-gradient-primary tabular-nums mt-1.5"
+                  style={{
+                    fontFamily: 'var(--font-display)',
+                    fontSize: 28,
+                    fontWeight: 700,
+                    letterSpacing: '-0.025em',
+                    lineHeight: 1,
+                  }}
+                >
+                  {s.value}
+                </div>
+              </div>
+              <Sparkles className="w-4 h-4 text-[#0c66e4]/45" />
+            </div>
+          ))}
+        </motion.div>
       </div>
     </section>
   );
