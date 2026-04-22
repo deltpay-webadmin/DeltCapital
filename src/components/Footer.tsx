@@ -51,8 +51,8 @@ export function Footer({
           {/* Grain overlay */}
           <div aria-hidden className="bg-grain absolute inset-0 pointer-events-none" />
 
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
-            <ScrollReveal direction="up" distance={28}>
+          <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
+            <ScrollReveal direction="up" distance={24}>
               <span
                 className="inline-flex items-center gap-2 uppercase text-white/85"
                 style={{ fontSize: 11, letterSpacing: '0.32em', fontWeight: 700 }}
@@ -62,85 +62,84 @@ export function Footer({
               </span>
             </ScrollReveal>
 
-            <div className="mt-6 grid lg:grid-cols-12 gap-10 items-end">
-              <ScrollReveal direction="up" distance={32} delay={0.1}>
-                <h2
-                  className="lg:col-span-8 text-white"
-                  style={{
-                    fontFamily: 'var(--font-display)',
-                    fontSize: 'clamp(2.75rem, 7vw, 5.5rem)',
-                    fontWeight: 700,
-                    letterSpacing: '-0.04em',
-                    lineHeight: 1.0,
-                    maxWidth: '18ch',
-                  }}
+            <ScrollReveal direction="up" distance={28} delay={0.1}>
+              <h2
+                className="mt-5 text-white"
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 'clamp(2.75rem, 7vw, 5.5rem)',
+                  fontWeight: 700,
+                  letterSpacing: '-0.04em',
+                  lineHeight: 1.0,
+                  maxWidth: '20ch',
+                }}
+              >
+                {ctaFirstWord} <span>{ctaRest}</span>
+              </h2>
+            </ScrollReveal>
+
+            <ScrollReveal direction="up" distance={20} delay={0.18}>
+              <p className="mt-6 text-white/85 max-w-2xl" style={{ fontSize: 17, lineHeight: 1.55 }}>
+                {t('cta.subtitle').split('\n')[0]}
+                {' '}
+                {t('cta.subtitle').split('\n')[1]?.split('Resources and Guides')[0]}
+                <span
+                  className="underline underline-offset-2 cursor-pointer hover:text-white transition-colors"
+                  onClick={onResourcesClick}
                 >
-                  <span className="italic font-light">{ctaFirstWord}</span>{' '}
-                  <span>{ctaRest}</span>
-                </h2>
-              </ScrollReveal>
+                  Resources and Guides
+                </span>
+                {t('cta.subtitle').split('\n')[1]?.split('Resources and Guides')[1]}
+              </p>
+            </ScrollReveal>
 
-              <ScrollReveal direction="up" distance={24} delay={0.2}>
-                <div className="lg:col-span-4 flex flex-col items-start gap-5">
-                  {/* Halo + button */}
-                  <div className="relative">
-                    <span
-                      aria-hidden
-                      className="absolute -inset-2 rounded-full opacity-70 pointer-events-none"
-                      style={{
-                        background:
-                          'radial-gradient(closest-side, rgba(255,255,255,0.55), rgba(255,255,255,0) 70%)',
-                        filter: 'blur(14px)',
-                      }}
-                    />
-                    <button
-                      onClick={onApplyClick}
-                      className="card-hover-lift relative inline-flex items-center gap-2 bg-white text-[#0C66E4] font-semibold rounded-xl px-8 py-5 transition-shadow group"
-                      style={{
-                        fontSize: 16,
-                        boxShadow:
-                          '0 18px 40px -14px rgba(9,30,66,0.45), inset 0 1px 0 rgba(255,255,255,0.9)',
-                      }}
-                    >
-                      {t('cta.button')}
-                      <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                    </button>
-                  </div>
-
-                  {/* Live indicator pill */}
+            <ScrollReveal direction="up" distance={18} delay={0.26}>
+              <div className="mt-9 flex flex-wrap items-center gap-4">
+                {/* Halo + button */}
+                <div className="relative">
                   <span
-                    className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 backdrop-blur-sm px-3.5 py-1.5"
+                    aria-hidden
+                    className="absolute -inset-2 rounded-full opacity-70 pointer-events-none"
+                    style={{
+                      background:
+                        'radial-gradient(closest-side, rgba(255,255,255,0.55), rgba(255,255,255,0) 70%)',
+                      filter: 'blur(14px)',
+                    }}
+                  />
+                  <button
+                    onClick={onApplyClick}
+                    className="card-hover-lift relative inline-flex items-center gap-2 bg-white text-[#0C66E4] font-semibold rounded-xl px-8 py-4 transition-shadow group"
+                    style={{
+                      fontSize: 16,
+                      boxShadow:
+                        '0 18px 40px -14px rgba(9,30,66,0.45), inset 0 1px 0 rgba(255,255,255,0.9)',
+                    }}
                   >
-                    <span className="relative flex w-1.5 h-1.5">
-                      <span
-                        className="absolute inset-0 rounded-full bg-white opacity-80"
-                        style={{ animation: 'footerLivePulse 2.2s ease-in-out infinite' }}
-                      />
-                      <span className="relative w-1.5 h-1.5 rounded-full bg-white" />
-                    </span>
-                    <span
-                      className="text-white tabular-nums"
-                      style={{ fontSize: 11.5, fontWeight: 600, letterSpacing: '0.02em' }}
-                    >
-                      12 businesses funded today
-                    </span>
-                  </span>
-
-                  <p className="text-sm text-white/85 leading-relaxed">
-                    {t('cta.subtitle').split('\n')[0]}
-                    {'\n'}
-                    {t('cta.subtitle').split('\n')[1]?.split('Resources and Guides')[0]}
-                    <span
-                      className="underline underline-offset-2 cursor-pointer hover:text-white transition-colors"
-                      onClick={onResourcesClick}
-                    >
-                      Resources and Guides
-                    </span>
-                    {t('cta.subtitle').split('\n')[1]?.split('Resources and Guides')[1]}
-                  </p>
+                    {t('cta.button')}
+                    <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </button>
                 </div>
-              </ScrollReveal>
-            </div>
+
+                {/* Live indicator pill — sits inline with the button */}
+                <span
+                  className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 backdrop-blur-sm px-3.5 py-1.5"
+                >
+                  <span className="relative flex w-1.5 h-1.5">
+                    <span
+                      className="absolute inset-0 rounded-full bg-white opacity-80"
+                      style={{ animation: 'footerLivePulse 2.2s ease-in-out infinite' }}
+                    />
+                    <span className="relative w-1.5 h-1.5 rounded-full bg-white" />
+                  </span>
+                  <span
+                    className="text-white tabular-nums"
+                    style={{ fontSize: 11.5, fontWeight: 600, letterSpacing: '0.02em' }}
+                  >
+                    12 businesses funded today
+                  </span>
+                </span>
+              </div>
+            </ScrollReveal>
           </div>
         </div>
       )}
@@ -329,29 +328,8 @@ export function Footer({
             </div>
           </div>
 
-          {/* ──────── Giant signature wordmark ──────── */}
-          <div
-            aria-hidden
-            className="select-none mt-8 mb-2 overflow-hidden"
-            style={{
-              fontFamily: 'var(--font-display)',
-              fontWeight: 800,
-              letterSpacing: '-0.06em',
-              lineHeight: 0.85,
-              fontSize: 'clamp(5rem, 18vw, 16rem)',
-              backgroundImage:
-                'linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.02) 65%, rgba(12,102,228,0.05) 100%)',
-              backgroundClip: 'text',
-              WebkitBackgroundClip: 'text',
-              color: 'transparent',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
-            delt
-          </div>
-
           {/* ──────── Bottom band ──────── */}
-          <div className="border-t border-white/[0.08] pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="border-t border-white/[0.08] pt-6 mt-8 flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-gray-400 text-sm">
               © {currentYear} Delt. {t('footer.rights')}
             </p>
