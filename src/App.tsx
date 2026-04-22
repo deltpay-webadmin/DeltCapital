@@ -340,15 +340,10 @@ function AppContent() {
               </div>
             </ScrollReveal>
           </section>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div className="h-px bg-[#0c66e40F]" /></div>
           <ComparisonTable />
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div className="h-px bg-[#0c66e40F]" /></div>
           <UseCapitalSection onTalkToSpecialist={handleTalkToSpecialist} />
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div className="h-px bg-[#0c66e40F]" /></div>
           <StatsSection />
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div className="h-px bg-[#0c66e40F]" /></div>
           <PreQualificationSection ref={preQualSectionRef} onApplyClick={handleApplyClick} onApplyFromQuiz={handleApplyFromQuiz} onCalculatorClick={handleCalculatorClick} />
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div className="h-px bg-[#0c66e40F]" /></div>
           <TestimonialsSection />
         </div>
         </div>
