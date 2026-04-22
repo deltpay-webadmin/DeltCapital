@@ -1,114 +1,136 @@
-/* Delt Institutional Color System */
-/* Designed for trust, compliance, and bank-adjacent professionalism */
+/* Delt Modern Color System — Atlassian-inspired */
+/* Fintech trust palette built for a modern payment-processing feel */
 
 :root {
   /* Brand Colors */
-  --color-primary-blue: #1B17FF;
-  --color-primary-navy: #041E42;
-  --color-secondary-blue: #0052FF;
-  --color-accent-blue: #E6EDFF;
-  
-  /* Neutrals */
-  --color-gray-900: #0A1F35;
-  --color-gray-800: #1F2933;
-  --color-gray-700: #3E4C59;
-  --color-gray-600: #52606D;
-  --color-gray-500: #616E7C;
-  --color-gray-400: #9AA5B1;
-  --color-gray-300: #CBD2D9;
-  --color-gray-200: #E4E7EB;
-  --color-gray-100: #F5F7FA;
-  --color-gray-50: #ededf5;
+  --color-primary-blue: #0C66E4;
+  --color-primary-blue-hover: #0055CC;
+  --color-primary-blue-pressed: #09326C;
+  --color-primary-navy: #172B4D;
+  --color-secondary-blue: #1D7AFC;
+  --color-accent-blue: #E9F2FF;
+  --color-accent-purple: #6E5DC6;
+  --color-accent-purple-subtle: #F3F0FF;
+
+  /* Neutrals (warm navy-grays, Atlassian-style) */
+  --color-gray-900: #091E42;
+  --color-gray-800: #172B4D;
+  --color-gray-700: #44546F;
+  --color-gray-600: #626F86;
+  --color-gray-500: #758195;
+  --color-gray-400: #8590A2;
+  --color-gray-300: #C1C7D0;
+  --color-gray-200: #DCDFE4;
+  --color-gray-100: #F1F2F4;
+  --color-gray-50: #FAFBFC;
   --color-white: #FFFFFF;
-  
+
   /* Status Colors */
-  --color-success: #00875A;
-  --color-success-bg: #E3FCEF;
-  --color-warning: #FF991F;
-  --color-warning-bg: #FFF4E5;
-  --color-error: #DE350B;
-  --color-error-bg: #FFEBE6;
-  --color-info: #0052CC;
-  --color-info-bg: #DEEBFF;
-  
+  --color-success: #1F845A;
+  --color-success-bg: #DCFFF1;
+  --color-warning: #B65C02;
+  --color-warning-bg: #FFF7D6;
+  --color-error: #C9372C;
+  --color-error-bg: #FFEDEB;
+  --color-info: #0C66E4;
+  --color-info-bg: #E9F2FF;
+
   /* Surface Colors */
-  --surface-background: #ededf5;
+  --surface-background: #FAFBFC;
   --surface-card: #FFFFFF;
-  --surface-card-secondary: #F5F7FA;
+  --surface-card-secondary: #F1F2F4;
   --surface-elevated: #FFFFFF;
-  
+  --surface-sunken: #F7F8F9;
+
   /* Border Colors */
-  --border-default: #E4E7EB;
-  --border-subtle: #F0F2F5;
-  --border-strong: #CBD2D9;
-  
+  --border-default: #DCDFE4;
+  --border-subtle: #EBECF0;
+  --border-strong: #C1C7D0;
+  --border-focus: #0C66E4;
+
   /* Text Colors */
-  --text-primary: #041E42;
-  --text-secondary: #52606D;
-  --text-tertiary: #9AA5B1;
+  --text-primary: #172B4D;
+  --text-secondary: #44546F;
+  --text-tertiary: #758195;
   --text-inverse: #FFFFFF;
-  
+  --text-link: #0C66E4;
+  --text-link-hover: #0055CC;
+
   /* Interactive States */
-  --interactive-primary: #1B17FF;
-  --interactive-primary-hover: #1510DD;
-  --interactive-secondary: #0052FF;
-  --interactive-secondary-hover: #0041CC;
-  
-  /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(4, 30, 66, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(4, 30, 66, 0.08), 0 2px 4px -1px rgba(4, 30, 66, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(4, 30, 66, 0.08), 0 4px 6px -2px rgba(4, 30, 66, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(4, 30, 66, 0.08), 0 10px 10px -5px rgba(4, 30, 66, 0.04);
+  --interactive-primary: #0C66E4;
+  --interactive-primary-hover: #0055CC;
+  --interactive-primary-pressed: #09326C;
+  --interactive-secondary: #F1F2F4;
+  --interactive-secondary-hover: #DCDFE4;
+
+  /* Shadows — Atlassian layered elevation */
+  --shadow-raised: 0 1px 1px rgba(9, 30, 66, 0.25), 0 0 1px rgba(9, 30, 66, 0.31);
+  --shadow-overlay: 0 8px 12px rgba(9, 30, 66, 0.15), 0 0 1px rgba(9, 30, 66, 0.31);
+  --shadow-overflow: 0 0 8px rgba(9, 30, 66, 0.08), 0 0 1px rgba(9, 30, 66, 0.31);
+  --shadow-sm: 0 1px 1px rgba(9, 30, 66, 0.15);
+  --shadow-md: 0 4px 8px -2px rgba(9, 30, 66, 0.10), 0 0 1px rgba(9, 30, 66, 0.25);
+  --shadow-lg: 0 12px 24px -6px rgba(9, 30, 66, 0.12), 0 0 1px rgba(9, 30, 66, 0.25);
+  --shadow-xl: 0 20px 32px -8px rgba(9, 30, 66, 0.14), 0 0 1px rgba(9, 30, 66, 0.25);
+
+  /* Spacing scale (px-based, Atlassian 4-point grid) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-14: 56px;
+  --space-20: 80px;
 }
 
-/* Dark Mode */
+/* Dark Mode — mirrored tokens */
 .dark {
-  --surface-background: #0A1F35;
-  --surface-card: #1F2933;
-  --surface-card-secondary: #132030;
-  --surface-elevated: #2A3A4F;
-  
-  --border-default: #3E4C59;
-  --border-subtle: #2A3A4F;
-  --border-strong: #52606D;
-  
+  --surface-background: #0D1B2D;
+  --surface-card: #1D2B41;
+  --surface-card-secondary: #15243B;
+  --surface-elevated: #22314A;
+  --surface-sunken: #0A1525;
+
+  --border-default: #2C3E5C;
+  --border-subtle: #22314A;
+  --border-strong: #44546F;
+
   --text-primary: #FFFFFF;
-  --text-secondary: #CBD2D9;
-  --text-tertiary: #9AA5B1;
+  --text-secondary: #C1C7D0;
+  --text-tertiary: #8590A2;
+
+  --color-accent-blue: #09326C;
+  --color-primary-blue: #579DFF;
+  --color-primary-blue-hover: #85B8FF;
+  --interactive-primary: #579DFF;
+  --interactive-primary-hover: #85B8FF;
+  --border-focus: #579DFF;
 }
 
 /* Usage Guidelines:
- * 
- * Brand / Primary Blue (#1B17FF)
- * - Primary CTAs only
- * - Critical actions
- * - Progress indicators
- * - Never use for large backgrounds
- * 
- * Primary Navy (#041E42)
- * - Headlines
- * - Logo
- * - Primary text in light mode
- * 
- * Secondary Blue (#0052FF)
- * - Links
- * - Secondary actions
- * - Info status
- * 
- * Accent Blue (#E6EDFF)
- * - Subtle backgrounds
- * - Hover states on white
- * - Info backgrounds (very light)
- * 
- * Neutrals (Gray 50-900)
- * - Use for 90% of UI
- * - Creates institutional, calm feel
- * - Gray 100/50 for section backgrounds
- * - White for cards
- * - Gray 300/200 for borders
- * 
+ *
+ * Primary Blue (#0C66E4) — Atlassian B400
+ * - Primary CTAs, active tab indicators, focus rings
+ * - Links, highlighted brand moments
+ * - Use on white or --surface-background
+ *
+ * Accent Purple (#6E5DC6)
+ * - Secondary highlights, decorative gradients, success milestones
+ * - Pair with primary blue in gradient CTAs, not side-by-side as solids
+ *
+ * Neutrals (Gray 50–900)
+ * - Use for 90% of surfaces and type
+ * - --color-gray-50 = page background; surface-card = white
+ * - --text-primary for body, --text-secondary for supporting copy
+ *
  * Status Colors
- * - Use sparingly, only for status
- * - Pair with light backgrounds
- * - Never use bright versions
+ * - Use with the matching *-bg tint for inline banners and chips
+ * - Never use the bright versions on large surfaces
+ *
+ * Shadows
+ * - shadow-raised for resting cards/buttons
+ * - shadow-overlay for modals, popovers, drawers
+ * - Navy-tinted across the board for palette cohesion
  */
