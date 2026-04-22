@@ -357,259 +357,445 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
   };
 
   return (
-    <section ref={sectionRef} className="py-12 md:py-16 lg:py-20 bg-[#fafbfc] overflow-hidden relative">
+    <section ref={sectionRef} className="py-20 md:py-24 lg:py-28 bg-[#fafbfc] overflow-hidden relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* ── Header ── */}
-        <div className="text-center mb-8 lg:mb-12">
-          <motion.p
-            className="uppercase tracking-[0.15em] mb-2"
-            style={{ fontSize: '11px', color: '#0c66e4' }}
-            initial={{ opacity: 0, y: 10 }}
+        {/* ─── Header — eyebrow + bold display headline + sub ─── */}
+        <div className="max-w-3xl mb-12 lg:mb-16">
+          <motion.span
+            className="block uppercase text-[#0c66e4]"
+            style={{ fontSize: 11, letterSpacing: '0.32em', fontWeight: 700 }}
+            initial={{ opacity: 0, y: 8 }}
             animate={isInView ? { opacity: 1, y: 0 } : undefined}
             transition={{ duration: 0.5 }}
           >
-            USE CASES
-          </motion.p>
+            Use cases
+          </motion.span>
           <motion.h2
-            className="mb-3 lg:mb-4 tracking-tight text-xl sm:text-2xl lg:text-[2rem]"
-            style={{ fontWeight: 700, color: '#172b4d' }}
-            initial={{ opacity: 0, y: 20 }}
+            className="mt-4 text-[#172b4d]"
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(2.25rem, 5vw, 4rem)',
+              fontWeight: 700,
+              letterSpacing: '-0.035em',
+              lineHeight: 1.0,
+            }}
+            initial={{ opacity: 0, y: 14 }}
             animate={isInView ? { opacity: 1, y: 0 } : undefined}
-            transition={{ duration: 0.6, delay: 0.1 }}
+            transition={{ duration: 0.85, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           >
-            {t('capital.title')}
+            {t('capital.title').split(' ').map((word, i, arr) =>
+              i === arr.length - 1 ? (
+                <span key={i} className="text-gradient-primary">{word}</span>
+              ) : (
+                <span key={i}>{word} </span>
+              )
+            )}
           </motion.h2>
           <motion.p
-            className="text-sm sm:text-base lg:text-lg text-gray-600 max-w-2xl mx-auto"
-            initial={{ opacity: 0, y: 20 }}
+            className="mt-5 text-[#44546f] max-w-2xl"
+            style={{ fontSize: 17, lineHeight: 1.6 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={isInView ? { opacity: 1, y: 0 } : undefined}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
           >
             {t('capital.subtitle')}
           </motion.p>
         </div>
 
         {/* ═══════════════════════════════════════════════════
-            MAIN EXPLORER — Light container (iPhone 17 style)
+            MAIN EXPLORER — Gradient-ring shell with mesh halo
             ═══════════════════════════════════════════════════ */}
-        <motion.div
-          className="rounded-2xl lg:rounded-3xl overflow-hidden bg-[#f1f2f4] border border-[#0c66e40F] shadow-[0_2px_24px_rgba(4,30,66,0.06)]"
-          initial={{ opacity: 0, y: 40 }}
-          animate={isInView ? { opacity: 1, y: 0 } : undefined}
-          transition={{ duration: 0.7, delay: 0.3, ease: [0.455, 0.03, 0.515, 0.955] }}
-        >
-          <div className="grid lg:grid-cols-[300px_1fr] xl:grid-cols-[360px_1fr] min-h-[420px] lg:min-h-[480px]">
+        <div className="relative">
+          {/* Mesh halo */}
+          <div aria-hidden className="bg-mesh absolute -inset-6 md:-inset-10 opacity-35 pointer-events-none" />
 
-            {/* ═══ LEFT: Feature list ═══ */}
-            <div className="relative px-4 lg:px-6 xl:px-8 py-6 lg:py-8 flex flex-col bg-[#172b4d]">
-              {/* Up / Down arrows */}
-              <div className="flex items-center gap-2 mb-4 lg:mb-6">
-                <button
-                  onClick={goUp}
-                  className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center text-white/40 hover:text-white hover:border-white/50 transition-all cursor-pointer"
-                  aria-label="Previous category"
-                >
-                  <ChevronUp className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={goDown}
-                  className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center text-white/40 hover:text-white hover:border-white/50 transition-all cursor-pointer"
-                  aria-label="Next category"
-                >
-                  <ChevronDown className="w-4 h-4" />
-                </button>
+          <motion.div
+            className="relative rounded-2xl lg:rounded-3xl overflow-hidden bg-white"
+            style={{
+              boxShadow:
+                '0 30px 80px -28px rgba(12,102,228,0.30), 0 8px 28px -10px rgba(110,93,198,0.18)',
+            }}
+            initial={{ opacity: 0, y: 32 }}
+            animate={isInView ? { opacity: 1, y: 0 } : undefined}
+            transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          >
+            {/* Gradient ring (mask-composite) */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 rounded-2xl lg:rounded-3xl z-20"
+              style={{
+                padding: 1.5,
+                background:
+                  'linear-gradient(135deg, rgba(12,102,228,0.55) 0%, rgba(133,184,255,0.4) 35%, rgba(110,93,198,0.55) 100%)',
+                WebkitMask: 'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
+                WebkitMaskComposite: 'xor',
+                maskComposite: 'exclude',
+              }}
+            />
+
+            <div className="grid lg:grid-cols-[320px_1fr] xl:grid-cols-[360px_1fr] min-h-[460px] lg:min-h-[520px]">
+
+              {/* ═══ LEFT: Feature list — dark navy with mesh glow ═══ */}
+              <div className="relative px-5 lg:px-6 xl:px-8 py-7 lg:py-9 flex flex-col bg-[#172b4d] overflow-hidden">
+                {/* Mesh-screen glow */}
+                <div
+                  aria-hidden
+                  className="bg-mesh absolute inset-0 opacity-25 pointer-events-none"
+                  style={{ mixBlendMode: 'screen' }}
+                />
+
+                <div className="relative flex flex-col h-full">
+                  {/* Column kicker */}
+                  <div className="flex items-center justify-between mb-5">
+                    <span
+                      className="uppercase text-[#85B8FF]"
+                      style={{ fontSize: 10, letterSpacing: '0.32em', fontWeight: 700 }}
+                    >
+                      Browse · {totalItems} use cases
+                    </span>
+                    {/* Up / Down glass chips */}
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        onClick={goUp}
+                        className="w-8 h-8 rounded-full border backdrop-blur-md text-white/65 hover:text-white hover:bg-white/[0.10] transition-colors flex items-center justify-center"
+                        style={{
+                          background: 'rgba(255,255,255,0.06)',
+                          borderColor: 'rgba(255,255,255,0.12)',
+                        }}
+                        aria-label="Previous category"
+                      >
+                        <ChevronUp className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={goDown}
+                        className="w-8 h-8 rounded-full border backdrop-blur-md text-white/65 hover:text-white hover:bg-white/[0.10] transition-colors flex items-center justify-center"
+                        style={{
+                          background: 'rgba(255,255,255,0.06)',
+                          borderColor: 'rgba(255,255,255,0.12)',
+                        }}
+                        aria-label="Next category"
+                      >
+                        <ChevronDown className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Category items */}
+                  <div className="flex-1 flex flex-col gap-0.5">
+                    {categories.map((cat, i) => {
+                      const isActive = i === activeIndex;
+                      const isHovered = i === hoveredItem;
+
+                      return (
+                        <div key={i}>
+                          {/* Item button */}
+                          <motion.button
+                            className={`relative w-full text-left pl-4 pr-3 py-3 rounded-xl flex items-center gap-3 transition-colors cursor-pointer ${
+                              isActive
+                                ? 'bg-white/[0.06]'
+                                : isHovered
+                                  ? 'bg-white/[0.04]'
+                                  : 'bg-transparent'
+                            }`}
+                            onClick={() => setActiveIndex(i)}
+                            onMouseEnter={() => setHoveredItem(i)}
+                            onMouseLeave={() => setHoveredItem(null)}
+                            animate={{ x: 0 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            {/* Active gradient left bar */}
+                            {isActive && (
+                              <motion.span
+                                layoutId="capitalActiveBar"
+                                aria-hidden
+                                className="absolute left-1 top-2 bottom-2 w-[3px] rounded-full"
+                                style={{
+                                  background: 'linear-gradient(180deg, #0c66e4 0%, #6e5dc6 100%)',
+                                  boxShadow: '0 0 12px rgba(12,102,228,0.55)',
+                                }}
+                                transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                              />
+                            )}
+
+                            {/* Plus / Minus circle — gradient when active */}
+                            <div
+                              className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 transition-all"
+                              style={{
+                                background: isActive
+                                  ? 'linear-gradient(135deg, #0c66e4 0%, #6e5dc6 100%)'
+                                  : 'transparent',
+                                border: isActive
+                                  ? '1px solid transparent'
+                                  : '1px solid rgba(255,255,255,0.2)',
+                                boxShadow: isActive
+                                  ? '0 6px 16px -4px rgba(12,102,228,0.5)'
+                                  : 'none',
+                              }}
+                            >
+                              {isActive ? (
+                                <Minus className="w-3.5 h-3.5 text-white" strokeWidth={2.5} />
+                              ) : (
+                                <Plus className="w-3.5 h-3.5 text-white/45" strokeWidth={2.5} />
+                              )}
+                            </div>
+
+                            {/* Title */}
+                            <span
+                              className="transition-all"
+                              style={{
+                                fontSize: isActive ? 15.5 : 14,
+                                fontWeight: isActive ? 700 : 500,
+                                letterSpacing: isActive ? '-0.01em' : '0',
+                                color: isActive ? '#FFFFFF' : 'rgba(255,255,255,0.62)',
+                              }}
+                            >
+                              {t(cat.titleKey)}
+                            </span>
+                          </motion.button>
+
+                          {/* Expanded detail panel */}
+                          <AnimatePresence>
+                            {isActive && (
+                              <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: 'auto', opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                transition={{ duration: 0.35, ease: [0.455, 0.03, 0.515, 0.955] }}
+                                className="overflow-hidden"
+                              >
+                                <div className="pl-12 pr-4 pt-2 pb-4">
+                                  {/* Gradient hairline divider */}
+                                  <div
+                                    aria-hidden
+                                    className="h-[2px] w-10 rounded-full mb-3"
+                                    style={{
+                                      background:
+                                        'linear-gradient(90deg, #0c66e4 0%, #6e5dc6 100%)',
+                                    }}
+                                  />
+
+                                  {/* Description */}
+                                  <div
+                                    className="text-white/70 leading-relaxed"
+                                    style={{ fontSize: 13.5, lineHeight: 1.55 }}
+                                  >
+                                    {t(cat.descKey)}
+                                  </div>
+
+                                  {/* Stat */}
+                                  <div className="mt-4 flex items-baseline gap-3">
+                                    <span
+                                      className="text-gradient-primary tabular-nums"
+                                      style={{
+                                        fontFamily: 'var(--font-display)',
+                                        fontSize: 24,
+                                        fontWeight: 800,
+                                        letterSpacing: '-0.025em',
+                                        lineHeight: 1.0,
+                                      }}
+                                    >
+                                      {cat.statValue}
+                                    </span>
+                                    <span
+                                      className="uppercase text-white/45"
+                                      style={{ fontSize: 9.5, letterSpacing: '0.22em', fontWeight: 700 }}
+                                    >
+                                      {cat.statLabel}
+                                    </span>
+                                  </div>
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Counter at bottom — progress dots + tabular-nums */}
+                  <div className="mt-6 pt-5 border-t border-white/[0.08] flex items-center justify-between">
+                    <div className="flex items-center gap-1">
+                      {categories.map((_, i) => (
+                        <div
+                          key={i}
+                          className="rounded-full transition-all duration-300"
+                          style={{
+                            width: i === activeIndex ? 16 : 4,
+                            height: 4,
+                            background:
+                              i === activeIndex
+                                ? 'linear-gradient(90deg, #0c66e4 0%, #6e5dc6 100%)'
+                                : 'rgba(255,255,255,0.18)',
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <span
+                      className="text-white/55 tabular-nums"
+                      style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.06em' }}
+                    >
+                      {String(activeIndex + 1).padStart(2, '0')}
+                      <span className="text-white/25 mx-0.5">/</span>
+                      {String(totalItems).padStart(2, '0')}
+                    </span>
+                  </div>
+                </div>
               </div>
 
-              {/* Category items */}
-              <div className="flex-1 flex flex-col gap-0.5 lg:gap-1">
-                {categories.map((cat, i) => {
-                  const isActive = i === activeIndex;
-                  const isHovered = i === hoveredItem;
-                  const Icon = cat.icon;
+              {/* ═══ RIGHT: Data visualization (light surface) ═══ */}
+              <div className="relative border-t lg:border-t-0 lg:border-l border-[#dcdfe4] px-5 lg:px-7 xl:px-10 py-7 lg:py-9 flex flex-col overflow-hidden bg-white">
+                {/* Subtle ambient mesh */}
+                <div aria-hidden className="bg-mesh absolute inset-0 opacity-[0.10] pointer-events-none" />
 
-                  return (
-                    <div key={i}>
-                      {/* Item button */}
-                      <motion.button
-                        className={`
-                          w-full text-left px-3 lg:px-4 py-2.5 lg:py-3 rounded-xl flex items-center gap-2.5 lg:gap-3 transition-colors cursor-pointer
-                          ${isActive
-                            ? 'bg-white/15 shadow-sm'
-                            : isHovered
-                              ? 'bg-white/8'
-                              : 'bg-transparent'
-                          }
-                        `}
-                        onClick={() => setActiveIndex(i)}
-                        onMouseEnter={() => setHoveredItem(i)}
-                        onMouseLeave={() => setHoveredItem(null)}
-                        animate={{ x: isActive ? 4 : isHovered ? 2 : 0 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        {/* Expand/collapse indicator */}
+                <div className="relative flex flex-col h-full">
+                  {/* KPI cards row */}
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={`kpis-${activeIndex}`}
+                      initial={{ opacity: 0, y: -8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 8 }}
+                      transition={{ duration: 0.3 }}
+                      className="grid grid-cols-3 gap-2.5 mb-5"
+                    >
+                      {active.kpis.map((kpi, i) => (
                         <div
-                          className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 border transition-all"
+                          key={i}
+                          className="card-hover-lift rounded-xl border border-[#dcdfe4] bg-white px-3.5 py-3"
+                        >
+                          <p
+                            className="uppercase text-[#758195] mb-1.5"
+                            style={{ fontSize: 9, letterSpacing: '0.22em', fontWeight: 700 }}
+                          >
+                            {kpi.label}
+                          </p>
+                          <div className="flex items-center gap-2">
+                            <span
+                              className="text-[#172b4d] tabular-nums"
+                              style={{
+                                fontFamily: 'var(--font-display)',
+                                fontSize: 20,
+                                fontWeight: 700,
+                                letterSpacing: '-0.025em',
+                                lineHeight: 1.0,
+                              }}
+                            >
+                              {kpi.value}
+                            </span>
+                            {kpi.trend === 'up' && (
+                              <span
+                                className="inline-flex items-center justify-center rounded-full w-5 h-5"
+                                style={{ background: 'rgba(31,132,90,0.12)' }}
+                              >
+                                <ArrowUpRight className="w-3 h-3 text-[#1F845A]" strokeWidth={2.5} />
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </motion.div>
+                  </AnimatePresence>
+
+                  {/* Chart label row */}
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={`label-${activeIndex}`}
+                      initial={{ opacity: 0, y: -8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 8 }}
+                      transition={{ duration: 0.3 }}
+                      className="mb-4 flex items-center gap-3"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span
+                          className="inline-flex items-center justify-center rounded-lg w-7 h-7"
                           style={{
-                            borderColor: isActive ? cat.accentColor : 'rgba(255,255,255,0.2)',
-                            backgroundColor: isActive ? cat.accentColor : 'transparent',
+                            background:
+                              'linear-gradient(135deg, rgba(12,102,228,0.12) 0%, rgba(110,93,198,0.12) 100%)',
                           }}
                         >
-                          {isActive ? (
-                            <Minus className="w-3 h-3 text-white" strokeWidth={2.5} />
-                          ) : (
-                            <Plus className="w-3 h-3 text-white/40" strokeWidth={2.5} />
-                          )}
-                        </div>
-
-                        {/* Title */}
-                        <span
-                          className={`text-sm lg:text-base transition-colors ${
-                            isActive ? 'text-white font-semibold' : 'text-white/55'
-                          }`}
-                        >
-                          {t(cat.titleKey)}
+                          <active.icon className="w-3.5 h-3.5 text-[#0c66e4]" />
                         </span>
-                      </motion.button>
-
-                      {/* Expanded detail panel */}
-                      <AnimatePresence>
-                        {isActive && (
-                          <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: 'auto', opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.35, ease: [0.455, 0.03, 0.515, 0.955] }}
-                            className="overflow-hidden"
-                          >
-                            <div className="px-3 lg:px-4 pt-2 pb-3 lg:pb-4 ml-8 lg:ml-9">
-                              {/* Description card */}
-                              <div className="rounded-lg px-3 lg:px-4 py-2.5 lg:py-3 text-[13px] lg:text-[15px] leading-relaxed text-white/70 bg-white/8">
-                                <span className="text-white font-semibold">{t(cat.titleKey)}.</span>{' '}
-                                {t(cat.descKey)}
-                              </div>
-
-                              {/* Stat pill */}
-                              <div className="mt-3 flex items-center gap-3">
-                                <div
-                                  className="px-3 py-1.5 rounded-full text-sm font-bold"
-                                  style={{ backgroundColor: `${cat.accentColor}25`, color: cat.accentColor }}
-                                >
-                                  {cat.statValue}
-                                </div>
-                                <span className="text-xs text-white/40">{cat.statLabel}</span>
-                              </div>
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Counter at bottom */}
-              <div className="mt-3 lg:mt-4 px-4 text-sm text-white/25 tabular-nums">
-                <span className="text-white/50 font-semibold">{activeIndex + 1}</span>
-                <span className="mx-1">/</span>
-                <span>{totalItems}</span>
-              </div>
-            </div>
-
-            {/* ═══ RIGHT: Data visualization ═══ */}
-            <div className="relative border-t lg:border-t-0 lg:border-l border-[#0c66e40F] px-4 lg:px-6 xl:px-10 py-6 lg:py-8 flex flex-col overflow-hidden bg-[#f1f2f4]">
-
-              {/* KPI cards row */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={`kpis-${activeIndex}`}
-                  initial={{ opacity: 0, y: -8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 8 }}
-                  transition={{ duration: 0.3 }}
-                  className="grid grid-cols-3 gap-2 lg:gap-3 mb-4 lg:mb-5"
-                >
-                  {active.kpis.map((kpi, i) => (
-                    <div
-                      key={i}
-                      className="rounded-xl border border-[#dcdfe4] px-3 lg:px-4 py-2.5 lg:py-3 bg-[#f1f2f4]/50"
-                    >
-                      <p className="text-[10px] lg:text-xs text-[#172b4d]/40 mb-0.5 lg:mb-1">{kpi.label}</p>
-                      <div className="flex items-center gap-1 lg:gap-1.5">
-                        <span className="text-base lg:text-lg font-semibold text-[#172b4d]">{kpi.value}</span>
-                        {kpi.trend === 'up' && (
-                          <ArrowUpRight className="w-3.5 h-3.5 text-[#22C55E]" />
-                        )}
+                        <span
+                          className="uppercase text-[#0c66e4]"
+                          style={{ fontSize: 10.5, letterSpacing: '0.28em', fontWeight: 700 }}
+                        >
+                          {active.chartLabel}
+                        </span>
                       </div>
-                    </div>
-                  ))}
-                </motion.div>
-              </AnimatePresence>
+                      <div className="flex-1 h-px bg-gradient-to-r from-[#dcdfe4]/0 via-[#dcdfe4] to-[#dcdfe4]/0" />
+                      <span
+                        className="text-gradient-primary tabular-nums"
+                        style={{
+                          fontFamily: 'var(--font-display)',
+                          fontSize: 18,
+                          fontWeight: 800,
+                          letterSpacing: '-0.025em',
+                        }}
+                      >
+                        {active.statValue}
+                      </span>
+                    </motion.div>
+                  </AnimatePresence>
 
-              {/* Chart label */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={`label-${activeIndex}`}
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                  transition={{ duration: 0.3 }}
-                  className="mb-4 flex items-center gap-3"
-                >
-                  <div className="flex items-center gap-2">
-                    <active.icon className="w-5 h-5 text-[#172b4d]/40" />
-                    <span className="text-sm text-[#172b4d]/45 uppercase tracking-wider">{active.chartLabel}</span>
-                  </div>
-                  <div className="flex-1 h-px bg-[#dcdfe4]" />
-                  <div
-                    className="px-3 py-1 rounded text-xs font-semibold"
-                    style={{ backgroundColor: `${active.accentColor}12`, color: active.accentColor }}
-                  >
-                    {active.statValue}
-                  </div>
-                </motion.div>
-              </AnimatePresence>
+                  {/* Chart area — RECHARTS UNTOUCHED */}
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={`chart-${activeIndex}`}
+                      initial={{ opacity: 0, scale: 0.95, y: 12 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.97, y: -8 }}
+                      transition={{ duration: 0.45, ease: [0.455, 0.03, 0.515, 0.955] }}
+                      className="relative z-10 flex items-center justify-center flex-1 min-h-[200px] lg:min-h-[240px]"
+                    >
+                      {renderChart(active)}
+                    </motion.div>
+                  </AnimatePresence>
 
-              {/* Chart area */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={`chart-${activeIndex}`}
-                  initial={{ opacity: 0, scale: 0.95, y: 12 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.97, y: -8 }}
-                  transition={{ duration: 0.45, ease: [0.455, 0.03, 0.515, 0.955] }}
-                  className="relative z-10 flex items-center justify-center flex-1 min-h-[200px] lg:min-h-[240px]"
-                >
-                  {renderChart(active)}
-                </motion.div>
-              </AnimatePresence>
-
-              {/* Insight callout */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={`insight-${activeIndex}`}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.35, delay: 0.1 }}
-                  className="mt-4 lg:mt-5 flex items-start gap-2.5 lg:gap-3 rounded-xl bg-[#f1f2f4] border border-[#dcdfe4] px-3 lg:px-4 py-2.5 lg:py-3"
-                >
-                  <div
-                    className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
-                    style={{ backgroundColor: `${active.accentColor}12` }}
-                  >
-                    <Lightbulb className="w-3.5 h-3.5" style={{ color: active.accentColor }} />
-                  </div>
-                  <p className="text-xs lg:text-sm leading-relaxed text-[#172b4d]/60">
-                    {active.insight}
-                  </p>
-                </motion.div>
-              </AnimatePresence>
+                  {/* Insight callout */}
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={`insight-${activeIndex}`}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      transition={{ duration: 0.35, delay: 0.1 }}
+                      className="mt-5 flex items-start gap-3 rounded-2xl bg-white border border-[#dcdfe4] px-4 py-3.5"
+                      style={{ boxShadow: '0 6px 20px -10px rgba(9,30,66,0.08)' }}
+                    >
+                      <span
+                        className="inline-flex items-center justify-center rounded-xl w-9 h-9 flex-shrink-0 mt-0.5"
+                        style={{
+                          background:
+                            'linear-gradient(135deg, rgba(12,102,228,0.14) 0%, rgba(110,93,198,0.14) 100%)',
+                        }}
+                      >
+                        <Lightbulb className="w-4 h-4 text-[#0c66e4]" />
+                      </span>
+                      <div>
+                        <span
+                          className="uppercase text-[#0c66e4]"
+                          style={{ fontSize: 9.5, letterSpacing: '0.28em', fontWeight: 700 }}
+                        >
+                          Insight
+                        </span>
+                        <p
+                          className="text-[#44546f] mt-1"
+                          style={{ fontSize: 14, lineHeight: 1.6 }}
+                        >
+                          {active.insight}
+                        </p>
+                      </div>
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+              </div>
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
 
-        {/* ── Bottom dot navigation (for mobile) ── */}
+        {/* ── Bottom dot navigation (mobile only) ── */}
         <div className="flex items-center justify-center gap-2.5 mt-8 lg:hidden">
           {categories.map((cat, i) => (
             <button
@@ -621,17 +807,17 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
               <div
                 className="rounded-full transition-all duration-300"
                 style={{
-                  width: i === activeIndex ? 28 : 8,
+                  width: i === activeIndex ? 32 : 8,
                   height: 8,
-                  backgroundColor: i === activeIndex ? cat.accentColor : 'rgba(0,0,0,0.15)',
+                  background:
+                    i === activeIndex
+                      ? 'linear-gradient(90deg, #0c66e4 0%, #6e5dc6 100%)'
+                      : '#dcdfe4',
                 }}
               />
             </button>
           ))}
         </div>
-
-        {/* ── Bottom CTA ── */}
-        {/* removed — moved to App.tsx above FAQ */}
       </div>
     </section>
   );
