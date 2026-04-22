@@ -229,7 +229,7 @@ export function QualificationGuide() {
   return (
     <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 max-h-[90vh] overflow-y-auto">
       <div className="sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 p-6 md:p-8 z-10">
-        <h3 className="text-3xl font-bold text-[#041e42] dark:text-white mb-2">
+        <h3 className="text-3xl font-bold text-[#172b4d] dark:text-white mb-2">
           Qualification Assessment
         </h3>
         <p className="text-gray-600 dark:text-gray-300">
@@ -241,9 +241,9 @@ export function QualificationGuide() {
         {/* Interactive Quiz Component */}
         {!showResults ? (
           <div className="mb-10">
-            <div className="bg-gradient-to-br from-[#1b17ff]/5 to-blue-50 dark:from-[#1b17ff]/10 dark:to-blue-900/20 rounded-xl p-6 md:p-8 border-2 border-[#1b17ff]/20">
+            <div className="bg-gradient-to-br from-[#0c66e4]/5 to-blue-50 dark:from-[#0c66e4]/10 dark:to-blue-900/20 rounded-xl p-6 md:p-8 border-2 border-[#0c66e4]/20">
               <div className="text-center mb-8">
-                <h4 className="text-2xl font-bold text-[#041e42] dark:text-white mb-2">
+                <h4 className="text-2xl font-bold text-[#172b4d] dark:text-white mb-2">
                   Instant Qualification Estimator
                 </h4>
                 <p className="text-gray-600 dark:text-gray-400">
@@ -254,7 +254,7 @@ export function QualificationGuide() {
               <div className="space-y-8">
                 {/* Question 1: Time in Business */}
                 <div>
-                  <label className="block text-base font-semibold text-[#041e42] dark:text-white mb-4">
+                  <label className="block text-base font-semibold text-[#172b4d] dark:text-white mb-4">
                     Question 1: How long has your business been operating?
                   </label>
                   <div className="space-y-3">
@@ -268,8 +268,8 @@ export function QualificationGuide() {
                         key={option.value}
                         className={`flex items-center gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all ${
                           timeInBusiness === option.value
-                            ? 'border-[#1b17ff] bg-[#1b17ff]/5'
-                            : 'border-gray-200 dark:border-gray-700 hover:border-[#1b17ff]/50'
+                            ? 'border-[#0c66e4] bg-[#0c66e4]/5'
+                            : 'border-gray-200 dark:border-gray-700 hover:border-[#0c66e4]/50'
                         }`}
                       >
                         <input
@@ -278,7 +278,7 @@ export function QualificationGuide() {
                           value={option.value}
                           checked={timeInBusiness === option.value}
                           onChange={(e) => setTimeInBusiness(e.target.value)}
-                          className="w-5 h-5 text-[#1b17ff]"
+                          className="w-5 h-5 text-[#0c66e4]"
                         />
                         <span className="text-gray-700 dark:text-gray-300 font-medium">
                           {option.label}
@@ -290,7 +290,7 @@ export function QualificationGuide() {
 
                 {/* Question 2: Monthly Revenue */}
                 <div>
-                  <label className="block text-base font-semibold text-[#041e42] dark:text-white mb-4">
+                  <label className="block text-base font-semibold text-[#172b4d] dark:text-white mb-4">
                     Question 2: What's your average monthly revenue?
                   </label>
                   <div className="space-y-3">
@@ -304,8 +304,8 @@ export function QualificationGuide() {
                         key={option.value}
                         className={`flex items-center gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all ${
                           monthlyRevenue === option.value
-                            ? 'border-[#1b17ff] bg-[#1b17ff]/5'
-                            : 'border-gray-200 dark:border-gray-700 hover:border-[#1b17ff]/50'
+                            ? 'border-[#0c66e4] bg-[#0c66e4]/5'
+                            : 'border-gray-200 dark:border-gray-700 hover:border-[#0c66e4]/50'
                         }`}
                       >
                         <input
@@ -314,7 +314,7 @@ export function QualificationGuide() {
                           value={option.value}
                           checked={monthlyRevenue === option.value}
                           onChange={(e) => setMonthlyRevenue(e.target.value)}
-                          className="w-5 h-5 text-[#1b17ff]"
+                          className="w-5 h-5 text-[#0c66e4]"
                         />
                         <span className="text-gray-700 dark:text-gray-300 font-medium">
                           {option.label}
@@ -326,7 +326,7 @@ export function QualificationGuide() {
 
                 {/* Question 3: Credit Score */}
                 <div>
-                  <label className="block text-base font-semibold text-[#041e42] dark:text-white mb-4">
+                  <label className="block text-base font-semibold text-[#172b4d] dark:text-white mb-4">
                     Question 3: What's your personal credit score range?
                   </label>
                   <div className="space-y-3">
@@ -340,8 +340,8 @@ export function QualificationGuide() {
                         key={option.value}
                         className={`flex items-center gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all ${
                           creditScore === option.value
-                            ? 'border-[#1b17ff] bg-[#1b17ff]/5'
-                            : 'border-gray-200 dark:border-gray-700 hover:border-[#1b17ff]/50'
+                            ? 'border-[#0c66e4] bg-[#0c66e4]/5'
+                            : 'border-gray-200 dark:border-gray-700 hover:border-[#0c66e4]/50'
                         }`}
                       >
                         <input
@@ -350,7 +350,7 @@ export function QualificationGuide() {
                           value={option.value}
                           checked={creditScore === option.value}
                           onChange={(e) => setCreditScore(e.target.value)}
-                          className="w-5 h-5 text-[#1b17ff]"
+                          className="w-5 h-5 text-[#0c66e4]"
                         />
                         <span className="text-gray-700 dark:text-gray-300 font-medium">
                           {option.label}
@@ -362,7 +362,7 @@ export function QualificationGuide() {
 
                 {/* Question 4: Card Processing */}
                 <div>
-                  <label className="block text-base font-semibold text-[#041e42] dark:text-white mb-4">
+                  <label className="block text-base font-semibold text-[#172b4d] dark:text-white mb-4">
                     Question 4: Do you process credit card payments regularly?
                   </label>
                   <div className="space-y-3">
@@ -376,8 +376,8 @@ export function QualificationGuide() {
                         key={option.value}
                         className={`flex items-center gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all ${
                           cardProcessing === option.value
-                            ? 'border-[#1b17ff] bg-[#1b17ff]/5'
-                            : 'border-gray-200 dark:border-gray-700 hover:border-[#1b17ff]/50'
+                            ? 'border-[#0c66e4] bg-[#0c66e4]/5'
+                            : 'border-gray-200 dark:border-gray-700 hover:border-[#0c66e4]/50'
                         }`}
                       >
                         <input
@@ -386,7 +386,7 @@ export function QualificationGuide() {
                           value={option.value}
                           checked={cardProcessing === option.value}
                           onChange={(e) => setCardProcessing(e.target.value)}
-                          className="w-5 h-5 text-[#1b17ff]"
+                          className="w-5 h-5 text-[#0c66e4]"
                         />
                         <span className="text-gray-700 dark:text-gray-300 font-medium">
                           {option.label}
@@ -399,7 +399,7 @@ export function QualificationGuide() {
                 <Button
                   onClick={handleQuizSubmit}
                   disabled={!timeInBusiness || !monthlyRevenue || !creditScore || !cardProcessing}
-                  className="w-full h-14 bg-gradient-to-r from-[#1b17ff] to-[#4845ff] hover:from-[#1510dd] hover:to-[#3835dd] text-white text-lg font-semibold rounded-lg shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full h-14 bg-gradient-to-r from-[#0c66e4] to-[#4845ff] hover:from-[#0055cc] hover:to-[#3835dd] text-white text-lg font-semibold rounded-lg shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Calculate My Approval Odds
                   <ArrowRight className="w-5 h-5 ml-2" />
@@ -411,7 +411,7 @@ export function QualificationGuide() {
           /* Results Screen */
           <div className="mb-10 animate-in slide-in-from-top-4 duration-300">
             <div className={`${getApprovalMessage(results.score).bgColor} rounded-xl p-6 md:p-8 border-2 ${getApprovalMessage(results.score).borderColor}`}>
-              <h4 className="text-2xl font-bold text-[#041e42] dark:text-white mb-6">
+              <h4 className="text-2xl font-bold text-[#172b4d] dark:text-white mb-6">
                 Your Qualification Assessment
               </h4>
 
@@ -430,7 +430,7 @@ export function QualificationGuide() {
                 </div>
                 <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 overflow-hidden">
                   <div
-                    className="bg-gradient-to-r from-[#1b17ff] to-[#4845ff] h-full rounded-full transition-all duration-1000"
+                    className="bg-gradient-to-r from-[#0c66e4] to-[#4845ff] h-full rounded-full transition-all duration-1000"
                     style={{ width: `${results.score}%` }}
                   />
                 </div>
@@ -458,14 +458,14 @@ export function QualificationGuide() {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button className="flex-1 h-12 bg-gradient-to-r from-[#1b17ff] to-[#4845ff] hover:from-[#1510dd] hover:to-[#3835dd] text-white font-semibold">
+                <Button className="flex-1 h-12 bg-gradient-to-r from-[#0c66e4] to-[#4845ff] hover:from-[#0055cc] hover:to-[#3835dd] text-white font-semibold">
                   Start Application
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
                 <Button
                   variant="outline"
                   onClick={() => setShowDetailedRequirements(true)}
-                  className="flex-1 h-12 border-2 border-[#1b17ff] text-[#1b17ff] hover:bg-[#1b17ff]/5"
+                  className="flex-1 h-12 border-2 border-[#0c66e4] text-[#0c66e4] hover:bg-[#0c66e4]/5"
                 >
                   See Detailed Requirements
                   <ChevronDown className="w-4 h-4 ml-2" />
@@ -474,7 +474,7 @@ export function QualificationGuide() {
 
               <button
                 onClick={resetQuiz}
-                className="mt-4 text-sm text-gray-600 dark:text-gray-400 hover:text-[#1b17ff] underline"
+                className="mt-4 text-sm text-gray-600 dark:text-gray-400 hover:text-[#0c66e4] underline"
               >
                 Retake Assessment
               </button>
@@ -485,7 +485,7 @@ export function QualificationGuide() {
         {/* Core Qualification Criteria - Shows after results or by default */}
         {(showResults && showDetailedRequirements) || (!showResults && true) ? (
           <div className="mb-10 animate-in slide-in-from-top-4 duration-300">
-            <h4 className="text-2xl font-bold text-[#041e42] dark:text-white mb-6">
+            <h4 className="text-2xl font-bold text-[#172b4d] dark:text-white mb-6">
               Core Qualification Criteria
             </h4>
 
@@ -496,10 +496,10 @@ export function QualificationGuide() {
                   className="bg-gradient-to-br from-blue-50 to-white dark:from-gray-800 dark:to-gray-900 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm"
                 >
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 bg-[#1b17ff] rounded-lg flex items-center justify-center">
+                    <div className="w-12 h-12 bg-[#0c66e4] rounded-lg flex items-center justify-center">
                       <criteria.icon className="w-6 h-6 text-white" />
                     </div>
-                    <h5 className="text-lg font-bold text-[#041e42] dark:text-white">
+                    <h5 className="text-lg font-bold text-[#172b4d] dark:text-white">
                       {criteria.title}
                     </h5>
                   </div>
@@ -509,7 +509,7 @@ export function QualificationGuide() {
                       <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">
                         Minimum
                       </p>
-                      <p className="text-lg font-bold text-[#041e42] dark:text-white">
+                      <p className="text-lg font-bold text-[#172b4d] dark:text-white">
                         {criteria.minimum}
                       </p>
                     </div>
@@ -534,7 +534,7 @@ export function QualificationGuide() {
             </div>
 
             {/* Approval Outlook by Business Profile */}
-            <h4 className="text-2xl font-bold text-[#041e42] dark:text-white mb-4">
+            <h4 className="text-2xl font-bold text-[#172b4d] dark:text-white mb-4">
               Approval Outlook by Business Profile
             </h4>
             <p className="text-gray-600 dark:text-gray-400 mb-6">
@@ -610,7 +610,7 @@ export function QualificationGuide() {
 
         {/* Documentation Requirements */}
         <div className="mb-10">
-          <h4 className="text-2xl font-bold text-[#041e42] dark:text-white mb-4">
+          <h4 className="text-2xl font-bold text-[#172b4d] dark:text-white mb-4">
             Documentation Requirements
           </h4>
           <p className="text-gray-600 dark:text-gray-400 mb-6">
@@ -621,7 +621,7 @@ export function QualificationGuide() {
             <div className="bg-green-50 dark:bg-green-900/20 rounded-xl p-6 border border-green-200 dark:border-green-800">
               <div className="flex items-center gap-2 mb-4">
                 <FileText className="w-6 h-6 text-green-600 dark:text-green-400" />
-                <h5 className="text-lg font-bold text-[#041e42] dark:text-white">
+                <h5 className="text-lg font-bold text-[#172b4d] dark:text-white">
                   Essential Documents (Required)
                 </h5>
               </div>
@@ -638,7 +638,7 @@ export function QualificationGuide() {
             <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
               <div className="flex items-center gap-2 mb-4">
                 <FileText className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                <h5 className="text-lg font-bold text-[#041e42] dark:text-white">
+                <h5 className="text-lg font-bold text-[#172b4d] dark:text-white">
                   Conditional Documents (May be requested)
                 </h5>
               </div>
@@ -653,7 +653,7 @@ export function QualificationGuide() {
             </div>
           </div>
 
-          <button className="mt-6 inline-flex items-center gap-2 px-6 py-3 bg-white dark:bg-gray-800 border-2 border-[#1b17ff] rounded-lg text-[#1b17ff] font-semibold hover:bg-[#1b17ff] hover:text-white transition-all duration-200">
+          <button className="mt-6 inline-flex items-center gap-2 px-6 py-3 bg-white dark:bg-gray-800 border-2 border-[#0c66e4] rounded-lg text-[#0c66e4] font-semibold hover:bg-[#0c66e4] hover:text-white transition-all duration-200">
             <Download className="w-4 h-4" />
             Download Complete Checklist (PDF)
           </button>
@@ -661,7 +661,7 @@ export function QualificationGuide() {
 
         {/* Situations That May Impact Approval */}
         <div className="mb-10">
-          <h4 className="text-2xl font-bold text-[#041e42] dark:text-white mb-6">
+          <h4 className="text-2xl font-bold text-[#172b4d] dark:text-white mb-6">
             Situations That May Impact Approval
           </h4>
 
@@ -669,7 +669,7 @@ export function QualificationGuide() {
             <div className="bg-red-50 dark:bg-red-900/20 rounded-xl p-6 border border-red-200 dark:border-red-800">
               <div className="flex items-center gap-2 mb-4">
                 <XCircle className="w-6 h-6 text-red-600 dark:text-red-400" />
-                <h5 className="text-lg font-bold text-[#041e42] dark:text-white">
+                <h5 className="text-lg font-bold text-[#172b4d] dark:text-white">
                   We cannot approve applications with:
                 </h5>
               </div>
@@ -686,7 +686,7 @@ export function QualificationGuide() {
             <div className="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-6 border border-amber-200 dark:border-amber-800">
               <div className="flex items-center gap-2 mb-4">
                 <AlertCircle className="w-6 h-6 text-amber-600 dark:text-amber-400" />
-                <h5 className="text-lg font-bold text-[#041e42] dark:text-white">
+                <h5 className="text-lg font-bold text-[#172b4d] dark:text-white">
                   Situations requiring additional review:
                 </h5>
               </div>
@@ -710,41 +710,41 @@ export function QualificationGuide() {
 
         {/* Strengthening Your Application */}
         <div className="mb-10">
-          <h4 className="text-2xl font-bold text-[#041e42] dark:text-white mb-6">
+          <h4 className="text-2xl font-bold text-[#172b4d] dark:text-white mb-6">
             Strengthening Your Application
           </h4>
 
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-gradient-to-br from-blue-50 to-white dark:from-gray-800 dark:to-gray-900 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
-              <h5 className="text-lg font-bold text-[#041e42] dark:text-white mb-4">
+              <h5 className="text-lg font-bold text-[#172b4d] dark:text-white mb-4">
                 Preparation Steps:
               </h5>
               <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
                 <li className="flex items-start gap-2">
-                  <span className="text-[#1b17ff]">├─</span>
+                  <span className="text-[#0c66e4]">├─</span>
                   <span>Gather 6 months of complete bank statements</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#1b17ff]">├─</span>
+                  <span className="text-[#0c66e4]">├─</span>
                   <span>Collect 3 months of processing statements (all pages)</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#1b17ff]">├─</span>
+                  <span className="text-[#0c66e4]">├─</span>
                   <span>Verify business information is current</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#1b17ff]">├─</span>
+                  <span className="text-[#0c66e4]">├─</span>
                   <span>Review personal credit report for accuracy</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#1b17ff]">└─</span>
+                  <span className="text-[#0c66e4]">└─</span>
                   <span>Organize business formation documents</span>
                 </li>
               </ul>
             </div>
 
             <div className="bg-gradient-to-br from-green-50 to-white dark:from-gray-800 dark:to-gray-900 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
-              <h5 className="text-lg font-bold text-[#041e42] dark:text-white mb-4">
+              <h5 className="text-lg font-bold text-[#172b4d] dark:text-white mb-4">
                 To Qualify for Better Terms:
               </h5>
               <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
@@ -777,10 +777,10 @@ export function QualificationGuide() {
               Our underwriting team is available to discuss your specific situation and advise on the best time to apply.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
-              <Button variant="outline" className="border-2 border-[#1b17ff] text-[#1b17ff] hover:bg-[#1b17ff]/5">
+              <Button variant="outline" className="border-2 border-[#0c66e4] text-[#0c66e4] hover:bg-[#0c66e4]/5">
                 Schedule Pre-Application Consultation
               </Button>
-              <Button className="bg-gradient-to-r from-[#1b17ff] to-[#4845ff] hover:from-[#1510dd] hover:to-[#3835dd] text-white">
+              <Button className="bg-gradient-to-r from-[#0c66e4] to-[#4845ff] hover:from-[#0055cc] hover:to-[#3835dd] text-white">
                 Apply Now
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
@@ -794,7 +794,7 @@ export function QualificationGuide() {
             onClick={() => setShowFAQs(!showFAQs)}
             className="flex items-center justify-between w-full text-left mb-6"
           >
-            <h4 className="text-2xl font-bold text-[#041e42] dark:text-white">
+            <h4 className="text-2xl font-bold text-[#172b4d] dark:text-white">
               Frequently Asked Questions
             </h4>
             {showFAQs ? (
@@ -811,7 +811,7 @@ export function QualificationGuide() {
                   key={index}
                   className="bg-gray-50 dark:bg-gray-800 rounded-lg p-5 border border-gray-200 dark:border-gray-700"
                 >
-                  <h5 className="font-bold text-[#041e42] dark:text-white mb-2">
+                  <h5 className="font-bold text-[#172b4d] dark:text-white mb-2">
                     {faq.q}
                   </h5>
                   <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">

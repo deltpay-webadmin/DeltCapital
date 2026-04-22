@@ -46,7 +46,7 @@ interface UseCapitalSectionProps {
 }
 
 /* ─── Category data ─── */
-const ACCENT = '#1B17FF';
+const ACCENT = '#0c66e4';
 const ACCENT_LIGHT = '#6C63FF';
 
 interface CategoryData {
@@ -63,7 +63,7 @@ interface CategoryData {
   insight: string;
 }
 
-const CHART_COLORS = ['#1B17FF', '#6C63FF', '#9B97FF', '#C4C1FF', '#22C55E', '#F59E0B'];
+const CHART_COLORS = ['#0c66e4', '#6C63FF', '#9B97FF', '#C4C1FF', '#22C55E', '#F59E0B'];
 
 export function UseCapitalSection({ }: UseCapitalSectionProps) {
   const { t } = useLanguage();
@@ -77,7 +77,7 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
       icon: Wrench,
       titleKey: 'capital.equipment.title',
       descKey: 'capital.equipment.desc',
-      accentColor: '#1B17FF',
+      accentColor: '#0c66e4',
       chartType: 'donut',
       chartLabel: 'Budget Allocation',
       statValue: '$45K',
@@ -239,9 +239,9 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
   const renderChart = (cat: CategoryData) => {
     const tooltipStyle = {
       backgroundColor: '#ffffff',
-      border: '1px solid #E4E7EB',
+      border: '1px solid #dcdfe4',
       borderRadius: '8px',
-      color: '#041E42',
+      color: '#172b4d',
       fontSize: '12px',
       boxShadow: '0 4px 12px rgba(4,30,66,0.08)',
     };
@@ -270,10 +270,10 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
             </PieChart>
             <div className="ml-4 space-y-2">
               {cat.chartData.map((d: any, i: number) => (
-                <div key={i} className="flex items-center gap-2 text-sm text-[#041E42]/70">
+                <div key={i} className="flex items-center gap-2 text-sm text-[#172b4d]/70">
                   <div className="w-3 h-3 rounded-full" style={{ backgroundColor: CHART_COLORS[i % CHART_COLORS.length] }} />
                   <span>{d.name}</span>
-                  <span className="text-[#041E42]/40 ml-auto">{d.value}%</span>
+                  <span className="text-[#172b4d]/40 ml-auto">{d.value}%</span>
                 </div>
               ))}
             </div>
@@ -357,14 +357,14 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
   };
 
   return (
-    <section ref={sectionRef} className="py-12 md:py-16 lg:py-20 bg-[#ededf6] overflow-hidden relative">
+    <section ref={sectionRef} className="py-12 md:py-16 lg:py-20 bg-[#fafbfc] overflow-hidden relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* ── Header ── */}
         <div className="text-center mb-8 lg:mb-12">
           <motion.p
             className="uppercase tracking-[0.15em] mb-2"
-            style={{ fontSize: '11px', color: '#4945ff' }}
+            style={{ fontSize: '11px', color: '#0c66e4' }}
             initial={{ opacity: 0, y: 10 }}
             animate={isInView ? { opacity: 1, y: 0 } : undefined}
             transition={{ duration: 0.5 }}
@@ -373,7 +373,7 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
           </motion.p>
           <motion.h2
             className="mb-3 lg:mb-4 tracking-tight text-xl sm:text-2xl lg:text-[2rem]"
-            style={{ fontWeight: 700, color: '#041e42' }}
+            style={{ fontWeight: 700, color: '#172b4d' }}
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : undefined}
             transition={{ duration: 0.6, delay: 0.1 }}
@@ -394,7 +394,7 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
             MAIN EXPLORER — Light container (iPhone 17 style)
             ═══════════════════════════════════════════════════ */}
         <motion.div
-          className="rounded-2xl lg:rounded-3xl overflow-hidden bg-[#F7F8FC] border border-[#4945ff0F] shadow-[0_2px_24px_rgba(4,30,66,0.06)]"
+          className="rounded-2xl lg:rounded-3xl overflow-hidden bg-[#f1f2f4] border border-[#0c66e40F] shadow-[0_2px_24px_rgba(4,30,66,0.06)]"
           initial={{ opacity: 0, y: 40 }}
           animate={isInView ? { opacity: 1, y: 0 } : undefined}
           transition={{ duration: 0.7, delay: 0.3, ease: [0.455, 0.03, 0.515, 0.955] }}
@@ -402,7 +402,7 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
           <div className="grid lg:grid-cols-[300px_1fr] xl:grid-cols-[360px_1fr] min-h-[420px] lg:min-h-[480px]">
 
             {/* ═══ LEFT: Feature list ═══ */}
-            <div className="relative px-4 lg:px-6 xl:px-8 py-6 lg:py-8 flex flex-col bg-[#041E42]">
+            <div className="relative px-4 lg:px-6 xl:px-8 py-6 lg:py-8 flex flex-col bg-[#172b4d]">
               {/* Up / Down arrows */}
               <div className="flex items-center gap-2 mb-4 lg:mb-6">
                 <button
@@ -517,7 +517,7 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
             </div>
 
             {/* ═══ RIGHT: Data visualization ═══ */}
-            <div className="relative border-t lg:border-t-0 lg:border-l border-[#4945ff0F] px-4 lg:px-6 xl:px-10 py-6 lg:py-8 flex flex-col overflow-hidden bg-[#F7F8FC]">
+            <div className="relative border-t lg:border-t-0 lg:border-l border-[#0c66e40F] px-4 lg:px-6 xl:px-10 py-6 lg:py-8 flex flex-col overflow-hidden bg-[#f1f2f4]">
 
               {/* KPI cards row */}
               <AnimatePresence mode="wait">
@@ -532,11 +532,11 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
                   {active.kpis.map((kpi, i) => (
                     <div
                       key={i}
-                      className="rounded-xl border border-[#E4E7EB] px-3 lg:px-4 py-2.5 lg:py-3 bg-[#F5F7FA]/50"
+                      className="rounded-xl border border-[#dcdfe4] px-3 lg:px-4 py-2.5 lg:py-3 bg-[#f1f2f4]/50"
                     >
-                      <p className="text-[10px] lg:text-xs text-[#041E42]/40 mb-0.5 lg:mb-1">{kpi.label}</p>
+                      <p className="text-[10px] lg:text-xs text-[#172b4d]/40 mb-0.5 lg:mb-1">{kpi.label}</p>
                       <div className="flex items-center gap-1 lg:gap-1.5">
-                        <span className="text-base lg:text-lg font-semibold text-[#041E42]">{kpi.value}</span>
+                        <span className="text-base lg:text-lg font-semibold text-[#172b4d]">{kpi.value}</span>
                         {kpi.trend === 'up' && (
                           <ArrowUpRight className="w-3.5 h-3.5 text-[#22C55E]" />
                         )}
@@ -557,10 +557,10 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
                   className="mb-4 flex items-center gap-3"
                 >
                   <div className="flex items-center gap-2">
-                    <active.icon className="w-5 h-5 text-[#041E42]/40" />
-                    <span className="text-sm text-[#041E42]/45 uppercase tracking-wider">{active.chartLabel}</span>
+                    <active.icon className="w-5 h-5 text-[#172b4d]/40" />
+                    <span className="text-sm text-[#172b4d]/45 uppercase tracking-wider">{active.chartLabel}</span>
                   </div>
-                  <div className="flex-1 h-px bg-[#E4E7EB]" />
+                  <div className="flex-1 h-px bg-[#dcdfe4]" />
                   <div
                     className="px-3 py-1 rounded text-xs font-semibold"
                     style={{ backgroundColor: `${active.accentColor}12`, color: active.accentColor }}
@@ -592,7 +592,7 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
                   transition={{ duration: 0.35, delay: 0.1 }}
-                  className="mt-4 lg:mt-5 flex items-start gap-2.5 lg:gap-3 rounded-xl bg-[#F5F7FA] border border-[#E4E7EB] px-3 lg:px-4 py-2.5 lg:py-3"
+                  className="mt-4 lg:mt-5 flex items-start gap-2.5 lg:gap-3 rounded-xl bg-[#f1f2f4] border border-[#dcdfe4] px-3 lg:px-4 py-2.5 lg:py-3"
                 >
                   <div
                     className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
@@ -600,7 +600,7 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
                   >
                     <Lightbulb className="w-3.5 h-3.5" style={{ color: active.accentColor }} />
                   </div>
-                  <p className="text-xs lg:text-sm leading-relaxed text-[#041E42]/60">
+                  <p className="text-xs lg:text-sm leading-relaxed text-[#172b4d]/60">
                     {active.insight}
                   </p>
                 </motion.div>

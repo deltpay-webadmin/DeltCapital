@@ -46,7 +46,7 @@ export function UsefulGuidesSection() {
       <section className="py-24 bg-[#FFFFFF] dark:bg-[#0A1F35]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-[#041e42] dark:text-white mb-4">
+            <h2 className="text-4xl font-bold text-[#172b4d] dark:text-white mb-4">
               {t('guides.title')}
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
@@ -59,18 +59,18 @@ export function UsefulGuidesSection() {
               <button
                 key={index}
                 onClick={() => guide.component ? setActiveGuide(guide.id) : null}
-                className="bg-white dark:bg-[#0f1f2e] p-8 rounded-xl shadow-sm border-2 border-gray-200 dark:border-gray-700 hover:shadow-xl hover:border-[#1b17ff] transition-all group text-left w-full"
+                className="bg-white dark:bg-[#0f1f2e] p-8 rounded-xl shadow-sm border-2 border-gray-200 dark:border-gray-700 hover:shadow-xl hover:border-[#0c66e4] transition-all group text-left w-full"
               >
-                <div className="w-14 h-14 bg-[#1b17ff] rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-all">
+                <div className="w-14 h-14 bg-[#0c66e4] rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-all">
                   <guide.icon className="w-7 h-7 text-white" strokeWidth={2} />
                 </div>
-                <h3 className="text-xl font-bold text-[#041e42] dark:text-white mb-3">
+                <h3 className="text-xl font-bold text-[#172b4d] dark:text-white mb-3">
                   {guide.title}
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
                   {guide.description}
                 </p>
-                <div className="text-[#1b17ff] font-semibold flex items-center">
+                <div className="text-[#0c66e4] font-semibold flex items-center">
                   {t('guides.open')} →
                 </div>
               </button>

@@ -11,7 +11,7 @@ export function BlogPostDigital() {
         Your outdated POS system just cost you three customers who walked out because the line was too slow. Your competitor's modern system processed twice as many transactions in the same time. Technology isn't optional anymore—it's survival.
       </p>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-4">The Technology Gap Is a Revenue Gap</h2>
+      <h2 className="text-3xl text-[#172b4d] dark:text-white mt-12 mb-4">The Technology Gap Is a Revenue Gap</h2>
       <p>
         Modern businesses operate on modern technology. Cloud-based inventory systems prevent stockouts. Advanced POS systems track customer preferences and drive repeat purchases. E-commerce platforms reach customers 24/7. Automated marketing nurtures leads while you sleep.
       </p>
@@ -20,10 +20,10 @@ export function BlogPostDigital() {
         Every day on outdated systems is lost revenue, frustrated customers, and competitive disadvantage. But technology investments require capital most small businesses don't have liquid.
       </p>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-4">Technology Investments That Pay for Themselves</h2>
+      <h2 className="text-3xl text-[#172b4d] dark:text-white mt-12 mb-4">Technology Investments That Pay for Themselves</h2>
       
       <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg my-8">
-        <h3 className="text-2xl text-[#1B17FF] mb-4">ROI-Positive Technology Upgrades</h3>
+        <h3 className="text-2xl text-[#0c66e4] mb-4">ROI-Positive Technology Upgrades</h3>
         <ul className="space-y-3">
           <li><strong>Modern POS Systems:</strong> Faster transactions = more customers served = higher revenue</li>
           <li><strong>Inventory Management:</strong> Reduce stockouts by 80%, optimize ordering, improve cash flow</li>
@@ -34,10 +34,10 @@ export function BlogPostDigital() {
         </ul>
       </div>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-4">Real Digital Transformation Success</h2>
+      <h2 className="text-3xl text-[#172b4d] dark:text-white mt-12 mb-4">Real Digital Transformation Success</h2>
       
       <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg my-8">
-        <h3 className="text-2xl text-[#041E42] dark:text-white mb-4">Case Study: Boutique Retail Store</h3>
+        <h3 className="text-2xl text-[#172b4d] dark:text-white mb-4">Case Study: Boutique Retail Store</h3>
         <p className="mb-2"><strong>Investment:</strong> $18,000 for modern POS, inventory system, e-commerce platform</p>
         <p className="mb-2"><strong>Implementation:</strong> 2 weeks to deploy and train staff</p>
         <p className="mb-4"><strong>Results in 90 Days:</strong></p>
@@ -51,7 +51,7 @@ export function BlogPostDigital() {
         <p className="mt-4"><strong>Payback Period:</strong> 4 months. <strong>Ongoing Impact:</strong> $8,000+ additional monthly profit</p>
       </div>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-4">Why Revenue-Based Financing for Technology Investments</h2>
+      <h2 className="text-3xl text-[#172b4d] dark:text-white mt-12 mb-4">Why Revenue-Based Financing for Technology Investments</h2>
       
       <p>
         Technology vendors want payment upfront. Implementation consultants don't work on contingency. Software subscriptions require annual commitments. The $25,000 you need for complete digital transformation doesn't wait for bank approval.
@@ -68,7 +68,7 @@ export function BlogPostDigital() {
         <li><strong>Training & Support:</strong> Include implementation consulting and staff training in capital request</li>
       </ul>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-4">The Compounding Effect of Better Systems</h2>
+      <h2 className="text-3xl text-[#172b4d] dark:text-white mt-12 mb-4">The Compounding Effect of Better Systems</h2>
       
       <p>
         Technology improvements compound. Better inventory data leads to better purchasing decisions. CRM insights drive more effective marketing. E-commerce captures sales that would have been lost. Automated systems free staff time for customer service.
@@ -78,7 +78,7 @@ export function BlogPostDigital() {
         The gap between businesses with modern systems and those limping along on outdated technology grows wider every month. Early investment creates permanent competitive advantage.
       </p>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-4">Your Competitors Are Upgrading</h2>
+      <h2 className="text-3xl text-[#172b4d] dark:text-white mt-12 mb-4">Your Competitors Are Upgrading</h2>
       
       <p>
         The question isn't whether to invest in technology—it's whether to invest before or after your competitors. First movers capture market share. Late adopters play catch-up forever.
@@ -88,10 +88,10 @@ export function BlogPostDigital() {
         Revenue-Based Financing removes the "we can't afford it yet" objection. If the technology will improve operations and increase revenue, you can afford it. The question is whether you can afford NOT to.
       </p>
 
-      <div className="bg-[#1B17FF] text-white p-8 rounded-xl my-12 text-center">
+      <div className="bg-[#0c66e4] text-white p-8 rounded-xl my-12 text-center">
         <h3 className="text-2xl mb-4">Ready to Modernize Your Business?</h3>
         <p className="text-lg mb-6">Get technology capital in 24-48 hours. Fund POS, inventory, e-commerce, CRM—complete transformation. $10K to $250K.</p>
-        <button className="bg-white text-[#1B17FF] px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition-colors">
+        <button className="bg-white text-[#0c66e4] px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition-colors">
           Fund Your Tech Upgrade
         </button>
       </div>

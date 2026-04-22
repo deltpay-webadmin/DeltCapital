@@ -171,9 +171,9 @@ export function Chatbot({ onApplyClick, onCalculatorClick, onBookingClick, onSup
   return (
     <div className="fixed bottom-6 right-6 z-50">
       {isExpanded ? (
-        <div className="bg-white rounded-lg shadow-[0_8px_32px_rgba(0,0,0,0.12)] w-[380px] overflow-hidden border border-[#041e42]/8">
+        <div className="bg-white rounded-lg shadow-[0_8px_32px_rgba(0,0,0,0.12)] w-[380px] overflow-hidden border border-[#172b4d]/8">
           {/* Header — refined institutional */}
-          <div className="bg-gradient-to-r from-[#041e42] to-[#062a5a] text-white px-4 py-4 flex items-center justify-between">
+          <div className="bg-gradient-to-r from-[#172b4d] to-[#062a5a] text-white px-4 py-4 flex items-center justify-between">
             <img src={deltLogoClean} alt="Delt" className="h-20 object-contain" />
             <button
               onClick={() => setIsExpanded(false)}
@@ -187,17 +187,17 @@ export function Chatbot({ onApplyClick, onCalculatorClick, onBookingClick, onSup
           {/* Chat Content */}
           <div className="p-5 max-h-[520px] overflow-y-auto bg-[#fafbfc]">
             {/* Time stamp — minimal */}
-            <div className="text-center text-[11px] text-[#041e42]/40 font-medium tracking-wide mb-5 uppercase">
+            <div className="text-center text-[11px] text-[#172b4d]/40 font-medium tracking-wide mb-5 uppercase">
               {formatTime()}
             </div>
 
             {/* Bot Message — refined card */}
             <div className="flex items-start gap-3 mb-6">
-              <div className="w-8 h-8 bg-gradient-to-br from-[#4945ff] to-[#3b38d9] rounded-md flex items-center justify-center flex-shrink-0 shadow-sm">
+              <div className="w-8 h-8 bg-gradient-to-br from-[#0c66e4] to-[#0055cc] rounded-md flex items-center justify-center flex-shrink-0 shadow-sm">
                 <MessageCircle className="w-4 h-4 text-white" strokeWidth={2} />
               </div>
-              <div className="bg-white border border-[#041e42]/6 rounded-lg rounded-tl-none px-4 py-3.5 flex-1 shadow-sm">
-                <p className="text-[13px] leading-relaxed text-[#041e42]/85" style={{ fontWeight: 450 }}>
+              <div className="bg-white border border-[#172b4d]/6 rounded-lg rounded-tl-none px-4 py-3.5 flex-1 shadow-sm">
+                <p className="text-[13px] leading-relaxed text-[#172b4d]/85" style={{ fontWeight: 450 }}>
                   {language === 'es' 
                     ? 'Bienvenido. ¿Cómo podemos ayudarte hoy? Nuestro equipo está disponible para analizar tus opciones de financiamiento.'
                     : 'Welcome. How can we assist you today? Our team is available to discuss your financing options.'}
@@ -209,7 +209,7 @@ export function Chatbot({ onApplyClick, onCalculatorClick, onBookingClick, onSup
             <div className="space-y-2 ml-11">
               <button
                 onClick={() => handleAction('apply')}
-                className="group w-full bg-white hover:bg-[#4945ff] border border-[#041e42]/8 hover:border-[#4945ff] text-[#041e42] hover:text-white rounded-md px-4 py-3 text-[13px] transition-all duration-200 text-left shadow-sm hover:shadow-md"
+                className="group w-full bg-white hover:bg-[#0c66e4] border border-[#172b4d]/8 hover:border-[#0c66e4] text-[#172b4d] hover:text-white rounded-md px-4 py-3 text-[13px] transition-all duration-200 text-left shadow-sm hover:shadow-md"
                 style={{ fontWeight: 500 }}
               >
                 <span className="block" style={{ letterSpacing: '0.01em' }}>
@@ -218,7 +218,7 @@ export function Chatbot({ onApplyClick, onCalculatorClick, onBookingClick, onSup
               </button>
               <button
                 onClick={() => handleAction('calculator')}
-                className="group w-full bg-white hover:bg-[#4945ff] border border-[#041e42]/8 hover:border-[#4945ff] text-[#041e42] hover:text-white rounded-md px-4 py-3 text-[13px] transition-all duration-200 text-left shadow-sm hover:shadow-md"
+                className="group w-full bg-white hover:bg-[#0c66e4] border border-[#172b4d]/8 hover:border-[#0c66e4] text-[#172b4d] hover:text-white rounded-md px-4 py-3 text-[13px] transition-all duration-200 text-left shadow-sm hover:shadow-md"
                 style={{ fontWeight: 500 }}
               >
                 <span className="block" style={{ letterSpacing: '0.01em' }}>
@@ -227,7 +227,7 @@ export function Chatbot({ onApplyClick, onCalculatorClick, onBookingClick, onSup
               </button>
               <button
                 onClick={() => handleAction('book-meeting')}
-                className="group w-full bg-white hover:bg-[#4945ff] border border-[#041e42]/8 hover:border-[#4945ff] text-[#041e42] hover:text-white rounded-md px-4 py-3 text-[13px] transition-all duration-200 text-left shadow-sm hover:shadow-md"
+                className="group w-full bg-white hover:bg-[#0c66e4] border border-[#172b4d]/8 hover:border-[#0c66e4] text-[#172b4d] hover:text-white rounded-md px-4 py-3 text-[13px] transition-all duration-200 text-left shadow-sm hover:shadow-md"
                 style={{ fontWeight: 500 }}
               >
                 <span className="block" style={{ letterSpacing: '0.01em' }}>
@@ -236,7 +236,7 @@ export function Chatbot({ onApplyClick, onCalculatorClick, onBookingClick, onSup
               </button>
               <button
                 onClick={() => handleAction('support')}
-                className="group w-full bg-white hover:bg-[#4945ff] border border-[#041e42]/8 hover:border-[#4945ff] text-[#041e42] hover:text-white rounded-md px-4 py-3 text-[13px] transition-all duration-200 text-left shadow-sm hover:shadow-md"
+                className="group w-full bg-white hover:bg-[#0c66e4] border border-[#172b4d]/8 hover:border-[#0c66e4] text-[#172b4d] hover:text-white rounded-md px-4 py-3 text-[13px] transition-all duration-200 text-left shadow-sm hover:shadow-md"
                 style={{ fontWeight: 500 }}
               >
                 <span className="block" style={{ letterSpacing: '0.01em' }}>
@@ -249,19 +249,19 @@ export function Chatbot({ onApplyClick, onCalculatorClick, onBookingClick, onSup
             {messages.map((message) => (
               <div key={message.id} className={`flex items-start gap-3 mb-4 mt-2 ${message.type === 'user' ? 'justify-end' : ''}`}>
                 {message.type === 'bot' && (
-                  <div className="w-8 h-8 bg-gradient-to-br from-[#4945ff] to-[#3b38d9] rounded-md flex items-center justify-center flex-shrink-0 shadow-sm">
+                  <div className="w-8 h-8 bg-gradient-to-br from-[#0c66e4] to-[#0055cc] rounded-md flex items-center justify-center flex-shrink-0 shadow-sm">
                     <MessageCircle className="w-4 h-4 text-white" strokeWidth={2} />
                   </div>
                 )}
                 <div
                   className={`px-4 py-3.5 shadow-sm max-w-[80%] ${
                     message.type === 'user' 
-                      ? 'bg-[#4945ff] border border-[#4945ff] rounded-lg rounded-tr-none' 
-                      : 'bg-white border border-[#041e42]/6 rounded-lg rounded-tl-none'
+                      ? 'bg-[#0c66e4] border border-[#0c66e4] rounded-lg rounded-tr-none' 
+                      : 'bg-white border border-[#172b4d]/6 rounded-lg rounded-tl-none'
                   }`}
                 >
                   <p className={`text-[13px] leading-relaxed ${
-                    message.type === 'user' ? 'text-white' : 'text-[#041e42]/85'
+                    message.type === 'user' ? 'text-white' : 'text-[#172b4d]/85'
                   }`} style={{ fontWeight: 450 }}>
                     {message.text}
                   </p>
@@ -274,26 +274,26 @@ export function Chatbot({ onApplyClick, onCalculatorClick, onBookingClick, onSup
           </div>
 
           {/* Input and Send Button */}
-          <div className="px-5 py-3 bg-white border-t border-[#041e42]/6 flex items-center">
+          <div className="px-5 py-3 bg-white border-t border-[#172b4d]/6 flex items-center">
             <input
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               placeholder={language === 'es' ? 'Escribe un mensaje...' : 'Type a message...'}
-              className="w-full bg-[#fafbfc] border border-[#041e42]/6 rounded-lg px-4 py-3 text-[13px] leading-relaxed text-[#041e42]/85"
+              className="w-full bg-[#fafbfc] border border-[#172b4d]/6 rounded-lg px-4 py-3 text-[13px] leading-relaxed text-[#172b4d]/85"
               onKeyPress={handleKeyPress}
             />
             <button
               onClick={sendMessage}
-              className="ml-3 bg-[#4945ff] hover:bg-[#3b38d9] text-white rounded-md px-4 py-3 text-[13px] transition-all duration-200 shadow-sm hover:shadow-md"
+              className="ml-3 bg-[#0c66e4] hover:bg-[#0055cc] text-white rounded-md px-4 py-3 text-[13px] transition-all duration-200 shadow-sm hover:shadow-md"
             >
               <Send className="w-4 h-4" strokeWidth={2} />
             </button>
           </div>
 
           {/* Footer — subtle */}
-          <div className="px-5 py-3 bg-white border-t border-[#041e42]/6">
-            <p className="text-[11px] text-[#041e42]/50 text-center font-medium tracking-wide">
+          <div className="px-5 py-3 bg-white border-t border-[#172b4d]/6">
+            <p className="text-[11px] text-[#172b4d]/50 text-center font-medium tracking-wide">
               {language === 'es' 
                 ? 'Disponible 24/7 · Respuesta en minutos'
                 : 'Available 24/7 · Response within minutes'}
@@ -303,11 +303,11 @@ export function Chatbot({ onApplyClick, onCalculatorClick, onBookingClick, onSup
       ) : (
         <button
           onClick={() => setIsExpanded(true)}
-          className="bg-gradient-to-br from-[#041e42] to-[#062a5a] hover:from-[#062a5a] hover:to-[#041e42] text-white rounded-lg w-14 h-14 flex items-center justify-center shadow-[0_4px_24px_rgba(4,30,66,0.25)] transition-all duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(4,30,66,0.35)] relative group"
+          className="bg-gradient-to-br from-[#172b4d] to-[#062a5a] hover:from-[#062a5a] hover:to-[#172b4d] text-white rounded-lg w-14 h-14 flex items-center justify-center shadow-[0_4px_24px_rgba(4,30,66,0.25)] transition-all duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(4,30,66,0.35)] relative group"
           aria-label="Open chat"
         >
           <MessageCircle className="w-6 h-6 transition-transform group-hover:scale-110" strokeWidth={2} />
-          <span className="absolute -top-1 -right-1 bg-[#4945ff] text-white text-[10px] font-bold rounded-full w-[18px] h-[18px] flex items-center justify-center shadow-sm border-2 border-white">
+          <span className="absolute -top-1 -right-1 bg-[#0c66e4] text-white text-[10px] font-bold rounded-full w-[18px] h-[18px] flex items-center justify-center shadow-sm border-2 border-white">
             1
           </span>
         </button>

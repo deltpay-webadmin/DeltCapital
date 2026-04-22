@@ -124,7 +124,7 @@ export function HowItWorksPage({ onClose, onApplyClick, onCalculatorClick, onAbo
   }, [expandedStep]);
 
   return (
-    <div className="fixed inset-0 bg-[#ededf6] z-50 flex flex-col">
+    <div className="fixed inset-0 bg-[#fafbfc] z-50 flex flex-col">
       {/* Spacer for navbar */}
       <div className="flex-shrink-0 h-[73px]" />
       {/* Scrollable content below navbar */}
@@ -136,16 +136,16 @@ export function HowItWorksPage({ onClose, onApplyClick, onCalculatorClick, onAbo
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="text-4xl sm:text-5xl md:text-6xl text-[#041E42] mb-5 tracking-tight"
+              className="text-4xl sm:text-5xl md:text-6xl text-[#172b4d] mb-5 tracking-tight"
               style={{ fontWeight: 700 }}
             >
-              How it <em className="text-[#4945ff] not-italic" style={{ fontStyle: 'italic' }}>works</em>
+              How it <em className="text-[#0c66e4] not-italic" style={{ fontStyle: 'italic' }}>works</em>
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.15 }}
-              className="text-[#041E42]/60 max-w-xl mx-auto"
+              className="text-[#172b4d]/60 max-w-xl mx-auto"
               style={{ fontSize: '1.05rem', lineHeight: 1.7 }}
             >
               Getting revenue-based financing shouldn't be complicated. We've simplified the process so you can focus on what matters — growing your business.
@@ -173,8 +173,8 @@ export function HowItWorksPage({ onClose, onApplyClick, onCalculatorClick, onAbo
                     <motion.div
                       className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 transition-colors duration-300 ${
                         expandedStep === step.number
-                          ? 'bg-[#4945ff] text-white'
-                          : 'bg-[#4945ff]/10 text-[#4945ff] group-hover:bg-[#4945ff]/25'
+                          ? 'bg-[#0c66e4] text-white'
+                          : 'bg-[#0c66e4]/10 text-[#0c66e4] group-hover:bg-[#0c66e4]/25'
                       }`}
                       whileHover={{
                         scale: 1.12,
@@ -185,12 +185,12 @@ export function HowItWorksPage({ onClose, onApplyClick, onCalculatorClick, onAbo
                       <span className="text-xl" style={{ fontWeight: 700 }}>{step.number}</span>
                     </motion.div>
                     <h3
-                      className="text-[#041E42] text-center mb-2 group-hover:text-[#4945ff] transition-colors duration-200"
+                      className="text-[#172b4d] text-center mb-2 group-hover:text-[#0c66e4] transition-colors duration-200"
                       style={{ fontWeight: 600, fontSize: '1.05rem' }}
                     >
                       {step.title}
                     </h3>
-                    <p className="text-[#041E42]/50 text-center" style={{ fontSize: '0.85rem', lineHeight: 1.55 }}>
+                    <p className="text-[#172b4d]/50 text-center" style={{ fontSize: '0.85rem', lineHeight: 1.55 }}>
                       {step.description.slice(0, 120)}…
                     </p>
                   </motion.div>
@@ -206,7 +206,7 @@ export function HowItWorksPage({ onClose, onApplyClick, onCalculatorClick, onAbo
                       <svg width="60" height="2" viewBox="0 0 60 2">
                         <line
                           x1="0" y1="1" x2="60" y2="1"
-                          stroke="#4945ff"
+                          stroke="#0c66e4"
                           strokeWidth="2"
                           strokeDasharray="6 4"
                           strokeOpacity="0.3"
@@ -233,15 +233,15 @@ export function HowItWorksPage({ onClose, onApplyClick, onCalculatorClick, onAbo
                   <div
                     className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
                       expandedStep === step.number
-                        ? 'bg-[#4945ff] text-white'
-                        : 'bg-[#4945ff]/10 text-[#4945ff]'
+                        ? 'bg-[#0c66e4] text-white'
+                        : 'bg-[#0c66e4]/10 text-[#0c66e4]'
                     }`}
                   >
                     <span style={{ fontWeight: 700 }}>{step.number}</span>
                   </div>
                   <div>
-                    <h3 className="text-[#041E42] mb-1" style={{ fontWeight: 600 }}>{step.title}</h3>
-                    <p className="text-[#041E42]/50" style={{ fontSize: '0.85rem', lineHeight: 1.5 }}>
+                    <h3 className="text-[#172b4d] mb-1" style={{ fontWeight: 600 }}>{step.title}</h3>
+                    <p className="text-[#172b4d]/50" style={{ fontSize: '0.85rem', lineHeight: 1.5 }}>
                       {step.description.slice(0, 100)}…
                     </p>
                   </div>
@@ -259,10 +259,10 @@ export function HowItWorksPage({ onClose, onApplyClick, onCalculatorClick, onAbo
             transition={{ duration: 0.5, delay: 0.6 }}
             className="max-w-2xl mx-auto text-center"
           >
-            <h2 className="text-2xl sm:text-3xl text-[#041E42] mb-3" style={{ fontWeight: 700 }}>
+            <h2 className="text-2xl sm:text-3xl text-[#172b4d] mb-3" style={{ fontWeight: 700 }}>
               Ready to get started?
             </h2>
-            <p className="text-[#041E42]/50 mb-8" style={{ fontSize: '0.95rem' }}>
+            <p className="text-[#172b4d]/50 mb-8" style={{ fontSize: '0.95rem' }}>
               See how much capital you qualify for — it takes less than 5 minutes and won't impact your credit.
             </p>
             <button
@@ -274,13 +274,13 @@ export function HowItWorksPage({ onClose, onApplyClick, onCalculatorClick, onAbo
                   onApplyClick?.();
                 }
               }}
-              className="inline-flex items-center gap-2 bg-[#4945ff] hover:bg-[#3b38d9] text-white px-8 py-3.5 rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-[#4945ff]/25"
+              className="inline-flex items-center gap-2 bg-[#0c66e4] hover:bg-[#0055cc] text-white px-8 py-3.5 rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-[#0c66e4]/25"
               style={{ fontWeight: 600, fontSize: '1rem' }}
             >
               Check my amount
               <ArrowRight className="w-5 h-5" />
             </button>
-            <p className="mt-4 text-[#041E42]/40" style={{ fontSize: '0.8rem' }}>
+            <p className="mt-4 text-[#172b4d]/40" style={{ fontSize: '0.8rem' }}>
               No credit impact · No obligation · Results in minutes
             </p>
           </motion.div>
@@ -329,7 +329,7 @@ export function HowItWorksPage({ onClose, onApplyClick, onCalculatorClick, onAbo
                   {/* Close button */}
                   <button
                     onClick={() => setExpandedStep(null)}
-                    className="absolute top-5 right-5 w-9 h-9 rounded-full bg-[#ededf6] hover:bg-[#E4E7F0] flex items-center justify-center transition-colors z-10"
+                    className="absolute top-5 right-5 w-9 h-9 rounded-full bg-[#fafbfc] hover:bg-[#E4E7F0] flex items-center justify-center transition-colors z-10"
                   >
                     <X className="w-4 h-4 text-gray-500" />
                   </button>
@@ -340,27 +340,27 @@ export function HowItWorksPage({ onClose, onApplyClick, onCalculatorClick, onAbo
                       initial={{ scale: 0.8 }}
                       animate={{ scale: 1 }}
                       transition={{ delay: 0.1, type: 'spring', stiffness: 400, damping: 20 }}
-                      className="w-14 h-14 rounded-full bg-[#4945ff] text-white flex items-center justify-center flex-shrink-0"
+                      className="w-14 h-14 rounded-full bg-[#0c66e4] text-white flex items-center justify-center flex-shrink-0"
                     >
                       <span className="text-xl" style={{ fontWeight: 700 }}>{step.number}</span>
                     </motion.div>
                     <div>
-                      <p className="text-[#4945ff] text-xs tracking-wider mb-0.5" style={{ fontWeight: 600 }}>
+                      <p className="text-[#0c66e4] text-xs tracking-wider mb-0.5" style={{ fontWeight: 600 }}>
                         STEP {step.number}
                       </p>
-                      <h2 className="text-[#041E42] text-xl sm:text-2xl" style={{ fontWeight: 700 }}>
+                      <h2 className="text-[#172b4d] text-xl sm:text-2xl" style={{ fontWeight: 700 }}>
                         {step.title}
                       </h2>
                     </div>
                   </div>
 
                   {/* Tagline */}
-                  <p className="text-[#4945ff] mb-4" style={{ fontWeight: 600, fontSize: '1rem' }}>
+                  <p className="text-[#0c66e4] mb-4" style={{ fontWeight: 600, fontSize: '1rem' }}>
                     {step.tagline}
                   </p>
 
                   {/* Description */}
-                  <p className="text-[#041E42]/60 mb-8" style={{ fontSize: '0.95rem', lineHeight: 1.7 }}>
+                  <p className="text-[#172b4d]/60 mb-8" style={{ fontSize: '0.95rem', lineHeight: 1.7 }}>
                     {step.description}
                   </p>
 
@@ -374,10 +374,10 @@ export function HowItWorksPage({ onClose, onApplyClick, onCalculatorClick, onAbo
                         transition={{ delay: 0.15 + idx * 0.06, duration: 0.3 }}
                         className="flex items-start gap-4"
                       >
-                        <div className="w-10 h-10 rounded-xl bg-[#4945ff]/[0.06] flex items-center justify-center flex-shrink-0 text-[#4945ff]">
+                        <div className="w-10 h-10 rounded-xl bg-[#0c66e4]/[0.06] flex items-center justify-center flex-shrink-0 text-[#0c66e4]">
                           {bullet.icon}
                         </div>
-                        <p className="text-[#041E42]/80 pt-2" style={{ fontSize: '0.93rem' }}>
+                        <p className="text-[#172b4d]/80 pt-2" style={{ fontSize: '0.93rem' }}>
                           {bullet.text}
                         </p>
                       </motion.div>
@@ -389,12 +389,12 @@ export function HowItWorksPage({ onClose, onApplyClick, onCalculatorClick, onAbo
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.35, duration: 0.3 }}
-                    className="bg-[#F7F8FC] rounded-xl px-6 py-4 flex items-center gap-4"
+                    className="bg-[#f1f2f4] rounded-xl px-6 py-4 flex items-center gap-4"
                   >
-                    <span className="text-[#4945ff] text-3xl" style={{ fontWeight: 700 }}>
+                    <span className="text-[#0c66e4] text-3xl" style={{ fontWeight: 700 }}>
                       {step.stat}
                     </span>
-                    <span className="text-[#041E42]/50" style={{ fontSize: '0.9rem' }}>
+                    <span className="text-[#172b4d]/50" style={{ fontSize: '0.9rem' }}>
                       {step.statLabel}
                     </span>
                   </motion.div>

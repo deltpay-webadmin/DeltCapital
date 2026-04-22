@@ -56,9 +56,9 @@ export function SupportPage({ onClose, onChatClick, onFAQClick, onQuizClick, onB
   };
 
   return (
-    <div className="fixed inset-0 bg-[#ededf6] z-50 overflow-y-auto">
+    <div className="fixed inset-0 bg-[#fafbfc] z-50 overflow-y-auto">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-[#ededf6] border-b border-[#041E42]/10">
+      <div className="sticky top-0 z-10 bg-[#fafbfc] border-b border-[#172b4d]/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <div className="flex items-center gap-0 h-14 w-auto cursor-pointer" onClick={onClose}>
             <img src={logoImg} alt="Delt Capital" className="h-10 w-auto object-contain" />
@@ -75,8 +75,8 @@ export function SupportPage({ onClose, onChatClick, onFAQClick, onQuizClick, onB
             transition={{ duration: 0.5 }}
             className="text-center"
           >
-            <h1 className="text-5xl md:text-6xl text-[#041E42] mb-6">
-              We're here to <span className="text-[#4945ff]">help</span>
+            <h1 className="text-5xl md:text-6xl text-[#172b4d] mb-6">
+              We're here to <span className="text-[#0c66e4]">help</span>
             </h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Get in touch with our dedicated support team. We're available to answer your questions and help you get the funding you need.
@@ -94,16 +94,16 @@ export function SupportPage({ onClose, onChatClick, onFAQClick, onQuizClick, onB
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             onClick={handleChatSupport}
-            className="bg-white dark:bg-[#0F2744] rounded-xl p-5 shadow-sm hover:shadow-md transition-all cursor-pointer border border-gray-100 hover:border-[#4945ff]/30 group"
+            className="bg-white dark:bg-[#0F2744] rounded-xl p-5 shadow-sm hover:shadow-md transition-all cursor-pointer border border-gray-100 hover:border-[#0c66e4]/30 group"
           >
-            <div className="w-12 h-12 bg-[#4945ff]/10 rounded-full flex items-center justify-center mb-4 group-hover:bg-[#4945ff]/15 transition-colors">
-              <MessageCircle className="w-6 h-6 text-[#4945ff]" />
+            <div className="w-12 h-12 bg-[#0c66e4]/10 rounded-full flex items-center justify-center mb-4 group-hover:bg-[#0c66e4]/15 transition-colors">
+              <MessageCircle className="w-6 h-6 text-[#0c66e4]" />
             </div>
-            <h3 className="text-lg text-[#041E42] dark:text-white mb-2">Live Chat</h3>
+            <h3 className="text-lg text-[#172b4d] dark:text-white mb-2">Live Chat</h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
               Chat with our support team in real-time. Get instant answers to your questions.
             </p>
-            <div className="flex items-center text-[#4945ff] text-sm group-hover:gap-2 transition-all">
+            <div className="flex items-center text-[#0c66e4] text-sm group-hover:gap-2 transition-all">
               <span className="font-semibold">Start Chat</span>
               <span className="ml-1">→</span>
             </div>
@@ -115,18 +115,18 @@ export function SupportPage({ onClose, onChatClick, onFAQClick, onQuizClick, onB
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
             onClick={handleCallClick}
-            className="bg-white dark:bg-[#0F2744] rounded-xl p-5 shadow-sm hover:shadow-md transition-all cursor-pointer border border-gray-100 hover:border-[#4945ff]/30 group"
+            className="bg-white dark:bg-[#0F2744] rounded-xl p-5 shadow-sm hover:shadow-md transition-all cursor-pointer border border-gray-100 hover:border-[#0c66e4]/30 group"
           >
-            <div className="w-12 h-12 bg-[#4945ff]/10 rounded-full flex items-center justify-center mb-4 group-hover:bg-[#4945ff]/15 transition-colors">
-              <Phone className="w-6 h-6 text-[#4945ff]" />
+            <div className="w-12 h-12 bg-[#0c66e4]/10 rounded-full flex items-center justify-center mb-4 group-hover:bg-[#0c66e4]/15 transition-colors">
+              <Phone className="w-6 h-6 text-[#0c66e4]" />
             </div>
-            <h3 className="text-lg text-[#041E42] dark:text-white mb-2">Call Us</h3>
+            <h3 className="text-lg text-[#172b4d] dark:text-white mb-2">Call Us</h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
               Speak directly with a funding specialist. We're here to guide you through the process.
             </p>
             <div className="flex flex-col gap-2">
-              <div className="text-lg font-bold text-[#4945ff]">(864) 729-3358</div>
-              <div className="flex items-center text-[#4945ff] text-sm group-hover:gap-2 transition-all">
+              <div className="text-lg font-bold text-[#0c66e4]">(864) 729-3358</div>
+              <div className="flex items-center text-[#0c66e4] text-sm group-hover:gap-2 transition-all">
                 <span className="font-semibold">Call Now</span>
                 <span className="ml-1">→</span>
               </div>
@@ -139,18 +139,18 @@ export function SupportPage({ onClose, onChatClick, onFAQClick, onQuizClick, onB
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
             onClick={handleEmailClick}
-            className="bg-white dark:bg-[#0F2744] rounded-xl p-5 shadow-sm hover:shadow-md transition-all cursor-pointer border border-gray-100 hover:border-[#4945ff]/30 group"
+            className="bg-white dark:bg-[#0F2744] rounded-xl p-5 shadow-sm hover:shadow-md transition-all cursor-pointer border border-gray-100 hover:border-[#0c66e4]/30 group"
           >
-            <div className="w-12 h-12 bg-[#4945ff]/10 rounded-full flex items-center justify-center mb-4 group-hover:bg-[#4945ff]/15 transition-colors">
-              <Mail className="w-6 h-6 text-[#4945ff]" />
+            <div className="w-12 h-12 bg-[#0c66e4]/10 rounded-full flex items-center justify-center mb-4 group-hover:bg-[#0c66e4]/15 transition-colors">
+              <Mail className="w-6 h-6 text-[#0c66e4]" />
             </div>
-            <h3 className="text-lg text-[#041E42] dark:text-white mb-2">Email Us</h3>
+            <h3 className="text-lg text-[#172b4d] dark:text-white mb-2">Email Us</h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
               Send us a detailed message and we'll get back to you within 24 hours.
             </p>
             <div className="flex flex-col gap-2">
-              <div className="text-base font-semibold text-[#4945ff]">info@deltcapital.com</div>
-              <div className="flex items-center text-[#4945ff] text-sm group-hover:gap-2 transition-all">
+              <div className="text-base font-semibold text-[#0c66e4]">info@deltcapital.com</div>
+              <div className="flex items-center text-[#0c66e4] text-sm group-hover:gap-2 transition-all">
                 <span className="font-semibold">Send Email</span>
                 <span className="ml-1">→</span>
               </div>
@@ -166,8 +166,8 @@ export function SupportPage({ onClose, onChatClick, onFAQClick, onQuizClick, onB
           className="bg-white dark:bg-white/5 rounded-xl p-5 mb-8 border border-gray-100"
         >
           <div className="flex items-center gap-3 mb-3">
-            <Clock className="w-5 h-5 text-[#4945ff]" />
-            <h3 className="text-lg text-[#041E42] dark:text-white">Support Hours</h3>
+            <Clock className="w-5 h-5 text-[#0c66e4]" />
+            <h3 className="text-lg text-[#172b4d] dark:text-white">Support Hours</h3>
           </div>
           <div className="grid md:grid-cols-2 gap-4 text-sm text-gray-600 dark:text-gray-300">
             <div>
@@ -187,7 +187,7 @@ export function SupportPage({ onClose, onChatClick, onFAQClick, onQuizClick, onB
             <div className="bg-white dark:bg-[#0F2744] rounded-lg p-3">
               <div className="flex items-center gap-2 mb-1.5">
                 <div className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="font-semibold text-sm text-[#041E42] dark:text-white">We're Online Now</span>
+                <span className="font-semibold text-sm text-[#172b4d] dark:text-white">We're Online Now</span>
               </div>
               <p className="text-xs text-gray-600 dark:text-gray-400">
                 Average response time: Under 2 minutes
@@ -208,7 +208,7 @@ export function SupportPage({ onClose, onChatClick, onFAQClick, onQuizClick, onB
         >
           <button
             onClick={handleBookingNavigate}
-            className="w-full group relative bg-gradient-to-r from-[#041E42] to-[#4945ff] rounded-2xl p-10 md:p-14 text-left transition-all hover:shadow-2xl hover:scale-[1.01] cursor-pointer"
+            className="w-full group relative bg-gradient-to-r from-[#172b4d] to-[#0c66e4] rounded-2xl p-10 md:p-14 text-left transition-all hover:shadow-2xl hover:scale-[1.01] cursor-pointer"
           >
             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="flex items-center gap-6">
@@ -222,7 +222,7 @@ export function SupportPage({ onClose, onChatClick, onFAQClick, onQuizClick, onB
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 bg-white text-[#4945ff] px-8 py-4 rounded-xl font-semibold text-lg flex-shrink-0 group-hover:bg-white/95 transition-colors">
+              <div className="flex items-center gap-3 bg-white text-[#0c66e4] px-8 py-4 rounded-xl font-semibold text-lg flex-shrink-0 group-hover:bg-white/95 transition-colors">
                 Book Now
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </div>

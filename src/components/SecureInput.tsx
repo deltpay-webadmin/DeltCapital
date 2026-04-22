@@ -100,13 +100,13 @@ export function SecureInput({
   return (
     <div className="relative">
       {label && (
-        <label className="block text-sm font-semibold text-[#041E42] dark:text-white mb-2">
+        <label className="block text-sm font-semibold text-[#172b4d] dark:text-white mb-2">
           {label} {required && <span className="text-red-500">*</span>}
         </label>
       )}
       
       <div className="relative">
-        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#52606D]" />
+        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#44546f]" />
         <input
           type="text"
           value={displayValue}
@@ -129,7 +129,7 @@ export function SecureInput({
         <button
           type="button"
           onClick={() => setIsVisible(!isVisible)}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-[#52606D] hover:text-[#1B17FF] transition-colors p-1 rounded focus:outline-none focus:ring-2 focus:ring-[#1B17FF]"
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-[#44546f] hover:text-[#0c66e4] transition-colors p-1 rounded focus:outline-none focus:ring-2 focus:ring-[#0c66e4]"
           aria-label={isVisible ? 'Hide value' : 'Show value'}
         >
           {isVisible ? (
@@ -147,7 +147,7 @@ export function SecureInput({
             initial={{ opacity: 0, y: -10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
-            className="absolute z-50 mt-2 w-full bg-gradient-to-r from-[#1B17FF] to-[#4845FF] text-white p-4 rounded-lg shadow-xl border-2 border-[#1B17FF]"
+            className="absolute z-50 mt-2 w-full bg-gradient-to-r from-[#0c66e4] to-[#4845FF] text-white p-4 rounded-lg shadow-xl border-2 border-[#0c66e4]"
           >
             <div className="flex items-start gap-3">
               <div className="flex-shrink-0 mt-0.5">

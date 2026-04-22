@@ -8,21 +8,21 @@ import { Footer } from './Footer';
 
 // ── Delt brand tokens ──
 const C = {
-  navy: '#041E42',
+  navy: '#172b4d',
   navyMid: '#0A2D5E',
-  purple: '#4945ff',
+  purple: '#0c66e4',
   purpleLight: '#7C6BF0',
   purpleDim: 'rgba(73,69,255,0.07)',
   purpleGlow: 'rgba(73,69,255,0.25)',
   blue: '#3B5BF7',
   green: '#22C55E',
   white: '#FFFFFF',
-  offWhite: '#F7F8FC',
+  offWhite: '#f1f2f4',
   gray100: '#F1F3F8',
   gray200: '#e8eaf0',
   gray400: '#94A3B8',
   gray600: '#64748B',
-  text: '#041E42',
+  text: '#172b4d',
   textSub: '#64748B',
 };
 

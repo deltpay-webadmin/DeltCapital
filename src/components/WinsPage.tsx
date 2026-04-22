@@ -157,9 +157,9 @@ export function WinsPage({ onClose, onAboutClick, onHowItWorksClick, onReviewsCl
   ];
 
   return (
-    <div className="fixed inset-0 bg-[#ededf6] dark:bg-[#0A1F35] z-50 overflow-y-auto">
+    <div className="fixed inset-0 bg-[#fafbfc] dark:bg-[#0A1F35] z-50 overflow-y-auto">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-[#ededf6] dark:bg-[#0a1929] border-b border-[#041E42]/10 dark:border-gray-700">
+      <div className="sticky top-0 z-10 bg-[#fafbfc] dark:bg-[#0a1929] border-b border-[#172b4d]/10 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <div className="flex items-center gap-0 h-14 w-auto cursor-pointer" onClick={onClose}>
             <img src={logoImg} alt="Delt Capital" className="h-10 w-auto object-contain" />
@@ -168,14 +168,14 @@ export function WinsPage({ onClose, onAboutClick, onHowItWorksClick, onReviewsCl
       </div>
 
       {/* Hero Section */}
-      <div className="bg-[#ededf6] dark:bg-[#0A1F35] pt-16 pb-12 md:pt-20 md:pb-14">
+      <div className="bg-[#fafbfc] dark:bg-[#0A1F35] pt-16 pb-12 md:pt-20 md:pb-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="max-w-4xl mx-auto">
             <p className="text-xl md:text-2xl lg:text-3xl text-gray-500 dark:text-gray-400 font-light mb-2">
               Capital is the start.
             </p>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl text-[#041E42] dark:text-white mb-6 tracking-tight" style={{ fontWeight: 700 }}>
-              The <em className="text-[#4945ff] not-italic" style={{ fontStyle: 'italic' }}>relationship</em> is the point.
+            <h1 className="text-4xl sm:text-5xl md:text-6xl text-[#172b4d] dark:text-white mb-6 tracking-tight" style={{ fontWeight: 700 }}>
+              The <em className="text-[#0c66e4] not-italic" style={{ fontStyle: 'italic' }}>relationship</em> is the point.
             </h1>
             <p className="text-sm md:text-base text-gray-500 dark:text-gray-400 font-light">
               Real merchants. Real results.
@@ -192,7 +192,7 @@ export function WinsPage({ onClose, onAboutClick, onHowItWorksClick, onReviewsCl
             return (
               <div key={index} className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#4945ff] to-[#7B77FF] flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#0c66e4] to-[#1d7afc] flex items-center justify-center">
                     <Icon className="w-6 h-6 text-white" />
                   </div>
                   <div className="text-3xl font-bold text-gray-900 dark:text-white">{stat.value}</div>
@@ -233,16 +233,16 @@ export function WinsPage({ onClose, onAboutClick, onHowItWorksClick, onReviewsCl
                 {/* Content */}
                 <div className="p-8">
                   <div className="flex items-start gap-3 mb-6">
-                    <Quote className="w-8 h-8 text-[#4945ff] flex-shrink-0 opacity-50" />
+                    <Quote className="w-8 h-8 text-[#0c66e4] flex-shrink-0 opacity-50" />
                     <p className="text-gray-700 dark:text-gray-300 italic leading-relaxed">
                       "{story.quote}"
                     </p>
                   </div>
 
-                  <div className="bg-gradient-to-br from-[#4945ff]/5 to-[#7B77FF]/5 dark:from-[#4945ff]/10 dark:to-[#7B77FF]/10 rounded-xl p-4 mb-6">
+                  <div className="bg-gradient-to-br from-[#0c66e4]/5 to-[#1d7afc]/5 dark:from-[#0c66e4]/10 dark:to-[#1d7afc]/10 rounded-xl p-4 mb-6">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-sm text-gray-600 dark:text-gray-400">{t('wins.story.fundedAmount')}</span>
-                      <span className="text-2xl font-bold text-[#4945ff]">{story.fundingAmount}</span>
+                      <span className="text-2xl font-bold text-[#0c66e4]">{story.fundingAmount}</span>
                     </div>
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-sm text-gray-600 dark:text-gray-400">{t('wins.story.fundingDate')}</span>
@@ -262,8 +262,8 @@ export function WinsPage({ onClose, onAboutClick, onHowItWorksClick, onReviewsCl
                       return (
                         <div key={idx} className="text-center">
                           <div className="flex justify-center mb-2">
-                            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#4945ff]/10 to-[#7B77FF]/10 flex items-center justify-center">
-                              <MetricIcon className="w-5 h-5 text-[#4945ff]" />
+                            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#0c66e4]/10 to-[#1d7afc]/10 flex items-center justify-center">
+                              <MetricIcon className="w-5 h-5 text-[#0c66e4]" />
                             </div>
                           </div>
                           <div className="text-lg font-bold text-gray-900 dark:text-white">{metric.value}</div>
@@ -280,7 +280,7 @@ export function WinsPage({ onClose, onAboutClick, onHowItWorksClick, onReviewsCl
       </div>
 
       {/* CTA Section */}
-      <div className="bg-gradient-to-br from-[#4945ff] via-[#5B57FF] to-[#7B77FF] py-16">
+      <div className="bg-gradient-to-br from-[#0c66e4] via-[#5B57FF] to-[#1d7afc] py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             {t('wins.cta.title').split(t('wins.cta.your'))[0]}<span className="italic font-light">{t('wins.cta.your')}</span>{t('wins.cta.title').split(t('wins.cta.your'))[1]}
@@ -298,7 +298,7 @@ export function WinsPage({ onClose, onAboutClick, onHowItWorksClick, onReviewsCl
                 className="flex-1 px-4 py-4 rounded-lg bg-white text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-white/50 shadow-lg"
               />
               <Button 
-                className="bg-white hover:bg-gray-100 text-[#4945ff] font-semibold px-8 py-4 shadow-xl hover:shadow-2xl transition-all hover:scale-105 whitespace-nowrap"
+                className="bg-white hover:bg-gray-100 text-[#0c66e4] font-semibold px-8 py-4 shadow-xl hover:shadow-2xl transition-all hover:scale-105 whitespace-nowrap"
               >
                 Get Started
                 <ArrowRight className="ml-2 w-5 h-5" />
@@ -316,7 +316,7 @@ export function WinsPage({ onClose, onAboutClick, onHowItWorksClick, onReviewsCl
       </div>
 
       {/* Disclaimer Note */}
-      <div className="bg-[#041E42] py-8">
+      <div className="bg-[#172b4d] py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-sm text-gray-400">
             {t('wins.footer.disclaimer')}

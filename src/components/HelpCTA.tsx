@@ -16,7 +16,7 @@ export function HelpCTA({ onContactClick }: { onContactClick?: () => void }) {
         </div>
 
         {/* Heading */}
-        <h3 className="text-[#041E42] mb-2" style={{ fontSize: '1.25rem' }}>
+        <h3 className="text-[#172b4d] mb-2" style={{ fontSize: '1.25rem' }}>
           Get Help
         </h3>
 
@@ -28,7 +28,7 @@ export function HelpCTA({ onContactClick }: { onContactClick?: () => void }) {
         {/* Contact link */}
         <button
           onClick={() => onContactClick?.()}
-          className="text-[#4945ff] hover:text-[#3b38d9] text-sm inline-flex items-center gap-0.5 transition-colors cursor-pointer bg-transparent border-none"
+          className="text-[#0c66e4] hover:text-[#0055cc] text-sm inline-flex items-center gap-0.5 transition-colors cursor-pointer bg-transparent border-none"
         >
           Contact us <span className="ml-0.5">›</span>
         </button>

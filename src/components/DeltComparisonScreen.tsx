@@ -70,7 +70,7 @@ export function DeltComparisonScreen({ desiredFunding, monthlyCCSales, acceptsCr
         {/* Header — matches PreQualificationGame layout */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-5 pb-4 border-b border-slate-100">
           <div>
-            <h2 className="text-xl md:text-2xl font-bold text-[#041E42] tracking-tight">
+            <h2 className="text-xl md:text-2xl font-bold text-[#172b4d] tracking-tight">
               Your Funding Options
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
@@ -80,15 +80,15 @@ export function DeltComparisonScreen({ desiredFunding, monthlyCCSales, acceptsCr
 
           {/* Trust Indicator - Top Right */}
           <div className="hidden md:flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-md border border-slate-100">
-            <Shield className="w-3.5 h-3.5 text-[#041E42]" />
-            <span className="text-xs font-medium text-[#041E42]">Bank-Grade Security</span>
+            <Shield className="w-3.5 h-3.5 text-[#172b4d]" />
+            <span className="text-xs font-medium text-[#172b4d]">Bank-Grade Security</span>
           </div>
         </div>
 
         {/* Progress Bar — fully completed */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#041E42]">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#172b4d]">
               Select Offer
             </span>
             <span className="text-xs font-medium text-slate-500">
@@ -98,7 +98,7 @@ export function DeltComparisonScreen({ desiredFunding, monthlyCCSales, acceptsCr
           <div className="flex gap-2 w-full">
             <div className="h-1.5 flex-1 bg-slate-100 rounded-sm overflow-hidden">
               <motion.div
-                className="h-full bg-[#041E42]"
+                className="h-full bg-[#172b4d]"
                 initial={{ width: 0 }}
                 animate={{ width: '50%' }}
                 transition={{ duration: 0.3, ease: 'easeInOut' }}
@@ -122,7 +122,7 @@ export function DeltComparisonScreen({ desiredFunding, monthlyCCSales, acceptsCr
               whileTap={{ scale: 0.985 }}
               className={`relative text-left rounded-2xl border-2 p-5 transition-all cursor-pointer ${
                 selected === 'standard'
-                  ? 'border-[#041E42] bg-[#F8F9FB] shadow-sm'
+                  ? 'border-[#172b4d] bg-[#F8F9FB] shadow-sm'
                   : 'border-slate-200 hover:border-slate-300'
               }`}
             >
@@ -130,13 +130,13 @@ export function DeltComparisonScreen({ desiredFunding, monthlyCCSales, acceptsCr
               <div className="flex items-center justify-between mb-4">
                 <span className="text-[10px] uppercase tracking-widest font-semibold text-slate-500">Standard</span>
                 <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
-                  selected === 'standard' ? 'border-[#041E42] bg-[#041E42]' : 'border-slate-300'
+                  selected === 'standard' ? 'border-[#172b4d] bg-[#172b4d]' : 'border-slate-300'
                 }`}>
                   {selected === 'standard' && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
                 </div>
               </div>
 
-              <p className="text-[28px] font-bold text-[#041E42] mb-1.5 tabular-nums tracking-tight">
+              <p className="text-[28px] font-bold text-[#172b4d] mb-1.5 tabular-nums tracking-tight">
                 {formatK(standardLow)}<span className="mx-1 opacity-35">–</span>{formatK(standardHigh)}
               </p>
               <p className="text-xs text-slate-500 leading-relaxed mb-4">
@@ -161,13 +161,13 @@ export function DeltComparisonScreen({ desiredFunding, monthlyCCSales, acceptsCr
               whileTap={{ scale: 0.985 }}
               className={`relative text-left rounded-2xl border-2 p-5 transition-all cursor-pointer overflow-hidden ${
                 selected === 'delt-preferred'
-                  ? 'border-[#4945ff] bg-gradient-to-br from-[#F5F5FF] to-[#EAECFF] shadow-md shadow-indigo-100'
+                  ? 'border-[#0c66e4] bg-gradient-to-br from-[#F5F5FF] to-[#EAECFF] shadow-md shadow-indigo-100'
                   : 'border-slate-200 hover:border-indigo-200'
               }`}
             >
               {/* Recommended badge */}
               <div className="absolute top-0 right-0">
-                <div className="bg-[#4945ff] text-white text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-bl-lg flex items-center gap-1">
+                <div className="bg-[#0c66e4] text-white text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-bl-lg flex items-center gap-1">
                   <Star className="w-2.5 h-2.5" fill="currentColor" />
                   Recommended
                 </div>
@@ -176,17 +176,17 @@ export function DeltComparisonScreen({ desiredFunding, monthlyCCSales, acceptsCr
               {/* Radio */}
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-1.5">
-                  <Zap className="w-3.5 h-3.5 text-[#4945ff]" />
-                  <span className="text-[10px] uppercase tracking-widest font-semibold text-[#4945ff]">Delt Preferred</span>
+                  <Zap className="w-3.5 h-3.5 text-[#0c66e4]" />
+                  <span className="text-[10px] uppercase tracking-widest font-semibold text-[#0c66e4]">Delt Preferred</span>
                 </div>
                 <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
-                  selected === 'delt-preferred' ? 'border-[#4945ff] bg-[#4945ff]' : 'border-slate-300'
+                  selected === 'delt-preferred' ? 'border-[#0c66e4] bg-[#0c66e4]' : 'border-slate-300'
                 }`}>
                   {selected === 'delt-preferred' && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
                 </div>
               </div>
 
-              <p className="text-[28px] font-bold text-[#041E42] mb-1.5 tabular-nums tracking-tight">
+              <p className="text-[28px] font-bold text-[#172b4d] mb-1.5 tabular-nums tracking-tight">
                 {formatK(deltLow)}<span className="mx-1 opacity-35">–</span>{formatK(deltHigh)}
               </p>
               <p className="text-xs text-slate-500 leading-relaxed mb-4">
@@ -194,19 +194,19 @@ export function DeltComparisonScreen({ desiredFunding, monthlyCCSales, acceptsCr
               </p>
 
               <div className="space-y-2 pt-3 border-t border-indigo-100">
-                <div className="flex items-center gap-2 text-[11px] text-[#041E42]">
-                  <div className="w-4 h-4 rounded-full bg-[#4945ff]/10 flex items-center justify-center flex-shrink-0">
-                    <TrendingUp className="w-2.5 h-2.5 text-[#4945ff]" />
+                <div className="flex items-center gap-2 text-[11px] text-[#172b4d]">
+                  <div className="w-4 h-4 rounded-full bg-[#0c66e4]/10 flex items-center justify-center flex-shrink-0">
+                    <TrendingUp className="w-2.5 h-2.5 text-[#0c66e4]" />
                   </div>
-                  <span><strong className="text-[#4945ff]">+{formatCurrency(deltHigh - standardHigh)}</strong> additional funding</span>
+                  <span><strong className="text-[#0c66e4]">+{formatCurrency(deltHigh - standardHigh)}</strong> additional funding</span>
                 </div>
-                <div className="flex items-center gap-2 text-[11px] text-[#041E42]">
+                <div className="flex items-center gap-2 text-[11px] text-[#172b4d]">
                   <div className="w-4 h-4 rounded-full bg-[#10B981]/10 flex items-center justify-center flex-shrink-0">
                     <Check className="w-2.5 h-2.5 text-[#10B981]" strokeWidth={3} />
                   </div>
                   <span><strong className="text-[#10B981]">1.5% lower</strong> processing fees</span>
                 </div>
-                <div className="flex items-center gap-2 text-[11px] text-[#041E42]">
+                <div className="flex items-center gap-2 text-[11px] text-[#172b4d]">
                   <div className="w-4 h-4 rounded-full bg-[#F59E0B]/10 flex items-center justify-center flex-shrink-0">
                     <Zap className="w-2.5 h-2.5 text-[#F59E0B]" />
                   </div>
@@ -221,7 +221,7 @@ export function DeltComparisonScreen({ desiredFunding, monthlyCCSales, acceptsCr
             onClick={handleContinue}
             disabled={!selected}
             whileTap={selected ? { scale: 0.98 } : {}}
-            className="w-full py-3.5 rounded-xl bg-[#041E42] disabled:bg-slate-200 disabled:text-slate-400 text-white font-semibold text-sm transition-all cursor-pointer flex items-center justify-center gap-2"
+            className="w-full py-3.5 rounded-xl bg-[#172b4d] disabled:bg-slate-200 disabled:text-slate-400 text-white font-semibold text-sm transition-all cursor-pointer flex items-center justify-center gap-2"
           >
             {selected === 'delt-preferred'
               ? 'Continue with Delt Preferred'

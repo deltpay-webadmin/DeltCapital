@@ -173,7 +173,7 @@ export const PreQualificationSection = forwardRef<PreQualificationSectionRef, Pr
 
   return (
     <>
-      <section ref={sectionRef} className="py-12 md:py-16 lg:py-20 bg-[#ededf6] relative overflow-hidden">
+      <section ref={sectionRef} className="py-12 md:py-16 lg:py-20 bg-[#fafbfc] relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
           <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 items-center w-full">
 
@@ -183,16 +183,16 @@ export const PreQualificationSection = forwardRef<PreQualificationSectionRef, Pr
               {/* Icon */}
               <div
                 ref={iconRef}
-                className="inline-flex items-center justify-center w-10 h-10 lg:w-12 lg:h-12 bg-[#4945ff]/10 rounded-full mb-5 lg:mb-8"
+                className="inline-flex items-center justify-center w-10 h-10 lg:w-12 lg:h-12 bg-[#0c66e4]/10 rounded-full mb-5 lg:mb-8"
                 style={{ opacity: 0 }}
               >
-                <Sparkles className="w-5 h-5 lg:w-6 lg:h-6 text-[#4945ff]" />
+                <Sparkles className="w-5 h-5 lg:w-6 lg:h-6 text-[#0c66e4]" />
               </div>
 
               {/* Headline */}
               <h2
                 ref={headlineRef}
-                className="text-2xl sm:text-3xl md:text-4xl lg:text-[2.6rem] xl:text-[3.2rem] 2xl:text-[3.6rem] text-[#041e42] mb-4 lg:mb-5 leading-[1.05] tracking-tight"
+                className="text-2xl sm:text-3xl md:text-4xl lg:text-[2.6rem] xl:text-[3.2rem] 2xl:text-[3.6rem] text-[#172b4d] mb-4 lg:mb-5 leading-[1.05] tracking-tight"
                 style={{ opacity: 0, fontWeight: 700 }}
               >
                 {t('preQual.title')}
@@ -221,7 +221,7 @@ export const PreQualificationSection = forwardRef<PreQualificationSectionRef, Pr
                       setShowModal(true);
                     }
                   }}
-                  className="prequal-cta-button bg-[#4945ff] hover:bg-[#3b38d9] text-base sm:text-lg md:text-xl lg:text-2xl py-3 sm:py-4 lg:py-5 px-6 sm:px-8 lg:px-10 rounded-xl font-semibold transition-all duration-300 whitespace-nowrap cursor-pointer text-white"
+                  className="prequal-cta-button bg-[#0c66e4] hover:bg-[#0055cc] text-base sm:text-lg md:text-xl lg:text-2xl py-3 sm:py-4 lg:py-5 px-6 sm:px-8 lg:px-10 rounded-xl font-semibold transition-all duration-300 whitespace-nowrap cursor-pointer text-white"
                 >
                   {t('preQual.button')}
                 </button>
@@ -287,7 +287,7 @@ export const PreQualificationSection = forwardRef<PreQualificationSectionRef, Pr
 
       {/* Results Full Page */}
       {showResults && (
-        <div className="fixed inset-0 bg-[#ededf6] dark:bg-[#0A1F35] z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-[#fafbfc] dark:bg-[#0A1F35] z-50 flex items-center justify-center p-4">
           <div className="w-full max-w-4xl">
             <PreQualificationGame
               startWithQuiz={true}

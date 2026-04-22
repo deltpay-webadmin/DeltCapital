@@ -336,7 +336,7 @@ export function StatsSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden bg-[#ededf6]"
+      className="relative overflow-hidden bg-[#fafbfc]"
     >
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-start">
@@ -347,7 +347,7 @@ export function StatsSection() {
             <div>
               <h2
                 ref={headlineRef}
-                className="font-bold text-[#041E42] mb-1 tracking-tight"
+                className="font-bold text-[#172b4d] mb-1 tracking-tight"
                 style={{ fontSize: 'clamp(3rem, 5.5vw, 4.5rem)', lineHeight: 1.05 }}
               >
                 $0M+
@@ -357,7 +357,7 @@ export function StatsSection() {
             {/* ── Subtitle ── */}
             <p
               ref={subtitleRef}
-              className="text-[#52606D] mb-12 lg:mb-14"
+              className="text-[#44546f] mb-12 lg:mb-14"
               style={{ fontSize: 'clamp(0.95rem, 1.2vw, 1.15rem)' }}
             >
               {t('stats.capitalDelivered')}<sup className="text-[0.6em] ml-0.5 opacity-60">1</sup>
@@ -378,11 +378,11 @@ export function StatsSection() {
                     <div
                       className={`
                         rounded-xl px-6 py-5 lg:px-7 lg:py-6
-                        bg-[#F7F8FC]
+                        bg-[#f1f2f4]
                         backdrop-blur-sm
                         border border-[#E0E2EA]
                         ${isHierarchy
-                          ? 'shadow-[0_2px_20px_-4px_rgba(27,23,255,0.10)] ring-1 ring-[#1B17FF]/8'
+                          ? 'shadow-[0_2px_20px_-4px_rgba(27,23,255,0.10)] ring-1 ring-[#0c66e4]/8'
                           : 'shadow-[0_1px_8px_-2px_rgba(4,30,66,0.06)]'
                         }
                       `}
@@ -391,7 +391,7 @@ export function StatsSection() {
                       <div
                         ref={(el) => { counterRefs.current[i] = el; }}
                         className={`
-                          font-bold tracking-tight text-[#041E42] mb-0.5
+                          font-bold tracking-tight text-[#172b4d] mb-0.5
                           ${isHierarchy ? 'text-[1.75rem] lg:text-[2rem]' : 'text-[1.6rem] lg:text-[1.85rem]'}
                         `}
                         style={{ lineHeight: 1.2 }}
@@ -405,8 +405,8 @@ export function StatsSection() {
                         className="h-[2px] rounded-full mb-2 mt-1"
                         style={{
                           background: isHierarchy
-                            ? 'linear-gradient(90deg, #1B17FF 0%, #6C63FF 100%)'
-                            : 'linear-gradient(90deg, #1B17FF 0%, #9B97FF 100%)',
+                            ? 'linear-gradient(90deg, #0c66e4 0%, #6C63FF 100%)'
+                            : 'linear-gradient(90deg, #0c66e4 0%, #9B97FF 100%)',
                           transformOrigin: 'left center',
                           maxWidth: isHierarchy ? '56px' : '40px',
                         }}
@@ -431,7 +431,7 @@ export function StatsSection() {
             {/* Paragraph 1 */}
             <p
               ref={(el) => { rightParagraphs.current[0] = el; }}
-              className="text-[1.05rem] lg:text-[1.1rem] text-[#041E42] leading-[1.75] mb-6"
+              className="text-[1.05rem] lg:text-[1.1rem] text-[#172b4d] leading-[1.75] mb-6"
             >
               {t('stats.joinText')}
             </p>
@@ -454,7 +454,7 @@ export function StatsSection() {
           />
           <p
             ref={disclaimerRef}
-            className="text-[0.7rem] text-[#9AA5B1] italic leading-relaxed mt-8"
+            className="text-[0.7rem] text-[#758195] italic leading-relaxed mt-8"
           >
             {t('stats.disclaimer')}
           </p>

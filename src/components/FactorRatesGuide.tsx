@@ -15,25 +15,25 @@ export function FactorRatesGuide() {
   return (
     <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
       <div className="mb-8">
-        <h3 className="text-2xl font-bold text-[#041e42] mb-2">Understanding Factor Rates</h3>
+        <h3 className="text-2xl font-bold text-[#172b4d] mb-2">Understanding Factor Rates</h3>
         <p className="text-gray-600">Learn how factor rates work and what affects your cost</p>
       </div>
 
       {/* What is a Factor Rate */}
-      <div className="bg-blue-50 border-l-4 border-[#4945ff] p-6 rounded-lg mb-8">
+      <div className="bg-blue-50 border-l-4 border-[#0c66e4] p-6 rounded-lg mb-8">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-[#4945ff] rounded-lg flex items-center justify-center flex-shrink-0">
+          <div className="w-12 h-12 bg-[#0c66e4] rounded-lg flex items-center justify-center flex-shrink-0">
             <Calculator className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h4 className="text-xl font-bold text-[#041e42] mb-3">What is a Factor Rate?</h4>
+            <h4 className="text-xl font-bold text-[#172b4d] mb-3">What is a Factor Rate?</h4>
             <p className="text-gray-700 mb-4 leading-relaxed">
               A factor rate is a decimal figure (like 1.20) that's multiplied by your advance amount to determine 
               your total repayment. Unlike interest rates, factor rates are fixed and don't compound.
             </p>
             <div className="bg-white rounded-lg p-4 border border-gray-200">
-              <p className="font-mono text-lg text-[#041e42]">
-                <span className="font-bold text-[#4945ff]">Advance Amount</span> × <span className="font-bold text-[#4945ff]">Factor Rate</span> = <span className="font-bold text-green-600">Total Repayment</span>
+              <p className="font-mono text-lg text-[#172b4d]">
+                <span className="font-bold text-[#0c66e4]">Advance Amount</span> × <span className="font-bold text-[#0c66e4]">Factor Rate</span> = <span className="font-bold text-green-600">Total Repayment</span>
               </p>
             </div>
           </div>
@@ -42,11 +42,11 @@ export function FactorRatesGuide() {
 
       {/* Interactive Example */}
       <div className="mb-8">
-        <h4 className="text-xl font-bold text-[#041e42] mb-4">See It in Action</h4>
+        <h4 className="text-xl font-bold text-[#172b4d] mb-4">See It in Action</h4>
         <div className="grid md:grid-cols-3 gap-6">
           <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border border-blue-200">
             <p className="text-sm text-gray-600 mb-2">Advance Amount</p>
-            <p className="text-3xl font-bold text-[#041e42] mb-4">${exampleAmount.toLocaleString()}</p>
+            <p className="text-3xl font-bold text-[#172b4d] mb-4">${exampleAmount.toLocaleString()}</p>
             <input
               type="range"
               min="10000"
@@ -60,7 +60,7 @@ export function FactorRatesGuide() {
 
           <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl border border-purple-200">
             <p className="text-sm text-gray-600 mb-2">Factor Rate</p>
-            <p className="text-3xl font-bold text-[#041e42] mb-4">{exampleRate.toFixed(2)}</p>
+            <p className="text-3xl font-bold text-[#172b4d] mb-4">{exampleRate.toFixed(2)}</p>
             <input
               type="range"
               min="1.10"
@@ -86,40 +86,40 @@ export function FactorRatesGuide() {
 
       {/* Factor Rate Ranges */}
       <div className="mb-8">
-        <h4 className="text-xl font-bold text-[#041e42] mb-4">Typical Factor Rate Ranges</h4>
+        <h4 className="text-xl font-bold text-[#172b4d] mb-4">Typical Factor Rate Ranges</h4>
         <div className="space-y-4">
           {examples.map((example, index) => (
             <div 
               key={index}
-              className="bg-gray-50 rounded-lg p-5 border border-gray-200 hover:border-[#4945ff] transition-colors"
+              className="bg-gray-50 rounded-lg p-5 border border-gray-200 hover:border-[#0c66e4] transition-colors"
             >
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-16 h-16 bg-[#4945ff] rounded-lg flex items-center justify-center text-white text-xl font-bold">
+                  <div className="w-16 h-16 bg-[#0c66e4] rounded-lg flex items-center justify-center text-white text-xl font-bold">
                     {example.rate}
                   </div>
                   <div>
-                    <p className="font-bold text-[#041e42] text-lg">{example.credit} Credit Profile</p>
+                    <p className="font-bold text-[#172b4d] text-lg">{example.credit} Credit Profile</p>
                     <p className="text-sm text-gray-600">{example.description}</p>
                   </div>
                 </div>
                 <div className="text-right">
                   <p className="text-sm text-gray-600">On $50K advance</p>
-                  <p className="text-xl font-bold text-[#4945ff]">${(50000 * example.rate).toLocaleString()}</p>
+                  <p className="text-xl font-bold text-[#0c66e4]">${(50000 * example.rate).toLocaleString()}</p>
                 </div>
               </div>
               <div className="grid grid-cols-3 gap-4 text-sm mt-4 pt-4 border-t border-gray-200">
                 <div>
                   <p className="text-gray-600">Credit Score</p>
-                  <p className="font-semibold text-[#041e42]">{example.credit}</p>
+                  <p className="font-semibold text-[#172b4d]">{example.credit}</p>
                 </div>
                 <div>
                   <p className="text-gray-600">Time in Business</p>
-                  <p className="font-semibold text-[#041e42]">{example.timeInBusiness}</p>
+                  <p className="font-semibold text-[#172b4d]">{example.timeInBusiness}</p>
                 </div>
                 <div>
                   <p className="text-gray-600">Monthly Revenue</p>
-                  <p className="font-semibold text-[#041e42]">{example.revenue}</p>
+                  <p className="font-semibold text-[#172b4d]">{example.revenue}</p>
                 </div>
               </div>
             </div>
@@ -129,8 +129,8 @@ export function FactorRatesGuide() {
 
       {/* What Affects Your Rate */}
       <div className="mb-8">
-        <h4 className="text-xl font-bold text-[#041e42] mb-4 flex items-center gap-2">
-          <TrendingUp className="w-6 h-6 text-[#4945ff]" />
+        <h4 className="text-xl font-bold text-[#172b4d] mb-4 flex items-center gap-2">
+          <TrendingUp className="w-6 h-6 text-[#0c66e4]" />
           What Affects Your Factor Rate?
         </h4>
         <div className="grid md:grid-cols-2 gap-4">
@@ -203,11 +203,11 @@ export function FactorRatesGuide() {
       </div>
 
       {/* Key Differences */}
-      <div className="bg-gradient-to-br from-[#041e42] to-[#0a2d5a] rounded-xl p-8 text-white">
+      <div className="bg-gradient-to-br from-[#172b4d] to-[#0a2d5a] rounded-xl p-8 text-white">
         <h4 className="text-xl font-bold mb-6">Factor Rate vs. Interest Rate</h4>
         <div className="grid md:grid-cols-2 gap-6">
           <div>
-            <h5 className="font-bold mb-3 text-[#4945ff]">Factor Rate (MCA)</h5>
+            <h5 className="font-bold mb-3 text-[#0c66e4]">Factor Rate (MCA)</h5>
             <ul className="space-y-2 text-sm">
               <li>• Fixed multiplier (e.g., 1.20)</li>
               <li>• Does not compound</li>

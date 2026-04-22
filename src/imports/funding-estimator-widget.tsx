@@ -62,6 +62,6 @@ Before the merchant moves the slider, the results card shows a ghost/empty state
 
 Numbers should animate smoothly when values change.
 
-Design: Dark navy (#o41e42) headers, white card backgrounds with subtle shadows, blue (#4945ff) accent on sliders and active pills. Clean sans-serif font. Rounded corners on all cards and pills.
+Design: Dark navy (#o41e42) headers, white card backgrounds with subtle shadows, blue (#0c66e4) accent on sliders and active pills. Clean sans-serif font. Rounded corners on all cards and pills.
 
 Do not build the toggle, product pills, CTAs, or cross-sell states yet. End the component after the results card. Those come in the next prompts.

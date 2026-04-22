@@ -11,15 +11,15 @@ export function BlogPostRecovery() {
         The pandemic separated businesses into two categories: Those who waited for "normal" to return, and those who invested in growth immediately. The difference? Access to capital when courage mattered most.
       </p>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-4">The Recovery Mindset</h2>
+      <h2 className="text-3xl text-[#172b4d] dark:text-white mt-12 mb-4">The Recovery Mindset</h2>
       <p>
         Economic disruption creates opportunity for those with capital and conviction. While competitors cut budgets and waited, smart businesses invested in market share, customer acquisition, and operational improvements that positioned them to dominate recovery.
       </p>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-4">How Businesses Used MCA for Recovery</h2>
+      <h2 className="text-3xl text-[#172b4d] dark:text-white mt-12 mb-4">How Businesses Used MCA for Recovery</h2>
       
       <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg my-8">
-        <h3 className="text-2xl text-[#1B17FF] mb-4">Real Recovery Success Stories</h3>
+        <h3 className="text-2xl text-[#0c66e4] mb-4">Real Recovery Success Stories</h3>
         <p className="mb-4">
           <strong>Local Gym (Seattle)</strong><br/>
           2020: Revenue down 70%. 2021: $45K MCA invested in outdoor equipment, virtual training platform, and marketing. 2022: Revenue 140% of pre-pandemic levels. 2023: Opened second location.
@@ -34,7 +34,7 @@ export function BlogPostRecovery() {
         </p>
       </div>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-4">Strategic Recovery Investments</h2>
+      <h2 className="text-3xl text-[#172b4d] dark:text-white mt-12 mb-4">Strategic Recovery Investments</h2>
       
       <ul className="space-y-4 my-6">
         <li><strong>Digital Transformation:</strong> E-commerce, online ordering, contactless payments—pandemic accelerated adoption by 5+ years</li>
@@ -45,7 +45,7 @@ export function BlogPostRecovery() {
         <li><strong>Team Building:</strong> Top talent became available—companies with capital hired the best</li>
       </ul>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-4">Why Recovery Required Risk Capital</h2>
+      <h2 className="text-3xl text-[#172b4d] dark:text-white mt-12 mb-4">Why Recovery Required Risk Capital</h2>
       
       <p>
         Traditional lenders pulled back during uncertainty. Banks tightened requirements exactly when businesses needed capital most. Government programs helped but weren't enough for strategic growth investments.
@@ -56,7 +56,7 @@ export function BlogPostRecovery() {
       </p>
 
       <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg my-8">
-        <h3 className="text-2xl text-[#041E42] dark:text-white mb-4">The Crisis Investment Principle</h3>
+        <h3 className="text-2xl text-[#172b4d] dark:text-white mb-4">The Crisis Investment Principle</h3>
         <p>
           "Be greedy when others are fearful." - Warren Buffett
         </p>
@@ -65,7 +65,7 @@ export function BlogPostRecovery() {
         </p>
       </div>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-4">Preparing for the Next Disruption</h2>
+      <h2 className="text-3xl text-[#172b4d] dark:text-white mt-12 mb-4">Preparing for the Next Disruption</h2>
       
       <p>
         Economic cycles happen. Supply chains break. Consumer preferences shift. Technology disrupts industries overnight. The next crisis is always coming—the question is whether you'll have the capital to turn it into opportunity.
@@ -75,16 +75,16 @@ export function BlogPostRecovery() {
         Businesses with pre-existing capital relationships don't scramble during crisis—they execute. Having MCA as an available option means never letting disruption become existential threat.
       </p>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-4">Turn Challenges Into Competitive Advantages</h2>
+      <h2 className="text-3xl text-[#172b4d] dark:text-white mt-12 mb-4">Turn Challenges Into Competitive Advantages</h2>
       
       <p>
         Every business faces setbacks. Equipment failures, economic downturns, unexpected competition, supply chain issues, staffing challenges. The businesses that thrive aren't the ones without problems—they're the ones with capital to solve problems faster than competitors.
       </p>
 
-      <div className="bg-[#1B17FF] text-white p-8 rounded-xl my-12 text-center">
+      <div className="bg-[#0c66e4] text-white p-8 rounded-xl my-12 text-center">
         <h3 className="text-2xl mb-4">Don't Wait for Crisis to Find Capital</h3>
         <p className="text-lg mb-6">Establish your capital access now. When opportunity or challenge strikes, you'll be ready. Get approved in 24 hours.</p>
-        <button className="bg-white text-[#1B17FF] px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition-colors">
+        <button className="bg-white text-[#0c66e4] px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition-colors">
           Secure Your Capital Line
         </button>
       </div>

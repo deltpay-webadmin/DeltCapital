@@ -11,7 +11,7 @@ export function BlogPostConstruction() {
         Construction and contracting businesses face a unique challenge: You need to pay for materials and labor before the client pays you. Big jobs require big upfront capital—even when you know the profit is coming.
       </p>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-4">The Contractor's Cash Flow Problem</h2>
+      <h2 className="text-3xl text-[#172b4d] dark:text-white mt-12 mb-4">The Contractor's Cash Flow Problem</h2>
       <p>
         A $150,000 project might require $60,000 in materials purchased upfront, $40,000 in labor over 6 weeks, and $15,000 in equipment rental. The client pays in milestones or net-30 after completion. Where does that $115,000 come from while you wait?
       </p>
@@ -22,10 +22,10 @@ export function BlogPostConstruction() {
         Option C: Use Revenue-Based Financing to bid on and win lucrative contracts regardless of cash position.
       </p>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-4">How Contractors Use Revenue-Based Financing to Win Bigger Bids</h2>
+      <h2 className="text-3xl text-[#172b4d] dark:text-white mt-12 mb-4">How Contractors Use Revenue-Based Financing to Win Bigger Bids</h2>
       
       <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg my-8">
-        <h3 className="text-2xl text-[#1B17FF] mb-4">Real Contractor Success</h3>
+        <h3 className="text-2xl text-[#0c66e4] mb-4">Real Contractor Success</h3>
         <p className="mb-4">
           <strong>Commercial Roofing Contractor (Dallas)</strong><br/>
           $85,000 advance for materials on $240,000 municipal project. Completed on time, collected payment, netted $95,000 profit. Used success to win 3 additional municipal contracts.
@@ -36,7 +36,7 @@ export function BlogPostConstruction() {
         </p>
       </div>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-4">Strategic Uses for Construction Capital</h2>
+      <h2 className="text-3xl text-[#172b4d] dark:text-white mt-12 mb-4">Strategic Uses for Construction Capital</h2>
       
       <ul className="space-y-4 my-6">
         <li><strong>Material Purchases:</strong> Bulk material orders, locking in prices before increases, supplier account deposits</li>
@@ -47,14 +47,14 @@ export function BlogPostConstruction() {
         <li><strong>Multiple Simultaneous Projects:</strong> Taking on concurrent jobs instead of sequential ones</li>
       </ul>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-4">Why Revenue-Based Financing Works Better Than Construction Loans</h2>
+      <h2 className="text-3xl text-[#172b4d] dark:text-white mt-12 mb-4">Why Revenue-Based Financing Works Better Than Construction Loans</h2>
       
       <p>
         Construction loans and lines of credit take weeks to approve and months to increase limits. Project opportunities don't wait. When a developer has 3 qualified bidders and needs decision by Friday, being able to say "yes, we have the capital" wins contracts.
       </p>
 
       <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg my-8">
-        <h3 className="text-2xl text-[#041E42] dark:text-white mb-4">The Competitive Advantage</h3>
+        <h3 className="text-2xl text-[#172b4d] dark:text-white mb-4">The Competitive Advantage</h3>
         <p>
           Contractors with reliable capital access can:
         </p>
@@ -68,7 +68,7 @@ export function BlogPostConstruction() {
         </ul>
       </div>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-4">From Project-to-Project to Thriving Business</h2>
+      <h2 className="text-3xl text-[#172b4d] dark:text-white mt-12 mb-4">From Project-to-Project to Thriving Business</h2>
       
       <p>
         Many contractors live project-to-project because they lack working capital. Finish a job, wait for payment, then start the next one. That's not a business—it's a cycle of stress.
@@ -78,10 +78,10 @@ export function BlogPostConstruction() {
         With Revenue-Based Financing working capital, contractors can overlap projects, maintain steady crew employment, negotiate better terms with suppliers, and transform from "getting by" to genuinely scaling.
       </p>
 
-      <div className="bg-[#1B17FF] text-white p-8 rounded-xl my-12 text-center">
+      <div className="bg-[#0c66e4] text-white p-8 rounded-xl my-12 text-center">
         <h3 className="text-2xl mb-4">Ready to Bid on Bigger Projects?</h3>
         <p className="text-lg mb-6">Get working capital in 24-48 hours. No collateral. $10K to $250K. Win contracts, not waiting games.</p>
-        <button className="bg-white text-[#1B17FF] px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition-colors">
+        <button className="bg-white text-[#0c66e4] px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition-colors">
           Get Construction Funding
         </button>
       </div>

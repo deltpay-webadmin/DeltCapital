@@ -11,7 +11,7 @@ export function BlogPostSupplyChain() {
         Supply chain chaos isn't going away. Shipping costs spike without warning. Lead times double overnight. Suppliers demand payment upfront. In this environment, businesses with capital reserves don't just survive—they dominate.
       </p>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-4">The New Supply Chain Reality</h2>
+      <h2 className="text-3xl text-[#172b4d] dark:text-white mt-12 mb-4">The New Supply Chain Reality</h2>
       <p>
         The "just-in-time" inventory model died. Reliability beats efficiency now. Businesses that can stockpile inventory, pay suppliers upfront for priority treatment, and maintain safety stock have massive competitive advantages.
       </p>
@@ -20,10 +20,10 @@ export function BlogPostSupplyChain() {
         But that requires capital. Lots of it. MCA provides the working capital buffer that turns supply chain volatility from crisis into opportunity.
       </p>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-4">How Capital Solves Supply Chain Problems</h2>
+      <h2 className="text-3xl text-[#172b4d] dark:text-white mt-12 mb-4">How Capital Solves Supply Chain Problems</h2>
       
       <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg my-8">
-        <h3 className="text-2xl text-[#1B17FF] mb-4">Strategic Supply Chain Advantages</h3>
+        <h3 className="text-2xl text-[#0c66e4] mb-4">Strategic Supply Chain Advantages</h3>
         <ul className="space-y-3">
           <li><strong>Bulk Purchasing:</strong> Lock in lower prices by buying volume when available, not when desperate</li>
           <li><strong>Supplier Priority:</strong> Cash payment = priority production slots and faster shipping</li>
@@ -34,16 +34,16 @@ export function BlogPostSupplyChain() {
         </ul>
       </div>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-4">Real Supply Chain Success</h2>
+      <h2 className="text-3xl text-[#172b4d] dark:text-white mt-12 mb-4">Real Supply Chain Success</h2>
       
       <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg my-8">
-        <h3 className="text-2xl text-[#041E42] dark:text-white mb-4">Case Study: Home Goods Importer</h3>
+        <h3 className="text-2xl text-[#172b4d] dark:text-white mb-4">Case Study: Home Goods Importer</h3>
         <p className="mb-2"><strong>Problem:</strong> Shipping costs tripled, lead times went from 6 weeks to 16 weeks, primary supplier out of stock</p>
         <p className="mb-2"><strong>Solution:</strong> $80K MCA enabled full container order from alternative supplier, air freight for emergency restock, 90-day safety stock</p>
         <p><strong>Results:</strong> While competitors ran out of inventory for 3 months, they captured massive market share, increased pricing 18% (scarcity premium), customers who switched from competitors stayed even after supply normalized</p>
       </div>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-4">The Cash Payment Advantage</h2>
+      <h2 className="text-3xl text-[#172b4d] dark:text-white mt-12 mb-4">The Cash Payment Advantage</h2>
       
       <p>
         Suppliers prioritize customers who pay cash upfront. During shortages, those customers get product. During delays, those customers get expedited production. During price increases, those customers get advance notice and opportunity to lock in old pricing.
@@ -61,7 +61,7 @@ export function BlogPostSupplyChain() {
         <li><strong>Quality Control:</strong> Leverage with suppliers = better quality oversight</li>
       </ul>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-4">Building Resilient Supply Chains</h2>
+      <h2 className="text-3xl text-[#172b4d] dark:text-white mt-12 mb-4">Building Resilient Supply Chains</h2>
       
       <p>
         Fragile supply chains have one supplier, no inventory buffer, and operate on tight credit terms. Resilient supply chains have multiple suppliers, 60-90 day inventory, and cash buying power.
@@ -71,7 +71,7 @@ export function BlogPostSupplyChain() {
         The difference between fragile and resilient is working capital. MCA provides that capital without waiting weeks for traditional financing or giving up equity.
       </p>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-4">Turning Disruption Into Market Share</h2>
+      <h2 className="text-3xl text-[#172b4d] dark:text-white mt-12 mb-4">Turning Disruption Into Market Share</h2>
       
       <p>
         Every supply chain disruption creates winners and losers. Winners have inventory when competitors run out. Winners can fulfill orders when competitors can't. Winners steal customers during disruptions and keep them after.
@@ -81,10 +81,10 @@ export function BlogPostSupplyChain() {
         The next disruption is inevitable. The question is whether you'll have the capital reserves to capitalize on it or scramble like everyone else.
       </p>
 
-      <div className="bg-[#1B17FF] text-white p-8 rounded-xl my-12 text-center">
+      <div className="bg-[#0c66e4] text-white p-8 rounded-xl my-12 text-center">
         <h3 className="text-2xl mb-4">Build Supply Chain Resilience Now</h3>
         <p className="text-lg mb-6">Get working capital for inventory, supplier payments, and safety stock. $10K to $250K in 24-48 hours.</p>
-        <button className="bg-white text-[#1B17FF] px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition-colors">
+        <button className="bg-white text-[#0c66e4] px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition-colors">
           Secure Your Supply Chain
         </button>
       </div>

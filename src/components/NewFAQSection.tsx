@@ -81,7 +81,7 @@ export function NewFAQSection() {
           onClick={() => toggleFaq(index)}
           className="w-full flex items-start justify-between text-left gap-4 group"
         >
-          <span className="text-lg font-semibold text-[#041E42] dark:text-white group-hover:text-[#4945ff] dark:group-hover:text-[#4945ff] transition-colors">
+          <span className="text-lg font-semibold text-[#172b4d] dark:text-white group-hover:text-[#0c66e4] dark:group-hover:text-[#0c66e4] transition-colors">
             {faq.question}
           </span>
           <motion.div
@@ -91,8 +91,8 @@ export function NewFAQSection() {
             <Plus 
               className={`w-6 h-6 flex-shrink-0 transition-colors ${
                 openIndex === index 
-                  ? 'text-[#4945ff]' 
-                  : 'text-[#4945ff] group-hover:scale-110'
+                  ? 'text-[#0c66e4]' 
+                  : 'text-[#0c66e4] group-hover:scale-110'
               }`}
             />
           </motion.div>
@@ -122,14 +122,14 @@ export function NewFAQSection() {
         {/* Title with animated dot */}
         <div ref={titleRef} className="mb-12">
           <motion.h2
-            className="text-4xl md:text-5xl font-bold text-[#041E42] dark:text-white"
+            className="text-4xl md:text-5xl font-bold text-[#172b4d] dark:text-white"
             initial={{ opacity: 0, x: -60 }}
             animate={isTitleInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
             FAQ
             <motion.span
-              className="text-[#4945ff] inline-block"
+              className="text-[#0c66e4] inline-block"
               style={{ scale: dotScaleVal, opacity: dotOpacityVal }}
             >
               .

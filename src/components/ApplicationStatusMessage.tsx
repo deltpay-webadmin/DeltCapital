@@ -69,7 +69,7 @@ export function ApplicationStatusMessage({
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25 }}
-            className="text-[28px] md:text-[34px] text-[#041E42] dark:text-white mb-1.5 tracking-tight"
+            className="text-[28px] md:text-[34px] text-[#172b4d] dark:text-white mb-1.5 tracking-tight"
           >
             Thank you{applicantName !== 'there' ? `, ${applicantName}` : ''} !
           </motion.h1>
@@ -78,7 +78,7 @@ export function ApplicationStatusMessage({
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.35 }}
-            className="text-[#041E42]/60 dark:text-white/60 text-[15px]"
+            className="text-[#172b4d]/60 dark:text-white/60 text-[15px]"
           >
             Your application has been submitted successfully
           </motion.p>
@@ -96,8 +96,8 @@ export function ApplicationStatusMessage({
         >
           {/* Header row */}
           <div className="flex items-center gap-3.5 mb-4">
-            <div className="w-10 h-10 rounded-lg bg-[#EEF2FF] dark:bg-[#4945ff]/15 flex items-center justify-center flex-shrink-0">
-              <Smartphone className="w-5 h-5 text-[#4945ff]" />
+            <div className="w-10 h-10 rounded-lg bg-[#EEF2FF] dark:bg-[#0c66e4]/15 flex items-center justify-center flex-shrink-0">
+              <Smartphone className="w-5 h-5 text-[#0c66e4]" />
             </div>
             <div>
               <p className="text-[15px] font-semibold text-[#111827] dark:text-white leading-tight">Check Your Phone!</p>
@@ -138,7 +138,7 @@ export function ApplicationStatusMessage({
             {/* Info bubble */}
             <div className="bg-[#F3F4F6] dark:bg-[#0D1117] rounded-xl p-4 mb-6">
               <div className="flex items-start gap-3">
-                <div className="w-2.5 h-2.5 rounded-full bg-[#4945ff] flex-shrink-0 mt-[5px]" />
+                <div className="w-2.5 h-2.5 rounded-full bg-[#0c66e4] flex-shrink-0 mt-[5px]" />
                 <p className="text-[13px] text-[#4B5563] dark:text-[#9CA3AF] leading-[1.6]">
                   Your account selections have been saved — we're still reviewing your application and will get back to you soon.
                 </p>
@@ -195,11 +195,11 @@ export function ApplicationStatusMessage({
               {/* In review */}
               <div className="flex items-start gap-2.5 mb-0">
                 <div className="flex flex-col items-center pt-[5px]">
-                  <div className="w-[9px] h-[9px] rounded-full bg-[#4945ff]" />
+                  <div className="w-[9px] h-[9px] rounded-full bg-[#0c66e4]" />
                   <div className="w-px h-[28px] bg-[#E5E7EB] dark:bg-[#374151]" />
                 </div>
                 <div className="pb-2">
-                  <p className="text-[13px] font-semibold text-[#4945ff] leading-tight">In review</p>
+                  <p className="text-[13px] font-semibold text-[#0c66e4] leading-tight">In review</p>
                   <p className="text-[11px] text-[#9CA3AF]">Approx. 1 day</p>
                 </div>
               </div>
@@ -221,13 +221,13 @@ export function ApplicationStatusMessage({
               <p className="text-[11px] text-[#9CA3AF] mb-2.5">Our support team can help:</p>
               <a
                 href="mailto:support@deltcapital.com"
-                className="block text-[13px] text-[#4945ff] hover:underline leading-relaxed"
+                className="block text-[13px] text-[#0c66e4] hover:underline leading-relaxed"
               >
                 support@deltcapital.com
               </a>
               <a
                 href="tel:+18647293358"
-                className="block text-[13px] text-[#4945ff] hover:underline leading-relaxed"
+                className="block text-[13px] text-[#0c66e4] hover:underline leading-relaxed"
               >
                 (864) 729-3358
               </a>

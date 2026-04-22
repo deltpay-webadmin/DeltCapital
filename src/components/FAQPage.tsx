@@ -51,7 +51,7 @@ export function FAQPage({ onClose, onAboutClick, onHowItWorksClick, onReviewsCli
         onClick={() => toggleFaq(index)}
         className="w-full flex items-start justify-between text-left gap-4 group"
       >
-        <span className="text-lg font-semibold text-[#041E42] group-hover:text-[#4945ff] transition-colors">
+        <span className="text-lg font-semibold text-[#172b4d] group-hover:text-[#0c66e4] transition-colors">
           {faq.question}
         </span>
         <motion.div
@@ -61,8 +61,8 @@ export function FAQPage({ onClose, onAboutClick, onHowItWorksClick, onReviewsCli
           <Plus
             className={`w-6 h-6 flex-shrink-0 transition-colors ${
               openIndex === index
-                ? 'text-[#4945ff]'
-                : 'text-[#4945ff] group-hover:scale-110'
+                ? 'text-[#0c66e4]'
+                : 'text-[#0c66e4] group-hover:scale-110'
             }`}
           />
         </motion.div>
@@ -88,9 +88,9 @@ export function FAQPage({ onClose, onAboutClick, onHowItWorksClick, onReviewsCli
   );
 
   return (
-    <div className="fixed inset-0 bg-[#ededf6] z-50 overflow-y-auto">
+    <div className="fixed inset-0 bg-[#fafbfc] z-50 overflow-y-auto">
       {/* Sticky header */}
-      <div className="sticky top-0 z-10 bg-[#ededf6] border-b border-[#041E42]/10">
+      <div className="sticky top-0 z-10 bg-[#fafbfc] border-b border-[#172b4d]/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <div className="flex items-center gap-0 h-14 w-auto cursor-pointer" onClick={onClose}>
             <img src={logoImg} alt="Delt" className="h-10 w-auto object-contain" />
@@ -102,13 +102,13 @@ export function FAQPage({ onClose, onAboutClick, onHowItWorksClick, onReviewsCli
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 pb-24">
         {/* Title */}
         <motion.h1
-          className="text-4xl md:text-5xl font-bold text-[#041E42] mb-14"
+          className="text-4xl md:text-5xl font-bold text-[#172b4d] mb-14"
           initial={{ opacity: 0, x: -40 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
         >
           FAQ
-          <span className="text-[#4945ff]">.</span>
+          <span className="text-[#0c66e4]">.</span>
         </motion.h1>
 
         {/* Two Column FAQ Layout */}

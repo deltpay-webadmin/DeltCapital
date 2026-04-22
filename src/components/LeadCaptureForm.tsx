@@ -115,11 +115,11 @@ function IndustryAutocomplete({
           hasError
             ? 'border-red-400 ring-1 ring-red-400'
             : value
-              ? 'border-slate-200 text-[#041E42]'
+              ? 'border-slate-200 text-[#172b4d]'
               : 'border-slate-200 text-slate-400'
-        } ${isOpen ? 'border-[#041E42] ring-1 ring-[#041E42]' : ''}`}
+        } ${isOpen ? 'border-[#172b4d] ring-1 ring-[#172b4d]' : ''}`}
       >
-        <span className={value ? 'text-[#041E42]' : 'text-slate-400'}>
+        <span className={value ? 'text-[#172b4d]' : 'text-slate-400'}>
           {value || 'Select your industry'}
         </span>
         <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
@@ -144,7 +144,7 @@ function IndustryAutocomplete({
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Type to search..."
-                  className="flex-1 outline-none bg-transparent text-sm text-[#041E42] placeholder-slate-400"
+                  className="flex-1 outline-none bg-transparent text-sm text-[#172b4d] placeholder-slate-400"
                 />
               </div>
             </div>
@@ -159,12 +159,12 @@ function IndustryAutocomplete({
                     onClick={() => handleSelect(opt)}
                     className={`w-full text-left px-4 py-2.5 text-sm flex items-center justify-between cursor-pointer transition-colors ${
                       value === opt
-                        ? 'bg-[#041E42]/5 text-[#041E42] font-medium'
-                        : 'text-[#041E42] hover:bg-slate-50'
+                        ? 'bg-[#172b4d]/5 text-[#172b4d] font-medium'
+                        : 'text-[#172b4d] hover:bg-slate-50'
                     }`}
                   >
                     <span>{opt}</span>
-                    {value === opt && <Check className="w-3.5 h-3.5 text-[#041E42]" strokeWidth={2.5} />}
+                    {value === opt && <Check className="w-3.5 h-3.5 text-[#172b4d]" strokeWidth={2.5} />}
                   </button>
                 ))
               ) : (
@@ -304,7 +304,7 @@ export function LeadCaptureForm({ onSubmit, initialData }: LeadCaptureFormProps)
               <img src={deltFavicon} alt="Delt" className="w-full h-full object-cover" />
             </div>
             <div>
-              <h2 className="text-xl md:text-2xl font-bold text-[#041E42] tracking-tight">Get Funded</h2>
+              <h2 className="text-xl md:text-2xl font-bold text-[#172b4d] tracking-tight">Get Funded</h2>
               <p className="text-slate-500 text-xs mt-0.5">Takes less than 2 minutes</p>
             </div>
           </div>
@@ -317,7 +317,7 @@ export function LeadCaptureForm({ onSubmit, initialData }: LeadCaptureFormProps)
               return (
                 <div key={s} className="flex-1 h-1.5 rounded-full overflow-hidden bg-slate-100">
                   <motion.div
-                    className="h-full rounded-full bg-[#041E42]"
+                    className="h-full rounded-full bg-[#172b4d]"
                     initial={{ width: '0%' }}
                     animate={{ width: isFilled ? '100%' : s === step ? '50%' : '0%' }}
                     transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
@@ -342,10 +342,10 @@ export function LeadCaptureForm({ onSubmit, initialData }: LeadCaptureFormProps)
                 className="flex-1 flex flex-col"
               >
                 <div className="flex items-center gap-2 mb-1">
-                  <DollarSign className="w-4 h-4 text-[#4945ff]" />
-                  <span className="text-xs text-[#4945ff] font-medium uppercase tracking-wider">Step 1 of 3</span>
+                  <DollarSign className="w-4 h-4 text-[#0c66e4]" />
+                  <span className="text-xs text-[#0c66e4] font-medium uppercase tracking-wider">Step 1 of 3</span>
                 </div>
-                <h3 className="text-[#041E42] text-xl mb-1">Tell us about your revenue</h3>
+                <h3 className="text-[#172b4d] text-xl mb-1">Tell us about your revenue</h3>
                 <p className="text-slate-500 text-sm mb-5">This helps us determine your funding options</p>
 
                 <div className="space-y-4 flex-1">
@@ -365,10 +365,10 @@ export function LeadCaptureForm({ onSubmit, initialData }: LeadCaptureFormProps)
                           value={annualRevenue}
                           onChange={(e) => { setAnnualRevenue(formatCurrencyInput(e.target.value)); setErrors(prev => ({ ...prev, annualRevenue: false })); }}
                           placeholder="e.g. $1,200,000"
-                          className={`w-full border rounded-xl pl-10 pr-4 py-3 text-sm text-[#041E42] placeholder-slate-400 outline-none transition-all ${
+                          className={`w-full border rounded-xl pl-10 pr-4 py-3 text-sm text-[#172b4d] placeholder-slate-400 outline-none transition-all ${
                             errors.annualRevenue
                               ? 'border-red-400 ring-1 ring-red-400'
-                              : 'border-slate-200 focus:border-[#041E42] focus:ring-1 focus:ring-[#041E42]'
+                              : 'border-slate-200 focus:border-[#172b4d] focus:ring-1 focus:ring-[#172b4d]'
                           }`}
                           autoFocus
                         />
@@ -395,10 +395,10 @@ export function LeadCaptureForm({ onSubmit, initialData }: LeadCaptureFormProps)
                         onClick={() => { setAcceptsCreditCards(true); setErrors(prev => ({ ...prev, acceptsCreditCards: false })); }}
                         className={`flex-1 py-3 rounded-xl border-2 text-sm transition-all cursor-pointer ${
                           acceptsCreditCards === true
-                            ? 'border-[#041E42] bg-[#041E42] text-white font-medium'
+                            ? 'border-[#172b4d] bg-[#172b4d] text-white font-medium'
                             : errors.acceptsCreditCards
-                              ? 'border-red-300 text-[#041E42] bg-red-50/50'
-                              : 'border-slate-200 text-[#041E42] hover:border-slate-300 hover:bg-slate-50'
+                              ? 'border-red-300 text-[#172b4d] bg-red-50/50'
+                              : 'border-slate-200 text-[#172b4d] hover:border-slate-300 hover:bg-slate-50'
                         }`}
                       >
                         Yes
@@ -408,10 +408,10 @@ export function LeadCaptureForm({ onSubmit, initialData }: LeadCaptureFormProps)
                         onClick={() => { setAcceptsCreditCards(false); setMonthlyCCSales(''); setErrors(prev => ({ ...prev, acceptsCreditCards: false, monthlyCCSales: false })); }}
                         className={`flex-1 py-3 rounded-xl border-2 text-sm transition-all cursor-pointer ${
                           acceptsCreditCards === false
-                            ? 'border-[#041E42] bg-[#041E42] text-white font-medium'
+                            ? 'border-[#172b4d] bg-[#172b4d] text-white font-medium'
                             : errors.acceptsCreditCards
-                              ? 'border-red-300 text-[#041E42] bg-red-50/50'
-                              : 'border-slate-200 text-[#041E42] hover:border-slate-300 hover:bg-slate-50'
+                              ? 'border-red-300 text-[#172b4d] bg-red-50/50'
+                              : 'border-slate-200 text-[#172b4d] hover:border-slate-300 hover:bg-slate-50'
                         }`}
                       >
                         No
@@ -448,10 +448,10 @@ export function LeadCaptureForm({ onSubmit, initialData }: LeadCaptureFormProps)
                               value={monthlyCCSales}
                               onChange={(e) => { setMonthlyCCSales(formatCurrencyInput(e.target.value)); setErrors(prev => ({ ...prev, monthlyCCSales: false })); }}
                               placeholder="e.g. $50,000"
-                              className={`w-full border rounded-xl pl-10 pr-4 py-3 text-sm text-[#041E42] placeholder-slate-400 outline-none transition-all ${
+                              className={`w-full border rounded-xl pl-10 pr-4 py-3 text-sm text-[#172b4d] placeholder-slate-400 outline-none transition-all ${
                                 errors.monthlyCCSales
                                   ? 'border-red-400 ring-1 ring-red-400'
-                                  : 'border-slate-200 focus:border-[#041E42] focus:ring-1 focus:ring-[#041E42]'
+                                  : 'border-slate-200 focus:border-[#172b4d] focus:ring-1 focus:ring-[#172b4d]'
                               }`}
                             />
                           </div>
@@ -476,10 +476,10 @@ export function LeadCaptureForm({ onSubmit, initialData }: LeadCaptureFormProps)
                       <select
                         value={timeInBusiness}
                         onChange={(e) => { setTimeInBusiness(e.target.value); setErrors(prev => ({ ...prev, timeInBusiness: false })); }}
-                        className={`w-full border rounded-xl px-4 py-3 text-sm text-[#041E42] placeholder-slate-400 outline-none transition-all ${
+                        className={`w-full border rounded-xl px-4 py-3 text-sm text-[#172b4d] placeholder-slate-400 outline-none transition-all ${
                           errors.timeInBusiness
                             ? 'border-red-400 ring-1 ring-red-400'
-                            : 'border-slate-200 focus:border-[#041E42] focus:ring-1 focus:ring-[#041E42]'
+                            : 'border-slate-200 focus:border-[#172b4d] focus:ring-1 focus:ring-[#172b4d]'
                         }`}
                       >
                         <option value="">Select...</option>
@@ -500,7 +500,7 @@ export function LeadCaptureForm({ onSubmit, initialData }: LeadCaptureFormProps)
                 <div className="mt-6">
                   <button
                     onClick={handleStep0Continue}
-                    className="w-full py-3.5 rounded-xl bg-[#041E42] text-white font-semibold text-sm transition-all cursor-pointer flex items-center justify-center gap-2 hover:bg-[#0a2d5c]"
+                    className="w-full py-3.5 rounded-xl bg-[#172b4d] text-white font-semibold text-sm transition-all cursor-pointer flex items-center justify-center gap-2 hover:bg-[#0a2d5c]"
                   >
                     Continue
                     <ArrowRight className="w-4 h-4" />
@@ -520,10 +520,10 @@ export function LeadCaptureForm({ onSubmit, initialData }: LeadCaptureFormProps)
                 className="flex-1 flex flex-col"
               >
                 <div className="flex items-center gap-2 mb-1">
-                  <Building2 className="w-4 h-4 text-[#4945ff]" />
-                  <span className="text-xs text-[#4945ff] font-medium uppercase tracking-wider">Step 2 of 3</span>
+                  <Building2 className="w-4 h-4 text-[#0c66e4]" />
+                  <span className="text-xs text-[#0c66e4] font-medium uppercase tracking-wider">Step 2 of 3</span>
                 </div>
-                <h3 className="text-[#041E42] text-xl mb-1">Tell us about your business</h3>
+                <h3 className="text-[#172b4d] text-xl mb-1">Tell us about your business</h3>
                 <p className="text-slate-500 text-sm mb-5">We use this to tailor your funding options</p>
 
                 {/* Show pre-filled badge when step 0 was auto-completed */}
@@ -552,10 +552,10 @@ export function LeadCaptureForm({ onSubmit, initialData }: LeadCaptureFormProps)
                         value={businessName}
                         onChange={(e) => { setBusinessName(e.target.value); setErrors(prev => ({ ...prev, businessName: false })); }}
                         placeholder="Your business name"
-                        className={`w-full border rounded-xl px-4 py-3 text-sm text-[#041E42] placeholder-slate-400 outline-none transition-all ${
+                        className={`w-full border rounded-xl px-4 py-3 text-sm text-[#172b4d] placeholder-slate-400 outline-none transition-all ${
                           errors.businessName
                             ? 'border-red-400 ring-1 ring-red-400'
-                            : 'border-slate-200 focus:border-[#041E42] focus:ring-1 focus:ring-[#041E42]'
+                            : 'border-slate-200 focus:border-[#172b4d] focus:ring-1 focus:ring-[#172b4d]'
                         }`}
                         autoFocus
                       />
@@ -593,14 +593,14 @@ export function LeadCaptureForm({ onSubmit, initialData }: LeadCaptureFormProps)
                   {!skippedSteps.step0 && (
                     <button
                       onClick={() => setStep(0)}
-                      className="px-5 py-3.5 rounded-xl border border-slate-200 text-[#041E42] text-sm font-medium transition-all cursor-pointer hover:bg-slate-50"
+                      className="px-5 py-3.5 rounded-xl border border-slate-200 text-[#172b4d] text-sm font-medium transition-all cursor-pointer hover:bg-slate-50"
                     >
                       Back
                     </button>
                   )}
                   <button
                     onClick={handleStep1Continue}
-                    className="flex-1 py-3.5 rounded-xl bg-[#041E42] text-white font-semibold text-sm transition-all cursor-pointer flex items-center justify-center gap-2 hover:bg-[#0a2d5c]"
+                    className="flex-1 py-3.5 rounded-xl bg-[#172b4d] text-white font-semibold text-sm transition-all cursor-pointer flex items-center justify-center gap-2 hover:bg-[#0a2d5c]"
                   >
                     Continue
                     <ArrowRight className="w-4 h-4" />
@@ -620,10 +620,10 @@ export function LeadCaptureForm({ onSubmit, initialData }: LeadCaptureFormProps)
                 className="flex-1 flex flex-col"
               >
                 <div className="flex items-center gap-2 mb-1">
-                  <User className="w-4 h-4 text-[#4945ff]" />
-                  <span className="text-xs text-[#4945ff] font-medium uppercase tracking-wider">Step 3 of 3</span>
+                  <User className="w-4 h-4 text-[#0c66e4]" />
+                  <span className="text-xs text-[#0c66e4] font-medium uppercase tracking-wider">Step 3 of 3</span>
                 </div>
-                <h3 className="text-[#041E42] text-xl mb-1">Owner information</h3>
+                <h3 className="text-[#172b4d] text-xl mb-1">Owner information</h3>
                 <p className="text-slate-500 text-sm mb-5">We'll use this to prepare your offer</p>
 
                 <div className="space-y-4 flex-1">
@@ -641,10 +641,10 @@ export function LeadCaptureForm({ onSubmit, initialData }: LeadCaptureFormProps)
                           value={ownerFirstName}
                           onChange={(e) => { setOwnerFirstName(e.target.value); setErrors(prev => ({ ...prev, ownerFirstName: false })); }}
                           placeholder="First name"
-                          className={`w-full border rounded-xl px-4 py-3 text-sm text-[#041E42] placeholder-slate-400 outline-none transition-all ${
+                          className={`w-full border rounded-xl px-4 py-3 text-sm text-[#172b4d] placeholder-slate-400 outline-none transition-all ${
                             errors.ownerFirstName
                               ? 'border-red-400 ring-1 ring-red-400'
-                              : 'border-slate-200 focus:border-[#041E42] focus:ring-1 focus:ring-[#041E42]'
+                              : 'border-slate-200 focus:border-[#172b4d] focus:ring-1 focus:ring-[#172b4d]'
                           }`}
                           autoFocus
                         />
@@ -669,10 +669,10 @@ export function LeadCaptureForm({ onSubmit, initialData }: LeadCaptureFormProps)
                           value={ownerLastName}
                           onChange={(e) => { setOwnerLastName(e.target.value); setErrors(prev => ({ ...prev, ownerLastName: false })); }}
                           placeholder="Last name"
-                          className={`w-full border rounded-xl px-4 py-3 text-sm text-[#041E42] placeholder-slate-400 outline-none transition-all ${
+                          className={`w-full border rounded-xl px-4 py-3 text-sm text-[#172b4d] placeholder-slate-400 outline-none transition-all ${
                             errors.ownerLastName
                               ? 'border-red-400 ring-1 ring-red-400'
-                              : 'border-slate-200 focus:border-[#041E42] focus:ring-1 focus:ring-[#041E42]'
+                              : 'border-slate-200 focus:border-[#172b4d] focus:ring-1 focus:ring-[#172b4d]'
                           }`}
                         />
                       </motion.div>
@@ -699,10 +699,10 @@ export function LeadCaptureForm({ onSubmit, initialData }: LeadCaptureFormProps)
                           value={ownerEmail}
                           onChange={(e) => { setOwnerEmail(e.target.value); setErrors(prev => ({ ...prev, ownerEmail: false, ownerEmailFormat: false })); }}
                           placeholder="you@business.com"
-                          className={`w-full border rounded-xl pl-10 pr-4 py-3 text-sm text-[#041E42] placeholder-slate-400 outline-none transition-all ${
+                          className={`w-full border rounded-xl pl-10 pr-4 py-3 text-sm text-[#172b4d] placeholder-slate-400 outline-none transition-all ${
                             errors.ownerEmail
                               ? 'border-red-400 ring-1 ring-red-400'
-                              : 'border-slate-200 focus:border-[#041E42] focus:ring-1 focus:ring-[#041E42]'
+                              : 'border-slate-200 focus:border-[#172b4d] focus:ring-1 focus:ring-[#172b4d]'
                           }`}
                         />
                       </div>
@@ -719,14 +719,14 @@ export function LeadCaptureForm({ onSubmit, initialData }: LeadCaptureFormProps)
                   {!skippedSteps.step1 && (
                     <button
                       onClick={() => setStep(1)}
-                      className="px-5 py-3.5 rounded-xl border border-slate-200 text-[#041E42] text-sm font-medium transition-all cursor-pointer hover:bg-slate-50"
+                      className="px-5 py-3.5 rounded-xl border border-slate-200 text-[#172b4d] text-sm font-medium transition-all cursor-pointer hover:bg-slate-50"
                     >
                       Back
                     </button>
                   )}
                   <button
                     onClick={handleStep2Submit}
-                    className="flex-1 py-3.5 rounded-xl bg-[#041E42] text-white font-semibold text-sm transition-all cursor-pointer flex items-center justify-center gap-2 hover:bg-[#0a2d5c]"
+                    className="flex-1 py-3.5 rounded-xl bg-[#172b4d] text-white font-semibold text-sm transition-all cursor-pointer flex items-center justify-center gap-2 hover:bg-[#0a2d5c]"
                   >
                     Connect Your Bank
                     <Lock className="w-4 h-4" />

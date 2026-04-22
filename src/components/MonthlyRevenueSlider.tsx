@@ -177,7 +177,7 @@ export function MonthlyRevenueSlider({ value, onChange, onContinue }: MonthlyRev
       {/* Revenue Display */}
       <div className="text-center mb-8">
         <div
-          className="text-5xl font-bold text-[#041E42] tabular-nums tracking-tight"
+          className="text-5xl font-bold text-[#172b4d] tabular-nums tracking-tight"
           style={{
             transition: isDragging ? 'none' : 'all 0.08s ease',
           }}
@@ -207,7 +207,7 @@ export function MonthlyRevenueSlider({ value, onChange, onContinue }: MonthlyRev
       >
         {/* Center indicator line */}
         <div
-          className="absolute left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2 z-10 bg-[#4945ff]"
+          className="absolute left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2 z-10 bg-[#0c66e4]"
           style={{
             boxShadow: '0 0 12px rgba(73,69,255,0.4)',
           }}
@@ -264,7 +264,7 @@ export function MonthlyRevenueSlider({ value, onChange, onContinue }: MonthlyRev
                     width: isSelected ? 2 : 1,
                     height: 28,
                     background: isSelected
-                      ? '#4945ff'
+                      ? '#0c66e4'
                       : `rgba(73,69,255,${0.08 + proximity * 0.35})`,
                     transition: isDragging ? 'none' : 'all 0.2s ease',
                   }}

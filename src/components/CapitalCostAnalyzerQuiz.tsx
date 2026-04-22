@@ -205,7 +205,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
             className="mb-6"
           >
             <div className="w-20 h-20 mx-auto mb-4">
-              <svg className="animate-spin text-[#4945ff]" viewBox="0 0 24 24">
+              <svg className="animate-spin text-[#0c66e4]" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
               </svg>
@@ -215,7 +215,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-2xl font-bold text-[#041E42] mb-2"
+            className="text-2xl font-bold text-[#172b4d] mb-2"
           >
             Calculating Your Funding Range
           </motion.h3>
@@ -283,7 +283,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
             style={{
               fontSize: 'clamp(48px, 8vw, 64px)',
               fontWeight: 800,
-              color: isDeltBoosted ? '#4945ff' : '#0B0B18',
+              color: isDeltBoosted ? '#0c66e4' : '#0B0B18',
               letterSpacing: '-2px',
               lineHeight: 1,
               marginBottom: '6px',
@@ -317,7 +317,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                     width: '40px',
                     height: '40px',
                     borderRadius: '10px',
-                    background: 'linear-gradient(135deg, #4945ff 0%, #5B3AFF 100%)',
+                    background: 'linear-gradient(135deg, #0c66e4 0%, #5B3AFF 100%)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -382,7 +382,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                     height: '40px',
                     borderRadius: '10px',
                     background: deltToggle
-                      ? 'linear-gradient(135deg, #4945ff 0%, #5B3AFF 100%)'
+                      ? 'linear-gradient(135deg, #0c66e4 0%, #5B3AFF 100%)'
                       : '#E5E7EB',
                     display: 'flex',
                     alignItems: 'center',
@@ -432,7 +432,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                     width: '48px',
                     height: '28px',
                     borderRadius: '14px',
-                    background: deltToggle ? '#4945ff' : '#CBD5E1',
+                    background: deltToggle ? '#0c66e4' : '#CBD5E1',
                     padding: '3px',
                     transition: 'background 0.25s cubic-bezier(0.16,1,0.3,1)',
                     flexShrink: 0,
@@ -463,7 +463,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
               padding: '16px 0',
               borderRadius: '10px',
               border: 'none',
-              background: '#4945ff',
+              background: '#0c66e4',
               color: '#fff',
               fontSize: '16px',
               fontWeight: 700,
@@ -471,12 +471,12 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
               boxShadow: '0 2px 8px rgba(73,69,255,0.2)',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = '#3b38d9';
+              e.currentTarget.style.background = '#0055cc';
               e.currentTarget.style.transform = 'translateY(-1px)';
               e.currentTarget.style.boxShadow = '0 4px 14px rgba(73,69,255,0.25)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = '#4945ff';
+              e.currentTarget.style.background = '#0c66e4';
               e.currentTarget.style.transform = 'none';
               e.currentTarget.style.boxShadow = '0 2px 8px rgba(73,69,255,0.2)';
             }}
@@ -511,7 +511,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
             style={{
               fontSize: '13px',
               fontWeight: 600,
-              color: '#4945ff',
+              color: '#0c66e4',
               textDecoration: 'none',
               display: 'inline-flex',
               alignItems: 'center',
@@ -541,9 +541,9 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                     background: 'rgba(73,69,255,0.02)',
                   }}
                 >
-                  <Rocket className="w-5 h-5 mb-2" style={{ color: '#4945ff' }} />
+                  <Rocket className="w-5 h-5 mb-2" style={{ color: '#0c66e4' }} />
                   <p
-                    className="text-[13px] text-[#041E42] mb-1"
+                    className="text-[13px] text-[#172b4d] mb-1"
                     style={{ fontWeight: 700, lineHeight: 1.35 }}
                   >
                     Get started with Delt today.
@@ -573,7 +573,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px]"
                   style={{
                     background: 'rgba(73,69,255,0.08)',
-                    color: '#4945ff',
+                    color: '#0c66e4',
                     fontWeight: 600,
                   }}
                 >
@@ -598,7 +598,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                 cursor: 'pointer',
                 padding: 0,
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.color = '#4945ff'; }}
+              onMouseEnter={(e) => { e.currentTarget.style.color = '#0c66e4'; }}
               onMouseLeave={(e) => { e.currentTarget.style.color = '#A0A0B0'; }}
             >
               ↺ Start Over
@@ -628,13 +628,13 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                 <span className="text-sm font-semibold text-[#1E40AF]">
                   Question 1 of 3
                 </span>
-                <span className="text-sm text-[#52606D]">
+                <span className="text-sm text-[#44546f]">
                   {Math.round(progress)}% Complete
                 </span>
               </div>
-              <div className="w-full h-2 bg-[#E4E7EB] rounded-full overflow-hidden">
+              <div className="w-full h-2 bg-[#dcdfe4] rounded-full overflow-hidden">
                 <motion.div
-                  className="h-full bg-gradient-to-r from-[#4945ff] to-[#6366f1]"
+                  className="h-full bg-gradient-to-r from-[#0c66e4] to-[#6366f1]"
                   initial={{ width: '0%' }}
                   animate={{ width: `${progress}%` }}
                   transition={{ duration: 0.5 }}
@@ -644,8 +644,8 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
 
             {/* Question Header */}
             <div className="text-center mb-8">
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-[#4945ff]/10 rounded-full mb-4">
-                <Calendar className="w-6 h-6 text-[#4945ff]" />
+              <div className="inline-flex items-center justify-center w-12 h-12 bg-[#0c66e4]/10 rounded-full mb-4">
+                <Calendar className="w-6 h-6 text-[#0c66e4]" />
               </div>
               <div className="uppercase tracking-[0.15em] text-[#9CA3AF] text-xs font-semibold mb-6">
                 Time in Business
@@ -657,7 +657,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                     onClick={() => handleTimeSelect(opt.value)}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="px-5 py-4 rounded-xl border-2 border-[#e8eaf0] text-[#4a5568] hover:border-[#4945ff] hover:bg-[#4945ff]/5 transition-all duration-200 font-semibold text-sm"
+                    className="px-5 py-4 rounded-xl border-2 border-[#e8eaf0] text-[#4a5568] hover:border-[#0c66e4] hover:bg-[#0c66e4]/5 transition-all duration-200 font-semibold text-sm"
                   >
                     {opt.label}
                   </motion.button>
@@ -686,11 +686,11 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
               <span className="text-sm font-semibold text-[#1E40AF]">
                 Question 2 of 3
               </span>
-              <span className="text-sm text-[#52606D]">
+              <span className="text-sm text-[#44546f]">
                 {Math.round(progress)}% Complete
               </span>
             </div>
-            <div className="w-full h-2 bg-[#E4E7EB] rounded-full overflow-hidden">
+            <div className="w-full h-2 bg-[#dcdfe4] rounded-full overflow-hidden">
               <motion.div
                 className="h-full bg-gradient-to-r from-[#1E40AF] to-[#3B82F6]"
                 animate={{ width: `${progress}%` }}
@@ -701,8 +701,8 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
 
           {/* Question Header */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-12 h-12 bg-[#4945ff]/10 rounded-full mb-4">
-              <DollarSign className="w-6 h-6 text-[#4945ff]" />
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-[#0c66e4]/10 rounded-full mb-4">
+              <DollarSign className="w-6 h-6 text-[#0c66e4]" />
             </div>
             <div className="uppercase tracking-[0.15em] text-[#9CA3AF] text-xs font-semibold mb-6">
               Monthly Revenue
@@ -722,7 +722,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
             >
               <button
                 onClick={handleRevenueContinue}
-                className="bg-[#4945ff] hover:bg-[#3b38d9] text-white px-6 py-2.5 rounded-xl font-semibold transition-all duration-200 flex items-center gap-2 text-sm"
+                className="bg-[#0c66e4] hover:bg-[#0055cc] text-white px-6 py-2.5 rounded-xl font-semibold transition-all duration-200 flex items-center gap-2 text-sm"
               >
                 Continue
                 <ArrowRight className="w-4 h-4" />
@@ -753,11 +753,11 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                 <span className="text-sm font-semibold text-[#1E40AF]">
                   Question 3 of 3
                 </span>
-                <span className="text-sm text-[#52606D]">
+                <span className="text-sm text-[#44546f]">
                   {Math.round(progress)}% Complete
                 </span>
               </div>
-              <div className="w-full h-2 bg-[#E4E7EB] rounded-full overflow-hidden">
+              <div className="w-full h-2 bg-[#dcdfe4] rounded-full overflow-hidden">
                 <motion.div
                   className="h-full bg-gradient-to-r from-[#1E40AF] to-[#3B82F6]"
                   animate={{ width: `${progress}%` }}
@@ -768,8 +768,8 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
 
             {/* Question Header */}
             <div className="text-center mb-8">
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-[#4945ff]/10 rounded-full mb-4">
-                <CreditCard className="w-6 h-6 text-[#4945ff]" />
+              <div className="inline-flex items-center justify-center w-12 h-12 bg-[#0c66e4]/10 rounded-full mb-4">
+                <CreditCard className="w-6 h-6 text-[#0c66e4]" />
               </div>
               <div className="uppercase tracking-[0.15em] text-[#9CA3AF] text-xs font-semibold mb-6">
                 Do you currently accept credit cards?
@@ -779,7 +779,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                   onClick={() => handleAcceptCards(true)}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="flex items-center justify-center gap-2 px-6 py-4 rounded-xl border-2 border-[#e8eaf0] text-[#4a5568] hover:border-[#4945ff] hover:bg-[#4945ff]/5 transition-all duration-200 font-semibold text-sm"
+                  className="flex items-center justify-center gap-2 px-6 py-4 rounded-xl border-2 border-[#e8eaf0] text-[#4a5568] hover:border-[#0c66e4] hover:bg-[#0c66e4]/5 transition-all duration-200 font-semibold text-sm"
                 >
                   <Check className="w-5 h-5" />
                   Yes
@@ -788,7 +788,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                   onClick={() => handleAcceptCards(false)}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="flex items-center justify-center gap-2 px-6 py-4 rounded-xl border-2 border-[#e8eaf0] text-[#4a5568] hover:border-[#4945ff] hover:bg-[#4945ff]/5 transition-all duration-200 font-semibold text-sm"
+                  className="flex items-center justify-center gap-2 px-6 py-4 rounded-xl border-2 border-[#e8eaf0] text-[#4a5568] hover:border-[#0c66e4] hover:bg-[#0c66e4]/5 transition-all duration-200 font-semibold text-sm"
                 >
                   <XIcon className="w-5 h-5" />
                   No
@@ -817,11 +817,11 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
               <span className="text-sm font-semibold text-[#1E40AF]">
                 Final Question
               </span>
-              <span className="text-sm text-[#52606D]">
+              <span className="text-sm text-[#44546f]">
                 Almost Done!
               </span>
             </div>
-            <div className="w-full h-2 bg-[#E4E7EB] rounded-full overflow-hidden">
+            <div className="w-full h-2 bg-[#dcdfe4] rounded-full overflow-hidden">
               <motion.div
                 className="h-full bg-gradient-to-r from-[#1E40AF] to-[#3B82F6]"
                 initial={{ width: '75%' }}
@@ -833,8 +833,8 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
 
           {/* Question Header */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-12 h-12 bg-[#4945ff]/10 rounded-full mb-4">
-              <CreditCard className="w-6 h-6 text-[#4945ff]" />
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-[#0c66e4]/10 rounded-full mb-4">
+              <CreditCard className="w-6 h-6 text-[#0c66e4]" />
             </div>
             <div className="uppercase tracking-[0.15em] text-[#9CA3AF] text-xs font-semibold mb-6">
               Monthly Credit Card Sales
@@ -854,7 +854,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
             >
               <button
                 onClick={handleCardSalesContinue}
-                className="bg-[#4945ff] hover:bg-[#3b38d9] text-white px-6 py-2.5 rounded-xl font-semibold transition-all duration-200 flex items-center gap-2 text-sm"
+                className="bg-[#0c66e4] hover:bg-[#0055cc] text-white px-6 py-2.5 rounded-xl font-semibold transition-all duration-200 flex items-center gap-2 text-sm"
               >
                 See My Estimate
                 <ArrowRight className="w-4 h-4" />

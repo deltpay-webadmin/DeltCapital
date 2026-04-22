@@ -100,13 +100,13 @@ export function TestimonialsSection() {
   }, [isPaused, cardWidth]);
 
   return (
-    <section className="py-20 bg-[#ededf6]">
+    <section className="py-20 bg-[#fafbfc]">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2
           style={{
             fontSize: '28px',
             fontWeight: 700,
-            color: '#041e42',
+            color: '#172b4d',
             textAlign: 'center',
             marginBottom: '12px',
           }}
@@ -127,8 +127,8 @@ export function TestimonialsSection() {
           onMouseLeave={() => setIsPaused(false)}
         >
           {/* Fade edges */}
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-16 z-10" style={{ background: 'linear-gradient(to right, #ededf6, transparent)' }} />
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-16 z-10" style={{ background: 'linear-gradient(to left, #ededf6, transparent)' }} />
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-16 z-10" style={{ background: 'linear-gradient(to right, #fafbfc, transparent)' }} />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-16 z-10" style={{ background: 'linear-gradient(to left, #fafbfc, transparent)' }} />
 
           {/* Scrolling track */}
           <div
@@ -142,7 +142,7 @@ export function TestimonialsSection() {
                 className="shrink-0"
                 style={{
                   width: 'min(420px, 80vw)',
-                  background: '#F7F8FC',
+                  background: '#f1f2f4',
                   borderRadius: '16px',
                   padding: '32px',
                   border: '1px solid rgba(73,69,255,0.06)',
@@ -153,7 +153,7 @@ export function TestimonialsSection() {
                   {[...Array(5)].map((_, j) => (
                     <Star
                       key={j}
-                      className="w-4 h-4 fill-[#4945ff] text-[#4945ff]"
+                      className="w-4 h-4 fill-[#0c66e4] text-[#0c66e4]"
                     />
                   ))}
                 </div>
@@ -161,14 +161,14 @@ export function TestimonialsSection() {
                 {/* Quote */}
                 <p
                   className="mb-5 leading-relaxed"
-                  style={{ fontSize: '15px', color: '#041e42', minHeight: '72px' }}
+                  style={{ fontSize: '15px', color: '#172b4d', minHeight: '72px' }}
                 >
                   {t.quote}
                 </p>
 
                 {/* Attribution */}
                 <div style={{ fontSize: '13px', color: 'rgba(0,0,0,0.5)' }}>
-                  <span className="font-semibold" style={{ color: '#4945ff' }}>
+                  <span className="font-semibold" style={{ color: '#0c66e4' }}>
                     {t.name}
                   </span>
                   {' · '}
