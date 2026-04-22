@@ -259,29 +259,8 @@ function AppContent() {
     setShowResources(false);
   };
 
-  // Scroll-linked snap-up for content wrapper
-  // Content starts 80px below and translates up as hero fades (scroll 30vh → 75vh)
-  const [scrollPos, setScrollPos] = useState(0);
-  const [vh, setVh] = useState(800);
-  useEffect(() => {
-    const update = () => setVh(window.innerHeight);
-    update();
-    window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
-  }, []);
-  useEffect(() => {
-    const handleScroll = () => setScrollPos(window.scrollY || document.documentElement.scrollTop || 0);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Compute scroll-driven transforms manually (avoids Motion's useScroll container issue in iframes)
-  const scrollStart1 = vh * 0.25;
-  const scrollEnd1 = vh * 0.7;
-  const scrollStart2 = vh * 0.25;
-  const scrollEnd2 = vh * 0.55;
-  const contentYVal = scrollPos <= scrollStart1 ? 80 : scrollPos >= scrollEnd1 ? 0 : 80 - (80 * (scrollPos - scrollStart1) / (scrollEnd1 - scrollStart1));
-  const contentOpacityVal = scrollPos <= scrollStart2 ? 0 : scrollPos >= scrollEnd2 ? 1 : (scrollPos - scrollStart2) / (scrollEnd2 - scrollStart2);
+  // (Scroll-linked snap-up for the content wrapper was retired with the
+  // fixed-photo hero. The new editorial hero is a normal flow element.)
 
   const pageTransitionProps = {
     initial: { opacity: 0, y: 8 },
@@ -327,11 +306,7 @@ function AppContent() {
       
       <main className="relative">
         <HeroSection onApplyClick={handleApplyClick} onApplyFromQuiz={handleApplyFromQuiz} onCalculatorClick={() => setShowCalculator(true)} />
-        {/* Everything after hero needs relative + z-index to scroll over the fixed hero */}
-        <div
-          className="relative z-10 bg-[#fafbfc]"
-          style={{ transform: `translateY(${contentYVal}px)`, opacity: contentOpacityVal }}
-        >
+        <div className="relative bg-[#fafbfc]">
         <div style={{ zoom: viewportZoom } as React.CSSProperties}>
           <section className="py-20 bg-[#fafbfc]">
             <ScrollReveal direction="up" distance={50}>
@@ -349,7 +324,7 @@ function AppContent() {
         </div>
       </main>
 
-      <div className="relative z-10" style={{ transform: `translateY(${contentYVal}px)` }}>
+      <div className="relative">
         <div style={{ zoom: viewportZoom } as React.CSSProperties}>
         <Footer onAboutClick={handleAboutClick} onHowItWorksClick={handleHowItWorksClick} onReviewsClick={handleReviewsClick} onBlogClick={handleBlogClick} onFAQClick={handleFAQClick} onSupportClick={handleSupportClick} onWinsClick={handleWinsClick} onApplyClick={handleApplyClick} onQuizClick={handleQuizClick} onResourcesClick={handleResourcesClick} onPrivacyClick={() => handleLegalLinkClick('privacy')} onTermsClick={() => handleLegalLinkClick('terms')} onDisclosuresClick={() => handleLegalLinkClick('eca')} />
         </div>

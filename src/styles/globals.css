@@ -1,7 +1,13 @@
 @custom-variant dark (&:is(.dark *));
 
-/* Import Inter (primary) + retain existing fonts as fallbacks */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+/* ─── Type stack (modern Stripe-adjacent) ───
+   Switzer (Fontshare) — variable grotesque, warm-neutral; pairs cleanly with
+   JetBrains Mono for tabular / numeric moments. We deliberately avoid the
+   reflex SaaS fonts (Inter, DM Sans, Plus Jakarta, etc.). */
+@import url('https://api.fontshare.com/v2/css?f[]=switzer@200,300,400,500,600,700,800,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+/* Codec Pro / Open Sauce Sans retained as deep fallbacks for any legacy figma
+   asset that still references them by name. */
 @import url('https://fonts.cdnfonts.com/css/codec-pro');
 @import url('https://fonts.cdnfonts.com/css/open-sauce-sans');
 
@@ -10,8 +16,9 @@
 
 :root {
   --font-size: 16px;
-  --font-display: "Inter", "Codec Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-sans: "Inter", "Open Sauce Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Switzer", "Codec Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sans: "Switzer", "Open Sauce Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", "Menlo", "Cascadia Mono", monospace;
 
   --background: #FAFBFC;
   --foreground: #172B4D;

@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { ArrowRight, X, ArrowUpRight } from 'lucide-react';
-import { useLanguage } from '../contexts/LanguageContext';
-import { PreQualificationGame } from './PreQualificationGame';
 import { motion, AnimatePresence } from 'motion/react';
-import businessPeopleImg from 'figma:asset/a03f9a9d95ad3eb3d24430a1c47663d5974d68f8.png';
-import { BBBLogo } from './BBBLogo';
+import { PreQualificationGame } from './PreQualificationGame';
 
 interface HeroSectionProps {
   onApplyClick: () => void;
@@ -12,11 +9,12 @@ interface HeroSectionProps {
   onCalculatorClick?: () => void;
 }
 
-/* ─────────────────────────────────────────────
- * Live payments dashboard — hero flourish.
- * Streams faux transactions in from the bottom,
- * shows a small SVG sparkline + today's volume.
- * ─────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────
+ * Live merchant feed — the product-as-hero panel.
+ * Solid surface, hairline borders, monospace data,
+ * no gradients, no halos. Reads as "this is the
+ * dashboard you'll get," not "this is decoration."
+ * ─────────────────────────────────────────────── */
 const TX_POOL = [
   { merchant: 'Acme Coffee',       amount: 245 },
   { merchant: 'Riverside Diner',   amount: 1820 },
@@ -36,13 +34,12 @@ function formatTime(d: Date) {
   return `${hh}:${mm}`;
 }
 
-function LivePaymentsDashboard() {
+function MerchantPanel({ onConnect }: { onConnect: () => void }) {
   const sparklineId = useMemo(() => `hero-spark-${Math.random().toString(36).slice(2, 7)}`, []);
 
-  // Seed initial 4 transactions (most recent first), then stream new ones in.
   const [items, setItems] = useState(() => {
     const now = Date.now();
-    return [0, 1, 2, 3].map((i) => ({
+    return [0, 1, 2, 3, 4].map((i) => ({
       ...TX_POOL[i],
       id: `seed-${i}`,
       ts: new Date(now - i * 4 * 60_000),
@@ -51,7 +48,7 @@ function LivePaymentsDashboard() {
 
   useEffect(() => {
     let alive = true;
-    let i = 4;
+    let i = 5;
     const id = window.setInterval(() => {
       if (!alive) return;
       const tx = TX_POOL[i % TX_POOL.length];
@@ -59,155 +56,181 @@ function LivePaymentsDashboard() {
       setItems((prev) => [
         { ...tx, id: `${tx.merchant}-${Date.now()}`, ts: new Date() },
         ...prev,
-      ].slice(0, 4));
+      ].slice(0, 5));
     }, 3800);
-    return () => {
-      alive = false;
-      window.clearInterval(id);
-    };
+    return () => { alive = false; window.clearInterval(id); };
   }, []);
 
-  // Sparkline points (faux 12-bar revenue trend, last point highest)
-  const points = useMemo(() => [22, 28, 24, 33, 30, 41, 38, 47, 44, 56, 52, 64], []);
+  // 14-bar revenue sparkline, last point highest
+  const points = useMemo(() => [22, 28, 24, 33, 30, 41, 38, 47, 44, 56, 52, 58, 64, 72], []);
   const maxP = Math.max(...points);
-  const w = 220;
-  const h = 36;
+  const w = 280;
+  const h = 60;
   const stepX = w / (points.length - 1);
   const path =
     'M ' +
     points
-      .map((p, idx) => `${(idx * stepX).toFixed(1)} ${(h - (p / maxP) * h).toFixed(1)}`)
+      .map((p, idx) => `${(idx * stepX).toFixed(1)} ${(h - (p / maxP) * h * 0.92 - 2).toFixed(1)}`)
       .join(' L ');
-  const areaPath = `${path} L ${w} ${h} L 0 ${h} Z`;
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30, scale: 0.96 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 1.0, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
-      aria-hidden
-      className="hidden lg:block absolute z-10 pointer-events-none"
-      style={{ right: '4vw', top: '24vh', width: 380 }}
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+      className="relative overflow-hidden"
+      style={{
+        background: '#ffffff',
+        border: '1px solid #dcdfe4',
+        borderRadius: 16,
+        boxShadow: '0 1px 1px rgba(10,37,64,0.04), 0 24px 48px -24px rgba(10,37,64,0.18)',
+      }}
     >
-      <div
-        className="rounded-2xl backdrop-blur-2xl border border-white/15 overflow-hidden"
-        style={{
-          background:
-            'rgba(255,255,255,0.06)',
-          boxShadow:
-            '0 28px 60px -16px rgba(0,0,0,0.6), 0 6px 18px -8px rgba(110,93,198,0.35), inset 0 1px 0 rgba(255,255,255,0.10)',
-        }}
-      >
-        {/* ── Top bar ── */}
-        <div className="flex items-center justify-between px-5 pt-4 pb-3 border-b border-white/[0.08]">
-          <span className="inline-flex items-center gap-2">
-            <span className="processing-dot w-1.5 h-1.5 rounded-full bg-[#1F845A]" />
+      {/* Header strip */}
+      <div className="flex items-center justify-between px-6 py-4 border-b border-[#dcdfe4]">
+        <div className="flex items-center gap-2.5">
+          <span className="relative flex w-2 h-2">
             <span
-              className="uppercase text-white/85"
-              style={{ fontSize: 10, letterSpacing: '0.28em', fontWeight: 700 }}
-            >
-              Live · today
-            </span>
+              className="absolute inset-0 rounded-full bg-[#1F845A] opacity-75"
+              style={{ animation: 'merchantPulse 2.2s ease-in-out infinite' }}
+            />
+            <span className="relative w-2 h-2 rounded-full bg-[#1F845A]" />
           </span>
-          <span className="text-white/45" style={{ fontSize: 10, letterSpacing: '0.06em' }}>
-            delt · merchant feed
+          <span
+            className="uppercase text-[#0a2540]"
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: 11,
+              fontWeight: 600,
+              letterSpacing: '0.08em',
+            }}
+          >
+            Merchant feed · live
           </span>
         </div>
+        <span
+          className="text-[#697386]"
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: 11,
+            fontWeight: 500,
+            letterSpacing: '0.04em',
+          }}
+        >
+          delt/dashboard
+        </span>
+      </div>
 
-        {/* ── Volume + delta + sparkline ── */}
-        <div className="px-5 pt-4 pb-4">
-          <div className="flex items-baseline justify-between mb-1">
-            <span
-              className="uppercase text-white/55"
-              style={{ fontSize: 10, letterSpacing: '0.22em', fontWeight: 700 }}
-            >
-              Volume
-            </span>
-            <span
-              className="inline-flex items-center gap-1 text-[#1F845A] tabular-nums"
-              style={{ fontSize: 11, fontWeight: 700 }}
-            >
-              <ArrowUpRight className="w-3 h-3" strokeWidth={2.5} />
-              +12.4%
-            </span>
-          </div>
-          <div className="flex items-end justify-between gap-3">
-            <span
-              className="text-white tabular-nums"
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: 32,
-                fontWeight: 800,
-                letterSpacing: '-0.035em',
-                lineHeight: 1.0,
-              }}
-            >
-              $48,500
-            </span>
-
-            {/* SVG sparkline */}
-            <svg
-              width={w}
-              height={h}
-              viewBox={`0 0 ${w} ${h}`}
-              className="overflow-visible"
-              style={{ maxWidth: '60%' }}
-            >
-              <defs>
-                <linearGradient id={`${sparklineId}-stroke`} x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stopColor="#85B8FF" />
-                  <stop offset="60%" stopColor="#1d7afc" />
-                  <stop offset="100%" stopColor="#6e5dc6" />
-                </linearGradient>
-                <linearGradient id={`${sparklineId}-fill`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#1d7afc" stopOpacity="0.35" />
-                  <stop offset="100%" stopColor="#1d7afc" stopOpacity="0" />
-                </linearGradient>
-              </defs>
-              <path d={areaPath} fill={`url(#${sparklineId}-fill)`} />
-              <path d={path} fill="none" stroke={`url(#${sparklineId}-stroke)`} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
-              {/* End-point dot */}
-              <circle
-                cx={w}
-                cy={h - (points[points.length - 1] / maxP) * h}
-                r={3}
-                fill="#6e5dc6"
-                style={{ filter: 'drop-shadow(0 0 6px rgba(110,93,198,0.8))' }}
-              />
-            </svg>
-          </div>
+      {/* Top: volume + sparkline */}
+      <div className="px-6 pt-6 pb-5">
+        <div className="flex items-baseline justify-between mb-3">
+          <span
+            className="uppercase text-[#697386]"
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: 10.5,
+              fontWeight: 600,
+              letterSpacing: '0.12em',
+            }}
+          >
+            Volume today
+          </span>
+          <span
+            className="inline-flex items-center gap-1 text-[#1F845A] tabular-nums"
+            style={{ fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 600 }}
+          >
+            <ArrowUpRight className="w-3 h-3" strokeWidth={2.5} />
+            +12.4%
+          </span>
         </div>
+        <div className="flex items-end justify-between gap-5">
+          <span
+            className="text-[#0a2540] tabular-nums"
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(2.25rem, 3.5vw, 3rem)',
+              fontWeight: 700,
+              letterSpacing: '-0.03em',
+              lineHeight: 0.95,
+            }}
+          >
+            $48,500
+          </span>
 
-        {/* ── Transaction stream ── */}
-        <div className="px-2 pb-3">
+          <svg
+            width={w}
+            height={h}
+            viewBox={`0 0 ${w} ${h}`}
+            className="overflow-visible flex-shrink-0"
+            style={{ maxWidth: '60%' }}
+          >
+            <path
+              d={path}
+              fill="none"
+              stroke="#0c66e4"
+              strokeWidth={1.75}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <circle
+              cx={w}
+              cy={h - (points[points.length - 1] / maxP) * h * 0.92 - 2}
+              r={3}
+              fill="#0c66e4"
+            />
+          </svg>
+        </div>
+      </div>
+
+      {/* Transaction ledger */}
+      <div className="border-t border-[#dcdfe4]">
+        <div className="grid grid-cols-[80px_1fr_auto] px-6 py-3 border-b border-[#dcdfe4]" style={{ fontFamily: 'var(--font-mono)' }}>
+          <span
+            className="uppercase text-[#697386]"
+            style={{ fontSize: 9.5, fontWeight: 600, letterSpacing: '0.16em' }}
+          >
+            Time
+          </span>
+          <span
+            className="uppercase text-[#697386]"
+            style={{ fontSize: 9.5, fontWeight: 600, letterSpacing: '0.16em' }}
+          >
+            Merchant
+          </span>
+          <span
+            className="uppercase text-[#697386]"
+            style={{ fontSize: 9.5, fontWeight: 600, letterSpacing: '0.16em' }}
+          >
+            Amount
+          </span>
+        </div>
+        <div className="px-2">
           <AnimatePresence initial={false}>
             {items.map((tx) => (
               <motion.div
                 key={tx.id}
                 layout
-                initial={{ opacity: 0, y: 16, scale: 0.98 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -8, scale: 0.98 }}
-                transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                className="flex items-center justify-between rounded-lg px-3 py-2.5"
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                className="grid grid-cols-[80px_1fr_auto] items-center px-4 py-2.5 rounded-md hover:bg-[#f6f9fc] transition-colors"
               >
-                <div className="flex items-center gap-3 min-w-0">
-                  <span
-                    className="text-white/45 tabular-nums flex-shrink-0"
-                    style={{ fontSize: 10, fontWeight: 600 }}
-                  >
-                    {formatTime(tx.ts)}
-                  </span>
-                  <span
-                    className="text-white truncate"
-                    style={{ fontSize: 12.5, fontWeight: 600 }}
-                  >
-                    {tx.merchant}
-                  </span>
-                </div>
                 <span
-                  className="text-[#85B8FF] tabular-nums flex-shrink-0"
-                  style={{ fontSize: 12.5, fontWeight: 700 }}
+                  className="text-[#697386] tabular-nums"
+                  style={{ fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 500 }}
+                >
+                  {formatTime(tx.ts)}
+                </span>
+                <span
+                  className="text-[#0a2540] truncate pr-3"
+                  style={{ fontSize: 13.5, fontWeight: 500 }}
+                >
+                  {tx.merchant}
+                </span>
+                <span
+                  className="text-[#0a2540] tabular-nums"
+                  style={{ fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 600 }}
                 >
                   +${tx.amount.toLocaleString()}
                 </span>
@@ -215,54 +238,43 @@ function LivePaymentsDashboard() {
             ))}
           </AnimatePresence>
         </div>
+      </div>
 
-        {/* ── Footer status ── */}
-        <div className="flex items-center justify-between px-5 py-3 border-t border-white/[0.08] bg-white/[0.02]">
-          <span
-            className="uppercase text-white/55"
-            style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700 }}
-          >
-            Plaid · secure feed
-          </span>
-          <span className="inline-flex items-center gap-1 text-[#85B8FF]" style={{ fontSize: 11, fontWeight: 600 }}>
-            View funding
-            <ArrowRight className="w-3 h-3" />
-          </span>
-        </div>
+      {/* Footer connect strip */}
+      <div className="px-6 py-4 border-t border-[#dcdfe4] bg-[#f6f9fc] flex items-center justify-between gap-3">
+        <span
+          className="text-[#697386]"
+          style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.04em' }}
+        >
+          Connect via Plaid · read-only
+        </span>
+        <button
+          onClick={onConnect}
+          className="inline-flex items-center gap-1.5 transition-colors"
+          style={{
+            color: '#0c66e4',
+            fontSize: 13,
+            fontWeight: 600,
+            letterSpacing: '-0.005em',
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.color = '#0a2540'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.color = '#0c66e4'; }}
+        >
+          See your funding
+          <ArrowRight className="w-3.5 h-3.5" />
+        </button>
       </div>
     </motion.div>
   );
 }
 
 export function HeroSection({ onApplyClick, onApplyFromQuiz, onCalculatorClick }: HeroSectionProps) {
-  const { t } = useLanguage();
   const [showQuiz, setShowQuiz] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [quizData, setQuizData] = useState<any>(null);
-  const [fadeDistance, setFadeDistance] = useState(150);
-
-  useEffect(() => {
-    const update = () => setFadeDistance(window.innerHeight * 0.5);
-    update();
-    window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
-  }, []);
-
-  const [heroOpacityVal, setHeroOpacityVal] = useState(1);
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
-      const opacity = Math.max(0, 1 - scrollTop / fadeDistance);
-      setHeroOpacityVal(opacity);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [fadeDistance]);
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) {
-      setShowQuiz(false);
-    }
+    if (e.target === e.currentTarget) setShowQuiz(false);
   };
 
   const handleShowResults = (data?: any) => {
@@ -273,199 +285,157 @@ export function HeroSection({ onApplyClick, onApplyFromQuiz, onCalculatorClick }
 
   const handleStartApplication = () => {
     setShowResults(false);
-    if (onApplyFromQuiz) {
-      onApplyFromQuiz(quizData);
-    } else {
-      onApplyClick();
-    }
+    if (onApplyFromQuiz) onApplyFromQuiz(quizData);
+    else onApplyClick();
   };
 
   return (
     <>
-      {/* Fixed full-bleed hero — sits behind all content, fades on scroll */}
-      <motion.div
-        className="fixed w-full overflow-hidden z-0 bg-black"
-        style={{
-          opacity: heroOpacityVal,
-          top: 0,
-          height: '100vh',
-          left: 0,
-          right: 0,
-        }}
+      {/* ════════════════════════════════════════════════════════
+          HERO — editorial split, no photo, no gradients, no halos
+         ════════════════════════════════════════════════════════ */}
+      <section
+        className="relative pt-24 md:pt-28 lg:pt-32 pb-16 md:pb-20 lg:pb-28"
+        style={{ background: '#f6f9fc' }}
       >
-        <img
-          src={businessPeopleImg}
-          alt="Business owners working together"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-
-        {/* Cinematic bottom-weighted overlay */}
-        <div className="absolute inset-0" style={{
-          background: 'linear-gradient(180deg, rgba(13,27,45,0.45) 0%, rgba(13,27,45,0.20) 35%, rgba(13,27,45,0.55) 75%, rgba(13,27,45,0.92) 100%)'
-        }} />
-
-        {/* Vercel-style chromatic mesh — sits over the cinematic overlay,
-            screens onto the dark areas to add a tinted glow. */}
-        <div
-          aria-hidden
-          className="bg-mesh absolute inset-0 pointer-events-none"
-          style={{ mixBlendMode: 'screen', opacity: 0.55 }}
-        />
-
-        {/* Hero content — bottom-positioned, SpaceX-style */}
-        <div className="relative z-10 h-full flex flex-col px-6 sm:px-8 lg:px-12">
-          {/* Centered block, pushed toward lower-third */}
-          <div className="mt-auto mb-[14vh] flex flex-col items-center text-center">
-            {/* Kicker */}
-            <motion.span
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: 'easeOut' }}
-              className="text-white/80 uppercase mb-5"
-              style={{
-                fontSize: '11px',
-                letterSpacing: '0.32em',
-                fontWeight: 600,
-              }}
-            >
-              Payment Processing · Reimagined
-            </motion.span>
-
-            {/* Headline — uppercase, tight, dramatic */}
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, ease: 'easeOut' }}
-              className="text-white uppercase"
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(2.5rem, 7vw, 6rem)',
-                fontWeight: 700,
-                letterSpacing: '-0.015em',
-                lineHeight: 0.95,
-                maxWidth: '18ch',
-              }}
-            >
-              Capital at the<br />
-              <span className="hero-speed-text">speed of business</span>
-            </motion.h1>
-
-            {/* Subtitle */}
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.25, ease: 'easeOut' }}
-              className="text-white/75 mt-6 max-w-xl"
-              style={{ fontSize: '15px', lineHeight: 1.6 }}
-            >
-              Same-day funding for U.S. merchants. No collateral. No bureaucracy.
-            </motion.p>
-
-            {/* CTA row — outline + text link */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.45, ease: 'easeOut' }}
-              className="mt-8 flex items-center gap-6"
-            >
-              <button
-                onClick={() => onCalculatorClick?.()}
-                className="hero-cta group cursor-pointer inline-flex items-center gap-2 uppercase transition-all duration-200"
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+            {/* ── LEFT: editorial copy ── */}
+            <div className="lg:col-span-7">
+              <motion.span
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.55 }}
+                className="inline-flex items-center gap-2 uppercase text-[#0c66e4]"
                 style={{
-                  background: 'transparent',
-                  border: '1px solid rgba(255,255,255,0.9)',
-                  color: '#fff',
-                  borderRadius: '2px',
-                  padding: '14px 28px',
-                  fontWeight: 700,
-                  fontSize: '11px',
-                  letterSpacing: '0.28em',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 11.5,
+                  fontWeight: 600,
+                  letterSpacing: '0.18em',
                 }}
               >
-                <span>{t('hero.cta')}</span>
-                <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
-              </button>
-              <button
-                onClick={onApplyClick}
-                className="hidden sm:inline-flex items-center gap-2 text-white/80 hover:text-white uppercase transition-colors"
-                style={{ fontSize: '11px', letterSpacing: '0.28em', fontWeight: 600 }}
+                <span
+                  aria-hidden
+                  className="inline-block w-4 h-px"
+                  style={{ background: '#0c66e4' }}
+                />
+                Same-day merchant funding
+              </motion.span>
+
+              <motion.h1
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.85, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
+                className="mt-6 text-[#0a2540]"
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 'clamp(3rem, 7vw, 5.75rem)',
+                  fontWeight: 700,
+                  letterSpacing: '-0.045em',
+                  lineHeight: 0.96,
+                  maxWidth: '14ch',
+                }}
               >
-                Apply Now
-                <ArrowRight className="w-3 h-3" />
-              </button>
-            </motion.div>
+                Capital at the speed of your business.
+              </motion.h1>
+
+              <motion.p
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.18 }}
+                className="mt-7 text-[#425466] max-w-xl"
+                style={{ fontSize: 19, lineHeight: 1.55, fontWeight: 400 }}
+              >
+                Connect your bank, see a real funding range in 60 seconds, and get
+                deposited the same day. No collateral. No paperwork. No theater.
+              </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.28 }}
+                className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3"
+              >
+                <button
+                  onClick={onApplyClick}
+                  className="inline-flex items-center gap-2 text-white whitespace-nowrap transition-colors"
+                  style={{
+                    background: '#0a2540',
+                    borderRadius: 10,
+                    padding: '14px 24px',
+                    fontSize: 15,
+                    fontWeight: 600,
+                    letterSpacing: '-0.005em',
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = '#0c66e4'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = '#0a2540'; }}
+                >
+                  Get funded
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+
+                <button
+                  onClick={() => onCalculatorClick?.()}
+                  className="inline-flex items-center gap-1.5 transition-colors group"
+                  style={{
+                    color: '#0c66e4',
+                    fontSize: 15,
+                    fontWeight: 600,
+                    letterSpacing: '-0.005em',
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.color = '#0a2540'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.color = '#0c66e4'; }}
+                >
+                  Run the calculator
+                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+                </button>
+              </motion.div>
+
+              {/* Mono trust strip */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.7, delay: 0.45 }}
+                className="mt-14 flex flex-wrap items-center gap-x-5 gap-y-3 text-[#697386]"
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 11,
+                  fontWeight: 500,
+                  letterSpacing: '0.12em',
+                  textTransform: 'uppercase',
+                }}
+              >
+                <span className="inline-flex items-center gap-1.5">
+                  <span aria-hidden className="inline-block w-2 h-2 rounded-full bg-[#0a2540]" />
+                  $200M+ deployed
+                </span>
+                <span className="opacity-30">·</span>
+                <span>BBB A+ accredited</span>
+                <span className="opacity-30">·</span>
+                <span>Trustpilot 4.8 / 1,200+ reviews</span>
+              </motion.div>
+            </div>
+
+            {/* ── RIGHT: product panel ── */}
+            <div className="lg:col-span-5">
+              <MerchantPanel onConnect={onApplyClick} />
+            </div>
           </div>
         </div>
 
-        {/* Live payments dashboard — replaces the old floating card.
-            Wider glass panel with a streaming transaction list,
-            sparkline, and live volume + delta indicator. Hidden on
-            small screens to keep the headline breathing. */}
-        <LivePaymentsDashboard />
+        {/* Pulse keyframe for the "live" indicator */}
+        <style>{`
+          @keyframes merchantPulse {
+            0%, 100% { transform: scale(1); opacity: 0.75; }
+            50%      { transform: scale(2.4); opacity: 0; }
+          }
+          @media (prefers-reduced-motion: reduce) {
+            [style*="merchantPulse"] { animation: none !important; }
+          }
+        `}</style>
+      </section>
 
-        {/* Footer strip — SpaceX-style three-column bottom band */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.7 }}
-          className="absolute bottom-0 left-0 right-0 z-10 px-6 sm:px-8 lg:px-12 pb-6"
-        >
-          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-white/70">
-            {/* Left: stat */}
-            <div
-              className="uppercase"
-              style={{ fontSize: '11px', letterSpacing: '0.24em', fontWeight: 600 }}
-            >
-              <span className="text-white">$200M+</span> deployed to U.S. businesses
-            </div>
-
-            {/* Middle: trust row, minimal */}
-            <div className="flex items-center gap-5">
-              <div className="flex items-center gap-2">
-                <BBBLogo className="w-5 h-5 opacity-90" />
-                <span className="uppercase" style={{ fontSize: '10px', letterSpacing: '0.22em', fontWeight: 700 }}>BBB A+</span>
-              </div>
-              <div className="h-3 w-px bg-white/20" />
-              <div
-                className="uppercase"
-                style={{ fontSize: '10px', letterSpacing: '0.22em', fontWeight: 700 }}
-              >
-                Trustpilot 4.8
-              </div>
-            </div>
-
-            {/* Right: disclaimer */}
-            <div
-              className="hidden md:block uppercase text-right"
-              style={{ fontSize: '10px', letterSpacing: '0.20em', fontWeight: 500, maxWidth: 260 }}
-            >
-              Commercial funding & MCA solutions
-            </div>
-          </div>
-        </motion.div>
-      </motion.div>
-
-      {/* Spacer to reserve scroll height so content starts below the hero */}
-      <div style={{ height: '100vh' }} />
-
-      <style>{`
-        .hero-speed-text {
-          background: #FFFFFF;
-          background-size: 300% 100%;
-          -webkit-background-clip: text;
-          background-clip: text;
-          color: transparent;
-          -webkit-text-fill-color: transparent;
-          animation: gradientWave 22s linear infinite;
-        }
-
-        .hero-cta:hover {
-          background: #fff;
-          color: #0D1B2D;
-        }
-      `}</style>
-
-      {/* Quiz Modal */}
+      {/* Quiz Modal — kept identical to preserve LeadCapture flow */}
       {showQuiz && (
         <div
           className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-start justify-center p-4 pt-8 overflow-y-auto"
@@ -475,19 +445,18 @@ export function HeroSection({ onApplyClick, onApplyFromQuiz, onCalculatorClick }
           <div className="w-full max-w-4xl mb-16 relative">
             <button
               onClick={() => setShowQuiz(false)}
-              className="absolute -top-4 -right-4 w-12 h-12 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full shadow-2xl flex items-center justify-center z-10 transition-all hover:scale-110"
+              className="absolute -top-4 -right-4 w-12 h-12 bg-white hover:bg-gray-100 rounded-full shadow-2xl flex items-center justify-center z-10 transition-all hover:scale-110"
             >
-              <X className="w-6 h-6 text-gray-600 dark:text-gray-300" />
+              <X className="w-6 h-6 text-gray-600" />
             </button>
             <PreQualificationGame startWithQuiz={true} onShowResults={handleShowResults} />
           </div>
         </div>
       )}
 
-      {/* Results Full Page */}
       {showResults && (
         <div
-          className="fixed inset-0 bg-[#FAFBFC] dark:bg-[#0D1B2D] z-50 flex items-start justify-center p-4 overflow-y-auto"
+          className="fixed inset-0 bg-[#f6f9fc] z-50 flex items-start justify-center p-4 overflow-y-auto"
           style={{ scrollbarGutter: 'stable' }}
         >
           <div className="w-full max-w-4xl my-auto">
