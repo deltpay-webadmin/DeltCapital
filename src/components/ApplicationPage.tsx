@@ -99,18 +99,18 @@ export function ApplicationPage({ onClose, quizData, calculatorData, fromQuiz, o
 
   return (
     <div 
-      className="fixed inset-0 bg-[#ededf6] z-50 overflow-y-auto"
+      className="fixed inset-0 bg-[#FAFBFC] z-50 overflow-y-auto"
       style={{ scrollbarGutter: 'stable' }}
     >
       {/* Header */}
-      <div className="sticky top-0 z-30 bg-[#ededf6] border-b border-[#4945ff0F] shadow-sm isolate">
+      <div className="sticky top-0 z-30 bg-[#FAFBFC] border-b border-[#0C66E40F] shadow-sm isolate">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <div className="flex items-center gap-0 h-14 w-auto cursor-pointer" onClick={onClose}>
             <img src={logoImg} alt="Delt" className="h-10 w-auto object-contain" />
           </div>
           <button
             onClick={onClose}
-            className="w-10 h-10 bg-[#ededf6] hover:bg-[#E4E7F0] rounded-full flex items-center justify-center transition-colors"
+            className="w-10 h-10 bg-[#FAFBFC] hover:bg-[#DCDFE4] rounded-full flex items-center justify-center transition-colors"
           >
             <X className="w-5 h-5 text-gray-600 dark:text-gray-300" />
           </button>

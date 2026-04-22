@@ -85,7 +85,7 @@ export function ComparisonTable() {
   const icons = [Zap, CreditCard, BarChart3, FileText, TrendingDown, Shield];
 
   return (
-    <section ref={sectionRef} className="relative py-20 bg-[#ededf6] overflow-hidden">
+    <section ref={sectionRef} className="relative py-20 bg-[#FAFBFC] overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header with scroll-linked parallax */}
         <motion.div
@@ -94,7 +94,7 @@ export function ComparisonTable() {
         >
           <h2
             className="mb-3"
-            style={{ fontSize: '2rem', fontWeight: 700, color: '#041e42' }}
+            style={{ fontSize: '2rem', fontWeight: 700, color: '#172B4D' }}
           >
             Why Delt beats the bank.
           </h2>
@@ -105,22 +105,22 @@ export function ComparisonTable() {
 
         <div ref={tableRef} className="max-w-5xl mx-auto">
           {/* Desktop Table — rows build progressively */}
-          <div className="hidden md:block bg-[#F7F8FC] rounded-2xl shadow-2xl overflow-hidden border border-[#4945ff0F]">
+          <div className="hidden md:block bg-[#FFFFFF] rounded-2xl shadow-2xl overflow-hidden border border-[#0C66E40F]">
             <table className="w-full">
               <thead>
                 <motion.tr
-                  className="bg-gradient-to-r from-[#ededf6] to-[#E8EAF2]"
+                  className="bg-gradient-to-r from-[#FAFBFC] to-[#F1F2F4]"
                   initial={{ opacity: 0, y: -20 }}
                   animate={isTableInView ? { opacity: 1, y: 0 } : {}}
                   transition={{ duration: 0.5 }}
                 >
-                  <th className="px-8 py-6 text-left text-lg font-semibold text-[#041E42] dark:text-white">
+                  <th className="px-8 py-6 text-left text-lg font-semibold text-[#172B4D] dark:text-white">
                     {t('comparison.feature')}
                   </th>
                   <th className="px-8 py-6 text-center text-lg font-semibold text-gray-700 dark:text-gray-300">
                     {t('comparison.traditional')}
                   </th>
-                  <th className="px-8 py-6 text-center text-lg font-semibold bg-[#4945ff]/5 dark:bg-[#4945ff]/10">
+                  <th className="px-8 py-6 text-center text-lg font-semibold bg-[#0C66E4]/5 dark:bg-[#0C66E4]/10">
                     <img src={deltLogo} alt="Delt Capital" className="h-7 w-auto mx-auto object-contain" />
                   </th>
                 </motion.tr>
@@ -132,7 +132,7 @@ export function ComparisonTable() {
                   return (
                     <motion.tr
                       key={index}
-                      className="border-t border-[#4945ff0F] hover:bg-[#ededf6]/50 transition-colors"
+                      className="border-t border-[#0C66E40F] hover:bg-[#FAFBFC]/50 transition-colors"
                       initial={{ opacity: 0, x: -40 }}
                       animate={isTableInView ? { opacity: 1, x: 0 } : {}}
                       transition={{
@@ -144,7 +144,7 @@ export function ComparisonTable() {
                       <td className="px-8 py-6">
                         <div className="flex items-start gap-4">
                           <motion.div
-                            className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#4945ff] to-[#5B57FF] flex items-center justify-center flex-shrink-0"
+                            className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#0C66E4] to-[#1D7AFC] flex items-center justify-center flex-shrink-0"
                             initial={{ scale: 0, rotate: -90 }}
                             animate={isTableInView ? { scale: 1, rotate: 0 } : {}}
                             transition={{
@@ -157,7 +157,7 @@ export function ComparisonTable() {
                             <Icon className="w-6 h-6 text-white" />
                           </motion.div>
                           <div>
-                            <div className="text-[#041E42] dark:text-white font-semibold text-base mb-1">
+                            <div className="text-[#172B4D] dark:text-white font-semibold text-base mb-1">
                               {t(row.featureKey)}
                             </div>
                             <div className="text-sm text-gray-500 dark:text-gray-400">
@@ -177,7 +177,7 @@ export function ComparisonTable() {
                           <span>{t(row.traditionalKey)}</span>
                         </motion.div>
                       </td>
-                      <td className="px-8 py-6 text-center bg-[#4945ff]/5 dark:bg-[#4945ff]/10">
+                      <td className="px-8 py-6 text-center bg-[#0C66E4]/5 dark:bg-[#0C66E4]/10">
                         <motion.div
                           className="flex items-center justify-center gap-2"
                           initial={{ opacity: 0, scale: 0.8 }}
@@ -191,11 +191,11 @@ export function ComparisonTable() {
                         >
                           <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
                           {row.deltKey === 'comparison.paperwork.delt' ? (
-                            <span className="text-[#041E42] dark:text-white font-semibold flex items-center gap-0">
+                            <span className="text-[#172B4D] dark:text-white font-semibold flex items-center gap-0">
                               {t('comparison.paperwork.connectWith')} <img src={plaidLogo} alt="Plaid" className="h-[3.25rem] w-auto inline-block object-contain -ml-1" />
                             </span>
                           ) : (
-                            <span className="text-[#041E42] dark:text-white font-semibold">
+                            <span className="text-[#172B4D] dark:text-white font-semibold">
                               {t(row.deltKey)}
                             </span>
                           )}
@@ -215,14 +215,14 @@ export function ComparisonTable() {
               
               return (
                 <ScrollReveal key={index} direction="up" delay={index * 0.08} distance={30}>
-                  <div className="bg-[#F7F8FC] rounded-xl shadow-lg overflow-hidden border border-[#4945ff0F]">
-                    <div className="bg-gradient-to-r from-[#ededf6] to-[#E8EAF2] px-6 py-4">
+                  <div className="bg-[#FFFFFF] rounded-xl shadow-lg overflow-hidden border border-[#0C66E40F]">
+                    <div className="bg-gradient-to-r from-[#FAFBFC] to-[#F1F2F4] px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#4945ff] to-[#5B57FF] flex items-center justify-center flex-shrink-0">
+                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#0C66E4] to-[#1D7AFC] flex items-center justify-center flex-shrink-0">
                           <Icon className="w-5 h-5 text-white" />
                         </div>
                         <div>
-                          <h3 className="text-base font-semibold text-[#041E42] dark:text-white">
+                          <h3 className="text-base font-semibold text-[#172B4D] dark:text-white">
                             {t(row.featureKey)}
                           </h3>
                           <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
@@ -239,16 +239,16 @@ export function ComparisonTable() {
                           <span className="text-gray-600 dark:text-gray-400">{t(row.traditionalKey)}</span>
                         </div>
                       </div>
-                      <div className="flex items-center justify-between bg-[#4945ff]/5 dark:bg-[#4945ff]/10 rounded-lg p-3">
+                      <div className="flex items-center justify-between bg-[#0C66E4]/5 dark:bg-[#0C66E4]/10 rounded-lg p-3">
                         <img src={deltLogo} alt="Delt Capital" className="h-5 w-auto object-contain" />
                         <div className="flex items-center gap-2">
                           <Check className="w-4 h-4 text-green-500" />
                           {row.deltKey === 'comparison.paperwork.delt' ? (
-                            <span className="text-[#041E42] dark:text-white font-semibold flex items-center gap-0">
+                            <span className="text-[#172B4D] dark:text-white font-semibold flex items-center gap-0">
                               {t('comparison.paperwork.connectWith')} <img src={plaidLogo} alt="Plaid" className="h-[3.25rem] w-auto inline-block object-contain -ml-1" />
                             </span>
                           ) : (
-                            <span className="text-[#041E42] dark:text-white font-semibold">
+                            <span className="text-[#172B4D] dark:text-white font-semibold">
                               {t(row.deltKey)}
                             </span>
                           )}
