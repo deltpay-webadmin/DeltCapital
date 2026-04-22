@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Globe, User, Menu, X, ArrowRight } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Globe, User, Menu, X, ArrowRight, ArrowUpRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import logoWhiteImg from 'figma:asset/7f25ee6fe5a55b9182a00e3c5b80e1a42079fc74.png';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -29,6 +29,8 @@ export function Navbar({
   const { language, toggleLanguage } = useLanguage();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [hoveredKey, setHoveredKey] = useState<string | null>(null);
+  const navPillRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => setScrolled((window.scrollY || 0) > 24);
@@ -85,46 +87,97 @@ export function Navbar({
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-3.5 gap-4">
-            {/* ── LEFT — Logo ── */}
-            <button
-              onClick={handleLogoClick}
-              aria-label="Delt — back to top"
-              className="flex items-center gap-2 flex-shrink-0 group cursor-pointer"
-            >
-              <img src={logoWhiteImg} alt="Delt" className="h-6 w-auto object-contain" />
-              {/* Tiny gradient dot accent */}
-              <span
-                aria-hidden
-                className="hidden sm:block w-1.5 h-1.5 rounded-full transition-transform group-hover:scale-110"
-                style={{
-                  background: 'linear-gradient(135deg, #1d7afc 0%, #6e5dc6 100%)',
-                  boxShadow: '0 0 10px rgba(110,93,198,0.6)',
-                }}
-              />
-            </button>
+            {/* ── LEFT — Logo + live status pill ── */}
+            <div className="flex items-center gap-3 flex-shrink-0">
+              <button
+                onClick={handleLogoClick}
+                aria-label="Delt — back to top"
+                className="relative flex items-center gap-2 group cursor-pointer"
+              >
+                {/* Subtle gradient halo behind the logo */}
+                <span
+                  aria-hidden
+                  className="absolute -inset-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                  style={{
+                    background:
+                      'radial-gradient(closest-side, rgba(110,93,198,0.45), rgba(12,102,228,0.25) 55%, transparent 80%)',
+                    filter: 'blur(8px)',
+                  }}
+                />
+                <img src={logoWhiteImg} alt="Delt" className="relative h-6 w-auto object-contain" />
+                <span
+                  aria-hidden
+                  className="relative hidden sm:block w-1.5 h-1.5 rounded-full transition-transform group-hover:scale-125"
+                  style={{
+                    background: 'linear-gradient(135deg, #1d7afc 0%, #6e5dc6 100%)',
+                    boxShadow: '0 0 10px rgba(110,93,198,0.6)',
+                  }}
+                />
+              </button>
 
-            {/* ── CENTER — Glass pill nav (desktop only) ── */}
+              {/* Live funding status pill — desktop, only when over hero */}
+              {!opaque && (
+                <div
+                  className="hidden xl:inline-flex items-center gap-2 rounded-full border backdrop-blur-md"
+                  style={{
+                    background: 'rgba(255,255,255,0.06)',
+                    borderColor: 'rgba(255,255,255,0.12)',
+                    padding: '5px 12px',
+                  }}
+                >
+                  <span className="relative flex w-1.5 h-1.5">
+                    <span
+                      className="absolute inset-0 rounded-full bg-[#1F845A] opacity-75"
+                      style={{ animation: 'navLivePulse 2.2s ease-in-out infinite' }}
+                    />
+                    <span className="relative w-1.5 h-1.5 rounded-full bg-[#1F845A]" />
+                  </span>
+                  <span
+                    className="text-white/85 tabular-nums"
+                    style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.04em' }}
+                  >
+                    Funding live · $200M+
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* ── CENTER — Glass pill nav (desktop only) with magnetic hover ── */}
             <div
-              className="hidden md:flex items-center rounded-full border backdrop-blur-md"
+              ref={navPillRef}
+              className="hidden md:flex items-center rounded-full border backdrop-blur-md relative"
               style={{
                 background: 'rgba(255,255,255,0.06)',
                 borderColor: 'rgba(255,255,255,0.12)',
                 padding: 4,
                 boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05)',
               }}
+              onMouseLeave={() => setHoveredKey(null)}
             >
               {navItems.map((item) => {
                 const isActive = overlayTitle === item.key;
+                const isHovered = hoveredKey === item.key && !isActive;
                 return (
                   <button
                     key={item.key}
                     onClick={item.onClick}
+                    onMouseEnter={() => setHoveredKey(item.key)}
                     className={`relative px-4 py-2 rounded-full transition-colors duration-200 ${
                       isActive ? 'text-white' : 'text-white/70 hover:text-white'
                     }`}
                     style={{ fontSize: 13, fontWeight: 600, letterSpacing: '-0.005em' }}
                   >
-                    {/* Active-state gradient chip behind the text */}
+                    {/* Magnetic hover spotlight (only when not active) */}
+                    {isHovered && (
+                      <motion.span
+                        layoutId="navHoverPill"
+                        aria-hidden
+                        className="absolute inset-0 rounded-full"
+                        style={{ background: 'rgba(255,255,255,0.10)' }}
+                        transition={{ type: 'spring', stiffness: 420, damping: 32 }}
+                      />
+                    )}
+                    {/* Active-state gradient chip */}
                     {isActive && (
                       <motion.span
                         layoutId="navActivePill"
@@ -184,24 +237,35 @@ export function Navbar({
                 Log in
               </button>
 
-              {/* Get Funded — gradient CTA */}
-              <button
-                onClick={onApplyClick}
-                className="card-hover-lift inline-flex items-center gap-1.5 text-white whitespace-nowrap transition-shadow"
-                style={{
-                  background: 'linear-gradient(95deg, #0c66e4 0%, #1d7afc 50%, #6e5dc6 100%)',
-                  borderRadius: 999,
-                  padding: '9px 18px',
-                  fontSize: 13,
-                  fontWeight: 700,
-                  letterSpacing: '-0.005em',
-                  boxShadow:
-                    '0 10px 24px -10px rgba(12,102,228,0.65), inset 0 1px 0 rgba(255,255,255,0.20)',
-                }}
-              >
-                Get funded
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
+              {/* Get Funded — gradient CTA with halo glow */}
+              <div className="relative">
+                <span
+                  aria-hidden
+                  className="absolute -inset-1 rounded-full opacity-60 pointer-events-none"
+                  style={{
+                    background:
+                      'radial-gradient(closest-side, rgba(110,93,198,0.55), rgba(12,102,228,0.35) 55%, transparent 80%)',
+                    filter: 'blur(10px)',
+                  }}
+                />
+                <button
+                  onClick={onApplyClick}
+                  className="card-hover-lift relative inline-flex items-center gap-1.5 text-white whitespace-nowrap transition-shadow group"
+                  style={{
+                    background: 'linear-gradient(95deg, #0c66e4 0%, #1d7afc 50%, #6e5dc6 100%)',
+                    borderRadius: 999,
+                    padding: '9px 18px',
+                    fontSize: 13,
+                    fontWeight: 700,
+                    letterSpacing: '-0.005em',
+                    boxShadow:
+                      '0 12px 32px -10px rgba(12,102,228,0.75), 0 4px 12px -4px rgba(110,93,198,0.45), inset 0 1px 0 rgba(255,255,255,0.22)',
+                  }}
+                >
+                  Get funded
+                  <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </button>
+              </div>
 
               {/* Mobile hamburger */}
               <button
@@ -221,6 +285,17 @@ export function Navbar({
           </div>
         </div>
       </nav>
+
+      {/* Pulsing-dot keyframe for the live status pill */}
+      <style>{`
+        @keyframes navLivePulse {
+          0%, 100% { transform: scale(1); opacity: 0.75; }
+          50%      { transform: scale(2.4); opacity: 0; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          [style*="navLivePulse"] { animation: none !important; }
+        }
+      `}</style>
 
       {/* ─── Mobile slide-down menu ─── */}
       <AnimatePresence>
