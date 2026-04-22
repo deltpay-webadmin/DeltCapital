@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button } from './ui/button';
-import { Globe, X, ArrowLeft } from 'lucide-react';
+import { Globe } from 'lucide-react';
 import logoWhiteImg from 'figma:asset/7f25ee6fe5a55b9182a00e3c5b80e1a42079fc74.png';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -17,131 +16,110 @@ interface NavbarProps {
 }
 
 export function Navbar({ onApplyClick, onCalculatorClick, onAboutClick, onHowItWorksClick, onLoginClick, overlayActive, overlayTitle, onOverlayClose }: NavbarProps) {
-  const { language, toggleLanguage, t } = useLanguage();
-  const [isScrolling, setIsScrolling] = useState(false);
+  const { language, toggleLanguage } = useLanguage();
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    let scrollTimeout: NodeJS.Timeout;
-
     const handleScroll = () => {
-      setIsScrolling(true);
-      
-      clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(() => {
-        setIsScrolling(false);
-      }, 150);
+      setScrolled((window.scrollY || 0) > 24);
     };
-
-    window.addEventListener('scroll', handleScroll);
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      clearTimeout(scrollTimeout);
-    };
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Over-hero = transparent; scrolled or overlay-open = opaque dark.
+  const opaque = scrolled || overlayActive;
+
+  const linkBase = 'uppercase tracking-[0.18em] text-[11px] font-semibold transition-colors';
+  const linkIdle = 'text-white/70 hover:text-white';
+  const linkActive = 'text-white';
+
   return (
-    <nav className="fixed top-0 left-0 right-0 z-[70] border-b border-white/10 transition-colors duration-300 overflow-visible" style={{ background: '#172B4D', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}>
+    <nav
+      className="fixed top-0 left-0 right-0 z-[70] transition-all duration-300 overflow-visible"
+      style={{
+        background: opaque ? 'rgba(13, 27, 45, 0.85)' : 'transparent',
+        backdropFilter: opaque ? 'blur(14px) saturate(140%)' : 'none',
+        WebkitBackdropFilter: opaque ? 'blur(14px) saturate(140%)' : 'none',
+        borderBottom: opaque ? '1px solid rgba(255,255,255,0.08)' : '1px solid transparent',
+      }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
-          <div className="flex items-center gap-3 flex-shrink-0">
-            <div className="flex items-center gap-0 h-14 w-auto cursor-pointer" onClick={() => {
-              if (overlayActive && onOverlayClose) {
-                onOverlayClose();
-              } else {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }
-            }}>
-              <img src={logoWhiteImg} alt="Delt" className="h-7 w-auto object-contain" />
+          {/* Logo */}
+          <div className="flex items-center gap-6 flex-shrink-0">
+            <div
+              className="flex items-center h-10 w-auto cursor-pointer"
+              onClick={() => {
+                if (overlayActive && onOverlayClose) onOverlayClose();
+                else window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            >
+              <img src={logoWhiteImg} alt="Delt" className="h-6 w-auto object-contain" />
             </div>
-            {overlayActive && overlayTitle && (
-              <div className="flex items-center gap-2">
-                <div className="w-px h-6 bg-white/20" />
-              </div>
-            )}
           </div>
 
-          {/* Nav Links - Hidden on mobile, always visible */}
-            <div className="hidden md:flex items-center gap-6 ml-8">
-              <button
-                onClick={onHowItWorksClick}
-                className={`transition-colors font-medium ${overlayTitle === 'How It Works' ? 'text-white border-b-2 border-[#0C66E4] pb-0.5' : 'text-white/70 hover:text-white'}`}
-                style={{ fontSize: '0.9375rem' }}
-              >
-                How It Works
-              </button>
-              <button
-                onClick={onCalculatorClick}
-                className={`transition-colors font-medium ${overlayTitle === 'Calculator' ? 'text-white border-b-2 border-[#0C66E4] pb-0.5' : 'text-white/70 hover:text-white'}`}
-                style={{ fontSize: '0.9375rem' }}
-              >
-                Calculator
-              </button>
-              <button
-                onClick={onAboutClick}
-                className={`transition-colors font-medium ${overlayTitle === 'About' ? 'text-white border-b-2 border-[#0C66E4] pb-0.5' : 'text-white/70 hover:text-white'}`}
-                style={{ fontSize: '0.9375rem' }}
-              >
-                About
-              </button>
-            </div>
+          {/* Nav Links — uppercase, letter-spaced */}
+          <div className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
+            <button
+              onClick={onHowItWorksClick}
+              className={`${linkBase} ${overlayTitle === 'How It Works' ? linkActive : linkIdle}`}
+            >
+              How It Works
+            </button>
+            <button
+              onClick={onCalculatorClick}
+              className={`${linkBase} ${overlayTitle === 'Calculator' ? linkActive : linkIdle}`}
+            >
+              Calculator
+            </button>
+            <button
+              onClick={onAboutClick}
+              className={`${linkBase} ${overlayTitle === 'About' ? linkActive : linkIdle}`}
+            >
+              About
+            </button>
+          </div>
 
-          <div className="flex items-center gap-3 flex-shrink-0 ml-auto">
-            {/* Language Toggle - Hidden on mobile */}
+          {/* Right-side actions */}
+          <div className="flex items-center gap-5 flex-shrink-0 ml-auto">
             {!overlayActive && (
               <button
                 onClick={toggleLanguage}
-                className="hidden md:flex items-center gap-2 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors border border-white/20"
+                className="hidden md:flex items-center gap-1.5 text-white/70 hover:text-white transition-colors"
                 aria-label="Toggle Language"
+                style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.18em' }}
               >
-                <Globe className="w-4 h-4 text-white/80" />
-                <span className="text-sm font-semibold text-white/90">
-                  {language.toUpperCase()}
-                </span>
+                <Globe className="w-3.5 h-3.5" />
+                <span>{language.toUpperCase()}</span>
               </button>
             )}
 
-            <button 
+            <button
+              onClick={onLoginClick}
+              className="hidden sm:inline-flex text-white/70 hover:text-white transition-colors uppercase"
+              style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.18em' }}
+            >
+              Login
+            </button>
+
+            <button
               onClick={onApplyClick}
-              className="text-white font-semibold whitespace-nowrap cursor-pointer flex-shrink-0 transition-all duration-200 hover:opacity-90 hover:scale-[1.03]"
+              className="text-white cursor-pointer whitespace-nowrap transition-all duration-200 hover:bg-white hover:text-[#0D1B2D] uppercase"
               style={{
-                background: '#0C66E4',
-                borderRadius: '8px',
-                padding: '8px 18px',
-                fontSize: '0.875rem',
-                fontFamily: "var(--font-sans)",
-                boxShadow: '0 1px 1px rgba(9,30,66,0.25), 0 0 1px rgba(9,30,66,0.31)',
+                background: 'transparent',
+                border: '1px solid rgba(255,255,255,0.8)',
+                borderRadius: '2px',
+                padding: '9px 18px',
+                fontSize: '11px',
+                fontWeight: 700,
+                letterSpacing: '0.18em',
+                fontFamily: 'var(--font-sans)',
               }}
             >
               Get Funded
             </button>
-
-            <button 
-              className={`login-button ${isScrolling ? 'scrolling' : ''} bg-transparent px-4 py-2 rounded-lg outline-none cursor-pointer flex-shrink-0 relative whitespace-nowrap`}
-              style={{
-                fontSize: '0.875rem',
-                fontWeight: 600,
-                fontFamily: "var(--font-sans)",
-              }}
-              onClick={() => onLoginClick?.()}
-            >
-              Login
-            </button>
-            <style>{`
-              .login-button {
-                color: #ffffff;
-              }
-
-              .login-button:hover,
-              .login-button.scrolling {
-                background: linear-gradient(90deg, #85B8FF 0%, #579DFF 15%, #0C66E4 30%, #6E5DC6 45%, #85B8FF 60%, #579DFF 75%, #0C66E4 90%, #6E5DC6 100%);
-                background-size: 300% 100%;
-                -webkit-background-clip: text;
-                background-clip: text;
-                color: transparent;
-                animation: gradientWave 5s linear infinite;
-              }
-            `}</style>
           </div>
         </div>
       </div>
