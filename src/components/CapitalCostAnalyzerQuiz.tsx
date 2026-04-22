@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import {
   ArrowRight,
   Check,
@@ -9,6 +9,8 @@ import {
   Sparkles,
   Zap,
   Rocket,
+  RefreshCcw,
+  Lock,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { MonthlyRevenueSlider } from './MonthlyRevenueSlider';
@@ -43,6 +45,151 @@ const TIB_MULTIPLIERS: Record<string, { low: number; high: number } | 'redirect'
   '2yr+': { low: 0.60, high: 0.67 },
 };
 
+/* ─────────────────────────────────────────────────
+ * Shared shell — gradient-ring card with mesh halo
+ * ─────────────────────────────────────────────── */
+function QuizShell({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="relative max-w-3xl mx-auto">
+      {/* Behind-card mesh halo */}
+      <div aria-hidden className="bg-mesh absolute -inset-6 md:-inset-10 opacity-40 pointer-events-none" />
+      <div
+        className="relative rounded-3xl bg-white overflow-hidden"
+        style={{
+          boxShadow:
+            '0 30px 80px -28px rgba(12,102,228,0.30), 0 8px 28px -10px rgba(110,93,198,0.18)',
+        }}
+      >
+        {/* Gradient ring (mask-composite) */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 rounded-3xl"
+          style={{
+            padding: 1.5,
+            background:
+              'linear-gradient(135deg, rgba(12,102,228,0.55) 0%, rgba(133,184,255,0.4) 35%, rgba(110,93,198,0.55) 100%)',
+            WebkitMask: 'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
+            WebkitMaskComposite: 'xor',
+            maskComposite: 'exclude',
+          }}
+        />
+        <div className="relative">{children}</div>
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────────
+ * Stepper — 4 segments, gradient fill on done/active
+ * ─────────────────────────────────────────────── */
+function QuizStepper({ stepIndex, totalSteps = 4, kicker, percent }: {
+  stepIndex: number;
+  totalSteps?: number;
+  kicker: string;
+  percent: number;
+}) {
+  return (
+    <div className="px-8 md:px-12 pt-7">
+      <div className="flex items-center justify-between mb-3">
+        <span
+          className="uppercase text-[#0c66e4]"
+          style={{ fontSize: 11, letterSpacing: '0.32em', fontWeight: 700 }}
+        >
+          {kicker}
+        </span>
+        <span className="text-[#44546f] tabular-nums" style={{ fontSize: 12, fontWeight: 600 }}>
+          {Math.round(percent)}% complete
+        </span>
+      </div>
+      <div className="flex gap-1.5">
+        {Array.from({ length: totalSteps }).map((_, i) => {
+          const isDone = i < stepIndex;
+          const isActive = i === stepIndex;
+          return (
+            <div key={i} className="flex-1 h-1.5 rounded-full bg-[#dcdfe4] overflow-hidden">
+              <motion.div
+                initial={false}
+                animate={{
+                  width: isDone || isActive ? '100%' : '0%',
+                }}
+                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                className="h-full rounded-full"
+                style={{
+                  background:
+                    isDone
+                      ? 'linear-gradient(90deg, #0c66e4 0%, #6e5dc6 100%)'
+                      : isActive
+                        ? 'linear-gradient(90deg, #0c66e4 0%, #1d7afc 60%, #6e5dc6 100%)'
+                        : 'transparent',
+                }}
+              />
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────────
+ * Question header — eyebrow + headline + optional sub
+ * ─────────────────────────────────────────────── */
+function QuestionHeader({
+  Icon,
+  eyebrow,
+  title,
+  subtitle,
+}: {
+  Icon: typeof Calendar;
+  eyebrow: string;
+  title: React.ReactNode;
+  subtitle?: string;
+}) {
+  return (
+    <div className="px-8 md:px-12 pt-8">
+      <motion.div
+        initial={{ opacity: 0, y: 10, scale: 0.96 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+        className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-5 text-white"
+        style={{
+          background: 'linear-gradient(135deg, #0c66e4 0%, #6e5dc6 100%)',
+          boxShadow: '0 12px 28px -10px rgba(12,102,228,0.55), inset 0 1px 0 rgba(255,255,255,0.18)',
+        }}
+      >
+        <Icon className="w-6 h-6" />
+      </motion.div>
+
+      <span
+        className="block uppercase text-[#758195]"
+        style={{ fontSize: 11, letterSpacing: '0.28em', fontWeight: 700 }}
+      >
+        {eyebrow}
+      </span>
+
+      <h3
+        className="mt-2.5 text-[#172b4d]"
+        style={{
+          fontFamily: 'var(--font-display)',
+          fontSize: 'clamp(1.6rem, 3.2vw, 2.25rem)',
+          fontWeight: 700,
+          letterSpacing: '-0.025em',
+          lineHeight: 1.15,
+          maxWidth: '24ch',
+        }}
+      >
+        {title}
+      </h3>
+
+      {subtitle && (
+        <p className="mt-2 text-[#44546f]" style={{ fontSize: 15, lineHeight: 1.55 }}>
+          {subtitle}
+        </p>
+      )}
+    </div>
+  );
+}
+
 export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCostAnalyzerProps) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [monthlyRevenue, setMonthlyRevenue] = useState(0);
@@ -52,16 +199,13 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
   const [deltToggle, setDeltToggle] = useState(false);
   const [isLoadingResults, setIsLoadingResults] = useState(false);
   const [showResults, setShowResults] = useState(false);
-  const [animating, setAnimating] = useState(false);
-  const [showDelta, setShowDelta] = useState(false);
 
-  // Branch logic
+  /* ───────── Calc — UNCHANGED from original ───────── */
   const noCards = acceptsCards === false;
   const isCrossSellBranch = noCards;
   const isDeltBoosted = deltToggle || isCrossSellBranch;
   const isRedirectCase = timeInBusiness === '<6mo';
 
-  // Funding calc
   let baseLow = monthlyRevenue * 0.50;
   let baseHigh = monthlyRevenue * 0.67;
 
@@ -93,38 +237,27 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
   const displayLow = isDeltBoosted ? fundingLow : preBoostLow;
   const displayHigh = isDeltBoosted ? fundingHigh : preBoostHigh;
 
-  const handleRevenueInput = (value: number) => {
-    setMonthlyRevenue(value);
-  };
-
-  const handleRevenueContinue = () => {
-    if (monthlyRevenue > 0) {
-      setCurrentQuestion(2);
-    }
-  };
-
+  /* ───────── Handlers — UNCHANGED behavior ───────── */
   const handleTimeSelect = (value: TimeInBusiness) => {
     setTimeInBusiness(value);
     setTimeout(() => setCurrentQuestion(1), 300);
+  };
+
+  const handleRevenueContinue = () => {
+    if (monthlyRevenue > 0) setCurrentQuestion(2);
   };
 
   const handleAcceptCards = (value: boolean) => {
     setAcceptsCards(value);
     if (!value) {
       setCardSales(0);
-      // No cards = show loading
       setTimeout(() => {
         setCurrentQuestion(4);
         triggerLoadingAndResults();
       }, 300);
     } else {
-      // Yes cards = ask for card sales
       setTimeout(() => setCurrentQuestion(3), 300);
     }
-  };
-
-  const handleCardSalesInput = (value: number) => {
-    setCardSales(value);
   };
 
   const handleCardSalesContinue = () => {
@@ -134,17 +267,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
     }
   };
 
-  const handleToggleClick = () => {
-    const next = !deltToggle;
-    setDeltToggle(next);
-    if (next) {
-      setAnimating(true);
-      setTimeout(() => setAnimating(false), 500);
-      setTimeout(() => setShowDelta(true), 300);
-    } else {
-      setShowDelta(false);
-    }
-  };
+  const handleToggleClick = () => setDeltToggle((p) => !p);
 
   const handleReset = () => {
     setCurrentQuestion(0);
@@ -155,8 +278,6 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
     setDeltToggle(false);
     setIsLoadingResults(false);
     setShowResults(false);
-    setAnimating(false);
-    setShowDelta(false);
   };
 
   const triggerLoadingAndResults = () => {
@@ -167,11 +288,11 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
     }, 2000);
   };
 
-  const timeOptions: { value: TimeInBusiness; label: string }[] = [
-    { value: '<6mo', label: 'Less than 6 months' },
-    { value: '6-12mo', label: '6–12 months' },
-    { value: '1-2yr', label: '1–2 years' },
-    { value: '2yr+', label: '2+ years' },
+  const timeOptions: { value: TimeInBusiness; label: string; sub: string }[] = [
+    { value: '<6mo',   label: 'Less than 6 months', sub: 'Brand new' },
+    { value: '6-12mo', label: '6 – 12 months',      sub: 'Getting started' },
+    { value: '1-2yr',  label: '1 – 2 years',        sub: 'Established' },
+    { value: '2yr+',   label: '2+ years',           sub: 'Veteran' },
   ];
 
   const getCalculatorData = () => {
@@ -191,69 +312,85 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
     };
   };
 
-  const progress = ((currentQuestion + 1) / 4) * 100;
+  const stepIndex = useMemo(() => {
+    // Stepper has 4 segments: TIB, Revenue, Cards?, (CardSales OR auto-result)
+    if (currentQuestion === 0) return 0;
+    if (currentQuestion === 1) return 1;
+    if (currentQuestion === 2) return 2;
+    return 3;
+  }, [currentQuestion]);
+  const percent = ((stepIndex + 1) / 4) * 100;
 
-  // LOADING RESULTS PHASE
+  /* ─────────────────────────────────────────────
+   * LOADING
+   * ─────────────────────────────────────────── */
   if (isLoadingResults) {
     return (
-      <div className="bg-white rounded-2xl shadow-xl max-w-3xl mx-auto border border-[#e8eaf0] overflow-hidden p-12">
-        <div className="text-center">
+      <QuizShell>
+        <div className="px-8 md:px-12 py-16 md:py-20 text-center">
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.85 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3 }}
-            className="mb-6"
+            transition={{ duration: 0.4 }}
+            className="relative w-20 h-20 mx-auto mb-7"
           >
-            <div className="w-20 h-20 mx-auto mb-4">
-              <svg className="animate-spin text-[#0c66e4]" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-              </svg>
-            </div>
+            <div className="absolute inset-0 rounded-full bg-mesh opacity-50" />
+            <svg className="relative animate-spin text-[#0c66e4]" viewBox="0 0 24 24">
+              <circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" fill="none" />
+              <path className="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+            </svg>
           </motion.div>
           <motion.h3
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-2xl font-bold text-[#172b4d] mb-2"
+            transition={{ delay: 0.15 }}
+            className="text-[#172b4d]"
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(1.5rem, 3vw, 2rem)',
+              fontWeight: 700,
+              letterSpacing: '-0.025em',
+              lineHeight: 1.15,
+            }}
           >
-            Calculating Your Funding Range
+            Calculating your funding range
           </motion.h3>
           <motion.p
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="text-base text-slate-600"
+            transition={{ delay: 0.25 }}
+            className="text-[#44546f] mt-2.5"
+            style={{ fontSize: 15 }}
           >
-            Analyzing your business profile...
+            Analyzing your business profile…
           </motion.p>
         </div>
-      </div>
+      </QuizShell>
     );
   }
 
-  // RESULTS PHASE
+  /* ─────────────────────────────────────────────
+   * RESULTS
+   * ─────────────────────────────────────────── */
   if (showResults) {
     return (
-      <div className="bg-white rounded-2xl shadow-xl max-w-xl mx-auto border border-[#EBEBF0] overflow-hidden">
-        <div className="text-center pt-11 pb-9 px-12">
-          <div
-            className="uppercase tracking-widest mb-1.5"
-            style={{
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: '10px',
-              fontWeight: 500,
-              letterSpacing: '1.2px',
-              color: '#A0A0B0',
-            }}
-          >
-            Estimated Funding Range
+      <QuizShell>
+        <div className="px-8 md:px-12 pt-9 pb-9">
+          {/* Eyebrow + sub */}
+          <div className="text-center mb-6">
+            <span
+              className="inline-flex items-center gap-2 uppercase text-[#0c66e4]"
+              style={{ fontSize: 11, letterSpacing: '0.32em', fontWeight: 700 }}
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              Estimated funding range
+            </span>
+            <p className="text-[#44546f] mt-3" style={{ fontSize: 14 }}>
+              Based on your business profile
+            </p>
           </div>
-          <p style={{ fontSize: '14px', color: '#8888A0', marginBottom: '32px' }}>
-            Based on your business profile
-          </p>
 
-          {/* Strikethrough old amount when Delt toggle is ON */}
+          {/* Strikethrough preview when boosted */}
           <AnimatePresence>
             {isDeltBoosted && !noCards && (
               <motion.div
@@ -261,13 +398,12 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.3 }}
+                className="text-center text-[#758195] mb-1.5"
                 style={{
-                  fontSize: '20px',
+                  fontSize: 20,
                   fontWeight: 600,
-                  color: '#64748B',
                   letterSpacing: '-0.5px',
                   textDecoration: 'line-through',
-                  marginBottom: '8px',
                 }}
               >
                 {formatK(preBoostLow)}–{formatK(preBoostHigh)}
@@ -275,306 +411,146 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
             )}
           </AnimatePresence>
 
-          {/* THE NUMBER — hero display */}
-          <motion.div
-            initial={{ opacity: 0, y: 8, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ type: 'spring', stiffness: 180, damping: 18 }}
-            style={{
-              fontSize: 'clamp(48px, 8vw, 64px)',
-              fontWeight: 800,
-              color: isDeltBoosted ? '#0c66e4' : '#0B0B18',
-              letterSpacing: '-2px',
-              lineHeight: 1,
-              marginBottom: '6px',
-              transition: 'all 0.3s cubic-bezier(0.16,1,0.3,1)',
-            }}
-          >
-            {formatK(displayLow)}
-            <span style={{ color: '#A0A0B0', fontWeight: 400, margin: '0 4px' }}>–</span>
-            {formatK(displayHigh)}
-          </motion.div>
-
-          <div style={{ fontSize: '13px', color: '#A0A0B0', marginBottom: '32px' }}>
-            {isDeltBoosted ? 'With Delt processing' : 'Based on your monthly revenue'}
-          </div>
-
-          {/* Switch processing toggle OR static signup card */}
-          {noCards ? (
-            // Static card for users who don't accept credit cards
-            <div
+          {/* Hero amount */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`${displayLow}-${displayHigh}-${isDeltBoosted ? 'b' : 'p'}`}
+              initial={{ opacity: 0, y: 8, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -8, scale: 0.97 }}
+              transition={{ type: 'spring', stiffness: 180, damping: 18 }}
+              className={`text-center tabular-nums ${
+                isDeltBoosted ? 'text-gradient-primary' : 'text-[#172b4d]'
+              }`}
               style={{
-                marginBottom: '32px',
-                padding: '20px 24px',
-                background: 'linear-gradient(135deg, #F8F9FF 0%, #F5F3FF 100%)',
-                borderRadius: '12px',
-                border: '1.5px solid #E5E7EB',
+                fontFamily: 'var(--font-display)',
+                fontSize: 'clamp(3rem, 8vw, 4.75rem)',
+                fontWeight: 800,
+                letterSpacing: '-0.045em',
+                lineHeight: 1.0,
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+              {formatK(displayLow)}
+              <span style={{ color: '#c1c7d0', fontWeight: 400, margin: '0 8px' }}>–</span>
+              {formatK(displayHigh)}
+            </motion.div>
+          </AnimatePresence>
+
+          <p className="text-center text-[#44546f] mt-3 mb-8" style={{ fontSize: 13.5 }}>
+            {isDeltBoosted ? 'With Delt processing' : 'Based on your monthly revenue'}
+          </p>
+
+          {/* Boost / static cross-sell card */}
+          {noCards ? (
+            <div
+              className="rounded-2xl p-5 mb-7 border border-[#0c66e4]/20"
+              style={{
+                background: 'linear-gradient(135deg, #f1f6ff 0%, #f5f3ff 100%)',
+              }}
+            >
+              <div className="flex items-start gap-4">
                 <div
+                  className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 text-white"
                   style={{
-                    width: '40px',
-                    height: '40px',
-                    borderRadius: '10px',
-                    background: 'linear-gradient(135deg, #0c66e4 0%, #5B3AFF 100%)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                    boxShadow: '0 4px 12px rgba(73,69,255,0.2)',
+                    background: 'linear-gradient(135deg, #0c66e4 0%, #6e5dc6 100%)',
+                    boxShadow: '0 6px 16px -4px rgba(12,102,228,0.45)',
                   }}
                 >
-                  <Rocket
-                    style={{
-                      width: '18px',
-                      height: '18px',
-                      color: '#fff',
-                      strokeWidth: 2,
-                    }}
-                  />
+                  <Rocket className="w-5 h-5" />
                 </div>
-                <div style={{ flex: 1, paddingTop: '2px' }}>
-                  <div
-                    style={{
-                      fontSize: '15px',
-                      fontWeight: 600,
-                      color: '#0F172A',
-                      lineHeight: 1.4,
-                      marginBottom: '6px',
-                    }}
-                  >
+                <div className="flex-1">
+                  <div className="text-[#172b4d]" style={{ fontSize: 15.5, fontWeight: 700, lineHeight: 1.35 }}>
                     Enable payment processing with Delt
                   </div>
-                  <div
-                    style={{
-                      fontSize: '13px',
-                      fontWeight: 500,
-                      color: '#64748B',
-                      lineHeight: 1.5,
-                    }}
-                  >
-                    Unlock up to 2× more capital as your business grows
+                  <div className="text-[#44546f] mt-1.5" style={{ fontSize: 13.5, lineHeight: 1.5 }}>
+                    Unlock up to <span className="font-semibold text-[#0c66e4]">2× more capital</span> as your business grows
                   </div>
                 </div>
               </div>
             </div>
           ) : (
-            // Toggle for users who accept credit cards
-            <div
-              style={{
-                marginBottom: '32px',
-                padding: '20px 24px',
-                background: deltToggle
-                  ? 'linear-gradient(135deg, #F8F9FF 0%, #F5F3FF 100%)'
-                  : '#FAFBFC',
-                borderRadius: '12px',
-                border: deltToggle ? '1.5px solid #E0E7FF' : '1.5px solid #E5E7EB',
-                transition: 'all 0.3s cubic-bezier(0.16,1,0.3,1)',
-                cursor: 'pointer',
-              }}
+            <button
+              type="button"
               onClick={handleToggleClick}
+              className="w-full text-left rounded-2xl p-5 mb-7 transition-all duration-300 group"
+              style={{
+                background: deltToggle
+                  ? 'linear-gradient(135deg, #f1f6ff 0%, #f5f3ff 100%)'
+                  : '#f1f2f4',
+                border: deltToggle
+                  ? '1.5px solid rgba(12,102,228,0.3)'
+                  : '1.5px solid #dcdfe4',
+                boxShadow: deltToggle
+                  ? '0 12px 32px -16px rgba(12,102,228,0.4)'
+                  : '0 1px 2px rgba(9,30,66,0.04)',
+              }}
             >
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+              <div className="flex items-start gap-4">
                 <div
+                  className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300"
                   style={{
-                    width: '40px',
-                    height: '40px',
-                    borderRadius: '10px',
                     background: deltToggle
-                      ? 'linear-gradient(135deg, #0c66e4 0%, #5B3AFF 100%)'
-                      : '#E5E7EB',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    transition: 'all 0.3s cubic-bezier(0.16,1,0.3,1)',
-                    flexShrink: 0,
-                    boxShadow: deltToggle ? '0 4px 12px rgba(73,69,255,0.2)' : 'none',
+                      ? 'linear-gradient(135deg, #0c66e4 0%, #6e5dc6 100%)'
+                      : '#dcdfe4',
+                    color: deltToggle ? '#fff' : '#758195',
+                    boxShadow: deltToggle
+                      ? '0 6px 16px -4px rgba(12,102,228,0.45)'
+                      : 'none',
                   }}
                 >
-                  <Zap
-                    style={{
-                      width: '18px',
-                      height: '18px',
-                      color: deltToggle ? '#fff' : '#9CA3AF',
-                      strokeWidth: 2,
-                    }}
-                  />
+                  <Zap className="w-5 h-5" />
                 </div>
-                <div style={{ flex: 1, paddingTop: '2px' }}>
-                  <div
-                    style={{
-                      fontSize: '18px',
-                      fontWeight: 600,
-                      color: '#0F172A',
-                      lineHeight: 1.4,
-                      marginBottom: '6px',
-                    }}
-                  >
-                    {isRedirectCase
-                      ? 'Enable payment processing with Delt'
-                      : 'Switch payment processing to Delt'}
+                <div className="flex-1 pt-0.5">
+                  <div className="text-[#172b4d]" style={{ fontSize: 16, fontWeight: 700, lineHeight: 1.35 }}>
+                    {isRedirectCase ? 'Enable payment processing with Delt' : 'Switch payment processing to Delt'}
                   </div>
-                  <div
-                    style={{
-                      fontSize: '13px',
-                      fontWeight: 500,
-                      color: '#64748B',
-                      lineHeight: 1.5,
-                    }}
-                  >
-                    Unlock up to 2× more capital as your business grows
+                  <div className="text-[#44546f] mt-1.5" style={{ fontSize: 13.5, lineHeight: 1.5 }}>
+                    Unlock up to <span className="font-semibold text-[#0c66e4]">2× more capital</span> as your business grows
                   </div>
                 </div>
-                {/* Toggle Switch */}
+                {/* iOS-style toggle */}
                 <div
+                  className="relative flex-shrink-0 mt-1 transition-colors duration-300"
                   style={{
-                    width: '48px',
-                    height: '28px',
-                    borderRadius: '14px',
-                    background: deltToggle ? '#0c66e4' : '#CBD5E1',
-                    padding: '3px',
-                    transition: 'background 0.25s cubic-bezier(0.16,1,0.3,1)',
-                    flexShrink: 0,
-                    marginTop: '6px',
+                    width: 48,
+                    height: 28,
+                    borderRadius: 14,
+                    background: deltToggle ? '#0c66e4' : '#c1c7d0',
+                    padding: 3,
                   }}
                 >
                   <motion.div
+                    className="rounded-full bg-white"
                     style={{
-                      width: '22px',
-                      height: '22px',
-                      borderRadius: '11px',
-                      background: '#FFFFFF',
-                      boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                      width: 22,
+                      height: 22,
+                      boxShadow: '0 2px 4px rgba(0,0,0,0.18)',
                     }}
                     animate={{ x: deltToggle ? 20 : 0 }}
                     transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                   />
                 </div>
               </div>
-            </div>
+            </button>
           )}
 
-          {/* CTA */}
-          <button
-            onClick={() => onApplyClick?.(getCalculatorData())}
-            className="w-full transition-all duration-150 flex items-center justify-center gap-2 mb-2.5"
-            style={{
-              padding: '16px 0',
-              borderRadius: '10px',
-              border: 'none',
-              background: '#0c66e4',
-              color: '#fff',
-              fontSize: '16px',
-              fontWeight: 700,
-              cursor: 'pointer',
-              boxShadow: '0 2px 8px rgba(73,69,255,0.2)',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = '#0055cc';
-              e.currentTarget.style.transform = 'translateY(-1px)';
-              e.currentTarget.style.boxShadow = '0 4px 14px rgba(73,69,255,0.25)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = '#0c66e4';
-              e.currentTarget.style.transform = 'none';
-              e.currentTarget.style.boxShadow = '0 2px 8px rgba(73,69,255,0.2)';
-            }}
-          >
-            Get My Offer
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
-
-          <div style={{ fontSize: '14.4px', color: '#A0A0B0', marginBottom: '24px' }}>
-            No impact to your credit. Takes 2 minutes.
-          </div>
-
-          {/* Divider */}
-          <div style={{ height: '1px', background: '#EBEBF0', marginBottom: '16px' }} />
-
-          {/* Disclaimer */}
-          <div
-            style={{
-              fontSize: '11.5px',
-              color: '#B0B0BE',
-              lineHeight: 1.5,
-              marginBottom: '12px',
-            }}
-          >
-            Estimates are approximate and not a guarantee of funding. Final offers are based on a full review of your business.
-          </div>
-
-          {/* How it Works link */}
-          <button
-            type="button"
-            onClick={onDeltLearnMore}
-            style={{
-              fontSize: '13px',
-              fontWeight: 600,
-              color: '#0c66e4',
-              textDecoration: 'none',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '5px',
-              background: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-              padding: 0,
-            }}
-          >
-            How it Works <span>→</span>
-          </button>
-
-          {/* Redirect case special messaging */}
-          <AnimatePresence>
-            {isRedirectCase && (
-              <motion.div
-                key="redirect"
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mt-6"
-              >
-                <div
-                  className="rounded-xl p-4"
-                  style={{
-                    border: '1.5px solid rgba(73,69,255,0.12)',
-                    background: 'rgba(73,69,255,0.02)',
-                  }}
-                >
-                  <Rocket className="w-5 h-5 mb-2" style={{ color: '#0c66e4' }} />
-                  <p
-                    className="text-[13px] text-[#172b4d] mb-1"
-                    style={{ fontWeight: 700, lineHeight: 1.35 }}
-                  >
-                    Get started with Delt today.
-                  </p>
-                  <p
-                    className="text-[11.5px] text-gray-500"
-                    style={{ fontWeight: 400, lineHeight: 1.5 }}
-                  >
-                    New businesses that process with Delt get a pre-approved offer and up to 2x more
-                    capital as they grow.
-                  </p>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Delt Boost Badge */}
+          {/* Boost badge */}
           <AnimatePresence>
             {isDeltBoosted && !isRedirectCase && (
               <motion.div
                 initial={{ opacity: 0, y: -6, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -6, scale: 0.95 }}
-                className="mt-4"
+                className="flex justify-center mb-5"
               >
                 <span
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px]"
+                  className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5"
                   style={{
-                    background: 'rgba(73,69,255,0.08)',
+                    background: 'linear-gradient(135deg, rgba(12,102,228,0.10) 0%, rgba(110,93,198,0.10) 100%)',
                     color: '#0c66e4',
-                    fontWeight: 600,
+                    fontSize: 12,
+                    fontWeight: 700,
+                    border: '1px solid rgba(12,102,228,0.18)',
                   }}
                 >
                   <Sparkles className="w-3.5 h-3.5" />
@@ -584,285 +560,322 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
             )}
           </AnimatePresence>
 
-          {/* Start Over */}
-          <div style={{ marginTop: '24px' }}>
+          {/* CTA */}
+          <button
+            onClick={() => onApplyClick?.(getCalculatorData())}
+            className="card-hover-lift w-full text-white inline-flex items-center justify-center gap-2 rounded-xl py-4"
+            style={{
+              background: 'linear-gradient(95deg, #0c66e4 0%, #1d7afc 50%, #6e5dc6 100%)',
+              boxShadow: '0 12px 28px -10px rgba(12,102,228,0.55), inset 0 1px 0 rgba(255,255,255,0.18)',
+              fontSize: 16,
+              fontWeight: 700,
+              letterSpacing: '-0.005em',
+            }}
+          >
+            Get my offer
+            <ArrowRight className="w-4 h-4" />
+          </button>
+
+          {/* Trust line */}
+          <div className="mt-3 flex items-center justify-center gap-1.5 text-[#758195]" style={{ fontSize: 13 }}>
+            <Lock className="w-3 h-3" />
+            No impact to your credit · Takes 2 minutes
+          </div>
+
+          {/* Redirect special card */}
+          <AnimatePresence>
+            {isRedirectCase && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-6 rounded-xl p-4"
+                style={{
+                  border: '1.5px solid rgba(12,102,228,0.18)',
+                  background: 'linear-gradient(135deg, rgba(12,102,228,0.04) 0%, rgba(110,93,198,0.04) 100%)',
+                }}
+              >
+                <Rocket className="w-5 h-5 mb-2 text-[#0c66e4]" />
+                <p className="text-[#172b4d] mb-1" style={{ fontSize: 14, fontWeight: 700, lineHeight: 1.35 }}>
+                  Get started with Delt today.
+                </p>
+                <p className="text-[#44546f]" style={{ fontSize: 13, lineHeight: 1.5 }}>
+                  New businesses that process with Delt get a pre-approved offer and up to 2× more capital as they grow.
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Divider + footer row */}
+          <div className="border-t border-[#dcdfe4] mt-8 pt-5 flex items-center justify-between">
+            <button
+              type="button"
+              onClick={onDeltLearnMore}
+              className="inline-flex items-center gap-1.5 text-[#0c66e4] hover:text-[#0055cc] transition-colors"
+              style={{ fontSize: 13.5, fontWeight: 600 }}
+            >
+              How it works
+              <ArrowRight className="w-3 h-3" />
+            </button>
             <button
               type="button"
               onClick={handleReset}
-              style={{
-                fontSize: '13px',
-                fontWeight: 500,
-                color: '#A0A0B0',
-                background: 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                padding: 0,
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.color = '#0c66e4'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.color = '#A0A0B0'; }}
+              className="inline-flex items-center gap-1.5 text-[#758195] hover:text-[#0c66e4] transition-colors"
+              style={{ fontSize: 13, fontWeight: 500 }}
             >
-              ↺ Start Over
+              <RefreshCcw className="w-3 h-3" />
+              Start over
             </button>
           </div>
+
+          {/* Disclaimer */}
+          <div
+            className="mt-5 text-[#9aa5b1]"
+            style={{ fontSize: 11, lineHeight: 1.55 }}
+          >
+            Estimates are approximate and not a guarantee of funding. Final offers are based on a full review of your business.
+          </div>
         </div>
-      </div>
+      </QuizShell>
     );
   }
 
-  // QUIZ PHASE - Question 0: Monthly Revenue
+  /* ─────────────────────────────────────────────
+   * Q0 — Time in Business
+   * ─────────────────────────────────────────── */
   if (currentQuestion === 0) {
     return (
-      <div className="bg-white rounded-2xl shadow-xl max-w-3xl mx-auto border border-[#e8eaf0] overflow-hidden">
+      <QuizShell>
+        <QuizStepper stepIndex={0} kicker="Question 1 of 4" percent={percent} />
+        <QuestionHeader
+          Icon={Calendar}
+          eyebrow="Time in business"
+          title={<>How long have you been in business?</>}
+          subtitle="We use this to calibrate your funding range. Pick the closest answer."
+        />
         <AnimatePresence mode="wait">
           <motion.div
-            key="time-in-business"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.25 }}
-            className="p-8 md:p-12"
+            key="q0"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.3 }}
+            className="px-8 md:px-12 pt-7 pb-10"
           >
-            {/* Progress */}
-            <div className="mb-8">
-              <div className="flex justify-between items-center mb-3">
-                <span className="text-sm font-semibold text-[#1E40AF]">
-                  Question 1 of 3
-                </span>
-                <span className="text-sm text-[#44546f]">
-                  {Math.round(progress)}% Complete
-                </span>
-              </div>
-              <div className="w-full h-2 bg-[#dcdfe4] rounded-full overflow-hidden">
-                <motion.div
-                  className="h-full bg-gradient-to-r from-[#0c66e4] to-[#6366f1]"
-                  initial={{ width: '0%' }}
-                  animate={{ width: `${progress}%` }}
-                  transition={{ duration: 0.5 }}
-                />
-              </div>
-            </div>
-
-            {/* Question Header */}
-            <div className="text-center mb-8">
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-[#0c66e4]/10 rounded-full mb-4">
-                <Calendar className="w-6 h-6 text-[#0c66e4]" />
-              </div>
-              <div className="uppercase tracking-[0.15em] text-[#9CA3AF] text-xs font-semibold mb-6">
-                Time in Business
-              </div>
-              <div className="grid grid-cols-2 gap-3 max-w-lg mx-auto">
-                {timeOptions.map((opt) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {timeOptions.map((opt, i) => {
+                const isActive = timeInBusiness === opt.value;
+                return (
                   <motion.button
                     key={opt.value}
                     onClick={() => handleTimeSelect(opt.value)}
-                    whileHover={{ scale: 1.02 }}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: 0.15 + i * 0.06 }}
+                    whileHover={{ y: -2 }}
                     whileTap={{ scale: 0.98 }}
-                    className="px-5 py-4 rounded-xl border-2 border-[#e8eaf0] text-[#4a5568] hover:border-[#0c66e4] hover:bg-[#0c66e4]/5 transition-all duration-200 font-semibold text-sm"
+                    className={`group relative overflow-hidden text-left rounded-2xl p-5 transition-all duration-200 ${
+                      isActive
+                        ? 'bg-gradient-to-br from-[#f1f6ff] to-[#f5f3ff] border-2 border-[#0c66e4]/40'
+                        : 'bg-white border-2 border-[#dcdfe4] hover:border-[#0c66e4]/40 hover:bg-[#f1f6ff]/50'
+                    }`}
+                    style={{
+                      boxShadow: isActive
+                        ? '0 12px 28px -12px rgba(12,102,228,0.35)'
+                        : '0 1px 2px rgba(9,30,66,0.04)',
+                    }}
                   >
-                    {opt.label}
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <div
+                          className="text-[#172b4d]"
+                          style={{ fontSize: 16, fontWeight: 700, letterSpacing: '-0.01em' }}
+                        >
+                          {opt.label}
+                        </div>
+                        <div
+                          className="uppercase text-[#758195] mt-1"
+                          style={{ fontSize: 10, letterSpacing: '0.22em', fontWeight: 700 }}
+                        >
+                          {opt.sub}
+                        </div>
+                      </div>
+                      <ArrowRight className="w-4 h-4 text-[#0c66e4] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+                    </div>
                   </motion.button>
-                ))}
-              </div>
+                );
+              })}
             </div>
           </motion.div>
         </AnimatePresence>
-      </div>
+      </QuizShell>
     );
   }
 
-  // QUIZ PHASE - Question 1: Time in Business
+  /* ─────────────────────────────────────────────
+   * Q1 — Monthly Revenue
+   * ─────────────────────────────────────────── */
   if (currentQuestion === 1) {
     return (
-      <div className="bg-white rounded-2xl shadow-xl max-w-3xl mx-auto border border-[#e8eaf0] overflow-hidden">
+      <QuizShell>
+        <QuizStepper stepIndex={1} kicker="Question 2 of 4" percent={percent} />
+        <QuestionHeader
+          Icon={DollarSign}
+          eyebrow="Monthly revenue"
+          title={<>What's your average monthly revenue?</>}
+          subtitle="Slide to your closest figure. Our underwriters care about cash flow, not perfection."
+        />
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.25 }}
-          className="p-8 md:p-12"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, delay: 0.1 }}
+          className="px-8 md:px-12 pt-7 pb-10"
         >
-          {/* Progress */}
-          <div className="mb-8">
-            <div className="flex justify-between items-center mb-3">
-              <span className="text-sm font-semibold text-[#1E40AF]">
-                Question 2 of 3
-              </span>
-              <span className="text-sm text-[#44546f]">
-                {Math.round(progress)}% Complete
-              </span>
-            </div>
-            <div className="w-full h-2 bg-[#dcdfe4] rounded-full overflow-hidden">
+          <MonthlyRevenueSlider value={monthlyRevenue} onChange={setMonthlyRevenue} />
+
+          <AnimatePresence>
+            {monthlyRevenue > 0 && (
               <motion.div
-                className="h-full bg-gradient-to-r from-[#1E40AF] to-[#3B82F6]"
-                animate={{ width: `${progress}%` }}
-                transition={{ duration: 0.5 }}
-              />
-            </div>
-          </div>
-
-          {/* Question Header */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-12 h-12 bg-[#0c66e4]/10 rounded-full mb-4">
-              <DollarSign className="w-6 h-6 text-[#0c66e4]" />
-            </div>
-            <div className="uppercase tracking-[0.15em] text-[#9CA3AF] text-xs font-semibold mb-6">
-              Monthly Revenue
-            </div>
-            <MonthlyRevenueSlider
-              value={monthlyRevenue}
-              onChange={handleRevenueInput}
-            />
-          </div>
-
-          {/* Continue Button */}
-          {monthlyRevenue > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex justify-center"
-            >
-              <button
-                onClick={handleRevenueContinue}
-                className="bg-[#0c66e4] hover:bg-[#0055cc] text-white px-6 py-2.5 rounded-xl font-semibold transition-all duration-200 flex items-center gap-2 text-sm"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                className="mt-7 flex justify-center"
               >
-                Continue
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </motion.div>
-          )}
+                <button
+                  onClick={handleRevenueContinue}
+                  className="card-hover-lift inline-flex items-center justify-center gap-2 text-white rounded-xl px-7 py-3.5"
+                  style={{
+                    background: 'linear-gradient(95deg, #0c66e4 0%, #1d7afc 50%, #6e5dc6 100%)',
+                    boxShadow: '0 10px 24px -10px rgba(12,102,228,0.55), inset 0 1px 0 rgba(255,255,255,0.18)',
+                    fontSize: 15,
+                    fontWeight: 700,
+                  }}
+                >
+                  Continue
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
-      </div>
+      </QuizShell>
     );
   }
 
-  // QUIZ PHASE - Question 2: Accept Credit Cards?
+  /* ─────────────────────────────────────────────
+   * Q2 — Accept Credit Cards?
+   * ─────────────────────────────────────────── */
   if (currentQuestion === 2) {
     return (
-      <div className="bg-white rounded-2xl shadow-xl max-w-3xl mx-auto border border-[#e8eaf0] overflow-hidden">
+      <QuizShell>
+        <QuizStepper stepIndex={2} kicker="Question 3 of 4" percent={percent} />
+        <QuestionHeader
+          Icon={CreditCard}
+          eyebrow="Payment processing"
+          title={<>Do you currently accept credit cards?</>}
+          subtitle="Either way works — we support both processors and non-card businesses."
+        />
         <AnimatePresence mode="wait">
           <motion.div
-            key="accept-cards"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.25 }}
-            className="p-8 md:p-12"
+            key="q2"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.3 }}
+            className="px-8 md:px-12 pt-7 pb-10"
           >
-            {/* Progress */}
-            <div className="mb-8">
-              <div className="flex justify-between items-center mb-3">
-                <span className="text-sm font-semibold text-[#1E40AF]">
-                  Question 3 of 3
-                </span>
-                <span className="text-sm text-[#44546f]">
-                  {Math.round(progress)}% Complete
-                </span>
-              </div>
-              <div className="w-full h-2 bg-[#dcdfe4] rounded-full overflow-hidden">
-                <motion.div
-                  className="h-full bg-gradient-to-r from-[#1E40AF] to-[#3B82F6]"
-                  animate={{ width: `${progress}%` }}
-                  transition={{ duration: 0.5 }}
-                />
-              </div>
-            </div>
-
-            {/* Question Header */}
-            <div className="text-center mb-8">
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-[#0c66e4]/10 rounded-full mb-4">
-                <CreditCard className="w-6 h-6 text-[#0c66e4]" />
-              </div>
-              <div className="uppercase tracking-[0.15em] text-[#9CA3AF] text-xs font-semibold mb-6">
-                Do you currently accept credit cards?
-              </div>
-              <div className="grid grid-cols-2 gap-3 max-w-md mx-auto">
+            <div className="grid grid-cols-2 gap-3 max-w-md mx-auto">
+              {[
+                { value: true, label: 'Yes', sub: 'I process cards', Icon: Check },
+                { value: false, label: 'No',  sub: 'Cash / bank only', Icon: XIcon },
+              ].map((opt, i) => (
                 <motion.button
-                  onClick={() => handleAcceptCards(true)}
-                  whileHover={{ scale: 1.02 }}
+                  key={String(opt.value)}
+                  onClick={() => handleAcceptCards(opt.value)}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.15 + i * 0.06 }}
+                  whileHover={{ y: -2 }}
                   whileTap={{ scale: 0.98 }}
-                  className="flex items-center justify-center gap-2 px-6 py-4 rounded-xl border-2 border-[#e8eaf0] text-[#4a5568] hover:border-[#0c66e4] hover:bg-[#0c66e4]/5 transition-all duration-200 font-semibold text-sm"
+                  className="group flex flex-col items-center gap-2 rounded-2xl p-6 bg-white border-2 border-[#dcdfe4] hover:border-[#0c66e4]/40 hover:bg-[#f1f6ff]/50 transition-all duration-200"
+                  style={{ boxShadow: '0 1px 2px rgba(9,30,66,0.04)' }}
                 >
-                  <Check className="w-5 h-5" />
-                  Yes
+                  <span
+                    className="w-11 h-11 rounded-xl flex items-center justify-center text-white transition-transform group-hover:scale-110"
+                    style={{
+                      background: 'linear-gradient(135deg, #0c66e4 0%, #6e5dc6 100%)',
+                      boxShadow: '0 6px 14px -4px rgba(12,102,228,0.4)',
+                    }}
+                  >
+                    <opt.Icon className="w-5 h-5" strokeWidth={2.5} />
+                  </span>
+                  <div
+                    className="text-[#172b4d] mt-1"
+                    style={{ fontSize: 18, fontWeight: 700, letterSpacing: '-0.015em' }}
+                  >
+                    {opt.label}
+                  </div>
+                  <div
+                    className="uppercase text-[#758195]"
+                    style={{ fontSize: 10, letterSpacing: '0.22em', fontWeight: 700 }}
+                  >
+                    {opt.sub}
+                  </div>
                 </motion.button>
-                <motion.button
-                  onClick={() => handleAcceptCards(false)}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="flex items-center justify-center gap-2 px-6 py-4 rounded-xl border-2 border-[#e8eaf0] text-[#4a5568] hover:border-[#0c66e4] hover:bg-[#0c66e4]/5 transition-all duration-200 font-semibold text-sm"
-                >
-                  <XIcon className="w-5 h-5" />
-                  No
-                </motion.button>
-              </div>
+              ))}
             </div>
           </motion.div>
         </AnimatePresence>
-      </div>
+      </QuizShell>
     );
   }
 
-  // QUIZ PHASE - Question 3: Card Sales Amount (only if they accept cards)
+  /* ─────────────────────────────────────────────
+   * Q3 — Card Sales
+   * ─────────────────────────────────────────── */
   if (currentQuestion === 3) {
     return (
-      <div className="bg-white rounded-2xl shadow-xl max-w-3xl mx-auto border border-[#e8eaf0] overflow-hidden">
+      <QuizShell>
+        <QuizStepper stepIndex={3} kicker="Final question" percent={100} />
+        <QuestionHeader
+          Icon={CreditCard}
+          eyebrow="Monthly card sales"
+          title={<>How much of that runs through your card processor?</>}
+          subtitle="A rough monthly average is fine — we'll refine the exact number during application."
+        />
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.25 }}
-          className="p-8 md:p-12"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, delay: 0.1 }}
+          className="px-8 md:px-12 pt-7 pb-10"
         >
-          {/* Progress */}
-          <div className="mb-8">
-            <div className="flex justify-between items-center mb-3">
-              <span className="text-sm font-semibold text-[#1E40AF]">
-                Final Question
-              </span>
-              <span className="text-sm text-[#44546f]">
-                Almost Done!
-              </span>
-            </div>
-            <div className="w-full h-2 bg-[#dcdfe4] rounded-full overflow-hidden">
+          <CreditCardSalesSlider value={cardSales} onChange={setCardSales} />
+
+          <AnimatePresence>
+            {cardSales > 0 && (
               <motion.div
-                className="h-full bg-gradient-to-r from-[#1E40AF] to-[#3B82F6]"
-                initial={{ width: '75%' }}
-                animate={{ width: '100%' }}
-                transition={{ duration: 0.5 }}
-              />
-            </div>
-          </div>
-
-          {/* Question Header */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-12 h-12 bg-[#0c66e4]/10 rounded-full mb-4">
-              <CreditCard className="w-6 h-6 text-[#0c66e4]" />
-            </div>
-            <div className="uppercase tracking-[0.15em] text-[#9CA3AF] text-xs font-semibold mb-6">
-              Monthly Credit Card Sales
-            </div>
-            <CreditCardSalesSlider
-              value={cardSales}
-              onChange={handleCardSalesInput}
-            />
-          </div>
-
-          {/* Continue Button */}
-          {cardSales > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex justify-center"
-            >
-              <button
-                onClick={handleCardSalesContinue}
-                className="bg-[#0c66e4] hover:bg-[#0055cc] text-white px-6 py-2.5 rounded-xl font-semibold transition-all duration-200 flex items-center gap-2 text-sm"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                className="mt-7 flex justify-center"
               >
-                See My Estimate
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </motion.div>
-          )}
+                <button
+                  onClick={handleCardSalesContinue}
+                  className="card-hover-lift inline-flex items-center justify-center gap-2 text-white rounded-xl px-7 py-3.5"
+                  style={{
+                    background: 'linear-gradient(95deg, #0c66e4 0%, #1d7afc 50%, #6e5dc6 100%)',
+                    boxShadow: '0 10px 24px -10px rgba(12,102,228,0.55), inset 0 1px 0 rgba(255,255,255,0.18)',
+                    fontSize: 15,
+                    fontWeight: 700,
+                  }}
+                >
+                  See my estimate
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
-      </div>
+      </QuizShell>
     );
   }
 
