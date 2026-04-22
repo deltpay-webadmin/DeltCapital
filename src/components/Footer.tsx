@@ -37,17 +37,10 @@ export function Footer({
   return (
     <footer className="relative bg-[#172B4D] dark:bg-[#0D1B2D] text-white overflow-hidden">
       {/* ─────────────────────────────────────────
-          CTA Section — cinematic gradient band
+          CTA Section — solid primary band
          ───────────────────────────────────────── */}
       {!hideCTA && (
-        <div className="relative overflow-hidden bg-gradient-to-br from-[#0C66E4] via-[#1D7AFC] to-[#6E5DC6]">
-          {/* Decorative blurs */}
-          <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute -left-20 top-0 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
-            <div className="absolute -right-20 bottom-0 w-[28rem] h-[28rem] bg-white/12 rounded-full blur-3xl" />
-            <div className="absolute left-1/4 -top-20 w-72 h-72 bg-[#0055CC]/45 rounded-full blur-2xl" />
-          </div>
-
+        <div className="relative overflow-hidden bg-[#0c66e4]">
           {/* Grain overlay */}
           <div aria-hidden className="bg-grain absolute inset-0 pointer-events-none" />
 
@@ -95,30 +88,18 @@ export function Footer({
 
             <ScrollReveal direction="up" distance={18} delay={0.26}>
               <div className="mt-9 flex flex-wrap items-center gap-4">
-                {/* Halo + button */}
-                <div className="relative">
-                  <span
-                    aria-hidden
-                    className="absolute -inset-2 rounded-full opacity-70 pointer-events-none"
-                    style={{
-                      background:
-                        'radial-gradient(closest-side, rgba(255,255,255,0.55), rgba(255,255,255,0) 70%)',
-                      filter: 'blur(14px)',
-                    }}
-                  />
-                  <button
-                    onClick={onApplyClick}
-                    className="card-hover-lift relative inline-flex items-center gap-2 bg-white text-[#0C66E4] font-semibold rounded-xl px-8 py-4 transition-shadow group"
-                    style={{
-                      fontSize: 16,
-                      boxShadow:
-                        '0 18px 40px -14px rgba(9,30,66,0.45), inset 0 1px 0 rgba(255,255,255,0.9)',
-                    }}
-                  >
-                    {t('cta.button')}
-                    <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                  </button>
-                </div>
+                <button
+                  onClick={onApplyClick}
+                  className="card-hover-lift inline-flex items-center gap-2 bg-white text-[#0c66e4] font-semibold rounded-xl px-8 py-4 transition-shadow group"
+                  style={{
+                    fontSize: 16,
+                    boxShadow:
+                      '0 14px 32px -14px rgba(9,30,66,0.45), inset 0 1px 0 rgba(255,255,255,0.9)',
+                  }}
+                >
+                  {t('cta.button')}
+                  <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </button>
 
                 {/* Live indicator pill — sits inline with the button */}
                 <span
@@ -196,27 +177,12 @@ export function Footer({
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-6">
           {/* Bento tiles */}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-3 mb-12">
-            {/* Brand tile — large, with manifesto + gradient ring */}
-            <div className="md:col-span-5 relative">
-              {/* Faint gradient ring around the brand tile */}
+            {/* Brand tile — large, with manifesto */}
+            <div className="md:col-span-5">
               <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0 rounded-2xl"
+                className="card-hover-lift rounded-2xl p-7 flex flex-col h-full border border-white/[0.10]"
                 style={{
-                  padding: 1,
-                  background:
-                    'linear-gradient(135deg, rgba(12,102,228,0.45) 0%, rgba(133,184,255,0.25) 50%, rgba(110,93,198,0.45) 100%)',
-                  WebkitMask:
-                    'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
-                  WebkitMaskComposite: 'xor',
-                  maskComposite: 'exclude',
-                }}
-              />
-              <div
-                className="card-hover-lift relative rounded-2xl p-7 flex flex-col h-full"
-                style={{
-                  background:
-                    'linear-gradient(160deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%)',
+                  background: 'rgba(255,255,255,0.03)',
                   boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04)',
                 }}
               >

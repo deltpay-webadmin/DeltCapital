@@ -93,7 +93,7 @@ function LivePaymentsDashboard() {
         className="rounded-2xl backdrop-blur-2xl border border-white/15 overflow-hidden"
         style={{
           background:
-            'linear-gradient(160deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.04) 100%)',
+            'rgba(255,255,255,0.06)',
           boxShadow:
             '0 28px 60px -16px rgba(0,0,0,0.6), 0 6px 18px -8px rgba(110,93,198,0.35), inset 0 1px 0 rgba(255,255,255,0.10)',
         }}
@@ -450,7 +450,7 @@ export function HeroSection({ onApplyClick, onApplyFromQuiz, onCalculatorClick }
 
       <style>{`
         .hero-speed-text {
-          background: linear-gradient(90deg, #FFFFFF 0%, #85B8FF 30%, #579DFF 50%, #85B8FF 70%, #FFFFFF 100%);
+          background: #FFFFFF;
           background-size: 300% 100%;
           -webkit-background-clip: text;
           background-clip: text;

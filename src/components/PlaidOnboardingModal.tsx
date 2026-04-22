@@ -51,7 +51,7 @@ function AnimatedCheckCircle() {
     <div className="relative w-16 h-16 mx-auto mb-4">
       <motion.div
         className="absolute inset-0 rounded-full"
-        style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.2) 0%, rgba(6,182,212,0.12) 50%, transparent 70%)' }}
+        style={{ background: 'rgba(16,185,129,0.12) 50%, transparent 70%)' }}
         initial={{ scale: 0.5, opacity: 0 }}
         animate={{ scale: 1.6, opacity: 1 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}

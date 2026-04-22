@@ -80,8 +80,7 @@ export function Navbar({
           className="absolute bottom-0 left-0 right-0 h-px pointer-events-none transition-opacity duration-300"
           style={{
             opacity: opaque ? 1 : 0,
-            background:
-              'linear-gradient(90deg, transparent 0%, rgba(12,102,228,0.45) 35%, rgba(110,93,198,0.55) 65%, transparent 100%)',
+            background: 'rgba(255,255,255,0.10)',
           }}
         />
 
@@ -94,24 +93,11 @@ export function Navbar({
                 aria-label="Delt — back to top"
                 className="relative flex items-center gap-2 group cursor-pointer"
               >
-                {/* Subtle gradient halo behind the logo */}
-                <span
-                  aria-hidden
-                  className="absolute -inset-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-                  style={{
-                    background:
-                      'radial-gradient(closest-side, rgba(110,93,198,0.45), rgba(12,102,228,0.25) 55%, transparent 80%)',
-                    filter: 'blur(8px)',
-                  }}
-                />
                 <img src={logoWhiteImg} alt="Delt" className="relative h-6 w-auto object-contain" />
                 <span
                   aria-hidden
                   className="relative hidden sm:block w-1.5 h-1.5 rounded-full transition-transform group-hover:scale-125"
-                  style={{
-                    background: 'linear-gradient(135deg, #1d7afc 0%, #6e5dc6 100%)',
-                    boxShadow: '0 0 10px rgba(110,93,198,0.6)',
-                  }}
+                  style={{ background: '#0c66e4' }}
                 />
               </button>
 
@@ -177,17 +163,16 @@ export function Navbar({
                         transition={{ type: 'spring', stiffness: 420, damping: 32 }}
                       />
                     )}
-                    {/* Active-state gradient chip */}
+                    {/* Active-state solid chip */}
                     {isActive && (
                       <motion.span
                         layoutId="navActivePill"
                         aria-hidden
                         className="absolute inset-0 rounded-full"
                         style={{
-                          background:
-                            'linear-gradient(135deg, rgba(12,102,228,0.55) 0%, rgba(110,93,198,0.55) 100%)',
+                          background: '#0c66e4',
                           boxShadow:
-                            '0 6px 16px -6px rgba(12,102,228,0.55), inset 0 1px 0 rgba(255,255,255,0.18)',
+                            '0 6px 16px -6px rgba(12,102,228,0.45), inset 0 1px 0 rgba(255,255,255,0.18)',
                         }}
                         transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                       />
@@ -237,35 +222,26 @@ export function Navbar({
                 Log in
               </button>
 
-              {/* Get Funded — gradient CTA with halo glow */}
-              <div className="relative">
-                <span
-                  aria-hidden
-                  className="absolute -inset-1 rounded-full opacity-60 pointer-events-none"
-                  style={{
-                    background:
-                      'radial-gradient(closest-side, rgba(110,93,198,0.55), rgba(12,102,228,0.35) 55%, transparent 80%)',
-                    filter: 'blur(10px)',
-                  }}
-                />
-                <button
-                  onClick={onApplyClick}
-                  className="card-hover-lift relative inline-flex items-center gap-1.5 text-white whitespace-nowrap transition-shadow group"
-                  style={{
-                    background: 'linear-gradient(95deg, #0c66e4 0%, #1d7afc 50%, #6e5dc6 100%)',
-                    borderRadius: 999,
-                    padding: '9px 18px',
-                    fontSize: 13,
-                    fontWeight: 700,
-                    letterSpacing: '-0.005em',
-                    boxShadow:
-                      '0 12px 32px -10px rgba(12,102,228,0.75), 0 4px 12px -4px rgba(110,93,198,0.45), inset 0 1px 0 rgba(255,255,255,0.22)',
-                  }}
-                >
-                  Get funded
-                  <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </button>
-              </div>
+              {/* Get Funded — solid CTA */}
+              <button
+                onClick={onApplyClick}
+                onMouseEnter={(e) => { e.currentTarget.style.background = '#0055cc'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = '#0c66e4'; }}
+                className="card-hover-lift inline-flex items-center gap-1.5 text-white whitespace-nowrap transition-colors group"
+                style={{
+                  background: '#0c66e4',
+                  borderRadius: 999,
+                  padding: '9px 18px',
+                  fontSize: 13,
+                  fontWeight: 700,
+                  letterSpacing: '-0.005em',
+                  boxShadow:
+                    '0 8px 22px -8px rgba(12,102,228,0.55), inset 0 1px 0 rgba(255,255,255,0.22)',
+                }}
+              >
+                Get funded
+                <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </button>
 
               {/* Mobile hamburger */}
               <button
@@ -368,11 +344,11 @@ export function Navbar({
 
                 <button
                   onClick={closeMobileAnd(onApplyClick)}
-                  className="card-hover-lift w-full mt-2 inline-flex items-center justify-center gap-2 text-white rounded-xl py-3.5 transition-shadow"
+                  className="card-hover-lift w-full mt-2 inline-flex items-center justify-center gap-2 text-white rounded-xl py-3.5 transition-colors"
                   style={{
-                    background: 'linear-gradient(95deg, #0c66e4 0%, #1d7afc 50%, #6e5dc6 100%)',
+                    background: '#0c66e4',
                     boxShadow:
-                      '0 12px 28px -10px rgba(12,102,228,0.55), inset 0 1px 0 rgba(255,255,255,0.18)',
+                      '0 10px 24px -10px rgba(12,102,228,0.55), inset 0 1px 0 rgba(255,255,255,0.18)',
                     fontSize: 15,
                     fontWeight: 700,
                   }}

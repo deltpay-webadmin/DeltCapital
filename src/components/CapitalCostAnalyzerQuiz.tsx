@@ -67,7 +67,7 @@ function QuizShell({ children }: { children: React.ReactNode }) {
           style={{
             padding: 1.5,
             background:
-              'linear-gradient(135deg, rgba(12,102,228,0.55) 0%, rgba(133,184,255,0.4) 35%, rgba(110,93,198,0.55) 100%)',
+              'rgba(12,102,228,0.35)',
             WebkitMask: 'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
             WebkitMaskComposite: 'xor',
             maskComposite: 'exclude',
@@ -117,9 +117,9 @@ function QuizStepper({ stepIndex, totalSteps = 4, kicker, percent }: {
                 style={{
                   background:
                     isDone
-                      ? 'linear-gradient(90deg, #0c66e4 0%, #6e5dc6 100%)'
+                      ? '#0c66e4'
                       : isActive
-                        ? 'linear-gradient(90deg, #0c66e4 0%, #1d7afc 60%, #6e5dc6 100%)'
+                        ? '#0c66e4'
                         : 'transparent',
                 }}
               />
@@ -153,7 +153,7 @@ function QuestionHeader({
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
         className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-5 text-white"
         style={{
-          background: 'linear-gradient(135deg, #0c66e4 0%, #6e5dc6 100%)',
+          background: '#0c66e4',
           boxShadow: '0 12px 28px -10px rgba(12,102,228,0.55), inset 0 1px 0 rgba(255,255,255,0.18)',
         }}
       >
@@ -445,14 +445,14 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
             <div
               className="rounded-2xl p-5 mb-7 border border-[#0c66e4]/20"
               style={{
-                background: 'linear-gradient(135deg, #f1f6ff 0%, #f5f3ff 100%)',
+                background: '#f1f6ff',
               }}
             >
               <div className="flex items-start gap-4">
                 <div
                   className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 text-white"
                   style={{
-                    background: 'linear-gradient(135deg, #0c66e4 0%, #6e5dc6 100%)',
+                    background: '#0c66e4',
                     boxShadow: '0 6px 16px -4px rgba(12,102,228,0.45)',
                   }}
                 >
@@ -475,7 +475,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
               className="w-full text-left rounded-2xl p-5 mb-7 transition-all duration-300 group"
               style={{
                 background: deltToggle
-                  ? 'linear-gradient(135deg, #f1f6ff 0%, #f5f3ff 100%)'
+                  ? '#f1f6ff'
                   : '#f1f2f4',
                 border: deltToggle
                   ? '1.5px solid rgba(12,102,228,0.3)'
@@ -490,7 +490,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                   className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300"
                   style={{
                     background: deltToggle
-                      ? 'linear-gradient(135deg, #0c66e4 0%, #6e5dc6 100%)'
+                      ? '#0c66e4'
                       : '#dcdfe4',
                     color: deltToggle ? '#fff' : '#758195',
                     boxShadow: deltToggle
@@ -546,7 +546,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                 <span
                   className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(12,102,228,0.10) 0%, rgba(110,93,198,0.10) 100%)',
+                    background: 'rgba(12,102,228,0.08)',
                     color: '#0c66e4',
                     fontSize: 12,
                     fontWeight: 700,
@@ -565,7 +565,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
             onClick={() => onApplyClick?.(getCalculatorData())}
             className="card-hover-lift w-full text-white inline-flex items-center justify-center gap-2 rounded-xl py-4"
             style={{
-              background: 'linear-gradient(95deg, #0c66e4 0%, #1d7afc 50%, #6e5dc6 100%)',
+              background: '#0c66e4',
               boxShadow: '0 12px 28px -10px rgba(12,102,228,0.55), inset 0 1px 0 rgba(255,255,255,0.18)',
               fontSize: 16,
               fontWeight: 700,
@@ -591,7 +591,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                 className="mt-6 rounded-xl p-4"
                 style={{
                   border: '1.5px solid rgba(12,102,228,0.18)',
-                  background: 'linear-gradient(135deg, rgba(12,102,228,0.04) 0%, rgba(110,93,198,0.04) 100%)',
+                  background: 'rgba(12,102,228,0.05)',
                 }}
               >
                 <Rocket className="w-5 h-5 mb-2 text-[#0c66e4]" />
@@ -744,7 +744,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                   onClick={handleRevenueContinue}
                   className="card-hover-lift inline-flex items-center justify-center gap-2 text-white rounded-xl px-7 py-3.5"
                   style={{
-                    background: 'linear-gradient(95deg, #0c66e4 0%, #1d7afc 50%, #6e5dc6 100%)',
+                    background: '#0c66e4',
                     boxShadow: '0 10px 24px -10px rgba(12,102,228,0.55), inset 0 1px 0 rgba(255,255,255,0.18)',
                     fontSize: 15,
                     fontWeight: 700,
@@ -802,7 +802,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                   <span
                     className="w-11 h-11 rounded-xl flex items-center justify-center text-white transition-transform group-hover:scale-110"
                     style={{
-                      background: 'linear-gradient(135deg, #0c66e4 0%, #6e5dc6 100%)',
+                      background: '#0c66e4',
                       boxShadow: '0 6px 14px -4px rgba(12,102,228,0.4)',
                     }}
                   >
@@ -862,7 +862,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                   onClick={handleCardSalesContinue}
                   className="card-hover-lift inline-flex items-center justify-center gap-2 text-white rounded-xl px-7 py-3.5"
                   style={{
-                    background: 'linear-gradient(95deg, #0c66e4 0%, #1d7afc 50%, #6e5dc6 100%)',
+                    background: '#0c66e4',
                     boxShadow: '0 10px 24px -10px rgba(12,102,228,0.55), inset 0 1px 0 rgba(255,255,255,0.18)',
                     fontSize: 15,
                     fontWeight: 700,

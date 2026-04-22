@@ -83,7 +83,7 @@ function CTAButton({ children, onClick, secondary = false }: { children: React.R
         display: 'inline-flex', alignItems: 'center', gap: 10,
         padding: secondary ? '14px 32px' : '16px 40px',
         borderRadius: 50,
-        background: secondary ? 'transparent' : `linear-gradient(135deg, ${C.purple}, ${C.blue})`,
+        background: secondary ? 'transparent' : C.purple,
         border: secondary ? `2px solid ${C.gray200}` : 'none',
         color: secondary ? C.text : C.white,
         fontSize: secondary ? 14 : 16, fontWeight: 700,
@@ -302,7 +302,7 @@ export function DeltLearnMorePage({ onApplyClick, onAboutClick, onHowItWorksClic
           </div>
           <div style={{
             width: 40, height: 40, borderRadius: 20,
-            background: `linear-gradient(135deg, ${C.purple}, ${C.blue})`,
+            background: C.purple,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             color: C.white, flexShrink: 0,
           }}>

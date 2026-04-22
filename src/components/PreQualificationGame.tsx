@@ -2494,7 +2494,7 @@ export function PreQualificationGame({
                     className="relative rounded-xl border overflow-hidden transition-all duration-400"
                     style={{
                       background: formData.deltBoostEnabled
-                        ? 'linear-gradient(145deg, #f1f2f4 0%, #EDEFFF 50%, #f1f2f4 100%)'
+                        ? '#EDEFFF'
                         : '#f1f2f4',
                       border: formData.deltBoostEnabled
                         ? '1.5px solid rgba(73,69,255,0.18)'
@@ -2594,7 +2594,7 @@ export function PreQualificationGame({
                       style={{
                         padding: 0,
                         border: '1.5px solid rgba(73,69,255,0.30)',
-                        background: 'linear-gradient(135deg, rgba(73,69,255,0.05) 0%, rgba(73,69,255,0.09) 100%)',
+                        background: 'rgba(12,102,228,0.06) 100%)',
                         boxShadow: '0 4px 24px rgba(73,69,255,0.16), 0 0 0 1px rgba(73,69,255,0.08)',
                       }}
                     >
@@ -2602,7 +2602,7 @@ export function PreQualificationGame({
                       <motion.div
                         className="absolute inset-0 pointer-events-none"
                         style={{
-                          background: 'radial-gradient(ellipse at 30% 0%, rgba(73,69,255,0.10) 0%, transparent 70%)',
+                          background: 'transparent',
                         }}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -2614,7 +2614,7 @@ export function PreQualificationGame({
                           <div
                             className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
                             style={{
-                              background: 'linear-gradient(135deg, #0c66e4, #6366f1)',
+                              background: '#0c66e4',
                               color: '#fff',
                               boxShadow: '0 4px 14px rgba(73,69,255,0.30)',
                             }}
@@ -2672,7 +2672,7 @@ export function PreQualificationGame({
                           ? '1.5px solid rgba(73,69,255,0.30)'
                           : '1.5px solid #d5d7de',
                         background: formData.deltBoostEnabled
-                          ? 'linear-gradient(135deg, rgba(73,69,255,0.05) 0%, rgba(73,69,255,0.09) 100%)'
+                          ? 'rgba(12,102,228,0.06) 100%)'
                           : '#f8f8fb',
                         boxShadow: formData.deltBoostEnabled
                           ? '0 4px 24px rgba(73,69,255,0.16), 0 0 0 1px rgba(73,69,255,0.08)'
@@ -2696,7 +2696,7 @@ export function PreQualificationGame({
                       <motion.div
                         className="absolute inset-0 pointer-events-none"
                         style={{
-                          background: 'radial-gradient(ellipse at 30% 0%, rgba(73,69,255,0.10) 0%, transparent 70%)',
+                          background: 'transparent',
                         }}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -2711,7 +2711,7 @@ export function PreQualificationGame({
                             className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-400 mt-0.5"
                             style={{
                               background: formData.deltBoostEnabled
-                                ? 'linear-gradient(135deg, #0c66e4, #6366f1)'
+                                ? '#0c66e4'
                                 : '#d5d7de',
                               color: formData.deltBoostEnabled ? '#fff' : '#9ca3af',
                               boxShadow: formData.deltBoostEnabled ? '0 4px 14px rgba(73,69,255,0.30)' : 'none',

@@ -53,7 +53,7 @@ function ApprovedPhone() {
         className="relative w-full h-full overflow-hidden"
         style={{
           borderRadius: 52,
-          background: 'linear-gradient(160deg, #0A1220 0%, #0E1A2D 50%, #0A1220 100%)',
+          background: '#0A1220',
           boxShadow:
             '0 32px 80px -20px rgba(12,102,228,0.55),' +
             ' 0 12px 28px -10px rgba(110,93,198,0.35),' +
@@ -69,7 +69,7 @@ function ApprovedPhone() {
             borderRadius: 52,
             padding: 1.5,
             background:
-              'linear-gradient(135deg, rgba(12,102,228,0.85) 0%, rgba(133,184,255,0.5) 35%, rgba(110,93,198,0.85) 100%)',
+              'rgba(12,102,228,0.55)',
             WebkitMask: 'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
             WebkitMaskComposite: 'xor',
             maskComposite: 'exclude',
@@ -85,7 +85,7 @@ function ApprovedPhone() {
             right: 10,
             bottom: 10,
             borderRadius: 44,
-            background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)',
+            background: '#ffffff',
           }}
         >
           {/* Status bar */}
@@ -237,8 +237,8 @@ function ApprovedPhone() {
                     style={{
                       background:
                         i === bars.length - 1
-                          ? 'linear-gradient(180deg, #6e5dc6 0%, #0c66e4 100%)'
-                          : 'linear-gradient(180deg, rgba(133,184,255,0.55) 0%, rgba(12,102,228,0.45) 100%)',
+                          ? '#0c66e4'
+                          : 'rgba(12,102,228,0.45)',
                     }}
                   />
                 ))}
@@ -252,7 +252,7 @@ function ApprovedPhone() {
               transition={{ duration: 0.6, delay: 1.3 }}
               className="mt-auto inline-flex items-center justify-center gap-1.5 w-full text-white rounded-xl py-3 mb-2"
               style={{
-                background: 'linear-gradient(95deg, #0c66e4 0%, #1d7afc 50%, #6e5dc6 100%)',
+                background: '#0c66e4',
                 boxShadow: '0 10px 24px -10px rgba(12,102,228,0.7), inset 0 1px 0 rgba(255,255,255,0.18)',
                 fontSize: 13,
                 fontWeight: 700,
@@ -474,7 +474,7 @@ export const PreQualificationSection = forwardRef<
                   className="w-[420px] h-[420px] rounded-full"
                   style={{
                     background:
-                      'radial-gradient(closest-side, rgba(110,93,198,0.55), rgba(12,102,228,0.32) 50%, transparent 78%)',
+                      'transparent 50%, transparent 78%)',
                     filter: 'blur(40px)',
                   }}
                 />

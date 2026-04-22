@@ -246,7 +246,7 @@ function FormShell({ children }: { children: React.ReactNode }) {
           style={{
             padding: 1.5,
             background:
-              'linear-gradient(135deg, rgba(12,102,228,0.55) 0%, rgba(133,184,255,0.4) 35%, rgba(110,93,198,0.55) 100%)',
+              'rgba(12,102,228,0.35)',
             WebkitMask: 'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
             WebkitMaskComposite: 'xor',
             maskComposite: 'exclude',
@@ -285,9 +285,9 @@ function FormStepper({
               className="h-full rounded-full"
               style={{
                 background: isDone
-                  ? 'linear-gradient(90deg, #0c66e4 0%, #6e5dc6 100%)'
+                  ? '#0c66e4'
                   : isActive
-                    ? 'linear-gradient(90deg, #0c66e4 0%, #1d7afc 60%, #6e5dc6 100%)'
+                    ? '#0c66e4'
                     : 'transparent',
               }}
             />
@@ -320,7 +320,7 @@ function StepHeader({
         transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
         className="inline-flex items-center justify-center w-12 h-12 rounded-2xl mb-4 text-white"
         style={{
-          background: 'linear-gradient(135deg, #0c66e4 0%, #6e5dc6 100%)',
+          background: '#0c66e4',
           boxShadow: '0 10px 24px -8px rgba(12,102,228,0.5), inset 0 1px 0 rgba(255,255,255,0.18)',
         }}
       >
@@ -395,7 +395,7 @@ function PrimaryButton({
       onClick={onClick}
       className="card-hover-lift w-full text-white inline-flex items-center justify-center gap-2 rounded-xl py-3.5 transition-shadow"
       style={{
-        background: 'linear-gradient(95deg, #0c66e4 0%, #1d7afc 50%, #6e5dc6 100%)',
+        background: '#0c66e4',
         boxShadow:
           '0 12px 28px -10px rgba(12,102,228,0.55), inset 0 1px 0 rgba(255,255,255,0.18)',
         fontSize: 15,
@@ -666,7 +666,7 @@ export function LeadCaptureForm({ onSubmit, initialData }: LeadCaptureFormProps)
                                 isActive ? 'scale-105' : 'group-hover:scale-105'
                               }`}
                               style={{
-                                background: 'linear-gradient(135deg, #0c66e4 0%, #6e5dc6 100%)',
+                                background: '#0c66e4',
                                 boxShadow: '0 6px 14px -4px rgba(12,102,228,0.4)',
                               }}
                             >

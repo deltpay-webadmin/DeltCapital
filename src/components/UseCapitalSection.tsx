@@ -427,7 +427,7 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
               style={{
                 padding: 1.5,
                 background:
-                  'linear-gradient(135deg, rgba(12,102,228,0.55) 0%, rgba(133,184,255,0.4) 35%, rgba(110,93,198,0.55) 100%)',
+                  'rgba(12,102,228,0.35)',
                 WebkitMask: 'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
                 WebkitMaskComposite: 'xor',
                 maskComposite: 'exclude',
@@ -511,7 +511,7 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
                                 aria-hidden
                                 className="absolute left-1 top-2 bottom-2 w-[3px] rounded-full"
                                 style={{
-                                  background: 'linear-gradient(180deg, #0c66e4 0%, #6e5dc6 100%)',
+                                  background: '#0c66e4',
                                   boxShadow: '0 0 12px rgba(12,102,228,0.55)',
                                 }}
                                 transition={{ type: 'spring', stiffness: 380, damping: 30 }}
@@ -523,7 +523,7 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
                               className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 transition-all"
                               style={{
                                 background: isActive
-                                  ? 'linear-gradient(135deg, #0c66e4 0%, #6e5dc6 100%)'
+                                  ? '#0c66e4'
                                   : 'transparent',
                                 border: isActive
                                   ? '1px solid transparent'
@@ -571,7 +571,7 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
                                     className="h-[2px] w-10 rounded-full mb-3"
                                     style={{
                                       background:
-                                        'linear-gradient(90deg, #0c66e4 0%, #6e5dc6 100%)',
+                                        '#0c66e4',
                                     }}
                                   />
 
@@ -625,7 +625,7 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
                             height: 4,
                             background:
                               i === activeIndex
-                                ? 'linear-gradient(90deg, #0c66e4 0%, #6e5dc6 100%)'
+                                ? '#0c66e4'
                                 : 'rgba(255,255,255,0.18)',
                           }}
                         />
@@ -712,7 +712,7 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
                           className="inline-flex items-center justify-center rounded-lg w-7 h-7"
                           style={{
                             background:
-                              'linear-gradient(135deg, rgba(12,102,228,0.12) 0%, rgba(110,93,198,0.12) 100%)',
+                              'rgba(12,102,228,0.10)',
                           }}
                         >
                           <active.icon className="w-3.5 h-3.5 text-[#0c66e4]" />
@@ -768,7 +768,7 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
                         className="inline-flex items-center justify-center rounded-xl w-9 h-9 flex-shrink-0 mt-0.5"
                         style={{
                           background:
-                            'linear-gradient(135deg, rgba(12,102,228,0.14) 0%, rgba(110,93,198,0.14) 100%)',
+                            'rgba(12,102,228,0.12)',
                         }}
                       >
                         <Lightbulb className="w-4 h-4 text-[#0c66e4]" />
@@ -811,7 +811,7 @@ export function UseCapitalSection({ }: UseCapitalSectionProps) {
                   height: 8,
                   background:
                     i === activeIndex
-                      ? 'linear-gradient(90deg, #0c66e4 0%, #6e5dc6 100%)'
+                      ? '#0c66e4'
                       : '#dcdfe4',
                 }}
               />

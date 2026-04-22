@@ -22,7 +22,7 @@ export function ScrollProgressBar() {
       className="fixed top-0 left-0 right-0 h-[3px] z-[100] origin-left"
       style={{
         scaleX: progress,
-        background: 'linear-gradient(90deg, #0c66e4 0%, #1d7afc 50%, #0c66e4 100%)',
+        background: '#0c66e4',
       }}
     />
   );

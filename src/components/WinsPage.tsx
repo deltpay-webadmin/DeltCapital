@@ -231,7 +231,7 @@ export function WinsPage({
                   <span
                     className="inline-flex items-center justify-center w-10 h-10 rounded-xl text-white"
                     style={{
-                      background: 'linear-gradient(135deg, #0c66e4 0%, #6e5dc6 100%)',
+                      background: '#0c66e4',
                       boxShadow: '0 8px 18px -6px rgba(12,102,228,0.45)',
                     }}
                   >
@@ -314,7 +314,7 @@ export function WinsPage({
                     style={{
                       padding: 1,
                       background:
-                        'linear-gradient(135deg, rgba(12,102,228,0.30) 0%, rgba(133,184,255,0.18) 50%, rgba(110,93,198,0.30) 100%)',
+                        'rgba(12,102,228,0.25)',
                       WebkitMask:
                         'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
                       WebkitMaskComposite: 'xor',
@@ -383,7 +383,7 @@ export function WinsPage({
                           className="inline-flex items-center justify-center w-9 h-9 rounded-xl flex-shrink-0 text-[#0c66e4]"
                           style={{
                             background:
-                              'linear-gradient(135deg, rgba(12,102,228,0.12) 0%, rgba(110,93,198,0.12) 100%)',
+                              'rgba(12,102,228,0.10)',
                           }}
                         >
                           <Quote className="w-4 h-4" />
@@ -534,7 +534,7 @@ export function WinsPage({
                 className="absolute -inset-1 rounded-full opacity-60 pointer-events-none"
                 style={{
                   background:
-                    'radial-gradient(closest-side, rgba(255,255,255,0.55), rgba(255,255,255,0) 70%)',
+                    'transparent 70%)',
                   filter: 'blur(10px)',
                 }}
               />

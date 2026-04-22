@@ -137,32 +137,11 @@ export function ComparisonTable() {
               initial={{ opacity: 0, x: 28 }}
               animate={inView ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="relative h-full rounded-3xl overflow-hidden bg-[#172b4d] text-white"
+              className="relative h-full rounded-3xl overflow-hidden bg-[#172b4d] text-white border border-[#0c66e4]/45"
               style={{
-                boxShadow:
-                  '0 24px 60px -16px rgba(12,102,228,0.45), 0 4px 12px rgba(110,93,198,0.18)',
+                boxShadow: '0 18px 48px -16px rgba(12,102,228,0.35)',
               }}
             >
-              {/* Gradient ring */}
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0 rounded-3xl"
-                style={{
-                  padding: 1.5,
-                  background:
-                    'linear-gradient(135deg, rgba(12,102,228,0.85) 0%, rgba(133,184,255,0.5) 35%, rgba(110,93,198,0.85) 100%)',
-                  WebkitMask: 'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
-                  WebkitMaskComposite: 'xor',
-                  maskComposite: 'exclude',
-                }}
-              />
-
-              {/* Internal mesh-screen tint */}
-              <div
-                aria-hidden
-                className="bg-mesh absolute inset-0 opacity-30 pointer-events-none"
-                style={{ mixBlendMode: 'screen' }}
-              />
 
               {/* Column header */}
               <div className="relative px-7 md:px-9 pt-9 pb-7 border-b border-white/10">
@@ -194,10 +173,10 @@ export function ComparisonTable() {
                       className="flex items-start gap-4 group"
                     >
                       <span
-                        className="mt-0.5 w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 text-white shadow-lg"
+                        className="mt-0.5 w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 text-white"
                         style={{
-                          background: 'linear-gradient(135deg, #0c66e4 0%, #6e5dc6 100%)',
-                          boxShadow: '0 4px 14px -4px rgba(12,102,228,0.55)',
+                          background: '#0c66e4',
+                          boxShadow: '0 4px 14px -4px rgba(12,102,228,0.45)',
                         }}
                       >
                         <Icon className="w-4 h-4" />

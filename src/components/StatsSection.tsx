@@ -184,7 +184,7 @@ export function StatsSection() {
                     style={{
                       padding: 1,
                       background:
-                        'linear-gradient(135deg, rgba(12,102,228,0.55) 0%, rgba(110,93,198,0.4) 100%)',
+                        'rgba(12,102,228,0.40)',
                       WebkitMask:
                         'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
                       WebkitMaskComposite: 'xor',
@@ -212,8 +212,8 @@ export function StatsSection() {
                   style={{
                     width: card.isHero ? 56 : 36,
                     background: card.isHero
-                      ? 'linear-gradient(90deg, #0c66e4 0%, #6e5dc6 100%)'
-                      : 'linear-gradient(90deg, #0c66e4 0%, #1d7afc 100%)',
+                      ? '#0c66e4'
+                      : '#0c66e4',
                   }}
                 />
 

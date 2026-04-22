@@ -430,7 +430,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                 fontSize: '0.9375rem',
                 ...(ctaIsUpgraded && !ctaIsDeltInfo
                   ? {
-                      background: 'linear-gradient(135deg, #0C66E4 0%, #1D7AFC 50%, #6E5DC6 100%)',
+                      background: '#0c66e4',
                       boxShadow: '0 4px 20px rgba(12,102,228,0.28), 0 0 0 1px rgba(12,102,228,0.10)',
                     }
                   : {}),
@@ -454,7 +454,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                   className="absolute inset-0 pointer-events-none rounded-xl"
                   animate={{
                     opacity: isCtaHovered ? 1 : 0,
-                    background: `radial-gradient(circle 140px at ${glowPos.x}px ${glowPos.y}px, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 40%, transparent 70%)`,
+                    background: `transparent 0%, rgba(255,255,255,0.05) 40%, transparent 70%)`,
                   }}
                   transition={{ opacity: { duration: 0.3 }, background: { duration: 0 } }}
                 />
@@ -481,7 +481,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
             className="relative rounded-xl md:rounded-2xl flex-1 overflow-hidden flex flex-col"
             style={{
               background: hasRevenue && isDeltBoosted
-                ? 'linear-gradient(145deg, #F1F2F4 0%, #EDEFFF 50%, #F1F2F4 100%)'
+                ? '#EDEFFF'
                 : '#F1F2F4',
               border: hasRevenue && isDeltBoosted
                 ? '1.5px solid rgba(12,102,228,0.18)'
@@ -499,7 +499,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                 className="pointer-events-none absolute inset-0 rounded-xl md:rounded-2xl"
                 style={{
                   padding: 1,
-                  background: 'linear-gradient(135deg, rgba(12,102,228,0.55) 0%, rgba(110,93,198,0.4) 100%)',
+                  background: 'rgba(12,102,228,0.40)',
                   WebkitMask: 'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
                   WebkitMaskComposite: 'xor',
                   maskComposite: 'exclude',
@@ -677,7 +677,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                 style={{
                   padding: 0,
                   background: deltToggle
-                    ? 'linear-gradient(135deg, rgba(12,102,228,0.04) 0%, rgba(12,102,228,0.08) 100%)'
+                    ? 'rgba(12,102,228,0.06)'
                     : 'transparent',
                   transition: 'background 0.3s',
                 }}
@@ -689,7 +689,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                         className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-300"
                         style={{
                           background: deltToggle
-                            ? 'linear-gradient(135deg, #0C66E4, #6E5DC6)'
+                            ? '#0c66e4'
                             : '#d5d7de',
                           color: deltToggle ? '#fff' : '#9ca3af',
                           boxShadow: deltToggle ? '0 3px 10px rgba(12,102,228,0.25)' : 'none',

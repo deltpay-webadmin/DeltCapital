@@ -227,7 +227,7 @@ export function MonthlyRevenueSlider({ value, onChange }: MonthlyRevenueSliderPr
           aria-hidden
           className="absolute left-1/2 top-3 bottom-3 w-[3px] -translate-x-1/2 z-10 rounded-full"
           style={{
-            background: 'linear-gradient(180deg, #0c66e4 0%, #1d7afc 50%, #6e5dc6 100%)',
+            background: '#0c66e4',
             boxShadow:
               '0 0 14px rgba(12,102,228,0.55), 0 0 28px rgba(110,93,198,0.3)',
           }}
@@ -236,7 +236,7 @@ export function MonthlyRevenueSlider({ value, onChange }: MonthlyRevenueSliderPr
           aria-hidden
           className="absolute left-1/2 top-1.5 z-10 w-2.5 h-2.5 -translate-x-1/2 rounded-full"
           style={{
-            background: 'linear-gradient(135deg, #0c66e4 0%, #6e5dc6 100%)',
+            background: '#0c66e4',
             boxShadow:
               '0 0 12px rgba(12,102,228,0.7), 0 0 24px rgba(110,93,198,0.45)',
           }}
@@ -281,7 +281,7 @@ export function MonthlyRevenueSlider({ value, onChange }: MonthlyRevenueSliderPr
                     width: isSelected ? 3 : isMajor ? 1.5 : 1,
                     height: isSelected ? 36 : isMajor ? 28 : 20,
                     background: isSelected
-                      ? 'linear-gradient(180deg, #0c66e4 0%, #6e5dc6 100%)'
+                      ? '#0c66e4'
                       : `rgba(12,102,228,${0.10 + proximity * 0.45})`,
                     transition: isDragging ? 'none' : 'all 0.2s ease',
                     boxShadow: isSelected ? '0 0 10px rgba(12,102,228,0.45)' : 'none',

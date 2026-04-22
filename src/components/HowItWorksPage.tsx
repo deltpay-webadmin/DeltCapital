@@ -98,7 +98,7 @@ function StepVisual({ step }: { step: number }) {
       className="relative rounded-3xl backdrop-blur-xl border border-white/15 p-7 shadow-2xl overflow-hidden"
       style={{
         background:
-          'linear-gradient(160deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.04) 100%)',
+          'rgba(255,255,255,0.06)',
         boxShadow:
           '0 24px 60px -16px rgba(9,30,66,0.45), inset 0 1px 0 rgba(255,255,255,0.10)',
       }}
@@ -188,7 +188,7 @@ function ApplicationVisual() {
             viewport={{ once: true, amount: 0.4 }}
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
             className="h-full"
-            style={{ background: 'linear-gradient(90deg, #0c66e4 0%, #6e5dc6 100%)' }}
+            style={{ background: '#0c66e4' }}
           />
         </div>
       </div>
@@ -224,7 +224,7 @@ function UnderwritingVisual() {
             style={{
               background:
                 i === bars.length - 1
-                  ? 'linear-gradient(180deg, #6e5dc6 0%, #0c66e4 100%)'
+                  ? '#0c66e4'
                   : 'linear-gradient(180deg, rgba(133,184,255,0.6) 0%, rgba(12,102,228,0.5) 100%)',
             }}
           />
@@ -310,7 +310,7 @@ function FundedVisual() {
               className="flex-1 rounded-sm"
               style={{
                 height: `${h * 9}%`,
-                background: 'linear-gradient(180deg, rgba(133,184,255,0.55) 0%, rgba(12,102,228,0.4) 100%)',
+                background: 'rgba(12,102,228,0.40)',
               }}
             />
           ))}
@@ -324,7 +324,7 @@ const ChevronGradient = () => (
   <span
     aria-hidden
     className="hidden md:block w-px h-12 mx-auto my-6"
-    style={{ background: 'linear-gradient(180deg, transparent, #dcdfe4, transparent)' }}
+    style={{ background: '#dcdfe4' }}
   />
 );
 
