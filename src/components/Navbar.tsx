@@ -41,7 +41,7 @@ export function Navbar({ onApplyClick, onCalculatorClick, onAboutClick, onHowItW
   }, []);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-[70] border-b border-white/10 transition-colors duration-300 overflow-visible" style={{ background: '#041E42', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}>
+    <nav className="fixed top-0 left-0 right-0 z-[70] border-b border-white/10 transition-colors duration-300 overflow-visible" style={{ background: '#172B4D', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center gap-3 flex-shrink-0">
@@ -65,21 +65,21 @@ export function Navbar({ onApplyClick, onCalculatorClick, onAboutClick, onHowItW
             <div className="hidden md:flex items-center gap-6 ml-8">
               <button
                 onClick={onHowItWorksClick}
-                className={`transition-colors font-medium ${overlayTitle === 'How It Works' ? 'text-white border-b-2 border-[#4945ff] pb-0.5' : 'text-white/70 hover:text-white'}`}
+                className={`transition-colors font-medium ${overlayTitle === 'How It Works' ? 'text-white border-b-2 border-[#0C66E4] pb-0.5' : 'text-white/70 hover:text-white'}`}
                 style={{ fontSize: '0.9375rem' }}
               >
                 How It Works
               </button>
               <button
                 onClick={onCalculatorClick}
-                className={`transition-colors font-medium ${overlayTitle === 'Calculator' ? 'text-white border-b-2 border-[#4945ff] pb-0.5' : 'text-white/70 hover:text-white'}`}
+                className={`transition-colors font-medium ${overlayTitle === 'Calculator' ? 'text-white border-b-2 border-[#0C66E4] pb-0.5' : 'text-white/70 hover:text-white'}`}
                 style={{ fontSize: '0.9375rem' }}
               >
                 Calculator
               </button>
               <button
                 onClick={onAboutClick}
-                className={`transition-colors font-medium ${overlayTitle === 'About' ? 'text-white border-b-2 border-[#4945ff] pb-0.5' : 'text-white/70 hover:text-white'}`}
+                className={`transition-colors font-medium ${overlayTitle === 'About' ? 'text-white border-b-2 border-[#0C66E4] pb-0.5' : 'text-white/70 hover:text-white'}`}
                 style={{ fontSize: '0.9375rem' }}
               >
                 About
@@ -105,11 +105,12 @@ export function Navbar({ onApplyClick, onCalculatorClick, onAboutClick, onHowItW
               onClick={onApplyClick}
               className="text-white font-semibold whitespace-nowrap cursor-pointer flex-shrink-0 transition-all duration-200 hover:opacity-90 hover:scale-[1.03]"
               style={{
-                background: '#4945ff',
+                background: '#0C66E4',
                 borderRadius: '8px',
                 padding: '8px 18px',
                 fontSize: '0.875rem',
-                fontFamily: "'Open Sauce Sans', 'Codec Pro', sans-serif",
+                fontFamily: "var(--font-sans)",
+                boxShadow: '0 1px 1px rgba(9,30,66,0.25), 0 0 1px rgba(9,30,66,0.31)',
               }}
             >
               Get Funded
@@ -120,7 +121,7 @@ export function Navbar({ onApplyClick, onCalculatorClick, onAboutClick, onHowItW
               style={{
                 fontSize: '0.875rem',
                 fontWeight: 600,
-                fontFamily: "'Open Sauce Sans', 'Codec Pro', sans-serif",
+                fontFamily: "var(--font-sans)",
               }}
               onClick={() => onLoginClick?.()}
             >
@@ -130,10 +131,10 @@ export function Navbar({ onApplyClick, onCalculatorClick, onAboutClick, onHowItW
               .login-button {
                 color: #ffffff;
               }
-              
+
               .login-button:hover,
               .login-button.scrolling {
-                background: linear-gradient(90deg, #4F46E5 0%, #8B5CF6 15%, #4945ff 30%, #60A5FA 45%, #4F46E5 60%, #8B5CF6 75%, #4945ff 90%, #60A5FA 100%);
+                background: linear-gradient(90deg, #85B8FF 0%, #579DFF 15%, #0C66E4 30%, #6E5DC6 45%, #85B8FF 60%, #579DFF 75%, #0C66E4 90%, #6E5DC6 100%);
                 background-size: 300% 100%;
                 -webkit-background-clip: text;
                 background-clip: text;

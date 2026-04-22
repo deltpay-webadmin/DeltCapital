@@ -18,7 +18,6 @@ export function HeroSection({ onApplyClick, onApplyFromQuiz, onCalculatorClick }
   const [showResults, setShowResults] = useState(false);
   const [quizData, setQuizData] = useState<any>(null);
   const [isHovered, setIsHovered] = useState(false);
-  const [initialAnimationComplete, setInitialAnimationComplete] = useState(false);
   const [fadeDistance, setFadeDistance] = useState(150);
 
   // Compute fade distance
@@ -28,42 +27,6 @@ export function HeroSection({ onApplyClick, onApplyFromQuiz, onCalculatorClick }
     window.addEventListener('resize', update);
     return () => window.removeEventListener('resize', update);
   }, []);
-
-  // Initial 7-second hover animation on page load
-  useEffect(() => {
-    const button = document.querySelector('.get-offer-button');
-    if (button) {
-      button.classList.add('initial-hover-animation');
-      const timer = setTimeout(() => {
-        button.classList.remove('initial-hover-animation');
-        setInitialAnimationComplete(true);
-      }, 7000);
-      return () => clearTimeout(timer);
-    }
-  }, []);
-
-  // Bounce animation trigger - only starts after initial animation
-  useEffect(() => {
-    if (!initialAnimationComplete) return;
-    const initialTimeout = setTimeout(() => {
-      const button = document.querySelector('.get-offer-button');
-      if (button && !isHovered) {
-        button.classList.add('bouncing');
-        setTimeout(() => button.classList.remove('bouncing'), 600);
-      }
-    }, 3000);
-    const bounceInterval = setInterval(() => {
-      const button = document.querySelector('.get-offer-button');
-      if (button && !isHovered) {
-        button.classList.add('bouncing');
-        setTimeout(() => button.classList.remove('bouncing'), 600);
-      }
-    }, 3000);
-    return () => {
-      clearTimeout(initialTimeout);
-      clearInterval(bounceInterval);
-    };
-  }, [isHovered, initialAnimationComplete]);
 
   // Scroll-based opacity fade: 1 → 0 over 15vh of scroll
   const [heroOpacityVal, setHeroOpacityVal] = useState(1);
@@ -149,15 +112,16 @@ export function HeroSection({ onApplyClick, onApplyFromQuiz, onCalculatorClick }
               onClick={() => onCalculatorClick?.()}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
-              className="get-offer-button cursor-pointer transition-all duration-200 hover:opacity-90 hover:scale-[1.03]"
+              className="get-offer-button cursor-pointer transition-all duration-150 hover:opacity-95 hover:scale-[1.02]"
               style={{
-                background: '#4945ff',
+                background: '#0C66E4',
                 color: '#fff',
-                borderRadius: '10px',
+                borderRadius: '8px',
                 padding: '14px 28px',
                 fontWeight: 600,
                 fontSize: '16px',
                 border: 'none',
+                boxShadow: '0 4px 12px rgba(9,30,66,0.25), 0 0 1px rgba(9,30,66,0.31)',
               }}
             >
               {t('hero.cta')}
@@ -225,48 +189,20 @@ export function HeroSection({ onApplyClick, onApplyFromQuiz, onCalculatorClick }
       {/* Styles */}
       <style>{`
         .hero-speed-text {
-          background: linear-gradient(90deg, #FFFFFF 0%, #8B5CF6 12.5%, #4945ff 25%, #60A5FA 37.5%, #FFFFFF 50%, #8B5CF6 62.5%, #4945ff 75%, #60A5FA 87.5%, #FFFFFF 100%);
+          background: linear-gradient(90deg, #FFFFFF 0%, #85B8FF 20%, #0C66E4 35%, #6E5DC6 50%, #FFFFFF 65%, #85B8FF 80%, #0C66E4 100%);
           background-size: 600% 100%;
           -webkit-background-clip: text;
           background-clip: text;
           color: transparent;
           -webkit-text-fill-color: transparent;
-          animation: gradientWave 16s linear infinite;
-        }
-
-        @keyframes subtleBounce {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-8px); }
+          animation: gradientWave 20s linear infinite;
         }
 
         .get-offer-button {
           position: relative;
         }
 
-        .get-offer-button.bouncing:not(:hover) {
-          animation: subtleBounce 0.6s ease-in-out;
-        }
-
-        .get-offer-button .button-text-hero {
-          color: white;
-          text-shadow: 0 2px 8px rgba(0,0,0,0.3);
-          transition: all 0.3s ease;
-        }
-
-        .get-offer-button:hover .button-text-hero,
-        .get-offer-button.initial-hover-animation .button-text-hero {
-          background: linear-gradient(90deg, #FFFFFF 0%, #8B5CF6 15%, #60A5FA 30%, #FFFFFF 45%, #8B5CF6 60%, #60A5FA 75%, #FFFFFF 90%, #8B5CF6 100%);
-          background-size: 300% 100%;
-          -webkit-background-clip: text;
-          background-clip: text;
-          color: transparent;
-          -webkit-text-fill-color: transparent;
-          text-shadow: none;
-          animation: gradientWave 5s linear infinite;
-        }
-
-        .get-offer-button:hover,
-        .get-offer-button.initial-hover-animation {
+        .get-offer-button:hover {
           transform: scale(1.02);
         }
       `}</style>
@@ -293,7 +229,7 @@ export function HeroSection({ onApplyClick, onApplyFromQuiz, onCalculatorClick }
       {/* Results Full Page */}
       {showResults && (
         <div
-          className="fixed inset-0 bg-[#ededf6] dark:bg-[#0A1F35] z-50 flex items-start justify-center p-4 overflow-y-auto"
+          className="fixed inset-0 bg-[#FAFBFC] dark:bg-[#0D1B2D] z-50 flex items-start justify-center p-4 overflow-y-auto"
           style={{ scrollbarGutter: 'stable' }}
         >
           <div className="w-full max-w-4xl my-auto">
