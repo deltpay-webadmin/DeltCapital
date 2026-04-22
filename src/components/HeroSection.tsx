@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { ArrowRight, X } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { ArrowRight, X, ArrowUpRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { PreQualificationGame } from './PreQualificationGame';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import businessPeopleImg from 'figma:asset/a03f9a9d95ad3eb3d24430a1c47663d5974d68f8.png';
 import { BBBLogo } from './BBBLogo';
 
@@ -10,6 +10,228 @@ interface HeroSectionProps {
   onApplyClick: () => void;
   onApplyFromQuiz?: (data?: any) => void;
   onCalculatorClick?: () => void;
+}
+
+/* ─────────────────────────────────────────────
+ * Live payments dashboard — hero flourish.
+ * Streams faux transactions in from the bottom,
+ * shows a small SVG sparkline + today's volume.
+ * ─────────────────────────────────────────── */
+const TX_POOL = [
+  { merchant: 'Acme Coffee',       amount: 245 },
+  { merchant: 'Riverside Diner',   amount: 1820 },
+  { merchant: 'Cole Auto Repair',  amount: 640 },
+  { merchant: 'Bloom Salon',       amount: 180 },
+  { merchant: 'Westlake Bakery',   amount: 95 },
+  { merchant: 'North Pier Yoga',   amount: 320 },
+  { merchant: 'Gold Coast Tacos',  amount: 412 },
+  { merchant: 'Linden Pharmacy',   amount: 78 },
+  { merchant: 'Maple Street Vets', amount: 1240 },
+  { merchant: 'Iron Bar & Grill',  amount: 870 },
+];
+
+function formatTime(d: Date) {
+  const hh = String(d.getHours()).padStart(2, '0');
+  const mm = String(d.getMinutes()).padStart(2, '0');
+  return `${hh}:${mm}`;
+}
+
+function LivePaymentsDashboard() {
+  const sparklineId = useMemo(() => `hero-spark-${Math.random().toString(36).slice(2, 7)}`, []);
+
+  // Seed initial 4 transactions (most recent first), then stream new ones in.
+  const [items, setItems] = useState(() => {
+    const now = Date.now();
+    return [0, 1, 2, 3].map((i) => ({
+      ...TX_POOL[i],
+      id: `seed-${i}`,
+      ts: new Date(now - i * 4 * 60_000),
+    }));
+  });
+
+  useEffect(() => {
+    let alive = true;
+    let i = 4;
+    const id = window.setInterval(() => {
+      if (!alive) return;
+      const tx = TX_POOL[i % TX_POOL.length];
+      i += 1;
+      setItems((prev) => [
+        { ...tx, id: `${tx.merchant}-${Date.now()}`, ts: new Date() },
+        ...prev,
+      ].slice(0, 4));
+    }, 3800);
+    return () => {
+      alive = false;
+      window.clearInterval(id);
+    };
+  }, []);
+
+  // Sparkline points (faux 12-bar revenue trend, last point highest)
+  const points = useMemo(() => [22, 28, 24, 33, 30, 41, 38, 47, 44, 56, 52, 64], []);
+  const maxP = Math.max(...points);
+  const w = 220;
+  const h = 36;
+  const stepX = w / (points.length - 1);
+  const path =
+    'M ' +
+    points
+      .map((p, idx) => `${(idx * stepX).toFixed(1)} ${(h - (p / maxP) * h).toFixed(1)}`)
+      .join(' L ');
+  const areaPath = `${path} L ${w} ${h} L 0 ${h} Z`;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30, scale: 0.96 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 1.0, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
+      aria-hidden
+      className="hidden lg:block absolute z-10 pointer-events-none"
+      style={{ right: '4vw', top: '24vh', width: 380 }}
+    >
+      <div
+        className="rounded-2xl backdrop-blur-2xl border border-white/15 overflow-hidden"
+        style={{
+          background:
+            'linear-gradient(160deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.04) 100%)',
+          boxShadow:
+            '0 28px 60px -16px rgba(0,0,0,0.6), 0 6px 18px -8px rgba(110,93,198,0.35), inset 0 1px 0 rgba(255,255,255,0.10)',
+        }}
+      >
+        {/* ── Top bar ── */}
+        <div className="flex items-center justify-between px-5 pt-4 pb-3 border-b border-white/[0.08]">
+          <span className="inline-flex items-center gap-2">
+            <span className="processing-dot w-1.5 h-1.5 rounded-full bg-[#1F845A]" />
+            <span
+              className="uppercase text-white/85"
+              style={{ fontSize: 10, letterSpacing: '0.28em', fontWeight: 700 }}
+            >
+              Live · today
+            </span>
+          </span>
+          <span className="text-white/45" style={{ fontSize: 10, letterSpacing: '0.06em' }}>
+            delt · merchant feed
+          </span>
+        </div>
+
+        {/* ── Volume + delta + sparkline ── */}
+        <div className="px-5 pt-4 pb-4">
+          <div className="flex items-baseline justify-between mb-1">
+            <span
+              className="uppercase text-white/55"
+              style={{ fontSize: 10, letterSpacing: '0.22em', fontWeight: 700 }}
+            >
+              Volume
+            </span>
+            <span
+              className="inline-flex items-center gap-1 text-[#1F845A] tabular-nums"
+              style={{ fontSize: 11, fontWeight: 700 }}
+            >
+              <ArrowUpRight className="w-3 h-3" strokeWidth={2.5} />
+              +12.4%
+            </span>
+          </div>
+          <div className="flex items-end justify-between gap-3">
+            <span
+              className="text-white tabular-nums"
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 32,
+                fontWeight: 800,
+                letterSpacing: '-0.035em',
+                lineHeight: 1.0,
+              }}
+            >
+              $48,500
+            </span>
+
+            {/* SVG sparkline */}
+            <svg
+              width={w}
+              height={h}
+              viewBox={`0 0 ${w} ${h}`}
+              className="overflow-visible"
+              style={{ maxWidth: '60%' }}
+            >
+              <defs>
+                <linearGradient id={`${sparklineId}-stroke`} x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#85B8FF" />
+                  <stop offset="60%" stopColor="#1d7afc" />
+                  <stop offset="100%" stopColor="#6e5dc6" />
+                </linearGradient>
+                <linearGradient id={`${sparklineId}-fill`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#1d7afc" stopOpacity="0.35" />
+                  <stop offset="100%" stopColor="#1d7afc" stopOpacity="0" />
+                </linearGradient>
+              </defs>
+              <path d={areaPath} fill={`url(#${sparklineId}-fill)`} />
+              <path d={path} fill="none" stroke={`url(#${sparklineId}-stroke)`} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+              {/* End-point dot */}
+              <circle
+                cx={w}
+                cy={h - (points[points.length - 1] / maxP) * h}
+                r={3}
+                fill="#6e5dc6"
+                style={{ filter: 'drop-shadow(0 0 6px rgba(110,93,198,0.8))' }}
+              />
+            </svg>
+          </div>
+        </div>
+
+        {/* ── Transaction stream ── */}
+        <div className="px-2 pb-3">
+          <AnimatePresence initial={false}>
+            {items.map((tx) => (
+              <motion.div
+                key={tx.id}
+                layout
+                initial={{ opacity: 0, y: 16, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -8, scale: 0.98 }}
+                transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                className="flex items-center justify-between rounded-lg px-3 py-2.5"
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <span
+                    className="text-white/45 tabular-nums flex-shrink-0"
+                    style={{ fontSize: 10, fontWeight: 600 }}
+                  >
+                    {formatTime(tx.ts)}
+                  </span>
+                  <span
+                    className="text-white truncate"
+                    style={{ fontSize: 12.5, fontWeight: 600 }}
+                  >
+                    {tx.merchant}
+                  </span>
+                </div>
+                <span
+                  className="text-[#85B8FF] tabular-nums flex-shrink-0"
+                  style={{ fontSize: 12.5, fontWeight: 700 }}
+                >
+                  +${tx.amount.toLocaleString()}
+                </span>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
+
+        {/* ── Footer status ── */}
+        <div className="flex items-center justify-between px-5 py-3 border-t border-white/[0.08] bg-white/[0.02]">
+          <span
+            className="uppercase text-white/55"
+            style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700 }}
+          >
+            Plaid · secure feed
+          </span>
+          <span className="inline-flex items-center gap-1 text-[#85B8FF]" style={{ fontSize: 11, fontWeight: 600 }}>
+            View funding
+            <ArrowRight className="w-3 h-3" />
+          </span>
+        </div>
+      </div>
+    </motion.div>
+  );
 }
 
 export function HeroSection({ onApplyClick, onApplyFromQuiz, onCalculatorClick }: HeroSectionProps) {
@@ -175,76 +397,11 @@ export function HeroSection({ onApplyClick, onApplyFromQuiz, onCalculatorClick }
           </div>
         </div>
 
-        {/* Floating payment-processing card — modern Vercel/Linear flourish.
-            Hidden on small screens to keep the headline breathing. */}
-        <motion.div
-          initial={{ opacity: 0, y: 30, scale: 0.96 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 1.0, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
-          aria-hidden
-          className="hidden lg:block absolute z-10 pointer-events-none"
-          style={{ right: '4vw', top: '36vh', width: 320 }}
-        >
-          <div
-            className="rounded-2xl p-5 backdrop-blur-xl border border-white/15 shadow-2xl"
-            style={{
-              background: 'linear-gradient(160deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.04) 100%)',
-              boxShadow: '0 20px 50px -12px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.10)',
-            }}
-          >
-            {/* Header row */}
-            <div className="flex items-center justify-between mb-4">
-              <span
-                className="uppercase text-white/85"
-                style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700 }}
-              >
-                Processing
-              </span>
-              <div className="flex items-center gap-1">
-                <span className="processing-dot w-1.5 h-1.5 rounded-full bg-[#1F845A]" style={{ animationDelay: '-0.32s' }} />
-                <span className="processing-dot w-1.5 h-1.5 rounded-full bg-[#1F845A]" style={{ animationDelay: '-0.16s' }} />
-                <span className="processing-dot w-1.5 h-1.5 rounded-full bg-[#1F845A]" />
-              </div>
-            </div>
-
-            {/* Faux card chip */}
-            <div className="flex items-center gap-3 mb-5">
-              <div
-                className="w-10 h-7 rounded-md"
-                style={{
-                  background: 'linear-gradient(135deg, #d4b15a 0%, #f0d68a 50%, #b8954e 100%)',
-                  boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.2)',
-                }}
-              />
-              <div className="flex-1">
-                <div className="text-white/60" style={{ fontSize: 10, letterSpacing: '0.18em' }}>
-                  •••• •••• •••• 4242
-                </div>
-              </div>
-            </div>
-
-            {/* Amount */}
-            <div className="mb-1">
-              <div className="text-white/55 uppercase" style={{ fontSize: 9, letterSpacing: '0.22em', fontWeight: 600 }}>
-                Funded today
-              </div>
-              <div
-                className="text-white tabular-nums mt-1"
-                style={{ fontSize: 28, fontWeight: 700, letterSpacing: '-0.02em' }}
-              >
-                $48,500.00
-              </div>
-            </div>
-
-            {/* Status row */}
-            <div className="flex items-center justify-between mt-4 pt-3 border-t border-white/10">
-              <span className="text-[#85B8FF]" style={{ fontSize: 11, fontWeight: 600 }}>
-                Approved · 2 min ago
-              </span>
-              <ArrowRight className="w-3.5 h-3.5 text-white/60" />
-            </div>
-          </div>
-        </motion.div>
+        {/* Live payments dashboard — replaces the old floating card.
+            Wider glass panel with a streaming transaction list,
+            sparkline, and live volume + delta indicator. Hidden on
+            small screens to keep the headline breathing. */}
+        <LivePaymentsDashboard />
 
         {/* Footer strip — SpaceX-style three-column bottom band */}
         <motion.div
