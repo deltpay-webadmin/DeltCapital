@@ -1,0 +1,1115 @@
+// V1-specific sections — Atlassian-preview aesthetic.
+// Palette: #f6f9fc canvas · #0a2540 ink · #0c66e4 blue · #1F845A green
+//          #c9372c red · #697386 muted · #dcdfe4 hairline · #85B8FF on-dark blue
+// Typography: serif-ish display (tight -0.035em), mono eyebrows w/ 0.18em tracking,
+//             horizontal rule prefix before every eyebrow label.
+import React from 'react';
+import { DELT, DeltContent, Btn, calcEstimate, fmt } from './shared';
+
+const V1 = {
+  bg:       '#f6f9fc',
+  bgWarm:   '#f1f2f4',
+  ink:      '#0a2540',
+  muted:    '#697386',
+  text:     '#425466',
+  line:     '#dcdfe4',
+  // Purple family tuned to the hero video's violet
+  blue:     '#7C3AED', // primary accent (was #0c66e4)
+  blueSoft: '#C4B5FD', // on-dark soft accent (was #85B8FF)
+  green:    '#1F845A',
+  red:      '#c9372c',
+  white:    '#ffffff',
+  fontDisplay: '"Inter Tight", "Söhne", ui-sans-serif, system-ui, sans-serif',
+  fontBody:    '"Inter", ui-sans-serif, system-ui, sans-serif',
+  fontMono:    '"JetBrains Mono", ui-monospace, Menlo, monospace',
+};
+
+// ─── Eyebrow label (mono, uppercase, short rule prefix) ───
+function V1Eyebrow({ children, color = V1.blue, onDark = false }) {
+  return (
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', gap: 8,
+      textTransform: 'uppercase',
+      fontFamily: V1.fontMono, fontSize: 11.5, fontWeight: 600,
+      letterSpacing: '0.18em',
+      color: color,
+    }}>
+      <span aria-hidden style={{ display: 'inline-block', width: 16, height: 1, background: color }} />
+      {children}
+    </span>
+  );
+}
+
+const v1H2 = {
+  fontFamily: V1.fontDisplay,
+  fontSize: 'clamp(2rem, 4.5vw, 3.5rem)',
+  fontWeight: 600,
+  letterSpacing: '-0.035em',
+  lineHeight: 1.05,
+  color: V1.ink,
+  margin: 0,
+};
+
+// ═══════════════════════════════════════════════════════════════
+// STATS — result strip, three big numbers with hairline cards
+// ═══════════════════════════════════════════════════════════════
+function V1StatsSection() {
+  const stats = [
+    { label: 'Deployed since 2019', value: '$200M+', dot: V1.blue },
+    { label: 'Businesses funded',   value: '2,850+', dot: V1.green },
+    { label: 'Median time to funds', value: '24h',  dot: V1.blue },
+    { label: 'Median factor',       value: '1.18×', dot: V1.green },
+  ];
+  return (
+    <section style={{ background: V1.bg, padding: '64px 0 32px' }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
+          {stats.map((s, i) => (
+            <div key={i} style={{
+              background: V1.white,
+              border: `1px solid ${V1.line}`,
+              borderRadius: 16,
+              padding: '22px 24px',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            }}>
+              <div>
+                <div style={{
+                  textTransform: 'uppercase', color: V1.muted,
+                  fontFamily: V1.fontMono, fontSize: 10.5, letterSpacing: '0.18em', fontWeight: 600,
+                }}>{s.label}</div>
+                <div style={{
+                  marginTop: 8,
+                  fontFamily: V1.fontDisplay, fontSize: 32, fontWeight: 700,
+                  letterSpacing: '-0.03em', color: V1.ink,
+                  fontVariantNumeric: 'tabular-nums', lineHeight: 1,
+                }}>{s.value}</div>
+              </div>
+              <span aria-hidden style={{ width: 8, height: 8, borderRadius: 999, background: s.dot, flexShrink: 0 }} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+// COMPARE — sleek modern side-by-side with animated delta bars
+// ═══════════════════════════════════════════════════════════════
+function V1CompareSection() {
+  const [visible, setVisible] = React.useState(false);
+  const sectionRef = React.useRef(null);
+
+  React.useEffect(() => {
+    if (!sectionRef.current) return;
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { setVisible(true); io.disconnect(); }
+    }, { threshold: 0.2 });
+    io.observe(sectionRef.current);
+    return () => io.disconnect();
+  }, []);
+
+  // Rich per-row data — each row has a numeric delta we can visualize
+  // deltStrength = 0..1 (how much Delt wins on this metric)
+  const rows = [
+    { k: 'Speed to funds',     delt: '24 hours',       bank: '2–6 weeks',          win: '20× faster',    strength: 0.98 },
+    { k: 'Factor rate',        delt: '1.18×',          bank: '1.35–1.49×',         win: '19% cheaper',   strength: 0.75 },
+    { k: 'Paperwork',          delt: 'Plaid link',     bank: '3 mo statements + returns', win: 'Zero files', strength: 0.92 },
+    { k: 'Credit pull',        delt: 'Soft inquiry',   bank: 'Hard pull',          win: 'No FICO hit',   strength: 0.88 },
+    { k: 'Collateral',         delt: 'None',           bank: 'PG + UCC',           win: 'Unencumbered',  strength: 0.95 },
+    { k: 'Prepayment penalty', delt: 'None',           bank: 'Full factor owed',   win: 'Early pays save', strength: 1.00 },
+  ];
+
+  return (
+    <section ref={sectionRef} style={{ background: V1.bg, padding: '120px 0', borderTop: `1px solid ${V1.line}`, borderBottom: `1px solid ${V1.line}` }}>
+      <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 40px' }}>
+        {/* Heading */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'end', marginBottom: 56 }}>
+          <div>
+            <V1Eyebrow>Banks vs Delt</V1Eyebrow>
+            <h2 style={{ ...v1H2, marginTop: 18 }}>
+              Why Delt beats<br/>the bank.
+            </h2>
+          </div>
+          <p style={{
+            fontFamily: V1.fontBody, fontSize: 16.5, lineHeight: 1.6, color: V1.text,
+            margin: 0, maxWidth: 460, justifySelf: 'end',
+          }}>
+            Every row is a median across the last 12 months of our book, measured
+            against publicly-reported bank SBA 7(a) averages. Updated quarterly.
+          </p>
+        </div>
+
+        {/* ─── Unified comparison frame ─── */}
+        <div style={{
+          background: V1.white,
+          border: `1px solid ${V1.line}`,
+          borderRadius: 24,
+          overflow: 'hidden',
+          boxShadow: '0 1px 2px rgba(10,37,64,0.03), 0 40px 80px -50px rgba(10,37,64,0.22)',
+        }}>
+          {/* Column headers */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '200px 1fr 1fr',
+            background: V1.bg,
+            borderBottom: `1px solid ${V1.line}`,
+          }}>
+            <div style={{ padding: '22px 28px' }}>
+              <V1Eyebrow color={V1.muted}>Metric</V1Eyebrow>
+            </div>
+            <div style={{
+              padding: '22px 28px', borderLeft: `1px solid ${V1.line}`,
+              display: 'flex', alignItems: 'center', gap: 12,
+            }}>
+              <div style={{
+                width: 30, height: 30, borderRadius: 8,
+                background: V1.muted + '18', color: V1.muted,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                {/* Bank icon */}
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M2 14h12M3 14V8M6 14V8M10 14V8M13 14V8M1.5 7h13L8 2 1.5 7z"/>
+                </svg>
+              </div>
+              <div>
+                <div style={{ fontFamily: V1.fontDisplay, fontSize: 17, fontWeight: 600, color: V1.muted, letterSpacing: '-0.015em' }}>
+                  Traditional bank
+                </div>
+                <div style={{ fontFamily: V1.fontMono, fontSize: 10.5, color: V1.muted, opacity: 0.7, marginTop: 2, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                  SBA 7(a) median
+                </div>
+              </div>
+            </div>
+            <div style={{
+              padding: '22px 28px', borderLeft: `1px solid ${V1.line}`,
+              display: 'flex', alignItems: 'center', gap: 12,
+              background: `linear-gradient(90deg, ${V1.blue}0A, transparent)`,
+            }}>
+              <div style={{
+                width: 30, height: 30, borderRadius: 8,
+                background: `linear-gradient(135deg, ${V1.blue}, #A78BFA)`,
+                color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                boxShadow: `0 4px 12px ${V1.blue}55`,
+              }}>
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+                  <path d="M8 1L2 8h4l-1 5 6-7H7l1-5z"/>
+                </svg>
+              </div>
+              <div>
+                <div style={{ fontFamily: V1.fontDisplay, fontSize: 17, fontWeight: 700, color: V1.ink, letterSpacing: '-0.015em' }}>
+                  Delt<span style={{ color: V1.blue }}>.</span>
+                </div>
+                <div style={{ fontFamily: V1.fontMono, fontSize: 10.5, color: V1.blue, opacity: 0.85, marginTop: 2, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                  Live book · Q4 trailing
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Rows */}
+          {rows.map((r, i) => (
+            <V1CompareRow key={r.k} r={r} i={i} visible={visible} last={i === rows.length - 1} />
+          ))}
+        </div>
+
+        {/* Result strip below */}
+        <div style={{ marginTop: 24, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+          {[
+            { label: 'Median time to funds',     value: '24 h',   sub: 'vs 2–6 weeks at a bank' },
+            { label: 'Avg savings vs SBA',       value: '19%',    sub: 'on total cost of capital' },
+            { label: 'Paperwork required',       value: '0',      sub: 'Plaid replaces the file box' },
+          ].map((s, i) => (
+            <div key={i} style={{
+              background: V1.white, border: `1px solid ${V1.line}`, borderRadius: 16,
+              padding: '22px 28px',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16,
+            }}>
+              <div>
+                <div style={{
+                  textTransform: 'uppercase', color: V1.muted,
+                  fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 600, letterSpacing: '0.18em',
+                }}>{s.label}</div>
+                <div style={{
+                  marginTop: 8,
+                  fontFamily: V1.fontDisplay, fontSize: 32, fontWeight: 700,
+                  letterSpacing: '-0.03em', color: V1.ink,
+                  fontVariantNumeric: 'tabular-nums', lineHeight: 1,
+                }}>{s.value}</div>
+                <div style={{ marginTop: 6, fontFamily: V1.fontBody, fontSize: 12.5, color: V1.muted }}>
+                  {s.sub}
+                </div>
+              </div>
+              <span aria-hidden style={{
+                width: 44, height: 44, borderRadius: 12,
+                background: `${V1.blue}0F`, color: V1.blue,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontFamily: V1.fontMono, fontWeight: 700, fontSize: 18,
+              }}>
+                {i === 0 ? '⚡' : i === 1 ? '−' : '⊘'}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Individual comparison row with animated fill-in ───
+function V1CompareRow({ r, i, visible, last }) {
+  const delay = 100 + i * 120;
+  return (
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: '200px 1fr 1fr',
+      borderBottom: last ? 'none' : `1px solid ${V1.line}`,
+      minHeight: 88,
+    }}>
+      {/* Metric label */}
+      <div style={{
+        padding: '22px 28px',
+        display: 'flex', flexDirection: 'column', justifyContent: 'center',
+      }}>
+        <div style={{
+          fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 600,
+          letterSpacing: '0.16em', textTransform: 'uppercase', color: V1.muted,
+        }}>
+          0{i + 1}
+        </div>
+        <div style={{
+          marginTop: 4,
+          fontFamily: V1.fontDisplay, fontSize: 15, fontWeight: 600,
+          color: V1.ink, letterSpacing: '-0.015em', lineHeight: 1.2,
+        }}>
+          {r.k}
+        </div>
+      </div>
+
+      {/* Bank column */}
+      <div style={{
+        padding: '22px 28px',
+        borderLeft: `1px solid ${V1.line}`,
+        display: 'flex', alignItems: 'center', gap: 14, position: 'relative',
+      }}>
+        <span style={{
+          flexShrink: 0, width: 22, height: 22, borderRadius: 999,
+          background: V1.muted + '18', color: V1.muted,
+          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <svg width="10" height="10" viewBox="0 0 14 14">
+            <path d="M4 4L10 10M10 4L4 10" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round"/>
+          </svg>
+        </span>
+        <div style={{
+          fontFamily: V1.fontDisplay, fontSize: 18, fontWeight: 500,
+          color: V1.muted, letterSpacing: '-0.015em', lineHeight: 1.2,
+          fontVariantNumeric: 'tabular-nums',
+          textDecoration: 'line-through', textDecorationColor: V1.muted + '66',
+          textDecorationThickness: 1,
+        }}>
+          {r.bank}
+        </div>
+      </div>
+
+      {/* Delt column */}
+      <div style={{
+        padding: '22px 28px',
+        borderLeft: `1px solid ${V1.line}`,
+        background: `linear-gradient(90deg, ${V1.blue}06, transparent 70%)`,
+        display: 'flex', alignItems: 'center', gap: 14, position: 'relative',
+      }}>
+        <span style={{
+          flexShrink: 0, width: 22, height: 22, borderRadius: 999,
+          background: `linear-gradient(135deg, ${V1.blue}, #A78BFA)`, color: '#fff',
+          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+          boxShadow: `0 3px 10px ${V1.blue}66`,
+        }}>
+          <svg width="11" height="11" viewBox="0 0 14 14">
+            <path d="M3 7.2L5.8 10 11 4.5" stroke="currentColor" strokeWidth="2.2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </span>
+        <div style={{
+          flex: 1, minWidth: 0,
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
+        }}>
+          <div style={{
+            fontFamily: V1.fontDisplay, fontSize: 18, fontWeight: 700,
+            color: V1.ink, letterSpacing: '-0.02em', lineHeight: 1.2,
+            fontVariantNumeric: 'tabular-nums',
+          }}>
+            {r.delt}
+          </div>
+          <span style={{
+            flexShrink: 0,
+            padding: '4px 10px', borderRadius: 999,
+            background: `${V1.blue}14`, color: V1.blue,
+            fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 600,
+            letterSpacing: '0.08em', textTransform: 'uppercase',
+            whiteSpace: 'nowrap',
+          }}>
+            {r.win}
+          </span>
+        </div>
+
+        {/* Animated strength bar */}
+        <div aria-hidden style={{
+          position: 'absolute', bottom: 0, left: 0,
+          height: 2, width: visible ? `${r.strength * 100}%` : '0%',
+          background: `linear-gradient(90deg, ${V1.blue}, #A78BFA)`,
+          transition: `width 1200ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms`,
+        }} />
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// STEPS — editorial numbered list, hairline dividers
+// ═══════════════════════════════════════════════════════════════
+function V1StepsSection() {
+  const steps = DeltContent.steps;
+  return (
+    <section style={{ background: V1.white, padding: '96px 0', borderTop: `1px solid ${V1.line}`, borderBottom: `1px solid ${V1.line}` }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'end', marginBottom: 64 }}>
+          <div>
+            <V1Eyebrow>How it works</V1Eyebrow>
+            <h2 style={{ ...v1H2, marginTop: 18 }}>Four steps.<br />One business day.</h2>
+          </div>
+          <p style={{
+            fontFamily: V1.fontBody, fontSize: 17, lineHeight: 1.6, color: V1.text,
+            margin: 0, maxWidth: 520, justifySelf: 'end',
+          }}>
+            No sales advisor, no discovery call, no underwriter asking for "just one more statement."
+            We read your deposits, price the deal, send an offer.
+          </p>
+        </div>
+
+        {/* Steps list — wide rows with numeric column, content, and timing column */}
+        <div style={{ borderTop: `1px solid ${V1.line}` }}>
+          {steps.map((s, i) => (
+            <div key={s.n} style={{
+              display: 'grid', gridTemplateColumns: '120px 1fr 240px',
+              gap: 48, alignItems: 'center',
+              padding: '40px 0',
+              borderBottom: `1px solid ${V1.line}`,
+            }}>
+              <div style={{
+                fontFamily: V1.fontMono, fontSize: 12.5, fontWeight: 600, letterSpacing: '0.18em',
+                textTransform: 'uppercase', color: V1.blue,
+              }}>
+                Step {s.n}
+              </div>
+              <div>
+                <div style={{
+                  fontFamily: V1.fontDisplay, fontSize: 28, fontWeight: 600,
+                  letterSpacing: '-0.025em', color: V1.ink, lineHeight: 1.15,
+                }}>{s.t}</div>
+                <div style={{
+                  marginTop: 10, fontFamily: V1.fontBody, fontSize: 15.5, lineHeight: 1.6,
+                  color: V1.text, maxWidth: 620,
+                }}>{s.d}</div>
+              </div>
+              <div style={{ borderLeft: `1px solid ${V1.line}`, paddingLeft: 24 }}>
+                <div style={{
+                  textTransform: 'uppercase', color: V1.muted,
+                  fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 600, letterSpacing: '0.18em',
+                }}>Elapsed</div>
+                <div style={{
+                  marginTop: 6, fontFamily: V1.fontDisplay, fontSize: 24, fontWeight: 600,
+                  letterSpacing: '-0.02em', color: V1.ink, fontVariantNumeric: 'tabular-nums',
+                }}>{s.time}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CALCULATOR — Atlassian-styled wrapper around the shared DeltCalculator
+// ═══════════════════════════════════════════════════════════════
+function V1CalcSection({ calcState, setCalcState, onApply }) {
+  return (
+    <section data-v1-calc style={{ background: V1.bg, padding: '96px 0' }}>
+      <div style={{ maxWidth: 1080, margin: '0 auto', padding: '0 40px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'end', marginBottom: 48 }}>
+          <div>
+            <V1Eyebrow>Live calculator</V1Eyebrow>
+            <h2 style={{ ...v1H2, marginTop: 18 }}>Price the deal<br />before you apply.</h2>
+          </div>
+          <p style={{
+            fontFamily: V1.fontBody, fontSize: 17, lineHeight: 1.6, color: V1.text,
+            margin: 0, maxWidth: 460, justifySelf: 'end',
+          }}>
+            Same underwriting logic that runs on every Delt application. Numbers
+            update as you type.
+          </p>
+        </div>
+
+        {/* Rich analyzer — progressive reveal, Delt Boost toggle, custom amount */}
+        <V1CalcAnalyzer onApply={onApply} hideHeader />
+      </div>
+    </section>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// REVIEWS — mono eyebrow per card, editorial
+// ═══════════════════════════════════════════════════════════════
+function V1ReviewsSection() {
+  const items = DeltContent.testimonials;
+  return (
+    <section style={{ background: V1.white, padding: '96px 0', borderTop: `1px solid ${V1.line}`, borderBottom: `1px solid ${V1.line}` }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'end', marginBottom: 56 }}>
+          <div>
+            <V1Eyebrow>Operators</V1Eyebrow>
+            <h2 style={{ ...v1H2, marginTop: 18 }}>Verified on the renewal call.</h2>
+          </div>
+          <p style={{
+            fontFamily: V1.fontBody, fontSize: 17, lineHeight: 1.6, color: V1.text,
+            margin: 0, maxWidth: 480, justifySelf: 'end',
+          }}>
+            Every quote is from a borrower who has closed at least once. Business
+            names are real, on request.
+          </p>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+          {items.map((t, i) => (
+            <figure key={i} style={{
+              background: V1.bg, border: `1px solid ${V1.line}`, borderRadius: 20,
+              padding: 28, margin: 0, display: 'flex', flexDirection: 'column', gap: 20,
+              minHeight: 240,
+            }}>
+              <V1Eyebrow color={V1.blue}>{t.b.split(' ')[0]}</V1Eyebrow>
+              <blockquote style={{
+                fontFamily: V1.fontDisplay, fontSize: 19, fontWeight: 500,
+                letterSpacing: '-0.015em', lineHeight: 1.4, color: V1.ink, margin: 0, flex: 1,
+              }}>"{t.q}"</blockquote>
+              <figcaption style={{
+                display: 'flex', justifyContent: 'space-between', gap: 12,
+                borderTop: `1px solid ${V1.line}`, paddingTop: 16,
+                fontFamily: V1.fontBody, fontSize: 12.5, color: V1.muted,
+              }}>
+                <div>
+                  <div style={{ color: V1.ink, fontWeight: 500 }}>{t.n}</div>
+                  <div>{t.b}</div>
+                </div>
+                <div style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontFamily: V1.fontMono }}>
+                  <div style={{ color: V1.blue, fontWeight: 600 }}>{t.f}</div>
+                  <div>{t.r}</div>
+                </div>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FAQ — hairline accordion
+// ═══════════════════════════════════════════════════════════════
+function V1FAQSection() {
+  const [open, setOpen] = React.useState(0);
+  return (
+    <section style={{ background: V1.bg, padding: '96px 0' }}>
+      <div style={{ maxWidth: 960, margin: '0 auto', padding: '0 40px' }}>
+        <div style={{ marginBottom: 48 }}>
+          <V1Eyebrow>Questions</V1Eyebrow>
+          <h2 style={{ ...v1H2, marginTop: 18 }}>What operators actually ask.</h2>
+        </div>
+        <div style={{ borderTop: `1px solid ${V1.line}` }}>
+          {DeltContent.faq.map((f, i) => {
+            const isOpen = open === i;
+            return (
+              <div key={i} style={{ borderBottom: `1px solid ${V1.line}` }}>
+                <button onClick={() => setOpen(isOpen ? -1 : i)} style={{
+                  width: '100%', padding: '24px 0', background: 'transparent', border: 'none',
+                  cursor: 'pointer', display: 'flex', justifyContent: 'space-between',
+                  alignItems: 'center', gap: 24, textAlign: 'left',
+                  fontFamily: V1.fontDisplay, fontSize: 19, fontWeight: 500,
+                  color: V1.ink, letterSpacing: '-0.01em',
+                }}>
+                  {f.q}
+                  <span style={{
+                    flexShrink: 0, width: 28, height: 28, borderRadius: 999,
+                    border: `1px solid ${V1.line}`, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: V1.blue, fontFamily: V1.fontMono, fontSize: 16,
+                    transform: isOpen ? 'rotate(45deg)' : 'none', transition: 'transform .2s',
+                  }}>+</span>
+                </button>
+                {isOpen && (
+                  <div style={{
+                    paddingBottom: 24, fontFamily: V1.fontBody, fontSize: 15, lineHeight: 1.65,
+                    color: V1.text, maxWidth: 760,
+                  }}>{f.a}</div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CTA — final push, navy band
+// ═══════════════════════════════════════════════════════════════
+function V1CTASection({ onApply, onTalk }) {
+  return (
+    <section style={{ background: V1.ink, padding: '96px 0', color: '#fff' }}>
+      <div style={{ maxWidth: 1080, margin: '0 auto', padding: '0 40px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 64, alignItems: 'center' }}>
+          <div>
+            <V1Eyebrow color={V1.blueSoft}>Get funded</V1Eyebrow>
+            <h2 style={{ ...v1H2, color: '#fff', marginTop: 18 }}>
+              Ready when your business is.
+            </h2>
+            <p style={{
+              fontFamily: V1.fontBody, fontSize: 17.5, lineHeight: 1.6,
+              color: 'rgba(255,255,255,0.7)', marginTop: 20, maxWidth: 520,
+            }}>
+              Three questions, a soft pull, and a real funding range in 60 seconds.
+              No obligation. No impact to your credit.
+            </p>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14, justifySelf: 'end', alignItems: 'stretch', minWidth: 300 }}>
+            <button onClick={onApply} style={{
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+              background: V1.blue, color: '#fff', border: 'none',
+              padding: '16px 28px', borderRadius: 10, cursor: 'pointer',
+              fontFamily: V1.fontBody, fontSize: 15.5, fontWeight: 600, letterSpacing: '-0.005em',
+              transition: 'background .15s',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = '#8B5CF6'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = V1.blue; }}>
+              Start prequal
+              <svg width="14" height="14" viewBox="0 0 14 14">
+                <path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+            {onTalk && (
+              <button onClick={onTalk} style={{
+                display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+                background: 'transparent', color: '#fff',
+                border: '1px solid rgba(255,255,255,0.22)',
+                padding: '15px 28px', borderRadius: 10, cursor: 'pointer',
+                fontFamily: V1.fontBody, fontSize: 15, fontWeight: 500,
+                transition: 'background .15s, border-color .15s',
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.4)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.22)'; }}>
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="1.5" y="2.5" width="11" height="9" rx="1.5"/><path d="M4 1v2M10 1v2M1.5 5.5h11"/>
+                </svg>
+                Talk to an underwriter
+              </button>
+            )}
+            <div style={{
+              fontFamily: V1.fontMono, fontSize: 11, letterSpacing: '0.12em',
+              textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)',
+              textAlign: 'center',
+            }}>
+              Soft-pull · 60 seconds · no obligation
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// USE CASES — tabbed left rail + dashboard visualization right panel
+// ═══════════════════════════════════════════════════════════════
+const USE_CASES = [
+  {
+    k: 'equipment',
+    label: 'Equipment & Technology',
+    icon: 'wrench',
+    blurb: 'Upgrade machinery, purchase new equipment, or invest in technology that improves efficiency.',
+    metric: { funding: '$45K', approval: '24 hrs', roi: '+38%' },
+    stat: { label: 'Avg. equipment investment', value: '$45K' },
+    insight: 'Businesses that invest in equipment upgrades see an average 38% productivity increase within the first 6 months of deployment.',
+    breakdown: [
+      { name: 'Machinery',   pct: 35 },
+      { name: 'Software',    pct: 25 },
+      { name: 'Hardware',    pct: 20 },
+      { name: 'Maintenance', pct: 12 },
+      { name: 'Training',    pct:  8 },
+    ],
+  },
+  {
+    k: 'vendor',
+    label: 'Vendor Payments',
+    icon: 'receipt',
+    blurb: 'Pay suppliers on time, negotiate early-pay discounts, and keep your supply chain running smoothly.',
+    metric: { funding: '$62K', approval: '24 hrs', roi: '+12%' },
+    stat: { label: 'Avg. early-pay discount captured', value: '2.1%' },
+    insight: 'Operators who take 2/10 net 30 discounts with Delt capital effectively earn 36% APY on their float.',
+    breakdown: [
+      { name: 'Raw materials',   pct: 42 },
+      { name: 'Logistics',       pct: 22 },
+      { name: 'Utilities',       pct: 15 },
+      { name: 'Service vendors', pct: 13 },
+      { name: 'SaaS tools',      pct:  8 },
+    ],
+  },
+  {
+    k: 'payroll',
+    label: 'Payroll & Hiring',
+    icon: 'users',
+    blurb: 'Meet payroll during slow weeks, onboard new hires, and cover recruiting costs without stress.',
+    metric: { funding: '$38K', approval: '24 hrs', roi: '+22%' },
+    stat: { label: 'Avg. per-hire ramp cost', value: '$8.4K' },
+    insight: 'Teams that fund hiring through Delt close roles 2.3 weeks faster than those waiting on retained cash flow.',
+    breakdown: [
+      { name: 'Salaries',    pct: 54 },
+      { name: 'Benefits',    pct: 18 },
+      { name: 'Recruiting',  pct: 12 },
+      { name: 'Onboarding',  pct: 10 },
+      { name: 'Contractors', pct:  6 },
+    ],
+  },
+  {
+    k: 'expansion',
+    label: 'Business Expansion',
+    icon: 'building',
+    blurb: 'Open a new location, expand capacity, or enter a new market with capital that moves at your pace.',
+    metric: { funding: '$120K', approval: '48 hrs', roi: '+54%' },
+    stat: { label: 'Avg. new-location payback', value: '11 mo' },
+    insight: 'Multi-unit operators funded through Delt hit break-even on new locations 4 months faster than industry average.',
+    breakdown: [
+      { name: 'Build-out',   pct: 38 },
+      { name: 'Lease & CAM', pct: 22 },
+      { name: 'Opening inv.', pct: 18 },
+      { name: 'Marketing',   pct: 14 },
+      { name: 'Permits',     pct:  8 },
+    ],
+  },
+  {
+    k: 'inventory',
+    label: 'Inventory & Stock',
+    icon: 'box',
+    blurb: 'Stock up for peak season, negotiate bulk pricing, and keep shelves full when demand spikes.',
+    metric: { funding: '$85K', approval: '24 hrs', roi: '+28%' },
+    stat: { label: 'Avg. bulk-buy savings', value: '14%' },
+    insight: 'Retailers who pre-stock with Delt capture 2.8× more peak-season revenue than those ordering reactively.',
+    breakdown: [
+      { name: 'Core SKUs',      pct: 48 },
+      { name: 'Seasonal',       pct: 22 },
+      { name: 'New products',   pct: 14 },
+      { name: 'Packaging',      pct: 10 },
+      { name: 'Safety stock',   pct:  6 },
+    ],
+  },
+  {
+    k: 'marketing',
+    label: 'Marketing Campaigns',
+    icon: 'megaphone',
+    blurb: 'Fund ad spend, creative production, and launches that have a clear revenue payback.',
+    metric: { funding: '$28K', approval: '24 hrs', roi: '+3.2× ROAS' },
+    stat: { label: 'Median campaign ROAS', value: '3.2×' },
+    insight: 'Brands that scale winning campaigns with Delt grow 47% faster than those constrained by retained earnings.',
+    breakdown: [
+      { name: 'Paid social',  pct: 38 },
+      { name: 'Search',       pct: 24 },
+      { name: 'Creative',     pct: 16 },
+      { name: 'Influencer',   pct: 12 },
+      { name: 'Email / SMS',  pct: 10 },
+    ],
+  },
+];
+
+// Lilac palette matching the screenshot's donut chart
+const UC_COLORS = ['#4F46E5', '#7C3AED', '#A78BFA', '#C4B5FD', '#1F845A'];
+
+// Inline icon set for the left rail
+function UCIcon({ name, size = 16, color = 'currentColor' }) {
+  const c = { stroke: color, strokeWidth: 1.6, fill: 'none', strokeLinecap: 'round', strokeLinejoin: 'round' };
+  const paths = {
+    wrench:   <path d="M10.5 2.5a3.5 3.5 0 014.6 4.6L8 14.2 1.8 8 8.9 0.9a3.5 3.5 0 011.6 1.6z" transform="translate(0,0)" />,
+    receipt:  <><path d="M3 1.5v13l2-1 2 1 2-1 2 1 2-1 2 1v-13z"/><path d="M5.5 5h5M5.5 8h5M5.5 11h3"/></>,
+    users:    <><circle cx="6" cy="6" r="2.5"/><circle cx="11.5" cy="6.5" r="2"/><path d="M1.5 13.5a4.5 4.5 0 019 0M10 13.5a3.5 3.5 0 014.5 0"/></>,
+    building: <><path d="M2.5 14V3l5-1.5V14M7.5 14V6l5 1.5V14M1 14h14"/><path d="M4 5.5h1.5M4 8h1.5M4 10.5h1.5M9.5 9h1.5M9.5 11h1.5"/></>,
+    box:      <><path d="M8 1.5l6 2.5v7L8 14.5 2 11V4z"/><path d="M2 4l6 2.5 6-2.5M8 6.5V14"/></>,
+    megaphone:<><path d="M2 6v4l7 3V3zM9 4l4-1.5v11L9 12M2 10v2.5h2L5 10"/></>,
+  };
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" style={c}>
+      {paths[name]}
+    </svg>
+  );
+}
+
+// Animated donut chart
+function UCDonut({ data, active, radius = 82, stroke = 24 }) {
+  // data: [{name, pct}]
+  const total = data.reduce((s, d) => s + d.pct, 0);
+  const circ = 2 * Math.PI * radius;
+  let acc = 0;
+  const segs = data.map((d, i) => {
+    const frac = d.pct / total;
+    const len = frac * circ;
+    const seg = { ...d, len, offset: -acc, color: UC_COLORS[i % UC_COLORS.length], i };
+    acc += len;
+    return seg;
+  });
+
+  // Re-mount whenever active tab changes so the draw animates fresh
+  return (
+    <svg key={active} width={radius * 2 + stroke} height={radius * 2 + stroke} viewBox={`0 0 ${radius * 2 + stroke} ${radius * 2 + stroke}`} style={{ display: 'block' }}>
+      <g transform={`translate(${radius + stroke / 2}, ${radius + stroke / 2}) rotate(-90)`}>
+        {segs.map((s, i) => (
+          <circle
+            key={i}
+            r={radius}
+            cx={0} cy={0}
+            fill="none"
+            stroke={s.color}
+            strokeWidth={stroke}
+            strokeDasharray={`${s.len} ${circ}`}
+            strokeDashoffset={s.offset}
+            style={{
+              animation: `uc-dash-${s.i} 900ms cubic-bezier(0.22, 1, 0.36, 1) ${i * 90}ms both`,
+              transformOrigin: 'center',
+            }}
+          />
+        ))}
+      </g>
+      <style>{`
+        ${segs.map((s, i) => `@keyframes uc-dash-${s.i} { from { stroke-dasharray: 0 ${circ}; } to { stroke-dasharray: ${s.len} ${circ}; } }`).join('\n')}
+      `}</style>
+    </svg>
+  );
+}
+
+function V1UseCasesSection() {
+  const [active, setActive] = React.useState(0);
+  const uc = USE_CASES[active];
+
+  return (
+    <section style={{ background: V1.bg, padding: '120px 0' }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px' }}>
+        {/* Heading */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'end', marginBottom: 56 }}>
+          <div>
+            <V1Eyebrow>Use cases</V1Eyebrow>
+            <h2 style={{ ...v1H2, marginTop: 18 }}>
+              Deploy your capital<br/>strategically.
+            </h2>
+          </div>
+          <p style={{
+            fontFamily: V1.fontBody, fontSize: 16.5, lineHeight: 1.6, color: V1.text,
+            margin: 0, maxWidth: 460, justifySelf: 'end',
+          }}>
+            Whether you're scaling, investing, or seizing an opportunity, your
+            capital can fuel growth across your business.
+          </p>
+        </div>
+
+        {/* Dashboard frame */}
+        <div style={{
+          background: V1.white,
+          border: `1px solid ${V1.line}`,
+          borderRadius: 24,
+          overflow: 'hidden',
+          display: 'grid',
+          gridTemplateColumns: '340px 1fr',
+          minHeight: 560,
+          boxShadow: '0 1px 2px rgba(10,37,64,0.03), 0 40px 80px -50px rgba(10,37,64,0.22)',
+        }}>
+          {/* ─── LEFT RAIL ─── */}
+          <div style={{
+            background: V1.ink,
+            color: '#fff',
+            padding: '28px 0',
+            display: 'flex', flexDirection: 'column',
+            position: 'relative',
+          }}>
+            {/* Up/down scroll indicators (decorative) */}
+            <div style={{ display: 'flex', gap: 8, padding: '0 24px 20px' }}>
+              {[-1, 1].map((d, i) => (
+                <button
+                  key={i}
+                  onClick={() => setActive((a) => (a + d + USE_CASES.length) % USE_CASES.length)}
+                  aria-label={d < 0 ? 'Previous use case' : 'Next use case'}
+                  style={{
+                    width: 28, height: 28, borderRadius: 999,
+                    border: '1px solid rgba(255,255,255,0.15)',
+                    background: 'rgba(255,255,255,0.04)', color: 'rgba(255,255,255,0.7)',
+                    cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    transition: 'all 180ms',
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; e.currentTarget.style.color = '#fff'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = 'rgba(255,255,255,0.7)'; }}
+                >
+                  <svg width="10" height="10" viewBox="0 0 10 10" style={{ transform: d < 0 ? 'rotate(0deg)' : 'rotate(180deg)' }}>
+                    <path d="M2 6l3-3 3 3" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
+              ))}
+            </div>
+
+            {/* Tab list */}
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4, padding: '0 16px' }}>
+              {USE_CASES.map((u, i) => {
+                const isActive = i === active;
+                return (
+                  <button
+                    key={u.k}
+                    onClick={() => setActive(i)}
+                    style={{
+                      textAlign: 'left', cursor: 'pointer',
+                      border: 'none', background: 'transparent',
+                      padding: 0, margin: 0, width: '100%',
+                    }}
+                  >
+                    {/* Tab header row */}
+                    <div style={{
+                      display: 'flex', alignItems: 'center', gap: 12,
+                      padding: '12px 16px',
+                      borderRadius: 10,
+                      background: isActive ? `linear-gradient(90deg, ${V1.blue}, #A78BFA)` : 'transparent',
+                      color: isActive ? '#fff' : 'rgba(255,255,255,0.65)',
+                      fontFamily: V1.fontDisplay, fontSize: 14, fontWeight: isActive ? 600 : 500,
+                      letterSpacing: '-0.01em',
+                      transition: 'all 200ms',
+                      boxShadow: isActive ? `0 6px 20px -6px ${V1.blue}88` : 'none',
+                    }}>
+                      <span style={{
+                        width: 20, height: 20, borderRadius: 999,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        border: `1px solid ${isActive ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.2)'}`,
+                        fontSize: 11,
+                      }}>
+                        {isActive
+                          ? <svg width="9" height="9" viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>
+                          : <svg width="9" height="9" viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>
+                        }
+                      </span>
+                      {u.label}
+                    </div>
+
+                    {/* Expanded content for active tab */}
+                    {isActive && (
+                      <div style={{
+                        margin: '12px 16px 16px 16px',
+                        padding: '18px',
+                        background: 'rgba(255,255,255,0.04)',
+                        border: '1px solid rgba(255,255,255,0.08)',
+                        borderRadius: 12,
+                      }}>
+                        <div style={{
+                          fontFamily: V1.fontDisplay, fontSize: 14, fontWeight: 600, color: '#fff',
+                          letterSpacing: '-0.01em', marginBottom: 6,
+                        }}>
+                          {u.label}.
+                        </div>
+                        <div style={{
+                          fontFamily: V1.fontBody, fontSize: 13, lineHeight: 1.55,
+                          color: 'rgba(255,255,255,0.7)',
+                        }}>
+                          {u.blurb}
+                        </div>
+                        <div style={{
+                          marginTop: 14, paddingTop: 14,
+                          borderTop: '1px solid rgba(255,255,255,0.08)',
+                          display: 'flex', alignItems: 'center', gap: 10,
+                        }}>
+                          <span style={{
+                            padding: '4px 10px', borderRadius: 999,
+                            background: `${V1.blue}33`, color: V1.blueSoft,
+                            fontFamily: V1.fontMono, fontSize: 11, fontWeight: 600,
+                            letterSpacing: '0.04em',
+                          }}>
+                            {u.stat.value}
+                          </span>
+                          <span style={{
+                            fontFamily: V1.fontBody, fontSize: 12,
+                            color: 'rgba(255,255,255,0.55)',
+                          }}>
+                            {u.stat.label}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Pager */}
+            <div style={{
+              padding: '16px 24px 0',
+              fontFamily: V1.fontMono, fontSize: 11, color: 'rgba(255,255,255,0.45)',
+              letterSpacing: '0.1em',
+            }}>
+              {String(active + 1).padStart(2, '0')} / {String(USE_CASES.length).padStart(2, '0')}
+            </div>
+          </div>
+
+          {/* ─── RIGHT DASHBOARD ─── */}
+          <div style={{ padding: '32px 40px 40px', display: 'flex', flexDirection: 'column', gap: 24 }}>
+            {/* Stat cards */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+              {[
+                { label: 'Avg. Funding',  value: uc.metric.funding,  icon: '$' },
+                { label: 'Approval Time', value: uc.metric.approval, icon: '⧖' },
+                { label: 'ROI Increase',  value: uc.metric.roi,      icon: '↗' },
+              ].map((s, i) => (
+                <div key={i} style={{
+                  background: V1.bg,
+                  border: `1px solid ${V1.line}`,
+                  borderRadius: 12,
+                  padding: '16px 18px',
+                }}>
+                  <div style={{
+                    fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 600,
+                    letterSpacing: '0.16em', textTransform: 'uppercase', color: V1.muted,
+                  }}>
+                    {s.label}
+                  </div>
+                  <div key={`${active}-${i}`} style={{
+                    marginTop: 8,
+                    fontFamily: V1.fontDisplay, fontSize: 26, fontWeight: 700,
+                    letterSpacing: '-0.025em', color: V1.ink,
+                    lineHeight: 1.1, fontVariantNumeric: 'tabular-nums',
+                    display: 'flex', alignItems: 'center', gap: 6,
+                    animation: 'uc-fade 400ms ease-out both',
+                  }}>
+                    {s.value}
+                    {i === 2 && (
+                      <svg width="16" height="16" viewBox="0 0 16 16" style={{ color: V1.green }}>
+                        <path d="M3 13L13 3M7 3h6v6" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Budget allocation panel */}
+            <div style={{
+              flex: 1,
+              background: V1.white,
+              border: `1px solid ${V1.line}`,
+              borderRadius: 16,
+              padding: '22px 24px',
+              display: 'flex', flexDirection: 'column',
+            }}>
+              <div style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                marginBottom: 18,
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <UCIcon name={uc.icon} size={15} color={V1.muted} />
+                  <span style={{
+                    fontFamily: V1.fontMono, fontSize: 11, fontWeight: 600,
+                    letterSpacing: '0.18em', textTransform: 'uppercase', color: V1.muted,
+                  }}>
+                    Budget allocation
+                  </span>
+                </div>
+                <span style={{
+                  padding: '4px 12px', borderRadius: 999,
+                  background: `${V1.blue}14`, color: V1.blue,
+                  fontFamily: V1.fontMono, fontSize: 12, fontWeight: 700,
+                  letterSpacing: '0.04em',
+                }}>
+                  {uc.metric.funding}
+                </span>
+              </div>
+
+              {/* Chart + legend */}
+              <div style={{
+                flex: 1,
+                display: 'grid', gridTemplateColumns: '1fr 1fr',
+                alignItems: 'center', gap: 32,
+                minHeight: 240,
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <UCDonut data={uc.breakdown} active={active} />
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                  {uc.breakdown.map((b, i) => (
+                    <div key={`${active}-${i}`} style={{
+                      display: 'flex', alignItems: 'center', gap: 12,
+                      animation: `uc-fade 500ms ease-out ${i * 60}ms both`,
+                    }}>
+                      <span style={{
+                        width: 10, height: 10, borderRadius: 999,
+                        background: UC_COLORS[i % UC_COLORS.length],
+                        flexShrink: 0,
+                      }} />
+                      <span style={{
+                        flex: 1,
+                        fontFamily: V1.fontBody, fontSize: 14, color: V1.ink,
+                      }}>
+                        {b.name}
+                      </span>
+                      <span style={{
+                        fontFamily: V1.fontMono, fontSize: 13, fontWeight: 600,
+                        color: V1.muted, fontVariantNumeric: 'tabular-nums',
+                      }}>
+                        {b.pct}%
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Insight callout */}
+            <div key={`insight-${active}`} style={{
+              background: V1.bg,
+              border: `1px solid ${V1.line}`,
+              borderRadius: 12,
+              padding: '16px 20px',
+              display: 'flex', alignItems: 'flex-start', gap: 14,
+              animation: 'uc-fade 500ms ease-out both',
+            }}>
+              <span style={{
+                flexShrink: 0, width: 28, height: 28, borderRadius: 999,
+                background: `${V1.blue}14`, color: V1.blue,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                marginTop: 1,
+              }}>
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M8 1.5a5 5 0 00-3 9v1.5h6V10.5a5 5 0 00-3-9zM6.5 14.5h3"/>
+                </svg>
+              </span>
+              <div style={{
+                fontFamily: V1.fontBody, fontSize: 14, lineHeight: 1.55, color: V1.text,
+              }}>
+                {uc.insight}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes uc-fade {
+          from { opacity: 0; transform: translateY(6px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
+    </section>
+  );
+}
+
+export {
+  V1, v1H2, V1Eyebrow, V1StatsSection, V1CompareSection, V1CompareRow,
+  V1StepsSection, V1CalcSection, V1ReviewsSection, V1FAQSection, V1CTASection,
+  V1UseCasesSection,
+};
