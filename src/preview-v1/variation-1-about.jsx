@@ -5,6 +5,10 @@ import React from 'react';
 import { DELT, Btn, Ex } from './shared';
 import { V1, V1Eyebrow, v1H2, V1CTASection } from './variation-1-sections';
 
+function avatarInitials(name) {
+  return name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
+}
+
 // ─── Content ───
 const ABOUT_PRINCIPLES = [
   {
