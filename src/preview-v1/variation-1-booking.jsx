@@ -13,7 +13,7 @@
 // Keep: 30-min, Zoom, soft-pull language; underwriter-first framing matches
 // the rest of V1.
 import React from 'react';
-import { DELT, Btn } from './shared';
+import { DELT, Btn, Divider, fmt } from './shared';
 import { V1, V1Eyebrow } from './variation-1-sections';
 
 function V1UnderwriterDonut({ person, accent, active }) {

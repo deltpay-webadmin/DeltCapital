@@ -2,8 +2,8 @@
 // Modern editorial treatment: oversized hero, counting stats, principles
 // carousel, animated vertical timeline, leadership strip.
 import React from 'react';
-import { DELT, Btn } from './shared';
-import { V1, V1Eyebrow } from './variation-1-sections';
+import { DELT, Btn, Ex } from './shared';
+import { V1, V1Eyebrow, v1H2, V1CTASection } from './variation-1-sections';
 
 // ─── Content ───
 const ABOUT_PRINCIPLES = [

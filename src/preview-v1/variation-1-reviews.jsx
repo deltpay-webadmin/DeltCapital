@@ -2,8 +2,8 @@
 // Full editorial reviews experience: filterable hero strip, featured quote,
 // masonry-varied grid with metric-forward cards, and a "proof" strip at bottom.
 import React from 'react';
-import { DELT, DeltContent, Btn } from './shared';
-import { V1, V1Eyebrow } from './variation-1-sections';
+import { DELT, DeltContent, Btn, Divider } from './shared';
+import { V1, V1Eyebrow, V1CTASection } from './variation-1-sections';
 
 // ─── Rich testimonial dataset — extends shared.testimonials with metadata ───
 const REVIEW_META = [

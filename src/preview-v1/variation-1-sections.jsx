@@ -431,32 +431,9 @@ function V1StepsSection() {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// CALCULATOR — Atlassian-styled wrapper around the shared DeltCalculator
+// (V1CalcSection lives in variation-1.jsx so we can import V1CalcAnalyzer
+//  without creating a circular module dep between sections and calculator.)
 // ═══════════════════════════════════════════════════════════════
-function V1CalcSection({ calcState, setCalcState, onApply }) {
-  return (
-    <section data-v1-calc style={{ background: V1.bg, padding: '96px 0' }}>
-      <div style={{ maxWidth: 1080, margin: '0 auto', padding: '0 40px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'end', marginBottom: 48 }}>
-          <div>
-            <V1Eyebrow>Live calculator</V1Eyebrow>
-            <h2 style={{ ...v1H2, marginTop: 18 }}>Price the deal<br />before you apply.</h2>
-          </div>
-          <p style={{
-            fontFamily: V1.fontBody, fontSize: 17, lineHeight: 1.6, color: V1.text,
-            margin: 0, maxWidth: 460, justifySelf: 'end',
-          }}>
-            Same underwriting logic that runs on every Delt application. Numbers
-            update as you type.
-          </p>
-        </div>
-
-        {/* Rich analyzer — progressive reveal, Delt Boost toggle, custom amount */}
-        <V1CalcAnalyzer onApply={onApply} hideHeader />
-      </div>
-    </section>
-  );
-}
 
 // ═══════════════════════════════════════════════════════════════
 // REVIEWS — mono eyebrow per card, editorial
@@ -1110,6 +1087,6 @@ function V1UseCasesSection() {
 
 export {
   V1, v1H2, V1Eyebrow, V1StatsSection, V1CompareSection, V1CompareRow,
-  V1StepsSection, V1CalcSection, V1ReviewsSection, V1FAQSection, V1CTASection,
+  V1StepsSection, V1ReviewsSection, V1FAQSection, V1CTASection,
   V1UseCasesSection,
 };

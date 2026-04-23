@@ -6,14 +6,41 @@ import heroVideo from './assets/hero.mp4';
 import { DELT, Btn, Arr } from './shared';
 import { FooterBlock, ApplicationFlow } from './app';
 import {
-  V1, V1StatsSection, V1CompareSection, V1CalcSection,
+  V1, v1H2, V1Eyebrow, V1StatsSection, V1CompareSection,
   V1FAQSection, V1CTASection, V1UseCasesSection,
 } from './variation-1-sections';
-import { V1CalculatorPage } from './variation-1-calculator';
+import { V1CalculatorPage, V1CalcAnalyzer } from './variation-1-calculator';
 import { HowItWorksPage } from './variation-1-howitworks';
 import { V1AboutPage } from './variation-1-about';
 import { V1ReviewsPage } from './variation-1-reviews';
 import { V1BookingPage } from './variation-1-booking';
+
+// V1CalcSection lives here (not in variation-1-sections.jsx) so that
+// V1CalcAnalyzer can be imported without a circular dep between
+// sections.jsx and variation-1-calculator.jsx (the latter declares module-
+// level constants that read V1.*, which would hit TDZ on a cycle).
+function V1CalcSection({ calcState, setCalcState, onApply }) {
+  return (
+    <section data-v1-calc style={{ background: V1.bg, padding: '96px 0' }}>
+      <div style={{ maxWidth: 1080, margin: '0 auto', padding: '0 40px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'end', marginBottom: 48 }}>
+          <div>
+            <V1Eyebrow>Live calculator</V1Eyebrow>
+            <h2 style={{ ...v1H2, marginTop: 18 }}>Price the deal<br />before you apply.</h2>
+          </div>
+          <p style={{
+            fontFamily: V1.fontBody, fontSize: 17, lineHeight: 1.6, color: V1.text,
+            margin: 0, maxWidth: 460, justifySelf: 'end',
+          }}>
+            Same underwriting logic that runs on every Delt application. Numbers
+            update as you type.
+          </p>
+        </div>
+        <V1CalcAnalyzer onApply={onApply} hideHeader />
+      </div>
+    </section>
+  );
+}
 
 function V1Ticker({ accent }) {
   const rows = [

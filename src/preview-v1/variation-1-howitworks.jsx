@@ -10,8 +10,8 @@
 //   4. Under the hood (what happens on our side)
 //   5. CTA
 import React from 'react';
-import { DELT, Btn } from './shared';
-import { V1, V1Eyebrow } from './variation-1-sections';
+import { DELT, Btn, fmt } from './shared';
+import { V1, V1Eyebrow, v1H2 } from './variation-1-sections';
 
 const { useState: hwUseState, useEffect: hwUseEffect, useRef: hwUseRef } = React;
 
