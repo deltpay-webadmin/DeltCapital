@@ -306,7 +306,6 @@ function Variation1() {
   const home = (
     <>
       <V1Hero accent={accent} onApply={() => openApp(null, null)} />
-      <V1StatsSection />
       <V1CompareSection />
       <V1UseCasesSection />
       <V1CalcSection calcState={calcState} setCalcState={setCalcState} onApply={openApp} />

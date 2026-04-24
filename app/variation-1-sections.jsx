@@ -49,49 +49,6 @@ const v1H2 = {
 };
 
 // ═══════════════════════════════════════════════════════════════
-// STATS — result strip, three big numbers with hairline cards
-// ═══════════════════════════════════════════════════════════════
-function V1StatsSection() {
-  const stats = [
-    { label: 'Deployed since 2019', value: '$200M+', dot: V1.blue },
-    { label: 'Businesses funded',   value: '2,850+', dot: V1.green },
-    { label: 'Median time to funds', value: '24h',  dot: V1.blue },
-    { label: 'Median factor',       value: '1.18×', dot: V1.green },
-  ];
-  return (
-    <section style={{ background: V1.bg, padding: '64px 0 32px' }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
-          {stats.map((s, i) => (
-            <div key={i} style={{
-              background: V1.white,
-              border: `1px solid ${V1.line}`,
-              borderRadius: 16,
-              padding: '22px 24px',
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            }}>
-              <div>
-                <div style={{
-                  textTransform: 'uppercase', color: V1.muted,
-                  fontFamily: V1.fontMono, fontSize: 10.5, letterSpacing: '0.18em', fontWeight: 600,
-                }}>{s.label}</div>
-                <div style={{
-                  marginTop: 8,
-                  fontFamily: V1.fontDisplay, fontSize: 32, fontWeight: 700,
-                  letterSpacing: '-0.03em', color: V1.ink,
-                  fontVariantNumeric: 'tabular-nums', lineHeight: 1,
-                }}>{s.value}</div>
-              </div>
-              <span aria-hidden style={{ width: 8, height: 8, borderRadius: 999, background: s.dot, flexShrink: 0 }} />
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════
 // ═══════════════════════════════════════════════════════════════
 // COMPARE — sleek modern side-by-side with animated delta bars
 // ═══════════════════════════════════════════════════════════════
@@ -1107,7 +1064,7 @@ function V1UseCasesSection() {
 }
 
 Object.assign(window, {
-  V1Eyebrow, V1StatsSection, V1CompareSection, V1StepsSection,
+  V1Eyebrow, V1CompareSection, V1StepsSection,
   V1CalcSection, V1ReviewsSection, V1FAQSection, V1CTASection,
   V1UseCasesSection, V1,
 });
