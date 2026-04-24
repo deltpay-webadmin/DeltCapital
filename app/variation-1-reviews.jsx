@@ -4,12 +4,12 @@
 
 // ─── Rich testimonial dataset — extends shared.testimonials with metadata ───
 const REVIEW_META = [
-  { industry: 'Restaurants',  city: 'Miami, FL',       draw: 3, years: 4, savings: '$12.4K' },
-  { industry: 'Construction', city: 'Phoenix, AZ',     draw: 3, years: 6, savings: '$28.7K' },
-  { industry: 'Beauty',       city: 'Austin, TX',      draw: 2, years: 2, savings: '$8.9K'  },
-  { industry: 'Logistics',    city: 'Atlanta, GA',     draw: 4, years: 5, savings: '$16.2K' },
-  { industry: 'Retail',       city: 'Denver, CO',      draw: 2, years: 3, savings: '$6.5K'  },
-  { industry: 'Auto',         city: 'Nashville, TN',   draw: 3, years: 7, savings: '$14.8K' },
+  { industry: 'Restaurants',  kind: 'Family trattoria',      city: 'Miami, FL',     draw: 3, years: 4, savings: '$12.4K' },
+  { industry: 'Construction', kind: 'Residential GC',        city: 'Phoenix, AZ',   draw: 3, years: 6, savings: '$28.7K' },
+  { industry: 'Beauty',       kind: 'Medical spa',           city: 'Austin, TX',    draw: 2, years: 2, savings: '$8.9K'  },
+  { industry: 'Logistics',    kind: 'Regional 3PL',          city: 'Atlanta, GA',   draw: 4, years: 5, savings: '$16.2K' },
+  { industry: 'Retail',       kind: 'Specialty grocer',      city: 'Denver, CO',    draw: 2, years: 3, savings: '$6.5K'  },
+  { industry: 'Auto',         kind: 'Independent body shop', city: 'Nashville, TN', draw: 3, years: 7, savings: '$14.8K' },
 ];
 
 const REVIEW_FILTERS = ['All', 'Restaurants', 'Construction', 'Logistics', 'Retail', 'Beauty', 'Auto'];
@@ -58,10 +58,9 @@ function ReviewCard({ t, meta, featured, idx }) {
       color: featured ? '#fff' : V1.ink,
       border: `1px solid ${featured ? 'rgba(255,255,255,0.08)' : V1.line}`,
       borderRadius: 20,
-      padding: featured ? 40 : 28,
+      padding: featured ? 32 : 28,
       gridColumn: featured ? 'span 2' : 'span 1',
-      gridRow: featured ? 'span 2' : 'span 1',
-      display: 'flex', flexDirection: 'column', gap: featured ? 24 : 20,
+      display: 'flex', flexDirection: 'column', gap: 20,
       position: 'relative', overflow: 'hidden',
       transition: 'transform 240ms cubic-bezier(0.22,1,0.36,1), box-shadow 240ms',
     }}
@@ -100,7 +99,7 @@ function ReviewCard({ t, meta, featured, idx }) {
             width: 14, height: 1,
             background: featured ? V1.blueSoft : V1.blue,
           }} />
-          {meta.industry}
+          {meta.kind || meta.industry}
         </span>
         <span style={{ color: featured ? 'rgba(255,255,255,0.2)' : V1.line }}>·</span>
         <span style={{
@@ -129,12 +128,11 @@ function ReviewCard({ t, meta, featured, idx }) {
       <blockquote style={{
         margin: 0,
         fontFamily: V1.fontDisplay,
-        fontSize: featured ? 32 : 18,
+        fontSize: featured ? 26 : 18,
         fontWeight: featured ? 500 : 500,
-        lineHeight: featured ? 1.25 : 1.45,
+        lineHeight: featured ? 1.3 : 1.45,
         letterSpacing: featured ? '-0.025em' : '-0.015em',
         color: featured ? '#fff' : V1.ink,
-        flex: featured ? 1 : 'unset',
       }}>
         <span style={{
           color: featured ? V1.blueSoft : V1.blue,
