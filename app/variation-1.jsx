@@ -324,15 +324,63 @@ function V1Hero({ accent, onApply }) {
 
 // V1 has a fully bespoke home layout. We reuse DeltApp's chrome + ApplicationFlow
 // but compose the body sections ourselves using the V1Section components.
+//
+// Router: URL hash (#about, #privacy, …) is the source of truth, so the
+// browser's Back/Forward buttons work and deep links resolve on reload. Every
+// navTo() fades the body out for ~200ms before swapping content so page
+// changes feel like a transition rather than a hard snap.
+const V1_PAGES = new Set(['home', 'about', 'how', 'reviews', 'calc', 'talk', 'support', 'faq', 'blog', 'login', 'terms', 'privacy', 'eca']);
+function readPageFromHash() {
+  if (typeof window === 'undefined') return 'home';
+  const h = (window.location.hash || '').replace(/^#\/?/, '');
+  return V1_PAGES.has(h) ? h : 'home';
+}
+
 function Variation1() {
   const accent = V1.blue; // Atlassian-preview blue for V1
-  const [page, setPage] = React.useState('home');
+  const [page, setPage] = React.useState(readPageFromHash);
+  const [transitioning, setTransitioning] = React.useState(false);
   const [appOpen, setAppOpen] = React.useState(false);
   const [calcState, setCalcState] = React.useState({ revenue: 0, tib: '', cards: null, cardSales: 0 });
   const [appPrefill, setAppPrefill] = React.useState(null);
 
-  const navTo = (p) => { setPage(p); window.scrollTo(0, 0); };
+  // Core page swap: fade the body, swap page, scroll to top, fade back in.
+  // `pushUrl` is false when we're responding to a popstate so we don't
+  // re-push the URL the browser just navigated to.
+  const swapPage = React.useCallback((p, pushUrl) => {
+    if (!V1_PAGES.has(p) || p === page) return;
+    setTransitioning(true);
+    window.setTimeout(() => {
+      setPage(p);
+      if (pushUrl) {
+        const nextHash = p === 'home' ? ' ' : `#${p}`;
+        window.history.pushState({ page: p }, '', nextHash);
+      }
+      window.scrollTo(0, 0);
+      // Let React commit the new page before we fade back in.
+      requestAnimationFrame(() => setTransitioning(false));
+    }, 200);
+  }, [page]);
+
+  const navTo = React.useCallback((p) => swapPage(p, true), [swapPage]);
   const openApp = (c, est) => { if (est) setAppPrefill(est); setAppOpen(true); };
+
+  // Sync with Back / Forward buttons.
+  React.useEffect(() => {
+    const onPop = () => {
+      const next = readPageFromHash();
+      if (next !== page) swapPage(next, false);
+    };
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  }, [page, swapPage]);
+
+  // Make sure the initial URL has a history entry so the first Back works.
+  React.useEffect(() => {
+    if (!window.history.state || !window.history.state.page) {
+      window.history.replaceState({ page }, '', page === 'home' ? ' ' : `#${page}`);
+    }
+  }, []);
 
   const home = (
     <>
@@ -362,7 +410,13 @@ function Variation1() {
   return (
     <>
       {V1Chrome({ page, navTo, accent, openApp: () => openApp(null, null) })}
-      {body}
+      <div style={{
+        opacity: transitioning ? 0 : 1,
+        transform: transitioning ? 'translateY(6px)' : 'translateY(0)',
+        transition: 'opacity 220ms cubic-bezier(0.22, 1, 0.36, 1), transform 220ms cubic-bezier(0.22, 1, 0.36, 1)',
+      }}>
+        {body}
+      </div>
       <FooterBlock accent={accent} brand={V1Chrome.brand} onNav={navTo} />
       <V1ApplicationFlow open={appOpen} onClose={() => setAppOpen(false)} prefill={appPrefill} accent={accent} />
     </>
