@@ -709,19 +709,60 @@ function V1PrivacyPolicy({ onBack, onNavTerms }) {
 }
 
 // ═════════════════════════════════════════════════════════════════
-// ELECTRONIC COMMUNICATIONS AGREEMENT  (added in next pass)
+// ELECTRONIC COMMUNICATIONS AGREEMENT
 // ═════════════════════════════════════════════════════════════════
+const ECA_TOC = [
+  { id: 'eca-1', label: 'Scope of Communications' },
+  { id: 'eca-2', label: 'Method of Providing' },
+  { id: 'eca-3', label: 'How to Withdraw Consent' },
+  { id: 'eca-4', label: 'Updating Contact Info' },
+  { id: 'eca-5', label: 'Hardware & Software' },
+];
+
 function V1ElectronicCommunications({ onBack }) {
   return (
     <V1LegalLayout
       eyebrow="Communications"
       title="Electronic Communications Agreement."
       effective="Feb 19, 2026"
-      toc={[{ id: 'eca-stub', label: 'Coming next pass' }]}
+      toc={ECA_TOC}
       onBack={onBack}
     >
-      <LegalSection id="eca-stub" eyebrow="—" title="Loading…">
-        <LegalP>ECA content loads in the next edit pass.</LegalP>
+      <LegalSection id="eca-1" eyebrow="01 · Scope" title="Scope of Communications to Be Provided in Electronic Form">
+        <LegalP>You agree that we may provide you with any communications that we may be required to send to you by law or regulation in electronic format. These communications include, but are not limited to:</LegalP>
+        <LegalList items={[
+          'Terms and conditions and policies you agree to (e.g., the Delt Capital Terms of Use and Privacy Policy), including updates to these agreements or policies;',
+          'Disclosures and notices associated with your account;',
+          'Transaction receipts or confirmations;',
+          'Customer service communications; and',
+          'Any other communications related to your use of Delt Capital services.',
+        ]} />
+      </LegalSection>
+
+      <LegalSection id="eca-2" eyebrow="02 · Method" title="Method of Providing Communications">
+        <LegalP>We may provide communications to you by email or by posting them on the Delt Capital website or mobile application. All communications in either electronic or paper format will be considered to be "in writing."</LegalP>
+      </LegalSection>
+
+      <LegalSection id="eca-3" eyebrow="03 · Withdrawal" title="How to Withdraw Consent">
+        <LegalP>You may withdraw your consent to receive communications electronically by contacting us in writing. If you withdraw your consent, we reserve the right to close your account or charge you additional fees for paper copies.</LegalP>
+        <LegalCallout eyebrow="To withdraw consent">
+          Email <LegalLink href="mailto:privacy@delt.com">privacy@delt.com</LegalLink> with the subject line <b>"Electronic Communications — Withdraw Consent"</b> and include the business name and EIN on file. We will confirm receipt within five (5) business days and process the request within a reasonable time.
+        </LegalCallout>
+      </LegalSection>
+
+      <LegalSection id="eca-4" eyebrow="04 · Contact" title="Updating Your Contact Information">
+        <LegalP>It is your responsibility to keep your primary email address up to date so that Delt Capital can communicate with you electronically. You understand and agree that if Delt Capital sends you an electronic communication but you do not receive it because your primary email address on file is incorrect, out of date, blocked by your service provider, or you are otherwise unable to receive electronic communications, Delt Capital will be deemed to have provided the communication to you.</LegalP>
+      </LegalSection>
+
+      <LegalSection id="eca-5" eyebrow="05 · Requirements" title="Hardware and Software Requirements">
+        <LegalP>In order to access and retain electronic communications, you will need a computer or mobile device with an internet connection, a valid email address, and software that allows you to view and save PDF files.</LegalP>
+        <LegalList items={[
+          <>A current version of a major web browser (Chrome, Safari, Firefox, or Edge — last two releases).</>,
+          <>A valid email address you can check regularly, and a mail client that accepts inbound HTML email from <b>@delt.com</b>.</>,
+          <>A PDF reader that supports PDF 1.7 or later (e.g., Adobe Reader, Apple Preview, or the built-in viewer in most modern browsers).</>,
+          <>Local storage sufficient to download and retain documents you wish to keep (account disclosures, offer letters, year-end statements).</>,
+        ]} />
+        <LegalP>If you are unable to meet any of the requirements above, do not consent to receive electronic communications and contact us for an alternative delivery method.</LegalP>
       </LegalSection>
     </V1LegalLayout>
   );
