@@ -1,15 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1440" />
+<title>Delt Capital — Redesign</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+Pro:ital,wght@1,400;1,600&display=swap" rel="stylesheet">
 
-  <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Delt Capital (1.1)</title>
-    </head>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #f0eee9; font-family: 'Inter', sans-serif; color: #0F0E17; }
+  body { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  button { font-family: inherit; }
+  a { text-decoration: none; color: inherit; }
+  input, select, textarea, button { font-family: inherit; }
 
-    <body>
-      <div id="root"></div>
-      <script type="module" src="/src/main.tsx"></script>
-    </body>
-  </html>
-  
+  /* The artboard frame becomes a scrollable viewport showing a full webpage preview */
+  .artboard-frame {
+    overflow: auto;
+    background: #F7F5F0;
+    position: relative;
+  }
+  .artboard-frame::-webkit-scrollbar { width: 10px; height: 10px; }
+  .artboard-frame::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 5px; }
+  .artboard-frame::-webkit-scrollbar-track { background: transparent; }
+
+  /* Tweaks panel */
+  .tweaks-panel {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background: #fff; border: 1px solid #E7E3DA; border-radius: 12px;
+    padding: 18px; width: 280px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+    font-family: 'Inter', sans-serif;
+    display: none;
+  }
+  .tweaks-panel.open { display: block; }
+  .tweaks-panel h3 {
+    margin: 0 0 14px; font-family: 'Inter Tight', sans-serif;
+    font-size: 14px; font-weight: 600; letter-spacing: -0.01em;
+    color: #0F0E17;
+  }
+  .tweaks-row { margin-bottom: 14px; }
+  .tweaks-row:last-child { margin-bottom: 0; }
+  .tweaks-label {
+    display: block; font-size: 10.5px; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: #6A6876; margin-bottom: 8px;
+  }
+  .swatch-row { display: flex; gap: 6px; }
+  .swatch {
+    width: 28px; height: 28px; border-radius: 6px; cursor: pointer;
+    border: 2px solid transparent; transition: border-color .15s;
+  }
+  .swatch.active { border-color: #0F0E17; }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <div class="tweaks-panel" id="tweaks">
+    <h3>Tweaks</h3>
+    <div class="tweaks-row">
+      <span class="tweaks-label">Accent color</span>
+      <div class="swatch-row" id="swatches"></div>
+    </div>
+    <div class="tweaks-row">
+      <span class="tweaks-label">Body font</span>
+      <select id="fontSel" style="width:100%;padding:7px 9px;border:1px solid #E7E3DA;border-radius:6px;font-size:13px;color:#0F0E17;background:#F7F5F0;">
+        <option value="Inter">Inter (default)</option>
+        <option value="IBM Plex Sans">IBM Plex Sans</option>
+        <option value="Geist">Geist</option>
+      </select>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <script type="text/babel" src="design-canvas.jsx"></script>
+  <script type="text/babel" src="app/shared.jsx"></script>
+  <script type="text/babel" src="app/app.jsx"></script>
+  <script type="text/babel" src="app/variation-1-motion.jsx"></script>
+  <script type="text/babel" src="app/variation-1-sections.jsx"></script>
+  <script type="text/babel" src="app/variation-1-calculator.jsx"></script>
+  <script type="text/babel" src="app/variation-1-howitworks.jsx"></script>
+  <script type="text/babel" src="app/variation-1-reviews.jsx"></script>
+  <script type="text/babel" src="app/variation-1-about.jsx"></script>
+  <script type="text/babel" src="app/variation-1-booking.jsx"></script>
+  <script type="text/babel" src="app/variation-1-support.jsx"></script>
+  <script type="text/babel" src="app/variation-1-faq.jsx"></script>
+  <script type="text/babel" src="app/variation-1-blog.jsx"></script>
+  <script type="text/babel" src="app/variation-1-apply.jsx"></script>
+  <script type="text/babel" src="app/variation-1.jsx"></script>
+  <script type="text/babel" src="app/variation-2.jsx"></script>
+  <script type="text/babel" src="app/variation-3.jsx"></script>
+  <script type="text/babel" src="app/variation-4.jsx"></script>
+
+  <script type="text/babel" data-presets="react">
+    // Tweaks state — persisted via edit mode
+    const TWEAKS = /*EDITMODE-BEGIN*/{
+      "accent": "#4F46E5",
+      "bodyFont": "Inter"
+    }/*EDITMODE-END*/;
+
+    // Apply accent override by mutating window.DELT colors before render
+    window.DELT.colors.indigo = TWEAKS.accent;
+    if (TWEAKS.bodyFont !== 'Inter') {
+      window.DELT.font.body = `"${TWEAKS.bodyFont}", "Inter", system-ui, sans-serif`;
+    }
+
+    const ACCENT_SWATCHES = [
+      { label: 'Indigo', v: '#4F46E5' },
+      { label: 'Violet', v: '#7C3AED' },
+      { label: 'Teal',   v: '#0D9488' },
+      { label: 'Amber',  v: '#B45309' },
+      { label: 'Rose',   v: '#BE123C' },
+      { label: 'Ink',    v: '#0F0E17' },
+    ];
+
+    // Populate swatches
+    const sw = document.getElementById('swatches');
+    ACCENT_SWATCHES.forEach(s => {
+      const el = document.createElement('div');
+      el.className = 'swatch' + (s.v === TWEAKS.accent ? ' active' : '');
+      el.style.background = s.v;
+      el.title = s.label;
+      el.addEventListener('click', () => {
+        window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { accent: s.v } }, '*');
+        // Apply live without reload
+        document.querySelectorAll('.swatch').forEach(x => x.classList.remove('active'));
+        el.classList.add('active');
+        window.DELT.colors.indigo = s.v;
+        renderApp();
+      });
+      sw.appendChild(el);
+    });
+
+    document.getElementById('fontSel').value = TWEAKS.bodyFont;
+    document.getElementById('fontSel').addEventListener('change', (e) => {
+      const v = e.target.value;
+      window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { bodyFont: v } }, '*');
+      window.DELT.font.body = v === 'Inter' ? '"Inter", ui-sans-serif, system-ui, sans-serif'
+        : `"${v}", "Inter", ui-sans-serif, system-ui, sans-serif`;
+      renderApp();
+    });
+
+    // Edit mode protocol
+    window.addEventListener('message', (e) => {
+      if (!e.data || typeof e.data !== 'object') return;
+      if (e.data.type === '__activate_edit_mode') document.getElementById('tweaks').classList.add('open');
+      if (e.data.type === '__deactivate_edit_mode') document.getElementById('tweaks').classList.remove('open');
+    });
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+
+    // Each variation wrapped in its own artboard
+    function ArtboardShell({ children }) {
+      return (
+        <div className="artboard-frame" style={{ width: '100%', height: '100%' }}>
+          {children}
+        </div>
+      );
+    }
+
+    function Root() {
+      return (
+        <DesignCanvas>
+          <DCSection id="delt-variants" title="Delt Capital · Homepage directions" subtitle="Four directions. Full interactive flow — hero, live calculator, comparison, reviews, FAQ, 4-step apply modal. Click any artboard's expand icon to open fullscreen. Open Tweaks to swap accent color or body font across all four at once.">
+            <DCArtboard id="v1" label="01 · Ledger — editorial, oversized type" width={1440} height={900}>
+              <ArtboardShell><Variation1 /></ArtboardShell>
+            </DCArtboard>
+            <DCArtboard id="v2" label="02 · Institutional — Stripe-style, offer mock" width={1440} height={900}>
+              <ArtboardShell><Variation2 /></ArtboardShell>
+            </DCArtboard>
+            <DCArtboard id="v3" label="03 · Split — dark hero, live calculator inline" width={1440} height={900}>
+              <ArtboardShell><Variation3 /></ArtboardShell>
+            </DCArtboard>
+            <DCArtboard id="v4" label="04 · Terminal — deal tape, numeric-forward" width={1440} height={900}>
+              <ArtboardShell><Variation4 /></ArtboardShell>
+            </DCArtboard>
+          </DCSection>
+        </DesignCanvas>
+      );
+    }
+
+    let root = null;
+    function renderApp() {
+      if (!root) root = ReactDOM.createRoot(document.getElementById('root'));
+      root.render(<Root />);
+    }
+    renderApp();
+  </script>
+</body>
+</html>
