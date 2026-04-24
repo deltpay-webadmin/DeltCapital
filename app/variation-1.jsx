@@ -230,8 +230,31 @@ function V1Hero({ accent, onApply }) {
               transform: `translate3d(0, ${videoShift}px, 0) scale(${videoScale})`,
               transformOrigin: 'center center',
               willChange: 'transform',
+              // Brand tint (step 1 of 2): rotate the baked-in violet ~25° back
+              // toward Electric Indigo, with a gentle saturation/brightness
+              // lift so the shift doesn't flatten the scene.
+              filter: 'hue-rotate(-25deg) saturate(1.08) brightness(1.02)',
             }}
           />
+          {/* Brand tint (step 2 of 2): Electric Indigo `mix-blend-mode: color`
+              overlay at ~14% pulls any remaining chroma toward #4945FF while
+              preserving luminance (motion, highlights, shadows intact). */}
+          <div aria-hidden style={{
+            position: 'absolute', inset: 0,
+            background: '#4945FF',
+            mixBlendMode: 'color',
+            opacity: 0.14,
+            pointerEvents: 'none',
+          }} />
+          {/* Midnight Steel soft-light pass for overall brand cohesion with
+              the Midnight Steel hero background. */}
+          <div aria-hidden style={{
+            position: 'absolute', inset: 0,
+            background: '#041E42',
+            mixBlendMode: 'soft-light',
+            opacity: 0.35,
+            pointerEvents: 'none',
+          }} />
           {/* Left-edge fade so video melts into the copy column */}
           <div style={{
             position: 'absolute', inset: 0,
