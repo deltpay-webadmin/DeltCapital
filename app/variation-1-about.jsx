@@ -41,8 +41,8 @@ const ABOUT_TIMELINE = [
 ];
 
 const ABOUT_LEADERSHIP = [
-  { n: 'Elena Park',      r: 'Co-founder, CEO',      bio: '10 yrs at OnDeck credit · Wharton MBA',   color: '#4F46E5' },
-  { n: 'David Okonkwo',   r: 'Co-founder, CTO',      bio: 'Ex-Plaid staff eng · MIT CS',              color: '#4F46E5' },
+  { n: 'Elena Park',      r: 'Co-founder, CEO',      bio: '10 yrs at OnDeck credit · Wharton MBA',   color: '#4945FF' },
+  { n: 'David Okonkwo',   r: 'Co-founder, CTO',      bio: 'Ex-Plaid staff eng · MIT CS',              color: '#4945FF' },
   { n: 'Priya Singh',     r: 'Head of Underwriting', bio: '8 yrs at Kabbage · Fraud & risk',          color: '#818CF8' },
   { n: 'Marcus Chen',     r: 'Head of Capital',      bio: 'Ex-Goldman SMB lending · 2 Fed funds',     color: '#4338CA' },
   { n: 'Nora Hassan',     r: 'Head of Operator Desk', bio: 'Scaled support at Brex to 20K accounts',  color: '#6366F1' },

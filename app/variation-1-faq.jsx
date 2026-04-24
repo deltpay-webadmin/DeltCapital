@@ -633,7 +633,7 @@ function FaqHero({ accent, query, setQuery, totalCount, filteredCount }) {
       }}/>
       <div aria-hidden style={{
         position: 'absolute', bottom: -240, left: -120, width: 480, height: 480,
-        background: `radial-gradient(circle, #4F46E522 0%, transparent 60%)`,
+        background: `radial-gradient(circle, #4945FF22 0%, transparent 60%)`,
         filter: 'blur(20px)', pointerEvents: 'none',
       }}/>
 

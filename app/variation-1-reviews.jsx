@@ -20,7 +20,7 @@ function avatarInitials(name) {
 
 function avatarColor(name) {
   // Deterministic violet-family tint per person
-  const hues = ['#4F46E5', '#4338CA', '#6366F1', '#818CF8', '#3730A3', '#6D6BF5'];
+  const hues = ['#4945FF', '#4338CA', '#6366F1', '#818CF8', '#3730A3', '#6D6BF5'];
   let h = 0;
   for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
   return hues[h % hues.length];

@@ -96,7 +96,7 @@ function V1Hero({ accent, onApply }) {
 
   return (
     <section style={{
-      background: '#0B0E2E',
+      background: '#041E42',
       color: '#F7F5F0',
       position: 'relative',
       overflow: 'hidden',
@@ -235,13 +235,13 @@ function V1Hero({ accent, onApply }) {
           {/* Left-edge fade so video melts into the copy column */}
           <div style={{
             position: 'absolute', inset: 0,
-            background: 'linear-gradient(90deg, #0B0E2E 0%, rgba(11,14,46,0.6) 12%, rgba(11,14,46,0) 32%)',
+            background: 'linear-gradient(90deg, #041E42 0%, rgba(4,30,66,0.6) 12%, rgba(4,30,66,0) 32%)',
             pointerEvents: 'none',
           }} />
           {/* Top/bottom subtle fades to help the band read as a hero */}
           <div style={{
             position: 'absolute', inset: 0,
-            background: 'linear-gradient(180deg, rgba(11,14,46,0.25) 0%, transparent 15%, transparent 85%, rgba(11,14,46,0.4) 100%)',
+            background: 'linear-gradient(180deg, rgba(4,30,66,0.25) 0%, transparent 15%, transparent 85%, rgba(4,30,66,0.4) 100%)',
             pointerEvents: 'none',
           }} />
 

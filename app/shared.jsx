@@ -12,9 +12,9 @@ const DELT = {
     paper: '#F7F5F0',
     paperWarm: '#FAF8F3',
     card: '#FFFFFF',
-    indigo: '#4F46E5',
+    indigo: '#4945FF',
     indigoDeep: '#3730A3',
-    violet: '#4F46E5',
+    violet: '#4945FF',
     ok: '#0F7A5A',
     warn: '#B8531A',
   },
@@ -112,7 +112,7 @@ function Divider({ color = DELT.colors.line, style = {} }) {
 }
 
 function Pill({ children, tone = 'ink', style = {} }) {
-  const bg = tone === 'indigo' ? 'rgba(79,70,229,0.08)' : tone === 'ok' ? 'rgba(15,122,90,0.10)' : 'rgba(15,14,23,0.05)';
+  const bg = tone === 'indigo' ? 'rgba(73,69,255,0.08)' : tone === 'ok' ? 'rgba(15,122,90,0.10)' : 'rgba(15,14,23,0.05)';
   const fg = tone === 'indigo' ? DELT.colors.indigo : tone === 'ok' ? DELT.colors.ok : DELT.colors.inkSoft;
   return (
     <span style={{

@@ -1,6 +1,6 @@
 // V1 Support page — contact form + schedule-a-meeting hand-off.
 // Matches the Atlassian-preview aesthetic used across V1: #f6f9fc canvas,
-// #0a2540 ink, violet accent, Inter Tight display / Inter body / JetBrains
+// #041E42 ink, violet accent, Inter Tight display / Inter body / JetBrains
 // Mono eyebrows, 1px hairline borders, mono uppercase labels with short-rule
 // prefix. Borrows form-field chrome from V1 Apply and the dark-hero language
 // from V1 Booking so the two pages feel like siblings.
@@ -38,7 +38,7 @@ function V1SupportHero({ accent }) {
       }} />
       <div aria-hidden style={{
         position: 'absolute', bottom: -240, right: -120, width: 500, height: 500,
-        background: `radial-gradient(circle, #4F46E522 0%, transparent 60%)`,
+        background: `radial-gradient(circle, #4945FF22 0%, transparent 60%)`,
         filter: 'blur(20px)', pointerEvents: 'none',
       }} />
 

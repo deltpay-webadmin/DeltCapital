@@ -287,7 +287,7 @@ function BlogMasthead({ accent }) {
       }} />
       <div aria-hidden style={{
         position: 'absolute', bottom: -240, right: -120, width: 540, height: 540,
-        background: `radial-gradient(circle, #4F46E51F 0%, transparent 60%)`,
+        background: `radial-gradient(circle, #4945FF1F 0%, transparent 60%)`,
         filter: 'blur(20px)', pointerEvents: 'none',
       }} />
 

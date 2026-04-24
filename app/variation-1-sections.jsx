@@ -1,5 +1,5 @@
 // V1-specific sections — Atlassian-preview aesthetic.
-// Palette: #f6f9fc canvas · #0a2540 ink · #0c66e4 blue · #1F845A green
+// Palette: #f6f9fc canvas · #041E42 ink · #0c66e4 blue · #1F845A green
 //          #c9372c red · #697386 muted · #dcdfe4 hairline · #85B8FF on-dark blue
 // Typography: serif-ish display (tight -0.035em), mono eyebrows w/ 0.18em tracking,
 //             horizontal rule prefix before every eyebrow label.
@@ -7,13 +7,13 @@
 const V1 = {
   bg:       '#f6f9fc',
   bgWarm:   '#f1f2f4',
-  ink:      '#0a2540',
+  ink:      '#041E42',
   muted:    '#697386',
   text:     '#425466',
   line:     '#dcdfe4',
   // Indigo family
-  blue:     '#4F46E5', // primary accent (was #0c66e4)
-  blueSoft: '#A5B4FC', // on-dark soft accent (was #85B8FF)
+  blue:     '#4945FF', // Electric Indigo (brand §3.1)
+  blueSoft: '#A5B4FC', // on-dark soft accent (derived)
   green:    '#1F845A',
   red:      '#c9372c',
   white:    '#ffffff',
@@ -784,7 +784,7 @@ function V1CTASection({ onApply, onTalk }) {
                     width: 10, height: 10, marginLeft: -5,
                     borderRadius: 999,
                     background: V1.blue,
-                    boxShadow: `0 0 0 4px rgba(79,70,229,0.2)`,
+                    boxShadow: `0 0 0 4px rgba(73,69,255,0.2)`,
                     transform: inView ? 'scale(1)' : 'scale(0)',
                     transition: `transform 600ms cubic-bezier(0.22, 1, 0.36, 1) ${1100 + i * 160}ms`,
                   }} />
@@ -928,7 +928,7 @@ const USE_CASES = [
 ];
 
 // Indigo ramp for budget bars
-const UC_COLORS = ['#3730A3', '#4F46E5', '#6366F1', '#818CF8', '#1F845A'];
+const UC_COLORS = ['#3730A3', '#4945FF', '#6366F1', '#818CF8', '#1F845A'];
 
 // Inline icon set for the left rail
 function UCIcon({ name, size = 16, color = 'currentColor' }) {

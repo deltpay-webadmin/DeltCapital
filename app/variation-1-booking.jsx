@@ -1,7 +1,7 @@
 // V1 Talk-to-an-Underwriter booking page.
 // Structure borrowed from the original DeltCapital BookingPage.tsx
 // (specialist selector · month calendar · time slots · confirm) but recut in
-// V1's Atlassian-preview aesthetic: #f6f9fc canvas, #0a2540 ink, violet accent,
+// V1's Atlassian-preview aesthetic: #f6f9fc canvas, #041E42 ink, violet accent,
 // Inter Tight display / Inter body / JetBrains Mono eyebrows, hairline 1px
 // borders, mono uppercase labels with short-rule prefix.
 //
@@ -57,7 +57,7 @@ function V1BookingHero({ accent }) {
       }} />
       <div aria-hidden style={{
         position: 'absolute', bottom: -260, left: -140, width: 520, height: 520,
-        background: `radial-gradient(circle, #4F46E522 0%, transparent 60%)`,
+        background: `radial-gradient(circle, #4945FF22 0%, transparent 60%)`,
         pointerEvents: 'none', filter: 'blur(20px)',
       }} />
 
