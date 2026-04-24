@@ -157,8 +157,9 @@ function V1LoginPage({ onClose, onSignIn, onApply }) {
           <h1 style={{
             margin: '28px 0 0',
             fontFamily: V1.fontDisplay,
-            fontSize: 'clamp(2.4rem, 4.6vw, 4rem)',
-            fontWeight: 600, lineHeight: 1, letterSpacing: '-0.04em',
+            // Brand §4.3 — H1: Codec Pro Ultra, 56px, line-height 1.02
+            fontSize: 'clamp(2.6rem, 4.4vw, 3.5rem)',
+            fontWeight: 950, lineHeight: 1.02, letterSpacing: '-0.04em',
             color: '#fff',
           }}>
             <V1LineMask ready={mounted} delay={140} duration={900}>Welcome back,</V1LineMask>
@@ -166,7 +167,7 @@ function V1LoginPage({ onClose, onSignIn, onApply }) {
           </h1>
 
           <p style={{
-            fontFamily: V1.fontBody, fontSize: 17, lineHeight: 1.6,
+            fontFamily: V1.fontBody, fontSize: 17, lineHeight: 1.55,
             color: 'rgba(255,255,255,0.72)',
             margin: '28px 0 0', maxWidth: 460,
             ...enter(540),
@@ -287,7 +288,9 @@ function V1LoginPage({ onClose, onSignIn, onApply }) {
             inset: sent ? 0 : undefined,
           }}>
             <h2 style={{
-              fontFamily: V1.fontDisplay, fontSize: 40, fontWeight: 600,
+              fontFamily: V1.fontDisplay,
+              // Brand §4.3 — H3: Codec Pro Extra Bold, 40px, line-height 1.05
+              fontSize: 40, fontWeight: 800,
               letterSpacing: '-0.035em', lineHeight: 1.05,
               color: V1.ink, margin: 0,
               ...enter(140),
@@ -448,7 +451,9 @@ function V1LoginPage({ onClose, onSignIn, onApply }) {
                     display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 12,
                     background: V1.blue, color: '#fff', border: 'none',
                     padding: '16px 26px', borderRadius: 10, cursor: 'pointer',
-                    fontFamily: V1.fontBody, fontSize: 15.5, fontWeight: 600, letterSpacing: '-0.005em',
+                    // Brand §4.3 — CTA: Codec Pro Bold, 15px, line-height 1
+                    fontFamily: V1.fontDisplay, fontSize: 15, fontWeight: 700,
+                    lineHeight: 1, letterSpacing: '-0.005em',
                     boxShadow: hoverSubmit
                       ? `0 12px 28px -10px ${V1.blue}cc, 0 2px 6px ${V1.blue}44`
                       : `0 6px 18px -8px ${V1.blue}aa`,
@@ -622,7 +627,9 @@ function V1LoginPage({ onClose, onSignIn, onApply }) {
                 </div>
 
                 <h2 style={{
-                  fontFamily: V1.fontDisplay, fontSize: 40, fontWeight: 600,
+                  fontFamily: V1.fontDisplay,
+                  // Brand §4.3 — H3: Codec Pro Extra Bold, 40px, line-height 1.05
+                  fontSize: 40, fontWeight: 800,
                   letterSpacing: '-0.035em', lineHeight: 1.05, color: V1.ink,
                   margin: 0,
                 }}>
@@ -659,7 +666,9 @@ function V1LoginPage({ onClose, onSignIn, onApply }) {
                       display: 'inline-flex', alignItems: 'center', gap: 10,
                       background: 'transparent', border: `1px solid ${V1.line}`,
                       padding: '12px 22px', borderRadius: 10, cursor: 'pointer',
-                      fontFamily: V1.fontBody, fontSize: 14, fontWeight: 500, color: V1.ink,
+                      // Brand §4.3 — CTA: Codec Pro Bold, 15px, line-height 1
+                      fontFamily: V1.fontDisplay, fontSize: 15, fontWeight: 700,
+                      lineHeight: 1, color: V1.ink,
                       transition: 'border-color 220ms, background 220ms',
                     }}
                     onMouseEnter={(e) => { e.currentTarget.style.borderColor = V1.ink; e.currentTarget.style.background = V1.bg; }}
@@ -674,7 +683,9 @@ function V1LoginPage({ onClose, onSignIn, onApply }) {
                       display: 'inline-flex', alignItems: 'center', gap: 10,
                       background: V1.ink, color: '#fff', border: 'none',
                       padding: '12px 22px', borderRadius: 10, cursor: 'pointer',
-                      fontFamily: V1.fontBody, fontSize: 14, fontWeight: 500,
+                      // Brand §4.3 — CTA: Codec Pro Bold, 15px, line-height 1
+                      fontFamily: V1.fontDisplay, fontSize: 15, fontWeight: 700,
+                      lineHeight: 1,
                     }}
                   >
                     Back to site
