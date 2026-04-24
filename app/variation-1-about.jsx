@@ -206,9 +206,9 @@ function AboutHero() {
             ))}
           </span>
           <br/>
-          No gatekeepers.
+          Priced in one number.
           <br/>
-          No theater.
+          Wired in one day.
         </h1>
 
         <div style={{
