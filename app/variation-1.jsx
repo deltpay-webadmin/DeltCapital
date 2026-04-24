@@ -67,7 +67,7 @@ function V1Chrome({ page, navTo, accent, openApp }) {
           ))}
         </nav>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-          <a style={{ fontFamily: DELT.font.body, fontSize: 13.5, color: 'rgba(247,245,240,0.75)', cursor: 'pointer' }}>Login</a>
+          <a onClick={() => navTo('login')} style={{ fontFamily: DELT.font.body, fontSize: 13.5, color: page === 'login' ? '#F7F5F0' : 'rgba(247,245,240,0.75)', cursor: 'pointer' }}>Login</a>
           <Btn variant="indigo" size="sm" onClick={openApp} style={{ background: accent, borderColor: accent }}>Get Funded</Btn>
         </div>
       </div>
@@ -345,6 +345,7 @@ function Variation1() {
     page === 'support' ? <V1SupportPage accent={accent} onTalk={() => navTo('talk')} onApply={() => openApp(null, null)} /> :
     page === 'faq'     ? <V1FAQPage accent={accent} onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} /> :
     page === 'blog'    ? <V1BlogPage accent={accent} onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} /> :
+    page === 'login'   ? <V1LoginPage onClose={() => navTo('home')} onApply={() => openApp(null, null)} onSignIn={() => {}} /> :
     home;
 
   return (
