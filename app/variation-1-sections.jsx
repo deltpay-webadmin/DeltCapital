@@ -706,50 +706,194 @@ function UCIcon({ name, size = 16, color = 'currentColor' }) {
   );
 }
 
-// Animated donut chart
-function UCDonut({ data, active, radius = 82, stroke = 24 }) {
-  // data: [{name, pct}]
-  const total = data.reduce((s, d) => s + d.pct, 0);
-  const circ = 2 * Math.PI * radius;
-  let acc = 0;
-  const segs = data.map((d, i) => {
-    const frac = d.pct / total;
-    const len = frac * circ;
-    const seg = { ...d, len, offset: -acc, color: UC_COLORS[i % UC_COLORS.length], i };
-    acc += len;
-    return seg;
+// Flips ready→true one frame after mount so siblings can key off a
+// state change for their enter transition. Use with key={active} on a
+// parent to replay animations every category switch.
+function useUCReady() {
+  const [r, setR] = React.useState(false);
+  React.useEffect(() => {
+    const raf = requestAnimationFrame(() => setR(true));
+    return () => cancelAnimationFrame(raf);
+  }, []);
+  return r;
+}
+
+// Horizontal progressive bar. Width grows from 0 → pct/max on ready flip.
+function UCBar({ label, pct, max, color, delay = 0, ready }) {
+  return (
+    <div style={{
+      display: 'grid', gridTemplateColumns: '140px 1fr 48px',
+      alignItems: 'center', gap: 16,
+    }}>
+      <span style={{
+        fontFamily: V1.fontBody, fontSize: 14, color: V1.ink,
+        opacity: ready ? 1 : 0,
+        transform: ready ? 'translate3d(0,0,0)' : 'translate3d(-6px,0,0)',
+        transition: `opacity 500ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms, transform 500ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms`,
+      }}>{label}</span>
+      <span style={{
+        position: 'relative', height: 10,
+        background: V1.line, borderRadius: 999, overflow: 'hidden',
+      }}>
+        <span style={{
+          position: 'absolute', inset: 0,
+          width: ready ? `${(pct / max) * 100}%` : '0%',
+          background: color,
+          borderRadius: 999,
+          transition: `width 1000ms cubic-bezier(0.22, 1, 0.36, 1) ${delay + 80}ms`,
+          willChange: 'width',
+        }} />
+      </span>
+      <span style={{
+        textAlign: 'right',
+        fontFamily: V1.fontMono, fontSize: 13, fontWeight: 600,
+        color: V1.muted, fontVariantNumeric: 'tabular-nums',
+        opacity: ready ? 1 : 0,
+        transition: `opacity 500ms cubic-bezier(0.22, 1, 0.36, 1) ${delay + 350}ms`,
+      }}>{pct}%</span>
+    </div>
+  );
+}
+
+// Inner pane that remounts on every category change so its animations replay.
+function V1UseCasePane({ uc, active }) {
+  const ready = useUCReady();
+  const max = Math.max(...uc.breakdown.map(d => d.pct));
+  const stats = [
+    { label: 'Avg. funding',  value: uc.metric.funding },
+    { label: 'Approval time', value: uc.metric.approval },
+    { label: 'ROI increase',  value: uc.metric.roi, arrow: true },
+  ];
+  const enterFade = (delay) => ({
+    opacity: ready ? 1 : 0,
+    transform: ready ? 'translate3d(0,0,0)' : 'translate3d(0, 8px, 0)',
+    transition: `opacity 650ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms, transform 650ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms`,
   });
 
-  // Re-mount whenever active tab changes so the draw animates fresh
   return (
-    <svg key={active} width={radius * 2 + stroke} height={radius * 2 + stroke} viewBox={`0 0 ${radius * 2 + stroke} ${radius * 2 + stroke}`} style={{ display: 'block' }}>
-      <g transform={`translate(${radius + stroke / 2}, ${radius + stroke / 2}) rotate(-90)`}>
-        {segs.map((s, i) => (
-          <circle
-            key={i}
-            r={radius}
-            cx={0} cy={0}
-            fill="none"
-            stroke={s.color}
-            strokeWidth={stroke}
-            strokeDasharray={`${s.len} ${circ}`}
-            strokeDashoffset={s.offset}
-            style={{
-              animation: `uc-dash-${s.i} 900ms cubic-bezier(0.22, 1, 0.36, 1) ${i * 90}ms both`,
-              transformOrigin: 'center',
-            }}
-          />
+    <div>
+      {/* Chapter marker */}
+      <div style={{
+        fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 600,
+        letterSpacing: '0.18em', textTransform: 'uppercase', color: V1.blue,
+        marginBottom: 14,
+        ...enterFade(0),
+      }}>
+        Ch. {String(active + 1).padStart(2, '0')} — Where it goes
+      </div>
+
+      {/* Oversized chapter title with line-mask reveal */}
+      <h3 style={{
+        fontFamily: V1.fontDisplay, fontSize: 56, fontWeight: 600,
+        lineHeight: 1, letterSpacing: '-0.03em', color: V1.ink,
+        margin: 0,
+      }}>
+        <V1LineMask ready={ready} delay={60} duration={900}>{uc.label}.</V1LineMask>
+      </h3>
+
+      {/* Blurb */}
+      <p style={{
+        fontFamily: V1.fontBody, fontSize: 17, lineHeight: 1.55, color: V1.text,
+        margin: '22px 0 0', maxWidth: 560,
+        ...enterFade(300),
+      }}>
+        {uc.blurb}
+      </p>
+
+      {/* Stats — editorial triple with thin rules, no cards */}
+      <div style={{
+        marginTop: 44,
+        display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
+        borderTop: `1px solid ${V1.line}`,
+        borderBottom: `1px solid ${V1.line}`,
+      }}>
+        {stats.map((s, i) => (
+          <div key={i} style={{
+            padding: '20px 0',
+            paddingLeft: i > 0 ? 28 : 0,
+            borderLeft: i > 0 ? `1px solid ${V1.line}` : 'none',
+            ...enterFade(420 + i * 90),
+          }}>
+            <div style={{
+              fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 600,
+              letterSpacing: '0.18em', textTransform: 'uppercase', color: V1.muted,
+            }}>{s.label}</div>
+            <div style={{
+              marginTop: 8,
+              fontFamily: V1.fontDisplay, fontSize: 32, fontWeight: 700,
+              letterSpacing: '-0.03em', color: V1.ink,
+              lineHeight: 1, fontVariantNumeric: 'tabular-nums',
+              display: 'flex', alignItems: 'center', gap: 6,
+            }}>
+              <V1CountUp value={s.value} duration={1100} start={420 + i * 90} />
+              {s.arrow && (
+                <svg width="18" height="18" viewBox="0 0 16 16" style={{ color: V1.green }}>
+                  <path d="M3 13L13 3M7 3h6v6" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              )}
+            </div>
+          </div>
         ))}
-      </g>
-      <style>{`
-        ${segs.map((s, i) => `@keyframes uc-dash-${s.i} { from { stroke-dasharray: 0 ${circ}; } to { stroke-dasharray: ${s.len} ${circ}; } }`).join('\n')}
-      `}</style>
-    </svg>
+      </div>
+
+      {/* Budget allocation — horizontal progressive bars */}
+      <div style={{ marginTop: 44 }}>
+        <div style={{
+          display: 'flex', alignItems: 'baseline', justifyContent: 'space-between',
+          marginBottom: 22,
+          ...enterFade(760),
+        }}>
+          <span style={{
+            fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 600,
+            letterSpacing: '0.18em', textTransform: 'uppercase', color: V1.muted,
+          }}>Budget allocation</span>
+          <span style={{
+            fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 600,
+            letterSpacing: '0.18em', textTransform: 'uppercase', color: V1.muted,
+          }}>% of funding</span>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          {uc.breakdown.map((b, i) => (
+            <UCBar
+              key={i}
+              label={b.name}
+              pct={b.pct}
+              max={max}
+              color={UC_COLORS[i % UC_COLORS.length]}
+              delay={820 + i * 110}
+              ready={ready}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Insight — editorial pull-quote with serif italic */}
+      <blockquote style={{
+        margin: '52px 0 0',
+        paddingLeft: 24,
+        borderLeft: `3px solid ${V1.blue}`,
+        fontFamily: '"Source Serif Pro", Georgia, serif',
+        fontStyle: 'italic', fontSize: 19, lineHeight: 1.5,
+        color: V1.ink, maxWidth: 640,
+        ...enterFade(1500),
+      }}>
+        "{uc.insight}"
+        <footer style={{
+          marginTop: 10,
+          fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 600,
+          letterSpacing: '0.16em', textTransform: 'uppercase', color: V1.muted,
+          fontStyle: 'normal',
+        }}>
+          — {uc.stat.label}: {uc.stat.value}
+        </footer>
+      </blockquote>
+    </div>
   );
 }
 
 function V1UseCasesSection() {
   const [active, setActive] = React.useState(0);
+  const [hovered, setHovered] = React.useState(null);
   const uc = USE_CASES[active];
 
   return (
@@ -772,293 +916,104 @@ function V1UseCasesSection() {
           </p>
         </div>
 
-        {/* Dashboard frame */}
+        {/* Editorial two-column frame — no card shell */}
         <div style={{
-          background: V1.white,
-          border: `1px solid ${V1.line}`,
-          borderRadius: 24,
-          overflow: 'hidden',
           display: 'grid',
-          gridTemplateColumns: '340px 1fr',
-          minHeight: 560,
-          boxShadow: '0 1px 2px rgba(10,37,64,0.03), 0 40px 80px -50px rgba(10,37,64,0.22)',
+          gridTemplateColumns: '360px 1fr',
+          gap: 0,
+          borderTop: `1px solid ${V1.ink}`,
+          paddingTop: 24,
         }}>
-          {/* ─── LEFT RAIL ─── */}
-          <div style={{
-            background: V1.ink,
-            color: '#fff',
-            padding: '28px 0',
-            display: 'flex', flexDirection: 'column',
-            position: 'relative',
-          }}>
-            {/* Up/down scroll indicators (decorative) */}
-            <div style={{ display: 'flex', gap: 8, padding: '0 24px 20px' }}>
-              {[-1, 1].map((d, i) => (
-                <button
-                  key={i}
-                  onClick={() => setActive((a) => (a + d + USE_CASES.length) % USE_CASES.length)}
-                  aria-label={d < 0 ? 'Previous use case' : 'Next use case'}
-                  style={{
-                    width: 28, height: 28, borderRadius: 999,
-                    border: '1px solid rgba(255,255,255,0.15)',
-                    background: 'rgba(255,255,255,0.04)', color: 'rgba(255,255,255,0.7)',
-                    cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    transition: 'all 180ms',
-                  }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; e.currentTarget.style.color = '#fff'; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = 'rgba(255,255,255,0.7)'; }}
-                >
-                  <svg width="10" height="10" viewBox="0 0 10 10" style={{ transform: d < 0 ? 'rotate(0deg)' : 'rotate(180deg)' }}>
-                    <path d="M2 6l3-3 3 3" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </button>
-              ))}
+          {/* ─── LEFT: chapter menu ─── */}
+          <nav style={{ paddingRight: 32, borderRight: `1px solid ${V1.line}` }}>
+            <div style={{
+              fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 600,
+              letterSpacing: '0.18em', textTransform: 'uppercase', color: V1.muted,
+              marginBottom: 20,
+            }}>
+              Select a path
             </div>
-
-            {/* Tab list */}
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4, padding: '0 16px' }}>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
               {USE_CASES.map((u, i) => {
                 const isActive = i === active;
+                const isHover = hovered === i && !isActive;
                 return (
-                  <button
-                    key={u.k}
-                    onClick={() => setActive(i)}
-                    style={{
-                      textAlign: 'left', cursor: 'pointer',
-                      border: 'none', background: 'transparent',
-                      padding: 0, margin: 0, width: '100%',
-                    }}
-                  >
-                    {/* Tab header row */}
-                    <div style={{
-                      display: 'flex', alignItems: 'center', gap: 12,
-                      padding: '12px 16px',
-                      borderRadius: 10,
-                      background: isActive ? `linear-gradient(90deg, ${V1.blue}, #A78BFA)` : 'transparent',
-                      color: isActive ? '#fff' : 'rgba(255,255,255,0.65)',
-                      fontFamily: V1.fontDisplay, fontSize: 14, fontWeight: isActive ? 600 : 500,
-                      letterSpacing: '-0.01em',
-                      transition: 'all 200ms',
-                      boxShadow: isActive ? `0 6px 20px -6px ${V1.blue}88` : 'none',
-                    }}>
+                  <li key={u.k} style={{ position: 'relative' }}>
+                    <button
+                      onClick={() => setActive(i)}
+                      onMouseEnter={() => setHovered(i)}
+                      onMouseLeave={() => setHovered(null)}
+                      style={{
+                        width: '100%',
+                        display: 'grid',
+                        gridTemplateColumns: '42px 1fr',
+                        alignItems: 'center',
+                        gap: 12,
+                        textAlign: 'left',
+                        padding: '16px 0',
+                        border: 'none', background: 'transparent',
+                        cursor: 'pointer',
+                        borderBottom: `1px solid ${V1.line}`,
+                        position: 'relative',
+                      }}
+                    >
+                      {/* Active accent bar (slides in/out at left) */}
+                      <span aria-hidden style={{
+                        position: 'absolute', left: -32, top: '50%',
+                        transform: `translateY(-50%) scaleX(${isActive ? 1 : 0})`,
+                        transformOrigin: 'left center',
+                        width: 20, height: 2, background: V1.blue,
+                        transition: 'transform 420ms cubic-bezier(0.22, 1, 0.36, 1)',
+                      }} />
+                      {/* Numeral */}
                       <span style={{
-                        width: 20, height: 20, borderRadius: 999,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        border: `1px solid ${isActive ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.2)'}`,
-                        fontSize: 11,
+                        fontFamily: V1.fontMono, fontSize: 11.5, fontWeight: 600,
+                        letterSpacing: '0.1em',
+                        color: isActive ? V1.blue : (isHover ? V1.ink : V1.muted),
+                        transform: isHover ? 'translate3d(3px,0,0)' : 'translate3d(0,0,0)',
+                        transition: 'color 220ms, transform 300ms cubic-bezier(0.22, 1, 0.36, 1)',
                       }}>
-                        {isActive
-                          ? <svg width="9" height="9" viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>
-                          : <svg width="9" height="9" viewBox="0 0 10 10"><path d="M5 2v6M2 5h6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>
-                        }
+                        {String(i + 1).padStart(2, '0')}
                       </span>
-                      {u.label}
-                    </div>
-
-                    {/* Expanded content for active tab */}
-                    {isActive && (
-                      <div style={{
-                        margin: '12px 16px 16px 16px',
-                        padding: '18px',
-                        background: 'rgba(255,255,255,0.04)',
-                        border: '1px solid rgba(255,255,255,0.08)',
-                        borderRadius: 12,
-                      }}>
-                        <div style={{
-                          fontFamily: V1.fontDisplay, fontSize: 14, fontWeight: 600, color: '#fff',
-                          letterSpacing: '-0.01em', marginBottom: 6,
+                      {/* Label + animated hover underline */}
+                      <span style={{ position: 'relative', display: 'inline-block' }}>
+                        <span style={{
+                          fontFamily: V1.fontDisplay, fontSize: 17,
+                          fontWeight: isActive ? 600 : 500, letterSpacing: '-0.015em',
+                          color: isActive ? V1.ink : (isHover ? V1.ink : V1.text),
+                          transition: 'color 220ms, font-weight 220ms',
                         }}>
-                          {u.label}.
-                        </div>
-                        <div style={{
-                          fontFamily: V1.fontBody, fontSize: 13, lineHeight: 1.55,
-                          color: 'rgba(255,255,255,0.7)',
-                        }}>
-                          {u.blurb}
-                        </div>
-                        <div style={{
-                          marginTop: 14, paddingTop: 14,
-                          borderTop: '1px solid rgba(255,255,255,0.08)',
-                          display: 'flex', alignItems: 'center', gap: 10,
-                        }}>
-                          <span style={{
-                            padding: '4px 10px', borderRadius: 999,
-                            background: `${V1.blue}33`, color: V1.blueSoft,
-                            fontFamily: V1.fontMono, fontSize: 11, fontWeight: 600,
-                            letterSpacing: '0.04em',
-                          }}>
-                            {u.stat.value}
-                          </span>
-                          <span style={{
-                            fontFamily: V1.fontBody, fontSize: 12,
-                            color: 'rgba(255,255,255,0.55)',
-                          }}>
-                            {u.stat.label}
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                  </button>
+                          {u.label}
+                        </span>
+                        <span aria-hidden style={{
+                          position: 'absolute', left: 0, right: 0, bottom: -3,
+                          height: 1, background: V1.ink,
+                          transformOrigin: 'left center',
+                          transform: `scaleX(${isHover || isActive ? 1 : 0})`,
+                          opacity: isActive ? 0 : 1, // active uses the left bar, not underline
+                          transition: 'transform 420ms cubic-bezier(0.22, 1, 0.36, 1), opacity 220ms',
+                        }} />
+                      </span>
+                    </button>
+                  </li>
                 );
               })}
-            </div>
-
-            {/* Pager */}
+            </ul>
             <div style={{
-              padding: '16px 24px 0',
-              fontFamily: V1.fontMono, fontSize: 11, color: 'rgba(255,255,255,0.45)',
-              letterSpacing: '0.1em',
+              marginTop: 24,
+              fontFamily: V1.fontMono, fontSize: 10.5, color: V1.muted,
+              letterSpacing: '0.14em',
             }}>
               {String(active + 1).padStart(2, '0')} / {String(USE_CASES.length).padStart(2, '0')}
             </div>
-          </div>
+          </nav>
 
-          {/* ─── RIGHT DASHBOARD ─── */}
-          <div style={{ padding: '32px 40px 40px', display: 'flex', flexDirection: 'column', gap: 24 }}>
-            {/* Stat cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
-              {[
-                { label: 'Avg. Funding',  value: uc.metric.funding,  icon: '$' },
-                { label: 'Approval Time', value: uc.metric.approval, icon: '⧖' },
-                { label: 'ROI Increase',  value: uc.metric.roi,      icon: '↗' },
-              ].map((s, i) => (
-                <div key={i} style={{
-                  background: V1.bg,
-                  border: `1px solid ${V1.line}`,
-                  borderRadius: 12,
-                  padding: '16px 18px',
-                }}>
-                  <div style={{
-                    fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 600,
-                    letterSpacing: '0.16em', textTransform: 'uppercase', color: V1.muted,
-                  }}>
-                    {s.label}
-                  </div>
-                  <div key={`${active}-${i}`} style={{
-                    marginTop: 8,
-                    fontFamily: V1.fontDisplay, fontSize: 26, fontWeight: 700,
-                    letterSpacing: '-0.025em', color: V1.ink,
-                    lineHeight: 1.1, fontVariantNumeric: 'tabular-nums',
-                    display: 'flex', alignItems: 'center', gap: 6,
-                    animation: 'uc-fade 400ms ease-out both',
-                  }}>
-                    {s.value}
-                    {i === 2 && (
-                      <svg width="16" height="16" viewBox="0 0 16 16" style={{ color: V1.green }}>
-                        <path d="M3 13L13 3M7 3h6v6" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Budget allocation panel */}
-            <div style={{
-              flex: 1,
-              background: V1.white,
-              border: `1px solid ${V1.line}`,
-              borderRadius: 16,
-              padding: '22px 24px',
-              display: 'flex', flexDirection: 'column',
-            }}>
-              <div style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                marginBottom: 18,
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <UCIcon name={uc.icon} size={15} color={V1.muted} />
-                  <span style={{
-                    fontFamily: V1.fontMono, fontSize: 11, fontWeight: 600,
-                    letterSpacing: '0.18em', textTransform: 'uppercase', color: V1.muted,
-                  }}>
-                    Budget allocation
-                  </span>
-                </div>
-                <span style={{
-                  padding: '4px 12px', borderRadius: 999,
-                  background: `${V1.blue}14`, color: V1.blue,
-                  fontFamily: V1.fontMono, fontSize: 12, fontWeight: 700,
-                  letterSpacing: '0.04em',
-                }}>
-                  {uc.metric.funding}
-                </span>
-              </div>
-
-              {/* Chart + legend */}
-              <div style={{
-                flex: 1,
-                display: 'grid', gridTemplateColumns: '1fr 1fr',
-                alignItems: 'center', gap: 32,
-                minHeight: 240,
-              }}>
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <UCDonut data={uc.breakdown} active={active} />
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-                  {uc.breakdown.map((b, i) => (
-                    <div key={`${active}-${i}`} style={{
-                      display: 'flex', alignItems: 'center', gap: 12,
-                      animation: `uc-fade 500ms ease-out ${i * 60}ms both`,
-                    }}>
-                      <span style={{
-                        width: 10, height: 10, borderRadius: 999,
-                        background: UC_COLORS[i % UC_COLORS.length],
-                        flexShrink: 0,
-                      }} />
-                      <span style={{
-                        flex: 1,
-                        fontFamily: V1.fontBody, fontSize: 14, color: V1.ink,
-                      }}>
-                        {b.name}
-                      </span>
-                      <span style={{
-                        fontFamily: V1.fontMono, fontSize: 13, fontWeight: 600,
-                        color: V1.muted, fontVariantNumeric: 'tabular-nums',
-                      }}>
-                        {b.pct}%
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Insight callout */}
-            <div key={`insight-${active}`} style={{
-              background: V1.bg,
-              border: `1px solid ${V1.line}`,
-              borderRadius: 12,
-              padding: '16px 20px',
-              display: 'flex', alignItems: 'flex-start', gap: 14,
-              animation: 'uc-fade 500ms ease-out both',
-            }}>
-              <span style={{
-                flexShrink: 0, width: 28, height: 28, borderRadius: 999,
-                background: `${V1.blue}14`, color: V1.blue,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                marginTop: 1,
-              }}>
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M8 1.5a5 5 0 00-3 9v1.5h6V10.5a5 5 0 00-3-9zM6.5 14.5h3"/>
-                </svg>
-              </span>
-              <div style={{
-                fontFamily: V1.fontBody, fontSize: 14, lineHeight: 1.55, color: V1.text,
-              }}>
-                {uc.insight}
-              </div>
-            </div>
+          {/* ─── RIGHT: content pane, remounts on switch ─── */}
+          <div style={{ paddingLeft: 56 }}>
+            <V1UseCasePane key={active} uc={uc} active={active} />
           </div>
         </div>
       </div>
-
-      <style>{`
-        @keyframes uc-fade {
-          from { opacity: 0; transform: translateY(6px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
     </section>
   );
 }
