@@ -6,12 +6,12 @@
 // Electric Indigo accent, hairline rules, mono eyebrows).
 
 // ─── Scroll-spy TOC ──────────────────────────────────────────────
+// Sticky is applied by the parent column wrapper (see V1LegalLayout) so
+// the TOC and the "Back to site" sibling below pin together and don't
+// overlap as the page scrolls.
 function V1LegalTOC({ items, activeId, onJump }) {
   return (
-    <nav style={{
-      position: 'sticky', top: 120,
-      paddingTop: 4,
-    }}>
+    <nav style={{ paddingTop: 4 }}>
       <div style={{
         fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 600,
         letterSpacing: '0.2em', textTransform: 'uppercase', color: V1.muted,
@@ -121,13 +121,20 @@ function V1LegalLayout({ title, eyebrow, effective, toc, onBack, otherLink, chil
       <div style={{
         maxWidth: 1280, margin: '0 auto', padding: '40px 40px 0',
         display: 'grid', gridTemplateColumns: '260px 1fr',
-        gap: 72, alignItems: 'flex-start',
+        gap: 72, alignItems: 'start',
       }}>
-        {/* ─── LEFT: sticky TOC ─── */}
-        <div style={{
+        {/* ─── LEFT: sticky TOC column (pin TOC + Back button as one) ─── */}
+        <aside style={{
+          position: 'sticky',
+          // Sits just below the sticky nav header (ticker ≈ 30px + nav ≈ 52px + breathing room).
+          top: 96,
+          maxHeight: 'calc(100vh - 120px)',
+          overflowY: 'auto',
+          paddingRight: 8,
+          // Only opacity for the entrance — any non-none transform would
+          // create a new containing block and break sticky positioning.
           opacity: mounted ? 1 : 0,
-          transform: mounted ? 'translateX(0)' : 'translateX(-10px)',
-          transition: 'opacity 800ms cubic-bezier(0.22,1,0.36,1) 200ms, transform 800ms cubic-bezier(0.22,1,0.36,1) 200ms',
+          transition: 'opacity 800ms cubic-bezier(0.22,1,0.36,1) 200ms',
         }}>
           <V1LegalTOC items={toc} activeId={activeId} onJump={handleJump} />
           <div style={{ marginTop: 28, paddingTop: 20, borderTop: `1px solid ${V1.line}` }}>
@@ -148,7 +155,7 @@ function V1LegalLayout({ title, eyebrow, effective, toc, onBack, otherLink, chil
               Back to site
             </button>
           </div>
-        </div>
+        </aside>
 
         {/* ─── RIGHT: content ─── */}
         <main style={{ minWidth: 0 }}>
