@@ -53,8 +53,12 @@ function V1Chrome({ page, navTo, accent, openApp }) {
       position: 'sticky', top: 0, zIndex: 20,
     }}>
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '14px 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div onClick={() => navTo('home')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'baseline', gap: 0, fontFamily: DELT.font.display, fontWeight: 600, fontSize: 20, letterSpacing: '-0.03em', color: '#F7F5F0' }}>
-          Delt<span style={{ color: accent }}>.</span>
+        <div onClick={() => navTo('home')} style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center' }}>
+          <img
+            src="app/assets/logo-white.png"
+            alt="Delt Capital"
+            style={{ height: 28, width: 'auto', display: 'block' }}
+          />
         </div>
         <nav style={{ display: 'flex', gap: 28 }}>
           {links.map(ln => (
@@ -76,8 +80,12 @@ function V1Chrome({ page, navTo, accent, openApp }) {
   );
 }
 V1Chrome.brand = (
-  <div style={{ fontFamily: DELT.font.display, fontWeight: 600, fontSize: 22, color: '#F7F5F0', letterSpacing: '-0.03em' }}>
-    Delt<span style={{ color: DELT.colors.indigo }}>.</span>
+  <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+    <img
+      src="app/assets/logo-white.png"
+      alt="Delt Capital"
+      style={{ height: 32, width: 'auto', display: 'block' }}
+    />
   </div>
 );
 
