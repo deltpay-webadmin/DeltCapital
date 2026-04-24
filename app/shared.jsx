@@ -14,7 +14,7 @@ const DELT = {
     card: '#FFFFFF',
     indigo: '#4F46E5',
     indigoDeep: '#3730A3',
-    violet: '#7C3AED',
+    violet: '#4F46E5',
     ok: '#0F7A5A',
     warn: '#B8531A',
   },

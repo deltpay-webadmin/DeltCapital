@@ -370,7 +370,7 @@ function V1CalcAnalyzer({ onApply, hideHeader }) {
                 <span style={{
                   width: 36, height: 36, borderRadius: 10, flexShrink: 0,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  background: deltToggle ? `linear-gradient(135deg, ${V1.blue}, #A78BFA)` : '#d5d7de',
+                  background: deltToggle ? `linear-gradient(135deg, ${V1.blue}, #818CF8)` : '#d5d7de',
                   color: deltToggle ? '#fff' : '#9ca3af',
                   boxShadow: deltToggle ? `0 3px 12px ${V1.blue}44` : 'none',
                   transition: 'all .3s',
@@ -422,7 +422,7 @@ function V1CalcAnalyzer({ onApply, hideHeader }) {
             background: ctaDisabled
               ? `${V1.blue}55`
               : ctaBoosted
-                ? `linear-gradient(135deg, ${V1.blue} 0%, #8B5CF6 50%, ${V1.blue} 100%)`
+                ? `linear-gradient(135deg, ${V1.blue} 0%, #6366F1 50%, ${V1.blue} 100%)`
                 : V1.blue,
             color: ctaDisabled ? 'rgba(255,255,255,0.6)' : '#fff',
             boxShadow: ctaDisabled ? 'none' : `0 10px 30px -10px ${V1.blue}AA, 0 4px 10px -4px ${V1.blue}77`,
@@ -472,7 +472,7 @@ function V1CalculatorPage({ accent, onApply }) {
             <em style={{
               fontStyle: 'italic', fontFamily: '"Source Serif Pro", Georgia, serif',
               fontWeight: 500, color: V1.blue,
-              background: `linear-gradient(90deg, ${V1.blue}, #A78BFA)`,
+              background: `linear-gradient(90deg, ${V1.blue}, #818CF8)`,
               WebkitBackgroundClip: 'text', backgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
             }}>instantly.</em>

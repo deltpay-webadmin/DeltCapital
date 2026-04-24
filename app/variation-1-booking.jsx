@@ -24,7 +24,7 @@ function V1UnderwriterDonut({ person, accent, active }) {
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       borderRadius: 999,
       background: active
-        ? `conic-gradient(from 180deg, ${accent}, #A78BFA, ${accent})`
+        ? `conic-gradient(from 180deg, ${accent}, #818CF8, ${accent})`
         : `linear-gradient(135deg, ${V1.ink}, #1E3A5F)`,
       transition: 'background .3s',
     }}>

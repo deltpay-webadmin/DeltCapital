@@ -56,7 +56,7 @@ function HwHero({ accent, onApply }) {
             <em style={{
               fontStyle: 'italic', fontFamily: '"Source Serif Pro", Georgia, serif',
               fontWeight: 400, letterSpacing: '-0.02em',
-              background: `linear-gradient(90deg, ${V1.blue}, #A78BFA)`,
+              background: `linear-gradient(90deg, ${V1.blue}, #818CF8)`,
               WebkitBackgroundClip: 'text', backgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
             }}>wire</em> in 24 hours.
@@ -118,7 +118,7 @@ function HwTimelinePreview({ accent }) {
         <div style={{
           position: 'absolute', top: 18, left: 28 + 16, height: 2,
           width: `calc((100% - ${(28 + 16) * 2}px) * ${progress})`,
-          background: `linear-gradient(90deg, ${V1.blue}, #A78BFA)`,
+          background: `linear-gradient(90deg, ${V1.blue}, #818CF8)`,
           transition: 'width .1s linear',
         }} />
 
@@ -205,7 +205,7 @@ function HwStep({ num, label, title, body, bullets, mockKind, accent }) {
               fontSize: 'clamp(4rem, 9vw, 7rem)',
               fontWeight: 600, letterSpacing: '-0.05em',
               lineHeight: 0.9,
-              background: `linear-gradient(135deg, ${V1.blue}, #A78BFA 70%, ${V1.blue})`,
+              background: `linear-gradient(135deg, ${V1.blue}, #818CF8 70%, ${V1.blue})`,
               WebkitBackgroundClip: 'text', backgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
             }}>
@@ -438,7 +438,7 @@ function HwMockOffer({ progress, active }) {
         {/* Top banner */}
         <div style={{
           padding: '14px 28px',
-          background: locked ? `linear-gradient(90deg, ${V1.blue}, #A78BFA)` : V1.bgWarm,
+          background: locked ? `linear-gradient(90deg, ${V1.blue}, #818CF8)` : V1.bgWarm,
           color: locked ? '#fff' : V1.muted,
           fontFamily: V1.fontMono, fontSize: 11, fontWeight: 600,
           letterSpacing: '0.18em', textTransform: 'uppercase',
@@ -544,7 +544,7 @@ function HwMockFunded({ progress, active }) {
       <div style={{ padding: 28 }}>
         <div style={{
           padding: '18px 20px', borderRadius: 14,
-          background: `linear-gradient(135deg, ${V1.blue}, #A78BFA)`,
+          background: `linear-gradient(135deg, ${V1.blue}, #818CF8)`,
           color: '#fff',
         }}>
           <div style={{
@@ -581,7 +581,7 @@ function HwMockFunded({ progress, active }) {
             <div style={{
               position: 'absolute', left: 7, top: 6, width: 2,
               height: `calc((100% - 12px) * ${Math.min(1, progress * 1.1)})`,
-              background: `linear-gradient(180deg, ${V1.blue}, #A78BFA)`,
+              background: `linear-gradient(180deg, ${V1.blue}, #818CF8)`,
               transition: 'height .3s',
             }} />
 
@@ -687,7 +687,7 @@ function HwSpeedStrip() {
               Faster because<br/>we <em style={{
                 fontStyle: 'italic', fontFamily: '"Source Serif Pro", Georgia, serif',
                 fontWeight: 400, letterSpacing: '-0.015em',
-                background: `linear-gradient(90deg, ${V1.blue}, #A78BFA)`,
+                background: `linear-gradient(90deg, ${V1.blue}, #818CF8)`,
                 WebkitBackgroundClip: 'text', backgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
               }}>are</em> the lender.
@@ -727,7 +727,7 @@ function HwSpeedStrip() {
                   position: 'absolute', inset: 0,
                   width: `${(r.days / maxDays) * 100}%`,
                   background: r.emphasis
-                    ? `linear-gradient(90deg, ${V1.blue}, #A78BFA)`
+                    ? `linear-gradient(90deg, ${V1.blue}, #818CF8)`
                     : V1.line,
                   borderRadius: 6,
                   boxShadow: r.emphasis ? `0 4px 16px ${V1.blue}55` : 'none',
@@ -820,7 +820,7 @@ function HwCTA({ onApply, onTalk }) {
       <div aria-hidden style={{
         position: 'absolute', inset: 0, pointerEvents: 'none',
         background: `radial-gradient(ellipse 600px 300px at 30% 50%, ${V1.blue}44 0%, transparent 60%),
-                     radial-gradient(ellipse 500px 250px at 80% 80%, #A78BFA33 0%, transparent 60%)`,
+                     radial-gradient(ellipse 500px 250px at 80% 80%, #818CF833 0%, transparent 60%)`,
       }} />
 
       <div style={{ maxWidth: 1100, margin: '0 auto', position: 'relative', display: 'grid', gridTemplateColumns: '1.1fr 1fr', gap: 80, alignItems: 'center' }}>
@@ -850,7 +850,7 @@ function HwCTA({ onApply, onTalk }) {
             <button onClick={onApply} style={{
               padding: '16px 28px', borderRadius: 12, border: 'none', cursor: 'pointer',
               fontFamily: V1.fontBody, fontSize: 16, fontWeight: 600,
-              background: `linear-gradient(135deg, ${V1.blue}, #A78BFA)`,
+              background: `linear-gradient(135deg, ${V1.blue}, #818CF8)`,
               color: '#fff',
               boxShadow: `0 14px 40px -10px ${V1.blue}88`,
               display: 'inline-flex', alignItems: 'center', gap: 10,

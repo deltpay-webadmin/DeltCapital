@@ -96,7 +96,7 @@ function V1Hero({ accent, onApply }) {
 
   return (
     <section style={{
-      background: '#0B0820',
+      background: '#0B0E2E',
       color: '#F7F5F0',
       position: 'relative',
       overflow: 'hidden',
@@ -164,7 +164,7 @@ function V1Hero({ accent, onApply }) {
                 fontFamily: '"Source Serif Pro", Georgia, serif',
                 fontWeight: 400,
                 color: accent,
-                background: `linear-gradient(90deg, ${accent}, #A78BFA)`,
+                background: `linear-gradient(90deg, ${accent}, #818CF8)`,
                 WebkitBackgroundClip: 'text', backgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
               }}>yourself.</em>
@@ -235,13 +235,13 @@ function V1Hero({ accent, onApply }) {
           {/* Left-edge fade so video melts into the copy column */}
           <div style={{
             position: 'absolute', inset: 0,
-            background: 'linear-gradient(90deg, #0B0820 0%, rgba(11,8,32,0.6) 12%, rgba(11,8,32,0) 32%)',
+            background: 'linear-gradient(90deg, #0B0E2E 0%, rgba(11,14,46,0.6) 12%, rgba(11,14,46,0) 32%)',
             pointerEvents: 'none',
           }} />
           {/* Top/bottom subtle fades to help the band read as a hero */}
           <div style={{
             position: 'absolute', inset: 0,
-            background: 'linear-gradient(180deg, rgba(11,8,32,0.25) 0%, transparent 15%, transparent 85%, rgba(11,8,32,0.4) 100%)',
+            background: 'linear-gradient(180deg, rgba(11,14,46,0.25) 0%, transparent 15%, transparent 85%, rgba(11,14,46,0.4) 100%)',
             pointerEvents: 'none',
           }} />
 

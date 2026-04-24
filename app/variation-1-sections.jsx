@@ -11,9 +11,9 @@ const V1 = {
   muted:    '#697386',
   text:     '#425466',
   line:     '#dcdfe4',
-  // Purple family tuned to the hero video's violet
-  blue:     '#7C3AED', // primary accent (was #0c66e4)
-  blueSoft: '#C4B5FD', // on-dark soft accent (was #85B8FF)
+  // Indigo family
+  blue:     '#4F46E5', // primary accent (was #0c66e4)
+  blueSoft: '#A5B4FC', // on-dark soft accent (was #85B8FF)
   green:    '#1F845A',
   red:      '#c9372c',
   white:    '#ffffff',
@@ -144,7 +144,7 @@ function V1CompareSection() {
             }}>
               <div style={{
                 width: 30, height: 30, borderRadius: 8,
-                background: `linear-gradient(135deg, ${V1.blue}, #A78BFA)`,
+                background: `linear-gradient(135deg, ${V1.blue}, #818CF8)`,
                 color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
                 boxShadow: `0 4px 12px ${V1.blue}55`,
               }}>
@@ -277,7 +277,7 @@ function V1CompareRow({ r, i, visible, last }) {
       }}>
         <span style={{
           flexShrink: 0, width: 22, height: 22, borderRadius: 999,
-          background: `linear-gradient(135deg, ${V1.blue}, #A78BFA)`, color: '#fff',
+          background: `linear-gradient(135deg, ${V1.blue}, #818CF8)`, color: '#fff',
           display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
           boxShadow: `0 3px 10px ${V1.blue}66`,
         }}>
@@ -312,7 +312,7 @@ function V1CompareRow({ r, i, visible, last }) {
         <div aria-hidden style={{
           position: 'absolute', bottom: 0, left: 0,
           height: 2, width: visible ? `${r.strength * 100}%` : '0%',
-          background: `linear-gradient(90deg, ${V1.blue}, #A78BFA)`,
+          background: `linear-gradient(90deg, ${V1.blue}, #818CF8)`,
           transition: `width 1200ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms`,
         }} />
       </div>
@@ -545,7 +545,7 @@ function V1CTASection({ onApply, onTalk }) {
               fontFamily: V1.fontBody, fontSize: 15.5, fontWeight: 600, letterSpacing: '-0.005em',
               transition: 'background .15s',
             }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = '#8B5CF6'; }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = '#6366F1'; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = V1.blue; }}>
               Get Funded
               <svg width="14" height="14" viewBox="0 0 14 14">
@@ -685,8 +685,8 @@ const USE_CASES = [
   },
 ];
 
-// Lilac palette matching the screenshot's donut chart
-const UC_COLORS = ['#4F46E5', '#7C3AED', '#A78BFA', '#C4B5FD', '#1F845A'];
+// Indigo ramp for budget bars
+const UC_COLORS = ['#3730A3', '#4F46E5', '#6366F1', '#818CF8', '#1F845A'];
 
 // Inline icon set for the left rail
 function UCIcon({ name, size = 16, color = 'currentColor' }) {

@@ -41,11 +41,11 @@ const ABOUT_TIMELINE = [
 ];
 
 const ABOUT_LEADERSHIP = [
-  { n: 'Elena Park',      r: 'Co-founder, CEO',      bio: '10 yrs at OnDeck credit · Wharton MBA',   color: '#7C3AED' },
+  { n: 'Elena Park',      r: 'Co-founder, CEO',      bio: '10 yrs at OnDeck credit · Wharton MBA',   color: '#4F46E5' },
   { n: 'David Okonkwo',   r: 'Co-founder, CTO',      bio: 'Ex-Plaid staff eng · MIT CS',              color: '#4F46E5' },
-  { n: 'Priya Singh',     r: 'Head of Underwriting', bio: '8 yrs at Kabbage · Fraud & risk',          color: '#A78BFA' },
-  { n: 'Marcus Chen',     r: 'Head of Capital',      bio: 'Ex-Goldman SMB lending · 2 Fed funds',     color: '#6D28D9' },
-  { n: 'Nora Hassan',     r: 'Head of Operator Desk', bio: 'Scaled support at Brex to 20K accounts',  color: '#8B5CF6' },
+  { n: 'Priya Singh',     r: 'Head of Underwriting', bio: '8 yrs at Kabbage · Fraud & risk',          color: '#818CF8' },
+  { n: 'Marcus Chen',     r: 'Head of Capital',      bio: 'Ex-Goldman SMB lending · 2 Fed funds',     color: '#4338CA' },
+  { n: 'Nora Hassan',     r: 'Head of Operator Desk', bio: 'Scaled support at Brex to 20K accounts',  color: '#6366F1' },
 ];
 
 const ABOUT_VALUES = [
@@ -316,7 +316,7 @@ function AboutThesis() {
             }}>
               <div style={{
                 flexShrink: 0, width: 40, height: 40, borderRadius: 999,
-                background: `linear-gradient(135deg, ${V1.blue}, #A78BFA)`, color: '#fff',
+                background: `linear-gradient(135deg, ${V1.blue}, #818CF8)`, color: '#fff',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontFamily: V1.fontDisplay, fontSize: 15, fontWeight: 700,
                 boxShadow: `0 6px 16px -6px ${V1.blue}AA`,
@@ -492,7 +492,7 @@ function AboutPrinciples() {
           <div style={{
             position: 'absolute', left: 0, top: 0, height: '100%',
             width: `${((idx + 1) / ABOUT_PRINCIPLES.length) * 100}%`,
-            background: `linear-gradient(90deg, ${V1.blue}, #A78BFA)`,
+            background: `linear-gradient(90deg, ${V1.blue}, #818CF8)`,
             borderRadius: 1,
             transition: 'width 400ms cubic-bezier(0.22,1,0.36,1)',
           }} />
@@ -561,7 +561,7 @@ function AboutTimeline() {
             position: 'absolute', left: 38, top: 0,
             width: 2,
             height: inView ? '100%' : '0%',
-            background: `linear-gradient(180deg, ${V1.blue}, #A78BFA, transparent)`,
+            background: `linear-gradient(180deg, ${V1.blue}, #818CF8, transparent)`,
             borderRadius: 1,
             transition: 'height 2400ms cubic-bezier(0.22,1,0.36,1) 200ms',
           }} />
@@ -585,7 +585,7 @@ function AboutTimeline() {
                 }}>
                   <span style={{
                     width: 10, height: 10, borderRadius: 999,
-                    background: latest ? `linear-gradient(135deg, ${V1.blue}, #A78BFA)` : V1.muted,
+                    background: latest ? `linear-gradient(135deg, ${V1.blue}, #818CF8)` : V1.muted,
                     boxShadow: latest ? `0 0 0 4px ${V1.blue}22` : 'none',
                   }} />
                 </div>

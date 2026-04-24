@@ -201,7 +201,7 @@ function V1StepBank({ form, setForm, accent }) {
           }}>
             <div style={{
               width: 44, height: 44, borderRadius: 10,
-              background: `linear-gradient(135deg, ${accent}, #A78BFA)`,
+              background: `linear-gradient(135deg, ${accent}, #818CF8)`,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               color: V1.white, fontFamily: V1.fontDisplay, fontWeight: 700, fontSize: 20,
               letterSpacing: '-0.02em',
@@ -267,7 +267,7 @@ function V1StepBank({ form, setForm, accent }) {
           <div style={{ position: 'relative', textAlign: 'center' }}>
             <div style={{
               width: 72, height: 72, borderRadius: 18, margin: '0 auto',
-              background: selected ? `linear-gradient(135deg, ${selected.c1}, ${selected.c2})` : `linear-gradient(135deg, ${accent}, #A78BFA)`,
+              background: selected ? `linear-gradient(135deg, ${selected.c1}, ${selected.c2})` : `linear-gradient(135deg, ${accent}, #818CF8)`,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               color: V1.white, fontFamily: V1.fontDisplay, fontSize: 34, fontWeight: 700,
               boxShadow: '0 20px 50px -15px rgba(0,0,0,0.5)',
@@ -293,7 +293,7 @@ function V1StepBank({ form, setForm, accent }) {
             }}>
               <div style={{
                 height: '100%', width: `${progress}%`,
-                background: `linear-gradient(90deg, ${accent}, #A78BFA)`,
+                background: `linear-gradient(90deg, ${accent}, #818CF8)`,
                 transition: 'width .2s ease-out',
                 boxShadow: `0 0 16px ${accent}aa`,
               }}/>
@@ -607,7 +607,7 @@ function V1StepDone({ form, accent }) {
       <div style={{
         width: 84, height: 84, margin: '0 auto',
         borderRadius: 24, position: 'relative',
-        background: `linear-gradient(135deg, ${accent}, #A78BFA)`,
+        background: `linear-gradient(135deg, ${accent}, #818CF8)`,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         boxShadow: `0 30px 80px -20px ${accent}88`,
       }}>
@@ -757,7 +757,7 @@ function V1ApplicationFlow({ open, onClose, prefill, accent }) {
           <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: 9 }}>
             <div style={{
               width: 26, height: 26, borderRadius: 7,
-              background: `linear-gradient(135deg, ${accent}, #A78BFA)`,
+              background: `linear-gradient(135deg, ${accent}, #818CF8)`,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               color: V1.white, fontFamily: V1.fontDisplay, fontWeight: 700, fontSize: 14,
             }}>D</div>
@@ -778,7 +778,7 @@ function V1ApplicationFlow({ open, onClose, prefill, accent }) {
             <div style={{
               position: 'absolute', left: 15, top: 14, width: 2,
               height: `calc(${(step / (V1APPLY_STEPS.length - 1)) * 100}% - 0px)`,
-              background: `linear-gradient(180deg, ${accent}, #A78BFA)`,
+              background: `linear-gradient(180deg, ${accent}, #818CF8)`,
               borderRadius: 2, transition: 'height .3s ease',
               boxShadow: `0 0 12px ${accent}`,
             }} />
@@ -794,7 +794,7 @@ function V1ApplicationFlow({ open, onClose, prefill, accent }) {
                   <div style={{
                     width: 32, height: 32, borderRadius: 99, flexShrink: 0,
                     background: isDone
-                      ? `linear-gradient(135deg, ${accent}, #A78BFA)`
+                      ? `linear-gradient(135deg, ${accent}, #818CF8)`
                       : isActive ? V1.white : 'rgba(255,255,255,0.06)',
                     border: isActive ? `2px solid ${accent}` : 'none',
                     color: isActive ? V1.ink : isDone ? V1.white : 'rgba(255,255,255,0.45)',
@@ -951,7 +951,7 @@ function V1ApplicationFlow({ open, onClose, prefill, accent }) {
                   onClick={() => setStep(4)}
                   style={{
                     padding: '11px 22px', borderRadius: 10, border: 'none',
-                    background: `linear-gradient(135deg, ${accent}, #A78BFA)`,
+                    background: `linear-gradient(135deg, ${accent}, #818CF8)`,
                     color: V1.white,
                     fontFamily: V1.fontBody, fontSize: 14, fontWeight: 600,
                     cursor: 'pointer',
