@@ -17,7 +17,7 @@ const V1 = {
   green:    '#1F845A',
   red:      '#c9372c',
   white:    '#ffffff',
-  fontDisplay: '"Inter Tight", "Söhne", ui-sans-serif, system-ui, sans-serif',
+  fontDisplay: '"Codec Pro", "Manrope", "Inter Tight", "Söhne", ui-sans-serif, system-ui, sans-serif',
   fontBody:    '"Inter", ui-sans-serif, system-ui, sans-serif',
   fontMono:    '"JetBrains Mono", ui-monospace, Menlo, monospace',
 };

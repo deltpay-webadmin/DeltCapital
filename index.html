@@ -6,9 +6,19 @@
 <title>Delt Capital</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+Pro:ital,wght@1,400;1,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Source+Serif+Pro:ital,wght@1,400;1,600&display=swap" rel="stylesheet">
 
 <style>
+  /* ── Brand typography — Codec Pro (primary, §4.1) ──
+     Drop licensed CodecPro-*.woff2 files at /fonts/ to activate. While
+     absent, the stack falls through to Manrope (close free stand-in),
+     then Inter Tight, then system sans. */
+  @font-face { font-family: "Codec Pro"; src: url("/fonts/CodecPro-Regular.woff2")   format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+  @font-face { font-family: "Codec Pro"; src: url("/fonts/CodecPro-Bold.woff2")      format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+  @font-face { font-family: "Codec Pro"; src: url("/fonts/CodecPro-ExtraBold.woff2") format("woff2"); font-weight: 800; font-style: normal; font-display: swap; }
+  @font-face { font-family: "Codec Pro"; src: url("/fonts/CodecPro-Heavy.woff2")     format("woff2"); font-weight: 900; font-style: normal; font-display: swap; }
+  @font-face { font-family: "Codec Pro"; src: url("/fonts/CodecPro-Ultra.woff2")     format("woff2"); font-weight: 950; font-style: normal; font-display: swap; }
+
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; background: #f0eee9; font-family: 'Inter', sans-serif; color: #0F0E17; }
   body { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }

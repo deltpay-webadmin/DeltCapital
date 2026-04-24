@@ -19,7 +19,10 @@ const DELT = {
     warn: '#B8531A',
   },
   font: {
-    display: '"Inter Tight", "Söhne", ui-sans-serif, system-ui, sans-serif',
+    // Brand §4.1 — Codec Pro primary display; Manrope free stand-in until
+    // licensed Codec Pro .woff2 files are dropped at /fonts/.
+    display: '"Codec Pro", "Manrope", "Inter Tight", "Söhne", ui-sans-serif, system-ui, sans-serif',
+    // Brand §4.2 — Inter secondary body.
     body: '"Inter", ui-sans-serif, system-ui, sans-serif',
     mono: '"JetBrains Mono", ui-monospace, Menlo, monospace',
   },
