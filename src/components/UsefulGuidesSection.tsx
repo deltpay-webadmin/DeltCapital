@@ -43,10 +43,10 @@ export function UsefulGuidesSection() {
 
   return (
     <>
-      <section className="py-24 bg-[#FFFFFF] dark:bg-[#0A1F35]">
+      <section className="py-24 bg-[#FFFFFF] dark:bg-[#0F0E17]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-[#041e42] dark:text-white mb-4">
+            <h2 className="text-4xl font-bold text-[#0F0E17] dark:text-white mb-4">
               {t('guides.title')}
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
@@ -64,7 +64,7 @@ export function UsefulGuidesSection() {
                 <div className="w-14 h-14 bg-[#1b17ff] rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-all">
                   <guide.icon className="w-7 h-7 text-white" strokeWidth={2} />
                 </div>
-                <h3 className="text-xl font-bold text-[#041e42] dark:text-white mb-3">
+                <h3 className="text-xl font-bold text-[#0F0E17] dark:text-white mb-3">
                   {guide.title}
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">

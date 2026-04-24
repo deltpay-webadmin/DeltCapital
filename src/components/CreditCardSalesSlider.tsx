@@ -175,7 +175,7 @@ export function CreditCardSalesSlider({ value, onChange }: CreditCardSalesSlider
       {/* Value Display */}
       <div className="text-center mb-8">
         <div
-          className="text-5xl font-bold text-[#041E42] tabular-nums tracking-tight"
+          className="text-5xl font-bold text-[#0F0E17] tabular-nums tracking-tight"
           style={{
             transition: isDragging ? 'none' : 'all 0.08s ease',
           }}
@@ -205,7 +205,7 @@ export function CreditCardSalesSlider({ value, onChange }: CreditCardSalesSlider
       >
         {/* Center indicator line */}
         <div
-          className="absolute left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2 z-10 bg-[#4945ff]"
+          className="absolute left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2 z-10 bg-[#4F46E5]"
           style={{
             boxShadow: '0 0 12px rgba(73,69,255,0.4)',
           }}
@@ -262,7 +262,7 @@ export function CreditCardSalesSlider({ value, onChange }: CreditCardSalesSlider
                     width: isSelected ? 2 : 1,
                     height: 28,
                     background: isSelected
-                      ? '#4945ff'
+                      ? '#4F46E5'
                       : `rgba(73,69,255,${0.08 + proximity * 0.35})`,
                     transition: isDragging ? 'none' : 'all 0.2s ease',
                   }}

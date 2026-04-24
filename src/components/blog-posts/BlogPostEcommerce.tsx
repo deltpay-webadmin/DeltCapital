@@ -11,7 +11,7 @@ export function BlogPostEcommerce() {
         Online retail moves at internet speed. Your product goes viral on TikTok at 2pm. By 5pm you're sold out. By tomorrow, the moment has passed and someone else captured the wave you created.
       </p>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-4">The E-Commerce Capital Crunch</h2>
+      <h2 className="text-3xl text-[#0F0E17] dark:text-white mt-12 mb-4">The E-Commerce Capital Crunch</h2>
       <p>
         E-commerce has a brutal cash flow cycle: Buy inventory 60-90 days before selling it. Pay for ads before conversions happen. Invest in photography and content before products arrive. Wait 2 weeks for payment processor deposits.
       </p>
@@ -20,10 +20,10 @@ export function BlogPostEcommerce() {
         Growth requires inventory. Inventory requires capital. Traditional lenders see "online business" and think "risky." Revenue-Based Financing sees revenue and says "approved."
       </p>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-4">How E-Commerce Winners Use Revenue-Based Financing</h2>
+      <h2 className="text-3xl text-[#0F0E17] dark:text-white mt-12 mb-4">How E-Commerce Winners Use Revenue-Based Financing</h2>
       
       <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg my-8">
-        <h3 className="text-2xl text-[#1B17FF] mb-4">Real E-Commerce Success</h3>
+        <h3 className="text-2xl text-[#4F46E5] mb-4">Real E-Commerce Success</h3>
         <p className="mb-4">
           <strong>Beauty Products Seller (Shopify)</strong><br/>
           Influencer posted about product. 10,000 units sold in 48 hours. $40K advance secured emergency restock. Captured $220K additional sales in following 2 weeks. Total advance repaid in 35 days.
@@ -34,7 +34,7 @@ export function BlogPostEcommerce() {
         </p>
       </div>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-4">Strategic E-Commerce Capital Deployment</h2>
+      <h2 className="text-3xl text-[#0F0E17] dark:text-white mt-12 mb-4">Strategic E-Commerce Capital Deployment</h2>
       
       <ul className="space-y-4 my-6">
         <li><strong>Inventory Positioning:</strong> Amazon FBA, 3PL warehouses—inventory must be positioned before demand hits</li>
@@ -45,14 +45,14 @@ export function BlogPostEcommerce() {
         <li><strong>Product Line Expansion:</strong> Testing new products requires inventory investment before knowing if they'll work</li>
       </ul>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-4">Revenue-Based Repayment = Perfect for Online Retail</h2>
+      <h2 className="text-3xl text-[#0F0E17] dark:text-white mt-12 mb-4">Revenue-Based Repayment = Perfect for Online Retail</h2>
       
       <p>
         E-commerce is feast or famine. Some months you do 40% of annual revenue. Fixed loan payments don't care about your seasonality—Revenue-Based Financing does. High sales months? Pay more. Slow months? Pay less. The funding adapts to your business reality.
       </p>
 
       <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg my-8">
-        <h3 className="text-2xl text-[#041E42] dark:text-white mb-4">The Inventory ROI Calculation</h3>
+        <h3 className="text-2xl text-[#0F0E17] dark:text-white mb-4">The Inventory ROI Calculation</h3>
         <p className="mb-2"><strong>Product Cost:</strong> $10 per unit</p>
         <p className="mb-2"><strong>Selling Price:</strong> $35 per unit</p>
         <p className="mb-2"><strong>$50K Funding =</strong> 5,000 units inventory</p>
@@ -61,7 +61,7 @@ export function BlogPostEcommerce() {
         <p className="mt-4 text-sm">This is why e-commerce sellers who understand unit economics scale faster with Revenue-Based Financing than any other funding method.</p>
       </div>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-4">Never Miss Another Viral Moment</h2>
+      <h2 className="text-3xl text-[#0F0E17] dark:text-white mt-12 mb-4">Never Miss Another Viral Moment</h2>
       
       <p>
         The internet rewards speed. Customers don't wait—they buy from whoever has stock. Algorithms reward conversion rates—running out of inventory kills your rankings.
@@ -71,10 +71,10 @@ export function BlogPostEcommerce() {
         Revenue-Based Financing gives online sellers the superpower of always having inventory capital ready when opportunity strikes. Whether that's Q4 prep, influencer collaboration, or completely unexpected viral moments.
       </p>
 
-      <div className="bg-[#1B17FF] text-white p-8 rounded-xl my-12 text-center">
+      <div className="bg-[#4F46E5] text-white p-8 rounded-xl my-12 text-center">
         <h3 className="text-2xl mb-4">Scale Your E-Commerce Business Fast</h3>
         <p className="text-lg mb-6">Get inventory and ad spend capital in 24-48 hours. $10K to $250K. No collateral required.</p>
-        <button className="bg-white text-[#1B17FF] px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition-colors">
+        <button className="bg-white text-[#4F46E5] px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition-colors">
           Get E-Commerce Funding Now
         </button>
       </div>

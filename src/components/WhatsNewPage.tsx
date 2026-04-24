@@ -134,9 +134,9 @@ export function WhatsNewPage({ onClose }: WhatsNewPageProps) {
         className="min-h-screen py-8 px-4"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="max-w-6xl mx-auto bg-white dark:bg-[#0A1F35] rounded-2xl shadow-2xl overflow-hidden">
+        <div className="max-w-6xl mx-auto bg-white dark:bg-[#0F0E17] rounded-2xl shadow-2xl overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-br from-[#1B17FF] via-[#4A47FF] to-[#7B77FF] text-white px-6 md:px-12 py-8 md:py-12 relative">
+          <div className="bg-gradient-to-br from-[#4F46E5] via-[#4A47FF] to-[#A78BFA] text-white px-6 md:px-12 py-8 md:py-12 relative">
             <button
               onClick={onClose}
               className="absolute top-6 right-6 text-white/80 hover:text-white transition-colors"
@@ -170,7 +170,7 @@ export function WhatsNewPage({ onClose }: WhatsNewPageProps) {
                 >
                   {/* Article Header */}
                   <div className="flex items-center gap-3 mb-4">
-                    <span className="px-3 py-1 bg-[#1B17FF]/10 dark:bg-[#1B17FF]/20 text-[#1B17FF] dark:text-[#7B77FF] rounded-full text-sm font-semibold">
+                    <span className="px-3 py-1 bg-[#4F46E5]/10 dark:bg-[#4F46E5]/20 text-[#4F46E5] dark:text-[#A78BFA] rounded-full text-sm font-semibold">
                       {fact.category}
                     </span>
                     <span className="text-sm text-gray-500 dark:text-gray-400">
@@ -200,9 +200,9 @@ export function WhatsNewPage({ onClose }: WhatsNewPageProps) {
                     {fact.stats.map((stat, idx) => (
                       <div 
                         key={idx}
-                        className="bg-[#F5F7FA] dark:bg-[#0f1f2e] rounded-lg p-5 flex items-start gap-4"
+                        className="bg-[#FAF8F3] dark:bg-[#0f1f2e] rounded-lg p-5 flex items-start gap-4"
                       >
-                        <div className="text-[#1B17FF] dark:text-[#7B77FF] mt-1">
+                        <div className="text-[#4F46E5] dark:text-[#A78BFA] mt-1">
                           {stat.icon}
                         </div>
                         <div>
@@ -233,7 +233,7 @@ export function WhatsNewPage({ onClose }: WhatsNewPageProps) {
             </div>
 
             {/* Footer CTA */}
-            <div className="mt-12 bg-gradient-to-br from-[#1B17FF] via-[#4A47FF] to-[#7B77FF] rounded-2xl p-8 md:p-12 text-center text-white">
+            <div className="mt-12 bg-gradient-to-br from-[#4F46E5] via-[#4A47FF] to-[#A78BFA] rounded-2xl p-8 md:p-12 text-center text-white">
               <h3 className="text-2xl md:text-3xl font-bold mb-4">
                 Ready to Join the Growing Number of Funded Businesses?
               </h3>
@@ -242,7 +242,7 @@ export function WhatsNewPage({ onClose }: WhatsNewPageProps) {
               </p>
               <button
                 onClick={onClose}
-                className="bg-white text-[#1B17FF] hover:bg-gray-100 font-semibold px-8 py-3 rounded-lg transition-colors inline-flex items-center gap-2"
+                className="bg-white text-[#4F46E5] hover:bg-gray-100 font-semibold px-8 py-3 rounded-lg transition-colors inline-flex items-center gap-2"
               >
                 Explore Our Solutions
               </button>

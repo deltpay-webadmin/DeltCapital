@@ -67,13 +67,13 @@ export function LoanComparison() {
   return (
     <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
       <div className="mb-8">
-        <h3 className="text-2xl font-bold text-[#041e42] mb-2">MCA vs. Bank Loan Comparison</h3>
+        <h3 className="text-2xl font-bold text-[#0F0E17] mb-2">MCA vs. Bank Loan Comparison</h3>
         <p className="text-gray-600">Understanding the key differences to make the right choice</p>
       </div>
 
       {/* Quick Summary */}
       <div className="grid md:grid-cols-2 gap-6 mb-12">
-        <div className="bg-gradient-to-br from-[#4945ff] to-[#3b38d9] rounded-xl p-6 text-white">
+        <div className="bg-gradient-to-br from-[#4F46E5] to-[#3730A3] rounded-xl p-6 text-white">
           <h4 className="text-xl font-bold mb-4">Merchant Cash Advance</h4>
           <div className="space-y-3">
             <div className="flex items-start gap-3">
@@ -107,7 +107,7 @@ export function LoanComparison() {
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-[#041e42] to-[#0a2d5a] rounded-xl p-6 text-white">
+        <div className="bg-gradient-to-br from-[#0F0E17] to-[#0a2d5a] rounded-xl p-6 text-white">
           <h4 className="text-xl font-bold mb-4">Traditional Bank Loan</h4>
           <div className="space-y-3">
             <div className="flex items-start gap-3">
@@ -145,21 +145,21 @@ export function LoanComparison() {
       {/* Detailed Comparison Table */}
       {comparisonFeatures.map((section, sectionIndex) => (
         <div key={sectionIndex} className="mb-8">
-          <h4 className="text-xl font-bold text-[#041e42] mb-4">{section.category}</h4>
+          <h4 className="text-xl font-bold text-[#0F0E17] mb-4">{section.category}</h4>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b-2 border-gray-200">
                   <th className="text-left py-3 px-4 font-semibold text-gray-700">Feature</th>
-                  <th className="text-center py-3 px-4 font-semibold text-[#4945ff]">Merchant Cash Advance</th>
-                  <th className="text-center py-3 px-4 font-semibold text-[#041e42]">Bank Loan</th>
+                  <th className="text-center py-3 px-4 font-semibold text-[#4F46E5]">Merchant Cash Advance</th>
+                  <th className="text-center py-3 px-4 font-semibold text-[#0F0E17]">Bank Loan</th>
                 </tr>
               </thead>
               <tbody>
                 {section.features.map((feature, index) => (
                   <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
                     <td className="py-4 px-4 font-medium text-gray-700">{feature.name}</td>
-                    <td className={`py-4 px-4 text-center ${feature.winner === 'mca' ? 'bg-blue-50 font-semibold text-[#4945ff]' : 'text-gray-600'}`}>
+                    <td className={`py-4 px-4 text-center ${feature.winner === 'mca' ? 'bg-blue-50 font-semibold text-[#4F46E5]' : 'text-gray-600'}`}>
                       {feature.mca}
                       {feature.winner === 'mca' && <span className="ml-2">✓</span>}
                     </td>
@@ -177,15 +177,15 @@ export function LoanComparison() {
 
       {/* When to Choose */}
       <div className="grid md:grid-cols-2 gap-6 mt-12">
-        <div className="bg-blue-50 border-2 border-[#4945ff] rounded-xl p-6">
-          <h4 className="text-xl font-bold text-[#041e42] mb-4 flex items-center gap-2">
-            <TrendingUp className="w-6 h-6 text-[#4945ff]" />
+        <div className="bg-blue-50 border-2 border-[#4F46E5] rounded-xl p-6">
+          <h4 className="text-xl font-bold text-[#0F0E17] mb-4 flex items-center gap-2">
+            <TrendingUp className="w-6 h-6 text-[#4F46E5]" />
             Choose MCA When You Need:
           </h4>
           <ul className="space-y-2">
             {whenToChoose.mca.map((item, index) => (
               <li key={index} className="flex items-start gap-2 text-gray-700">
-                <CheckCircle2 className="w-5 h-5 text-[#4945ff] flex-shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-5 h-5 text-[#4F46E5] flex-shrink-0 mt-0.5" />
                 <span>{item}</span>
               </li>
             ))}
@@ -193,7 +193,7 @@ export function LoanComparison() {
         </div>
 
         <div className="bg-green-50 border-2 border-green-500 rounded-xl p-6">
-          <h4 className="text-xl font-bold text-[#041e42] mb-4 flex items-center gap-2">
+          <h4 className="text-xl font-bold text-[#0F0E17] mb-4 flex items-center gap-2">
             <DollarSign className="w-6 h-6 text-green-600" />
             Choose Bank Loan When You Have:
           </h4>
@@ -209,13 +209,13 @@ export function LoanComparison() {
       </div>
 
       {/* Bottom CTA */}
-      <div className="mt-8 bg-gradient-to-r from-[#4945ff] to-[#3b38d9] rounded-xl p-8 text-white text-center">
+      <div className="mt-8 bg-gradient-to-r from-[#4F46E5] to-[#3730A3] rounded-xl p-8 text-white text-center">
         <h4 className="text-2xl font-bold mb-3">Not Sure Which is Right for You?</h4>
         <p className="text-lg mb-6 opacity-90">
           Our team can help you evaluate your options and find the best funding solution for your business.
         </p>
         <div className="flex gap-4 justify-center flex-wrap">
-          <button className="bg-white text-[#4945ff] px-8 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors">
+          <button className="bg-white text-[#4F46E5] px-8 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors">
             Apply for MCA
           </button>
           <button className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-xl font-semibold hover:bg-white/10 transition-colors">

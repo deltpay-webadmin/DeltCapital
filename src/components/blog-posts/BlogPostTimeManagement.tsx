@@ -5,7 +5,7 @@ export function BlogPostTimeManagement() {
         The difference between entrepreneurs earning $50K and $500K isn't effort—it's leverage. You have the same 168 hours per week as everyone else. The winners multiply their time through systems, delegation, and ruthless prioritization. Here's how to work smarter, not just harder.
       </div>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-6">The $10/$100/$1000 Per Hour Framework</h2>
+      <h2 className="text-3xl text-[#0F0E17] dark:text-white mt-12 mb-6">The $10/$100/$1000 Per Hour Framework</h2>
       <p className="text-[#6B7280] dark:text-gray-400 leading-relaxed mb-6">
         Every task you do falls into one of three categories based on economic value:
       </p>
@@ -22,7 +22,7 @@ export function BlogPostTimeManagement() {
         Audit your calendar weekly. If you're spending 20 hours on $10 tasks and 5 hours on $1,000 tasks, you're leaving $19,800 per week on the table. Flip that ratio and watch your business transform.
       </p>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-6">Time Blocking: The Only Calendar System That Works</h2>
+      <h2 className="text-3xl text-[#0F0E17] dark:text-white mt-12 mb-6">Time Blocking: The Only Calendar System That Works</h2>
       <p className="text-[#6B7280] dark:text-gray-400 leading-relaxed mb-6">
         Reactive calendars lead to reactive businesses. Instead of letting meetings and interruptions control your day, block time for your most important work FIRST. Treat these blocks like client meetings—non-negotiable.
       </p>
@@ -33,7 +33,7 @@ export function BlogPostTimeManagement() {
         Protect your deep work blocks like your life depends on it—because your business does. No phone. No email. No Slack. Just focused execution on high-value work.
       </p>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-6">The 80/20 Rule on Steroids</h2>
+      <h2 className="text-3xl text-[#0F0E17] dark:text-white mt-12 mb-6">The 80/20 Rule on Steroids</h2>
       <p className="text-[#6B7280] dark:text-gray-400 leading-relaxed mb-6">
         80% of results come from 20% of efforts. But most entrepreneurs never identify which 20%. Ask yourself: Which clients generate 80% of revenue? Which products drive 80% of profit? Which marketing channels produce 80% of leads?
       </p>
@@ -44,7 +44,7 @@ export function BlogPostTimeManagement() {
         This is permission to quit. Stop doing things that don't move the needle. Most entrepreneurs are busy being busy. Winners are busy being effective.
       </p>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-6">Delegation: The Skill That Scales Businesses</h2>
+      <h2 className="text-3xl text-[#0F0E17] dark:text-white mt-12 mb-6">Delegation: The Skill That Scales Businesses</h2>
       <p className="text-[#6B7280] dark:text-gray-400 leading-relaxed mb-6">
         "If I want it done right, I have to do it myself" is the mantra of entrepreneurs stuck at $100K/year. The truth: nobody will do it exactly like you. They'll do it 80% as well—and that's good enough for most tasks.
       </p>
@@ -55,7 +55,7 @@ export function BlogPostTimeManagement() {
         Start with one $10/hour task per week. Email management. Calendar scheduling. Data entry. Social media posting. Within 6 months, you'll have reclaimed 10-15 hours per week for high-value work.
       </p>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-6">Batch Similar Tasks Together</h2>
+      <h2 className="text-3xl text-[#0F0E17] dark:text-white mt-12 mb-6">Batch Similar Tasks Together</h2>
       <p className="text-[#6B7280] dark:text-gray-400 leading-relaxed mb-6">
         Context switching destroys productivity. Every time you switch from email to a proposal to a phone call to bookkeeping, you lose 15-20 minutes to mental transition. Your brain needs time to "load" each context.
       </p>
@@ -66,7 +66,7 @@ export function BlogPostTimeManagement() {
         You'll complete the same work in 60% of the time because you're not constantly shifting mental gears. Plus, you'll do better work because you're in flow state, not scattered chaos.
       </p>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-6">Eliminate Before You Optimize</h2>
+      <h2 className="text-3xl text-[#0F0E17] dark:text-white mt-12 mb-6">Eliminate Before You Optimize</h2>
       <p className="text-[#6B7280] dark:text-gray-400 leading-relaxed mb-6">
         Before you optimize a process, ask: "Should we be doing this at all?" Most businesses carry legacy tasks that made sense 2 years ago but add zero value today.
       </p>
@@ -77,7 +77,7 @@ export function BlogPostTimeManagement() {
         Run a quarterly audit: list every recurring task and meeting. Rate each 1-10 on business impact. Anything below 7 gets eliminated or delegated. This single exercise can free up 10-20 hours per week.
       </p>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-6">Protect Your Energy, Not Just Your Time</h2>
+      <h2 className="text-3xl text-[#0F0E17] dark:text-white mt-12 mb-6">Protect Your Energy, Not Just Your Time</h2>
       <p className="text-[#6B7280] dark:text-gray-400 leading-relaxed mb-6">
         You have finite mental energy each day. High-value strategic work requires peak cognitive performance. Schedule your most important work during your peak energy hours—not your leftover hours.
       </p>
@@ -88,8 +88,8 @@ export function BlogPostTimeManagement() {
         Also: sleep 7-8 hours. Exercise 30 minutes daily. Eat real food. Burnout doesn't make you a hero—it makes you ineffective. Taking care of your body is taking care of your business.
       </p>
 
-      <div className="bg-gradient-to-br from-[#1B17FF]/5 to-[#1B17FF]/10 dark:from-[#5B57FF]/5 dark:to-[#5B57FF]/10 rounded-2xl p-8 my-12">
-        <h3 className="text-2xl text-[#041E42] dark:text-white mb-4">The Weekly Review: Non-Negotiable</h3>
+      <div className="bg-gradient-to-br from-[#4F46E5]/5 to-[#4F46E5]/10 dark:from-[#7C3AED]/5 dark:to-[#7C3AED]/10 rounded-2xl p-8 my-12">
+        <h3 className="text-2xl text-[#0F0E17] dark:text-white mb-4">The Weekly Review: Non-Negotiable</h3>
         <p className="text-[#6B7280] dark:text-gray-400 leading-relaxed mb-6">
           Friday afternoon: Review your time tracking. How many hours on $10 vs $100 vs $1,000 tasks? Did you hit your top 3 goals for the week? What should you stop doing next week? What should you delegate?
         </p>
@@ -99,11 +99,11 @@ export function BlogPostTimeManagement() {
       </div>
 
       <div className="mt-12 p-8 bg-white dark:bg-[#0F2744] rounded-2xl border border-gray-200 dark:border-gray-700">
-        <h3 className="text-2xl text-[#041E42] dark:text-white mb-4">Buy Back Your Time</h3>
+        <h3 className="text-2xl text-[#0F0E17] dark:text-white mb-4">Buy Back Your Time</h3>
         <p className="text-[#6B7280] dark:text-gray-400 mb-6">
           Virtual assistants, bookkeepers, and automation tools require capital upfront but return 5-10X through time savings. Delt Capital can fund these leverage investments so you can focus on $1,000/hour work instead of $10/hour tasks.
         </p>
-        <button className="px-6 py-3 bg-[#1B17FF] text-white rounded-lg hover:bg-[#1B17FF]/90 transition-colors font-medium">
+        <button className="px-6 py-3 bg-[#4F46E5] text-white rounded-lg hover:bg-[#4F46E5]/90 transition-colors font-medium">
           Invest in Leverage
         </button>
       </div>

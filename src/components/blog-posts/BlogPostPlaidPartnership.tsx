@@ -2,8 +2,8 @@ export function BlogPostPlaidPartnership() {
   return (
     <div className="prose prose-lg max-w-none">
       <div className="text-[#6B7280] dark:text-gray-300 space-y-6 leading-relaxed">
-        <div className="bg-gradient-to-r from-[#1B17FF]/10 to-blue-50 dark:from-[#1B17FF]/20 dark:to-blue-900/20 p-8 rounded-xl border-l-4 border-[#1B17FF] mb-8">
-          <p className="text-xl font-semibold text-[#041E42] dark:text-white mb-2">
+        <div className="bg-gradient-to-r from-[#4F46E5]/10 to-blue-50 dark:from-[#4F46E5]/20 dark:to-blue-900/20 p-8 rounded-xl border-l-4 border-[#4F46E5] mb-8">
+          <p className="text-xl font-semibold text-[#0F0E17] dark:text-white mb-2">
             🎉 Major Announcement
           </p>
           <p className="text-lg">
@@ -18,7 +18,7 @@ export function BlogPostPlaidPartnership() {
         </p>
 
         <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg my-8">
-          <h3 className="text-2xl text-[#1B17FF] mb-4">Key Benefits of Plaid Integration</h3>
+          <h3 className="text-2xl text-[#4F46E5] mb-4">Key Benefits of Plaid Integration</h3>
           <ul className="space-y-3">
             <li><strong>✓ Instant Verification:</strong> Connect your bank account in seconds instead of waiting days for manual verification</li>
             <li><strong>✓ Bank-Level Security:</strong> Plaid uses 256-bit encryption and never stores your login credentials</li>
@@ -35,7 +35,7 @@ export function BlogPostPlaidPartnership() {
         </p>
 
         <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg my-8">
-          <h3 className="text-xl text-[#041E42] dark:text-white mb-4">The 3-Step Process</h3>
+          <h3 className="text-xl text-[#0F0E17] dark:text-white mb-4">The 3-Step Process</h3>
           <ol className="space-y-4">
             <li>
               <strong>1. Select Your Bank:</strong> Choose from 12,000+ supported financial institutions including Chase, Bank of America, Wells Fargo, Capital One, and virtually every major bank and credit union.
@@ -117,7 +117,7 @@ export function BlogPostPlaidPartnership() {
         </ul>
 
         <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg my-8">
-          <h3 className="text-xl text-[#041E42] dark:text-white mb-4">Privacy Controls</h3>
+          <h3 className="text-xl text-[#0F0E17] dark:text-white mb-4">Privacy Controls</h3>
           <p>
             You can disconnect Plaid access at any time through your Delt Capital dashboard. Once disconnected, we retain only the snapshot of data used for your initial approval—we cannot access new transactions or updated account information.
           </p>
@@ -131,7 +131,7 @@ export function BlogPostPlaidPartnership() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
           <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-            <h4 className="font-semibold text-[#041E42] dark:text-white mb-2">Major National Banks</h4>
+            <h4 className="font-semibold text-[#0F0E17] dark:text-white mb-2">Major National Banks</h4>
             <ul className="space-y-1 text-sm">
               <li>• Chase Bank</li>
               <li>• Bank of America</li>
@@ -144,7 +144,7 @@ export function BlogPostPlaidPartnership() {
             </ul>
           </div>
           <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-            <h4 className="font-semibold text-[#041E42] dark:text-white mb-2">Online Banks & Credit Unions</h4>
+            <h4 className="font-semibold text-[#0F0E17] dark:text-white mb-2">Online Banks & Credit Unions</h4>
             <ul className="space-y-1 text-sm">
               <li>• Ally Bank</li>
               <li>• Chime</li>
@@ -169,7 +169,7 @@ export function BlogPostPlaidPartnership() {
         </p>
 
         <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg my-8">
-          <h3 className="text-lg text-[#041E42] dark:text-white mb-3">Common Issues & Solutions</h3>
+          <h3 className="text-lg text-[#0F0E17] dark:text-white mb-3">Common Issues & Solutions</h3>
           <ul className="space-y-3">
             <li>
               <strong>Login Failed:</strong> Double-check your username and password. If you recently changed your banking password, use the updated credentials.
@@ -185,7 +185,7 @@ export function BlogPostPlaidPartnership() {
             </li>
           </ul>
           <p className="mt-4 text-sm">
-            <strong>Still having issues?</strong> Contact our support team at <a href="mailto:info@deltcapital.com" className="text-[#1B17FF] hover:underline">info@deltcapital.com</a> or use the manual bank statement upload option.
+            <strong>Still having issues?</strong> Contact our support team at <a href="mailto:info@deltcapital.com" className="text-[#4F46E5] hover:underline">info@deltcapital.com</a> or use the manual bank statement upload option.
           </p>
         </div>
 
@@ -207,7 +207,7 @@ export function BlogPostPlaidPartnership() {
           <li>• Instant pre-qualification checks before full application</li>
         </ul>
 
-        <div className="bg-[#1B17FF] text-white p-8 rounded-xl my-12 text-center">
+        <div className="bg-[#4F46E5] text-white p-8 rounded-xl my-12 text-center">
           <h2 className="text-3xl font-bold mb-4">Ready to Experience Instant Bank Verification?</h2>
           <p className="text-xl mb-6">
             Apply today and connect your bank account in seconds with Plaid. Get approved faster than ever before.
@@ -231,42 +231,42 @@ export function BlogPostPlaidPartnership() {
         
         <div className="space-y-6 my-8">
           <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg">
-            <h4 className="font-semibold text-[#041E42] dark:text-white mb-2">Is Plaid verification required?</h4>
+            <h4 className="font-semibold text-[#0F0E17] dark:text-white mb-2">Is Plaid verification required?</h4>
             <p className="text-sm">
               No. While Plaid verification offers the fastest approval path, you can still upload bank statements manually if you prefer.
             </p>
           </div>
 
           <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg">
-            <h4 className="font-semibold text-[#041E42] dark:text-white mb-2">Does Plaid cost anything?</h4>
+            <h4 className="font-semibold text-[#0F0E17] dark:text-white mb-2">Does Plaid cost anything?</h4>
             <p className="text-sm">
               No. Bank verification via Plaid is completely free for all Delt Capital applicants. There are no additional fees or charges.
             </p>
           </div>
 
           <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg">
-            <h4 className="font-semibold text-[#041E42] dark:text-white mb-2">Can Plaid access my money or make transactions?</h4>
+            <h4 className="font-semibold text-[#0F0E17] dark:text-white mb-2">Can Plaid access my money or make transactions?</h4>
             <p className="text-sm">
               Absolutely not. Plaid has read-only access and can only view account information. It cannot move money, initiate transfers, or make any changes to your accounts.
             </p>
           </div>
 
           <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg">
-            <h4 className="font-semibold text-[#041E42] dark:text-white mb-2">What if I bank with a small local credit union?</h4>
+            <h4 className="font-semibold text-[#0F0E17] dark:text-white mb-2">What if I bank with a small local credit union?</h4>
             <p className="text-sm">
               Plaid supports over 12,000 financial institutions including most local banks and credit unions. If your institution isn't supported, you can use the manual bank statement upload option.
             </p>
           </div>
 
           <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg">
-            <h4 className="font-semibold text-[#041E42] dark:text-white mb-2">How long does Delt Capital retain access to my bank data?</h4>
+            <h4 className="font-semibold text-[#0F0E17] dark:text-white mb-2">How long does Delt Capital retain access to my bank data?</h4>
             <p className="text-sm">
               We use Plaid to verify your account during the application process. Once approved or if you disconnect access, we retain only the data snapshot used for underwriting—we cannot see new transactions after that point.
             </p>
           </div>
 
           <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg">
-            <h4 className="font-semibold text-[#041E42] dark:text-white mb-2">Does using Plaid affect my credit score?</h4>
+            <h4 className="font-semibold text-[#0F0E17] dark:text-white mb-2">Does using Plaid affect my credit score?</h4>
             <p className="text-sm">
               No. Connecting your bank account via Plaid does not involve a credit check and has zero impact on your credit score.
             </p>

@@ -52,9 +52,9 @@ export function IDVerification({ onComplete }: IDVerificationProps) {
         <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white border border-slate-200 dark:bg-slate-800 dark:border-slate-700 mb-4">
           {done
             ? <CheckCircle className="w-6 h-6 text-emerald-500" />
-            : <Camera className="w-6 h-6 text-[#4945ff]" />}
+            : <Camera className="w-6 h-6 text-[#4F46E5]" />}
         </div>
-        <h4 className="text-[#041E42] dark:text-white mb-1">
+        <h4 className="text-[#0F0E17] dark:text-white mb-1">
           {done ? 'Identity Verified' : 'Verify Your Identity'}
         </h4>
         <p className="text-sm text-slate-400 max-w-xs mx-auto mb-6">
@@ -68,7 +68,7 @@ export function IDVerification({ onComplete }: IDVerificationProps) {
           className={`px-8 py-3 rounded-full text-sm transition-all ${
             done
               ? 'bg-emerald-500 text-white cursor-default'
-              : 'bg-[#4945ff] hover:bg-[#3b38d9] text-white'
+              : 'bg-[#4F46E5] hover:bg-[#3730A3] text-white'
           }`}
         >
           {done ? (
@@ -97,7 +97,7 @@ export function IDVerification({ onComplete }: IDVerificationProps) {
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: 'spring', damping: 25, stiffness: 350 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white dark:bg-[#1F2933] rounded-2xl shadow-2xl w-full max-w-[360px] overflow-hidden"
+              className="bg-white dark:bg-[#1A1923] rounded-2xl shadow-2xl w-full max-w-[360px] overflow-hidden"
             >
               <AnimatePresence mode="wait">
                 {/* ─── Step 1: Capture ID ─── */}
@@ -125,7 +125,7 @@ export function IDVerification({ onComplete }: IDVerificationProps) {
                     </div>
 
                     {/* Tab label */}
-                    <p className="text-center text-sm text-[#041E42] dark:text-white mb-2">ID</p>
+                    <p className="text-center text-sm text-[#0F0E17] dark:text-white mb-2">ID</p>
 
                     {/* Progress bar */}
                     <div className="h-1 rounded-full bg-slate-100 dark:bg-slate-700 mb-4 overflow-hidden">
@@ -180,15 +180,15 @@ export function IDVerification({ onComplete }: IDVerificationProps) {
 
                     {/* Delt logo */}
                     <div className="flex justify-center mb-3">
-                      <span className="text-sm text-[#041E42] dark:text-white tracking-tight">
-                        <span className="text-[#4945ff]">⊿</span>Delt
+                      <span className="text-sm text-[#0F0E17] dark:text-white tracking-tight">
+                        <span className="text-[#4F46E5]">⊿</span>Delt
                       </span>
                     </div>
 
                     {/* Privacy */}
                     <p className="text-[10px] text-slate-300 dark:text-slate-500 text-center leading-relaxed mb-4">
                       Photos are encrypted end-to-end. By continuing you agree to Plaid's{' '}
-                      <button className="underline hover:text-[#4945ff]">Privacy Policy</button>.
+                      <button className="underline hover:text-[#4F46E5]">Privacy Policy</button>.
                     </p>
 
                     {/* Buttons */}
@@ -240,7 +240,7 @@ export function IDVerification({ onComplete }: IDVerificationProps) {
                     </div>
 
                     {/* Tab label */}
-                    <p className="text-center text-sm text-[#041E42] dark:text-white mb-2">Selfie</p>
+                    <p className="text-center text-sm text-[#0F0E17] dark:text-white mb-2">Selfie</p>
 
                     {/* Progress bar */}
                     <div className="h-1 rounded-full bg-slate-100 dark:bg-slate-700 mb-4 overflow-hidden">
@@ -293,15 +293,15 @@ export function IDVerification({ onComplete }: IDVerificationProps) {
 
                     {/* Delt logo */}
                     <div className="flex justify-center mb-3">
-                      <span className="text-sm text-[#041E42] dark:text-white tracking-tight">
-                        <span className="text-[#4945ff]">⊿</span>Delt
+                      <span className="text-sm text-[#0F0E17] dark:text-white tracking-tight">
+                        <span className="text-[#4F46E5]">⊿</span>Delt
                       </span>
                     </div>
 
                     {/* Privacy */}
                     <p className="text-[10px] text-slate-300 dark:text-slate-500 text-center leading-relaxed mb-4">
                       Photos are encrypted end-to-end. By continuing you agree to Plaid's{' '}
-                      <button className="underline hover:text-[#4945ff]">Privacy Policy</button>.
+                      <button className="underline hover:text-[#4F46E5]">Privacy Policy</button>.
                     </p>
 
                     {/* Buttons */}

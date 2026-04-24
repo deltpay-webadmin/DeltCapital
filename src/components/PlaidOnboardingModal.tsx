@@ -199,10 +199,10 @@ export function PlaidOnboardingModal({ open, onClose, onComplete }: PlaidOnboard
                 </div>
               </div>
 
-              <h3 className="text-center text-[18px] text-[#041E42] mb-1">
+              <h3 className="text-center text-[18px] text-[#0F0E17] mb-1">
                 This application uses <span className="font-semibold">Plaid</span> to
               </h3>
-              <p className="text-center text-[18px] text-[#041E42] mb-7">connect your account</p>
+              <p className="text-center text-[18px] text-[#0F0E17] mb-7">connect your account</p>
 
               {error && (
                 <div className="mb-4 px-3 py-2.5 bg-red-50 border border-red-200 rounded-lg text-xs text-red-600 text-center">
@@ -239,7 +239,7 @@ export function PlaidOnboardingModal({ open, onClose, onComplete }: PlaidOnboard
             <PlaidHeader onClose={onClose} />
             <div className="px-7 pt-6 pb-4 flex-1 flex flex-col items-center justify-center">
               <AnimatedCheckCircle />
-              <h3 className="text-center text-[22px] font-semibold text-[#041E42] mb-2">
+              <h3 className="text-center text-[22px] font-semibold text-[#0F0E17] mb-2">
                 You're all set.
               </h3>
               <p className="text-center text-sm text-slate-500 max-w-[250px]">

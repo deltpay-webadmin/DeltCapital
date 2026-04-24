@@ -61,11 +61,11 @@ export function StateSelect({ value, onChange, className = '' }: StateSelectProp
         onClick={() => setIsOpen(!isOpen)}
         className={`${className} flex items-center justify-between`}
       >
-        <span className={value ? 'text-[#041E42] dark:text-white' : 'text-[#9AA5B1]'}>
+        <span className={value ? 'text-[#0F0E17] dark:text-white' : 'text-[#8A8895]'}>
           {value || 'Select State'}
         </span>
         <ChevronDown
-          className={`w-5 h-5 text-[#52606D] transition-transform ${
+          className={`w-5 h-5 text-[#6A6876] transition-transform ${
             isOpen ? 'rotate-180' : ''
           }`}
         />
@@ -74,16 +74,16 @@ export function StateSelect({ value, onChange, className = '' }: StateSelectProp
       {isOpen && (
         <div
           ref={dropdownRef}
-          className="absolute z-50 mt-2 w-full bg-white dark:bg-[#020C1B] border-2 border-[#D1D5DB] dark:border-[#1F2933] rounded-lg shadow-xl"
+          className="absolute z-50 mt-2 w-full bg-white dark:bg-[#020C1B] border-2 border-[#D1D5DB] dark:border-[#1A1923] rounded-lg shadow-xl"
         >
           {/* Search Input */}
-          <div className="p-2 border-b border-[#E4E7EB] dark:border-[#1F2933]">
+          <div className="p-2 border-b border-[#E7E3DA] dark:border-[#1A1923]">
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search states..."
-              className="w-full px-3 py-2 text-sm border border-[#D1D5DB] dark:border-[#1F2933] rounded bg-white dark:bg-[#0D1821] text-[#041E42] dark:text-white focus:border-[#1B17FF] focus:outline-none"
+              className="w-full px-3 py-2 text-sm border border-[#D1D5DB] dark:border-[#1A1923] rounded bg-white dark:bg-[#0D1821] text-[#0F0E17] dark:text-white focus:border-[#4F46E5] focus:outline-none"
               autoFocus
             />
           </div>
@@ -96,18 +96,18 @@ export function StateSelect({ value, onChange, className = '' }: StateSelectProp
                   key={state}
                   type="button"
                   onClick={() => handleSelect(state)}
-                  className={`w-full px-4 py-2.5 text-left text-sm flex items-center justify-between hover:bg-[#F5F7FA] dark:hover:bg-[#1F2933] transition-colors ${
+                  className={`w-full px-4 py-2.5 text-left text-sm flex items-center justify-between hover:bg-[#FAF8F3] dark:hover:bg-[#1A1923] transition-colors ${
                     value === state
-                      ? 'bg-[#EEF2FF] dark:bg-[#1B17FF]/10 text-[#1B17FF] font-semibold'
-                      : 'text-[#041E42] dark:text-white'
+                      ? 'bg-[#EEF2FF] dark:bg-[#4F46E5]/10 text-[#4F46E5] font-semibold'
+                      : 'text-[#0F0E17] dark:text-white'
                   }`}
                 >
                   <span>{state}</span>
-                  {value === state && <Check className="w-4 h-4 text-[#1B17FF]" />}
+                  {value === state && <Check className="w-4 h-4 text-[#4F46E5]" />}
                 </button>
               ))
             ) : (
-              <div className="px-4 py-8 text-center text-sm text-[#9AA5B1]">
+              <div className="px-4 py-8 text-center text-sm text-[#8A8895]">
                 No states found
               </div>
             )}

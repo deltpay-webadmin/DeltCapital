@@ -323,15 +323,15 @@ export function BlogPage({ onClose, onAboutClick, onHowItWorksClick, onReviewsCl
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-white dark:bg-[#0A1F35] z-50 overflow-y-auto"
+          className="fixed inset-0 bg-white dark:bg-[#0F0E17] z-50 overflow-y-auto"
         >
           <div className="min-h-screen">
             {/* Header */}
-            <div className="sticky top-0 bg-white/95 dark:bg-[#0A1F35]/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 z-10">
+            <div className="sticky top-0 bg-white/95 dark:bg-[#0F0E17]/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 z-10">
               <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
                 <button
                   onClick={() => setSelectedPost(null)}
-                  className="flex items-center gap-2 text-[#6B7280] hover:text-[#4945ff] transition-colors"
+                  className="flex items-center gap-2 text-[#6B7280] hover:text-[#4F46E5] transition-colors"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   <span>Back</span>
@@ -353,10 +353,10 @@ export function BlogPage({ onClose, onAboutClick, onHowItWorksClick, onReviewsCl
                 transition={{ delay: 0.1 }}
                 className="mb-12"
               >
-                <div className="inline-block px-3 py-1 bg-[#4945ff]/10 text-[#4945ff] rounded-full text-sm mb-4">
+                <div className="inline-block px-3 py-1 bg-[#4F46E5]/10 text-[#4F46E5] rounded-full text-sm mb-4">
                   {selectedPost.category}
                 </div>
-                <h1 className="text-4xl lg:text-5xl text-[#041E42] dark:text-white mb-6 leading-tight">
+                <h1 className="text-4xl lg:text-5xl text-[#0F0E17] dark:text-white mb-6 leading-tight">
                   {selectedPost.title}
                 </h1>
                 <div className="text-sm text-[#9CA3AF] dark:text-gray-400">
@@ -396,18 +396,18 @@ export function BlogPage({ onClose, onAboutClick, onHowItWorksClick, onReviewsCl
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="fixed inset-0 bg-[#ededf6] z-50 overflow-y-auto"
+      className="fixed inset-0 bg-[#F7F5F0] z-50 overflow-y-auto"
     >
       <div className="min-h-screen">
         {/* Header */}
-        <div className="sticky top-0 bg-[#ededf6] border-b border-[#041E42]/10 z-10">
+        <div className="sticky top-0 bg-[#F7F5F0] border-b border-[#0F0E17]/10 z-10">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="flex items-center justify-between mb-6">
               <motion.div
                 initial={{ y: -10, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
               >
-                <h1 className="text-4xl text-[#041E42] mb-1">
+                <h1 className="text-4xl text-[#0F0E17] mb-1">
                   What's new
                 </h1>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -440,7 +440,7 @@ export function BlogPage({ onClose, onAboutClick, onHowItWorksClick, onReviewsCl
                     }}
                     className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                       selectedCategory === category
-                        ? 'bg-[#4945ff] text-white shadow-lg shadow-[#4945ff]/25'
+                        ? 'bg-[#4F46E5] text-white shadow-lg shadow-[#4F46E5]/25'
                         : 'bg-white dark:bg-[#0F2744] text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#1a3a52] border border-gray-200 dark:border-gray-600'
                     }`}
                   >
@@ -454,7 +454,7 @@ export function BlogPage({ onClose, onAboutClick, onHowItWorksClick, onReviewsCl
                     onClick={() => setShowDropdown(!showDropdown)}
                     className={`px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-1 ${
                       dropdownCategories.includes(selectedCategory)
-                        ? 'bg-[#4945ff] text-white shadow-lg shadow-[#4945ff]/25'
+                        ? 'bg-[#4F46E5] text-white shadow-lg shadow-[#4F46E5]/25'
                         : 'bg-white dark:bg-[#0F2744] text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#1a3a52] border border-gray-200 dark:border-gray-600'
                     }`}
                   >
@@ -482,7 +482,7 @@ export function BlogPage({ onClose, onAboutClick, onHowItWorksClick, onReviewsCl
                               }}
                               className={`w-full text-left px-4 py-2.5 rounded-lg text-sm transition-all flex items-center justify-between ${
                                 selectedCategory === category
-                                  ? 'bg-[#4945ff]/10 text-[#4945ff] font-medium'
+                                  ? 'bg-[#4F46E5]/10 text-[#4F46E5] font-medium'
                                   : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#1a3a52]'
                               }`}
                             >
@@ -507,7 +507,7 @@ export function BlogPage({ onClose, onAboutClick, onHowItWorksClick, onReviewsCl
                     onClick={() => setSortOrder('newest')}
                     className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
                       sortOrder === 'newest'
-                        ? 'bg-[#4945ff] text-white'
+                        ? 'bg-[#4F46E5] text-white'
                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#1a3a52]'
                     }`}
                   >
@@ -517,7 +517,7 @@ export function BlogPage({ onClose, onAboutClick, onHowItWorksClick, onReviewsCl
                     onClick={() => setSortOrder('oldest')}
                     className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
                       sortOrder === 'oldest'
-                        ? 'bg-[#4945ff] text-white'
+                        ? 'bg-[#4F46E5] text-white'
                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#1a3a52]'
                     }`}
                   >
@@ -551,11 +551,11 @@ export function BlogPage({ onClose, onAboutClick, onHowItWorksClick, onReviewsCl
                 <div className="flex flex-col md:flex-row gap-6 p-6 md:p-8">
                   {/* Text Content */}
                   <div className="flex-1 order-2 md:order-1">
-                    <div className="inline-block px-3 py-1 bg-[#4945ff]/10 text-[#4945ff] rounded-full text-sm mb-4">
+                    <div className="inline-block px-3 py-1 bg-[#4F46E5]/10 text-[#4F46E5] rounded-full text-sm mb-4">
                       {post.category}
                     </div>
                     
-                    <h2 className="text-2xl lg:text-3xl text-[#041E42] dark:text-white mb-4 group-hover:text-[#4945ff] dark:group-hover:text-[#5B57FF] transition-colors leading-tight">
+                    <h2 className="text-2xl lg:text-3xl text-[#0F0E17] dark:text-white mb-4 group-hover:text-[#4F46E5] dark:group-hover:text-[#7C3AED] transition-colors leading-tight">
                       {post.title}
                     </h2>
 
@@ -567,7 +567,7 @@ export function BlogPage({ onClose, onAboutClick, onHowItWorksClick, onReviewsCl
                       <div className="text-sm text-[#9CA3AF] dark:text-gray-500">
                         {post.date}
                       </div>
-                      <span className="text-[#4945ff] hover:text-[#3b38d9] transition-colors inline-flex items-center gap-2 group-hover:gap-3">
+                      <span className="text-[#4F46E5] hover:text-[#3730A3] transition-colors inline-flex items-center gap-2 group-hover:gap-3">
                         Read more
                         <span className="transition-all">→</span>
                       </span>

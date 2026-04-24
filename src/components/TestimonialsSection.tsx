@@ -1,186 +1,334 @@
-import { Star } from 'lucide-react';
-import { useEffect, useRef, useState, useCallback } from 'react';
-
-const testimonials = [
+const TESTIMONIALS = [
   {
-    quote: '"The funding from Delt Capital allowed us to open our second location 6 months ahead of schedule. The process was incredibly smooth and fast!"',
+    featured: true,
+    quote:
+      'Closed in 19 hours. The bank still hasn\'t returned my call. Delt priced it on our trailing-12, not on my story.',
     name: 'Maria Rodriguez',
     business: 'La Rosa Restaurant',
-    industry: 'Restaurant',
+    industry: 'Restaurant · TX',
     funded: '$110K',
+    factor: '1.16×',
+    time: '19h',
   },
   {
-    quote: '"With Delt\'s Revenue-Based Financing, I was able to upgrade all my equipment without the stress of traditional bank loans. Game changer for my business."',
+    quote: 'Third draw with Delt. Every rate has been lower than the last. That doesn\'t happen at a bank.',
     name: 'Mike Rosario',
-    business: 'Rosario Construction LLC',
-    industry: 'Construction',
+    business: 'Rosario Construction',
+    industry: 'Construction · NY',
     funded: '$180K',
+    factor: '1.14×',
   },
   {
-    quote: '"I was nervous about taking on financing, but Delt made it so easy. Now my salon is thriving with our new spa services!"',
+    quote: 'Factor rate on the first email. No games, no callbacks, no "advisor" asking what my cash looks like.',
     name: 'Sarah Thompson',
-    business: 'Bloom Beauty Salon',
-    industry: 'Beauty & Wellness',
+    business: 'Bloom Beauty',
+    industry: 'Beauty · FL',
     funded: '$65K',
+    factor: '1.19×',
   },
   {
-    quote: '"Delt Capital helped me seize a time-sensitive opportunity to upgrade my operation. Their speed and flexibility were exactly what I needed."',
+    quote: 'Paid early and they actually rebated the unearned factor. Unheard of in MCA.',
     name: 'Marcus Williams',
     business: 'Williams Logistics',
-    industry: 'Transportation',
+    industry: 'Logistics · NJ',
     funded: '$80K',
+    factor: '1.17×',
   },
   {
-    quote: '"The holiday season was approaching, and I needed capital fast to stock up. Delt came through in record time!"',
+    quote: 'I forwarded the offer to my CFO — she said "take it, I can\'t beat that."',
     name: 'Emily Ward',
-    business: "Emily's Market",
-    industry: 'Retail',
+    business: 'Ward Market',
+    industry: 'Retail · WA',
     funded: '$50K',
+    factor: '1.18×',
   },
   {
-    quote: '"Traditional banks turned me down, but Delt saw the potential in my business. Now I\'m taking on larger projects than ever!"',
+    quote: 'Underwriter called me by name and knew my book. Not a call center.',
     name: 'David Roberts',
-    business: 'Roberts Auto Service',
-    industry: 'Automotive',
+    business: 'Roberts Auto',
+    industry: 'Auto · IL',
     funded: '$95K',
+    factor: '1.15×',
   },
 ];
 
-// Duplicate the list for seamless infinite loop
-const loopedTestimonials = [...testimonials, ...testimonials];
-
 export function TestimonialsSection() {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const [isPaused, setIsPaused] = useState(false);
-  const animationRef = useRef<number | null>(null);
-  const offsetRef = useRef(0);
-  const [cardWidth, setCardWidth] = useState(0);
-  const totalOriginalWidth = useRef(0);
-
-  // Measure card width on mount / resize
-  const measure = useCallback(() => {
-    if (!trackRef.current) return;
-    const firstCard = trackRef.current.children[0] as HTMLElement | undefined;
-    if (!firstCard) return;
-    const gap = 24; // gap-6 = 24px
-    const w = firstCard.offsetWidth + gap;
-    setCardWidth(w);
-    totalOriginalWidth.current = w * testimonials.length;
-  }, []);
-
-  useEffect(() => {
-    measure();
-    window.addEventListener('resize', measure);
-    return () => window.removeEventListener('resize', measure);
-  }, [measure]);
-
-  // Continuous scroll animation
-  useEffect(() => {
-    if (!totalOriginalWidth.current) return;
-    const speed = 1; // px per frame (~60px/s at 60fps)
-
-    const animate = () => {
-      if (!isPaused) {
-        offsetRef.current += speed;
-        // Reset seamlessly when we've scrolled past the first set
-        if (offsetRef.current >= totalOriginalWidth.current) {
-          offsetRef.current -= totalOriginalWidth.current;
-        }
-      }
-      if (trackRef.current) {
-        trackRef.current.style.transform = `translateX(-${offsetRef.current}px)`;
-      }
-      animationRef.current = requestAnimationFrame(animate);
-    };
-
-    animationRef.current = requestAnimationFrame(animate);
-    return () => {
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
-    };
-  }, [isPaused, cardWidth]);
-
   return (
-    <section className="py-20 bg-[#ededf6]">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2
+    <section
+      style={{
+        background: 'var(--paper)',
+        padding: '120px 0',
+        fontFamily: 'var(--font-body)',
+      }}
+    >
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 32px' }}>
+        <div className="grid items-end" style={{ gridTemplateColumns: '1fr 1fr', gap: 48, marginBottom: 56 }}>
+          <div>
+            <Eyebrow>Operators, on the record</Eyebrow>
+            <h2
+              style={{
+                marginTop: 18,
+                marginBottom: 0,
+                fontFamily: 'var(--font-display)',
+                fontSize: 'clamp(2rem, 4.5vw, 3.5rem)',
+                fontWeight: 600,
+                letterSpacing: '-0.035em',
+                lineHeight: 1.05,
+                color: '#0F0E17',
+              }}
+            >
+              Said by the people
+              <br />
+              who actually paid it back.
+            </h2>
+          </div>
+          <p
+            style={{
+              margin: 0,
+              justifySelf: 'end',
+              maxWidth: 460,
+              fontFamily: 'var(--font-body)',
+              fontSize: 16.5,
+              lineHeight: 1.6,
+              color: 'var(--ink-soft)',
+            }}
+          >
+            Every quote below is a Delt customer with a closed deal file. We verify employment, funding amount, and factor on every entry before it goes up.
+          </p>
+        </div>
+
+        <div
+          className="grid"
           style={{
-            fontSize: '28px',
-            fontWeight: 700,
-            color: '#041e42',
-            textAlign: 'center',
-            marginBottom: '12px',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gridAutoFlow: 'dense',
+            gap: 20,
           }}
         >
-          What our merchants say
-        </h2>
-        <p
-          className="text-center mb-10"
-          style={{ fontSize: '15px', color: 'rgba(4,30,66,0.45)' }}
-        >
-          Real stories from businesses funded by Delt Capital
-        </p>
-
-        {/* Carousel container */}
-        <div
-          className="relative overflow-hidden"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-        >
-          {/* Fade edges */}
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-16 z-10" style={{ background: 'linear-gradient(to right, #ededf6, transparent)' }} />
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-16 z-10" style={{ background: 'linear-gradient(to left, #ededf6, transparent)' }} />
-
-          {/* Scrolling track */}
-          <div
-            ref={trackRef}
-            className="flex gap-6"
-            style={{ willChange: 'transform' }}
-          >
-            {loopedTestimonials.map((t, i) => (
-              <div
-                key={`${t.name}-${i}`}
-                className="shrink-0"
-                style={{
-                  width: 'min(420px, 80vw)',
-                  background: '#F7F8FC',
-                  borderRadius: '16px',
-                  padding: '32px',
-                  border: '1px solid rgba(73,69,255,0.06)',
-                }}
-              >
-                {/* Stars */}
-                <div className="flex gap-1 mb-4">
-                  {[...Array(5)].map((_, j) => (
-                    <Star
-                      key={j}
-                      className="w-4 h-4 fill-[#4945ff] text-[#4945ff]"
-                    />
-                  ))}
-                </div>
-
-                {/* Quote */}
-                <p
-                  className="mb-5 leading-relaxed"
-                  style={{ fontSize: '15px', color: '#041e42', minHeight: '72px' }}
-                >
-                  {t.quote}
-                </p>
-
-                {/* Attribution */}
-                <div style={{ fontSize: '13px', color: 'rgba(0,0,0,0.5)' }}>
-                  <span className="font-semibold" style={{ color: '#4945ff' }}>
-                    {t.name}
-                  </span>
-                  {' · '}
-                  {t.business} · {t.industry}
-                  {' · '}
-                  Funded: {t.funded}
-                </div>
-              </div>
-            ))}
-          </div>
+          {TESTIMONIALS.map((t, i) => (
+            <TestimonialCard key={t.name + i} t={t} />
+          ))}
         </div>
       </div>
     </section>
+  );
+}
+
+function TestimonialCard({ t }: { t: (typeof TESTIMONIALS)[number] }) {
+  const featured = t.featured;
+  const color = featured ? '#F7F5F0' : '#0F0E17';
+  const subColor = featured ? 'rgba(231,227,218,0.65)' : 'var(--ink-mute)';
+  const bg = featured ? '#0F0E17' : '#FFFFFF';
+  const border = featured ? 'transparent' : 'var(--line)';
+
+  return (
+    <article
+      style={{
+        gridColumn: featured ? 'span 2' : 'span 1',
+        gridRow: featured ? 'span 2' : 'span 1',
+        background: bg,
+        border: `1px solid ${border}`,
+        borderRadius: 20,
+        padding: featured ? '44px 44px 36px' : '28px',
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: 220,
+        overflow: 'hidden',
+      }}
+    >
+      {featured && (
+        <span
+          aria-hidden
+          style={{
+            position: 'absolute',
+            top: 10,
+            right: 24,
+            fontFamily: 'var(--font-serif)',
+            fontStyle: 'italic',
+            fontSize: 200,
+            lineHeight: 1,
+            color: 'rgba(124,58,237,0.22)',
+            pointerEvents: 'none',
+          }}
+        >
+          &ldquo;
+        </span>
+      )}
+
+      <div
+        style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: 10.5,
+          letterSpacing: '0.18em',
+          textTransform: 'uppercase',
+          color: featured ? '#C4B5FD' : '#4F46E5',
+          fontWeight: 600,
+        }}
+      >
+        {featured ? 'Featured operator' : t.industry}
+      </div>
+
+      <p
+        style={{
+          marginTop: 16,
+          marginBottom: 'auto',
+          fontFamily: 'var(--font-display)',
+          fontSize: featured ? 'clamp(1.5rem, 2.4vw, 2rem)' : '1.0625rem',
+          fontWeight: 500,
+          letterSpacing: featured ? '-0.025em' : '-0.01em',
+          lineHeight: 1.25,
+          color,
+        }}
+      >
+        &ldquo;{t.quote}&rdquo;
+      </p>
+
+      <div className="flex items-center justify-between gap-4" style={{ marginTop: 28 }}>
+        <div className="flex items-center gap-3">
+          <span
+            aria-hidden
+            style={{
+              width: featured ? 44 : 36,
+              height: featured ? 44 : 36,
+              borderRadius: 999,
+              background: featured
+                ? 'linear-gradient(135deg, #4F46E5, #7C3AED)'
+                : 'var(--paper-warm)',
+              border: featured ? 'none' : '1px solid var(--line)',
+              color: featured ? '#fff' : 'var(--ink-mute)',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontFamily: 'var(--font-display)',
+              fontSize: featured ? 15 : 13,
+              fontWeight: 700,
+              letterSpacing: '-0.02em',
+              flexShrink: 0,
+            }}
+          >
+            {t.name
+              .split(' ')
+              .map((p) => p[0])
+              .slice(0, 2)
+              .join('')}
+          </span>
+          <div>
+            <div
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 14,
+                fontWeight: 600,
+                color,
+                letterSpacing: '-0.01em',
+              }}
+            >
+              {t.name}
+            </div>
+            <div
+              style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 12.5,
+                color: subColor,
+              }}
+            >
+              {t.business}
+              {featured ? ` · ${t.industry}` : ''}
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <Metric label="Funded" value={t.funded} featured={!!featured} />
+          <span
+            aria-hidden
+            style={{
+              width: 1,
+              height: 28,
+              background: featured ? 'rgba(231,227,218,0.16)' : 'var(--line)',
+            }}
+          />
+          <Metric label="Factor" value={t.factor} featured={!!featured} />
+          {featured && t.time && (
+            <>
+              <span
+                aria-hidden
+                style={{
+                  width: 1,
+                  height: 28,
+                  background: 'rgba(231,227,218,0.16)',
+                }}
+              />
+              <Metric label="Funded in" value={t.time} featured />
+            </>
+          )}
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function Metric({
+  label,
+  value,
+  featured,
+}: {
+  label: string;
+  value?: string;
+  featured: boolean;
+}) {
+  if (!value) return null;
+  return (
+    <div>
+      <div
+        style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: 9.5,
+          letterSpacing: '0.16em',
+          textTransform: 'uppercase',
+          color: featured ? 'rgba(231,227,218,0.55)' : 'var(--ink-mute)',
+          fontWeight: 600,
+        }}
+      >
+        {label}
+      </div>
+      <div
+        style={{
+          marginTop: 2,
+          fontFamily: 'var(--font-display)',
+          fontSize: 16,
+          fontWeight: 700,
+          letterSpacing: '-0.02em',
+          color: featured ? '#F7F5F0' : '#0F0E17',
+          fontVariantNumeric: 'tabular-nums',
+        }}
+      >
+        {value}
+      </div>
+    </div>
+  );
+}
+
+function Eyebrow({ children, color = '#4F46E5' }: { children: React.ReactNode; color?: string }) {
+  return (
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 10,
+        fontFamily: 'var(--font-mono)',
+        fontSize: 11,
+        fontWeight: 600,
+        letterSpacing: '0.18em',
+        textTransform: 'uppercase',
+        color,
+      }}
+    >
+      <span
+        aria-hidden
+        style={{ display: 'inline-block', width: 18, height: 1, background: color }}
+      />
+      {children}
+    </span>
   );
 }

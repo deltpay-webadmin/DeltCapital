@@ -125,37 +125,37 @@ export default function BookingPage({ onClose }: BookingPageProps) {
     <div className="fixed inset-0 bg-white dark:bg-[#020C1B] z-50 overflow-auto">
       <div className="min-h-screen flex flex-col lg:flex-row">
         {/* Left Sidebar */}
-        <div className="lg:w-80 bg-white dark:bg-[#0A1628] border-r border-[#E4E7EB] dark:border-[#1F2933] p-8">
+        <div className="lg:w-80 bg-white dark:bg-[#0A1628] border-r border-[#E7E3DA] dark:border-[#1A1923] p-8">
           {/* Close Button */}
           <button
             onClick={onClose}
-            className="mb-8 text-[#041E42] dark:text-white hover:text-[#4945ff] transition-colors"
+            className="mb-8 text-[#0F0E17] dark:text-white hover:text-[#4F46E5] transition-colors"
           >
             <X className="w-6 h-6" />
           </button>
 
           {/* Specialist Info */}
           <div className="mb-6">
-            <div className="w-20 h-20 rounded-full mb-4 overflow-hidden border-2 border-[#4945ff]">
+            <div className="w-20 h-20 rounded-full mb-4 overflow-hidden border-2 border-[#4F46E5]">
               <ImageWithFallback
                 src={activeSpecialist.image}
                 alt={activeSpecialist.name}
                 className="w-full h-full object-cover"
               />
             </div>
-            <h3 className="text-lg font-bold text-[#041E42] dark:text-white mb-1">{activeSpecialist.name}</h3>
-            <p className="text-sm text-[#4945ff] dark:text-[#60A5FA] font-semibold mb-1">{activeSpecialist.title}</p>
-            <p className="text-xs text-[#4B5563] dark:text-[#9AA5B1] mb-4">{activeSpecialist.expertise}</p>
-            <h2 className="text-xl font-bold text-[#041E42] dark:text-white">Client Consultation</h2>
+            <h3 className="text-lg font-bold text-[#0F0E17] dark:text-white mb-1">{activeSpecialist.name}</h3>
+            <p className="text-sm text-[#4F46E5] dark:text-[#C4B5FD] font-semibold mb-1">{activeSpecialist.title}</p>
+            <p className="text-xs text-[#4B5563] dark:text-[#8A8895] mb-4">{activeSpecialist.expertise}</p>
+            <h2 className="text-xl font-bold text-[#0F0E17] dark:text-white">Client Consultation</h2>
           </div>
 
           {/* Meeting Details */}
           <div className="space-y-3">
-            <div className="flex items-center gap-3 text-[#4B5563] dark:text-[#9AA5B1]">
+            <div className="flex items-center gap-3 text-[#4B5563] dark:text-[#8A8895]">
               <Clock className="w-5 h-5" />
               <span className="text-sm">30 min</span>
             </div>
-            <div className="flex items-center gap-3 text-[#4B5563] dark:text-[#9AA5B1]">
+            <div className="flex items-center gap-3 text-[#4B5563] dark:text-[#8A8895]">
               <Video className="w-5 h-5" />
               <span className="text-sm">Zoom</span>
             </div>
@@ -167,7 +167,7 @@ export default function BookingPage({ onClose }: BookingPageProps) {
           <div className="max-w-4xl mx-auto">
             {/* Specialist Selection */}
             <div className="mb-8">
-              <h3 className="text-lg font-semibold text-[#041E42] dark:text-white mb-4">Choose Your Funding Specialist</h3>
+              <h3 className="text-lg font-semibold text-[#0F0E17] dark:text-white mb-4">Choose Your Funding Specialist</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {specialists.map((specialist) => (
                   <button
@@ -176,13 +176,13 @@ export default function BookingPage({ onClose }: BookingPageProps) {
                     className={`
                       p-4 rounded-lg border-2 transition-all text-left
                       ${selectedSpecialist === specialist.id
-                        ? 'border-[#4945ff] bg-[#EFF6FF] dark:bg-[#1E40AF]/10'
-                        : 'border-[#E4E7EB] dark:border-[#1F2933] hover:border-[#4945ff]/50'
+                        ? 'border-[#4F46E5] bg-[#EFF6FF] dark:bg-[#1E40AF]/10'
+                        : 'border-[#E7E3DA] dark:border-[#1A1923] hover:border-[#4F46E5]/50'
                       }
                     `}
                   >
                     <div className="flex items-center gap-3 mb-2">
-                      <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#4945ff]">
+                      <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#4F46E5]">
                         <ImageWithFallback
                           src={specialist.image}
                           alt={specialist.name}
@@ -190,17 +190,17 @@ export default function BookingPage({ onClose }: BookingPageProps) {
                         />
                       </div>
                       <div className="flex-1">
-                        <h4 className="font-bold text-[#041E42] dark:text-white text-sm">{specialist.name}</h4>
-                        <p className="text-xs text-[#4945ff] dark:text-[#60A5FA]">{specialist.title}</p>
+                        <h4 className="font-bold text-[#0F0E17] dark:text-white text-sm">{specialist.name}</h4>
+                        <p className="text-xs text-[#4F46E5] dark:text-[#C4B5FD]">{specialist.title}</p>
                       </div>
                     </div>
-                    <p className="text-xs text-[#4B5563] dark:text-[#9AA5B1]">{specialist.expertise}</p>
+                    <p className="text-xs text-[#4B5563] dark:text-[#8A8895]">{specialist.expertise}</p>
                   </button>
                 ))}
               </div>
             </div>
 
-            <h2 className="text-2xl font-bold text-[#041E42] dark:text-white mb-8">Select a Date & Time</h2>
+            <h2 className="text-2xl font-bold text-[#0F0E17] dark:text-white mb-8">Select a Date & Time</h2>
             
             <div className="flex flex-col lg:flex-row gap-8">
               {/* Calendar Section */}
@@ -209,29 +209,29 @@ export default function BookingPage({ onClose }: BookingPageProps) {
                 <div className="flex items-center justify-between mb-6">
                   <button
                     onClick={handlePreviousMonth}
-                    className="p-2 hover:bg-[#F9FAFB] dark:hover:bg-[#1F2933] rounded-lg transition-colors"
+                    className="p-2 hover:bg-[#F9FAFB] dark:hover:bg-[#1A1923] rounded-lg transition-colors"
                   >
-                    <ChevronLeft className="w-5 h-5 text-[#041E42] dark:text-white" />
+                    <ChevronLeft className="w-5 h-5 text-[#0F0E17] dark:text-white" />
                   </button>
-                  <h3 className="text-lg font-semibold text-[#041E42] dark:text-white">
+                  <h3 className="text-lg font-semibold text-[#0F0E17] dark:text-white">
                     {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
                   </h3>
                   <button
                     onClick={handleNextMonth}
-                    className="p-2 hover:bg-[#F9FAFB] dark:hover:bg-[#1F2933] rounded-lg transition-colors"
+                    className="p-2 hover:bg-[#F9FAFB] dark:hover:bg-[#1A1923] rounded-lg transition-colors"
                   >
-                    <ChevronRight className="w-5 h-5 text-[#041E42] dark:text-white" />
+                    <ChevronRight className="w-5 h-5 text-[#0F0E17] dark:text-white" />
                   </button>
                 </div>
 
                 {/* Calendar Grid */}
-                <div className="border border-[#E4E7EB] dark:border-[#1F2933] rounded-lg overflow-hidden">
+                <div className="border border-[#E7E3DA] dark:border-[#1A1923] rounded-lg overflow-hidden">
                   {/* Day Headers */}
                   <div className="grid grid-cols-7 bg-[#F9FAFB] dark:bg-[#0A1628]">
                     {daysOfWeek.map((day) => (
                       <div
                         key={day}
-                        className="p-3 text-center text-xs font-semibold text-[#6B7280] dark:text-[#9AA5B1]"
+                        className="p-3 text-center text-xs font-semibold text-[#6B7280] dark:text-[#8A8895]"
                       >
                         {day}
                       </div>
@@ -246,11 +246,11 @@ export default function BookingPage({ onClose }: BookingPageProps) {
                         onClick={() => day && handleDateClick(day)}
                         disabled={!day}
                         className={`
-                          aspect-square p-3 text-center border-t border-r border-[#E4E7EB] dark:border-[#1F2933]
+                          aspect-square p-3 text-center border-t border-r border-[#E7E3DA] dark:border-[#1A1923]
                           ${index % 7 === 0 ? 'border-l-0' : ''}
                           ${!day ? 'bg-[#F9FAFB] dark:bg-[#0A1628] cursor-default' : ''}
                           ${day && !isDateSelected(day) ? 'hover:bg-[#EFF6FF] dark:hover:bg-[#1E40AF]/10 cursor-pointer' : ''}
-                          ${isDateSelected(day) ? 'bg-[#4945ff] text-white font-bold' : 'text-[#041E42] dark:text-white'}
+                          ${isDateSelected(day) ? 'bg-[#4F46E5] text-white font-bold' : 'text-[#0F0E17] dark:text-white'}
                           transition-colors
                         `}
                       >
@@ -262,10 +262,10 @@ export default function BookingPage({ onClose }: BookingPageProps) {
 
                 {/* Time Zone */}
                 <div className="mt-6">
-                  <label className="block text-sm font-semibold text-[#041E42] dark:text-white mb-2">
+                  <label className="block text-sm font-semibold text-[#0F0E17] dark:text-white mb-2">
                     Time zone
                   </label>
-                  <select className="w-full px-4 py-2 border border-[#E4E7EB] dark:border-[#1F2933] rounded-lg bg-white dark:bg-[#0A1628] text-[#041E42] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#4945ff]">
+                  <select className="w-full px-4 py-2 border border-[#E7E3DA] dark:border-[#1A1923] rounded-lg bg-white dark:bg-[#0A1628] text-[#0F0E17] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#4F46E5]">
                     <option>Eastern time - US & Canada</option>
                     <option>Pacific time - US & Canada</option>
                     <option>Central time - US & Canada</option>
@@ -278,7 +278,7 @@ export default function BookingPage({ onClose }: BookingPageProps) {
               <div className="lg:w-72">
                 {selectedDate && (
                   <>
-                    <h4 className="text-sm font-semibold text-[#041E42] dark:text-white mb-4">
+                    <h4 className="text-sm font-semibold text-[#0F0E17] dark:text-white mb-4">
                       {formatSelectedDate()}
                     </h4>
                     <div className="space-y-2">
@@ -289,8 +289,8 @@ export default function BookingPage({ onClose }: BookingPageProps) {
                           className={`
                             w-full px-4 py-3 rounded-lg text-center font-medium transition-colors
                             ${selectedTime === time
-                              ? 'bg-[#4945ff] text-white'
-                              : 'border-2 border-[#4945ff] text-[#4945ff] hover:bg-[#EFF6FF] dark:hover:bg-[#1E40AF]/10'
+                              ? 'bg-[#4F46E5] text-white'
+                              : 'border-2 border-[#4F46E5] text-[#4F46E5] hover:bg-[#EFF6FF] dark:hover:bg-[#1E40AF]/10'
                             }
                           `}
                         >
@@ -301,7 +301,7 @@ export default function BookingPage({ onClose }: BookingPageProps) {
 
                     {/* Confirm Button */}
                     {selectedTime && (
-                      <button className="w-full mt-6 px-6 py-3 bg-[#4945ff] hover:bg-[#3b38d9] text-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2">
+                      <button className="w-full mt-6 px-6 py-3 bg-[#4F46E5] hover:bg-[#3730A3] text-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2">
                         Confirm
                         <ChevronRight className="w-5 h-5" />
                       </button>

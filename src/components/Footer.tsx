@@ -1,9 +1,4 @@
-import { Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
-import { Linkedin, Twitter, Instagram, Facebook } from 'lucide-react';
-import logoWhiteImg from 'figma:asset/7f25ee6fe5a55b9182a00e3c5b80e1a42079fc74.png';
-import { useLanguage } from '../contexts/LanguageContext';
-import { Button } from './ui/button';
-import { ScrollReveal } from './ScrollNarrative';
+import { Mail, Phone, MapPin, Linkedin, Twitter, Instagram } from 'lucide-react';
 
 interface FooterProps {
   onAboutClick: () => void;
@@ -22,144 +17,366 @@ interface FooterProps {
   hideCTA?: boolean;
 }
 
-export function Footer({ onAboutClick, onHowItWorksClick, onReviewsClick, onBlogClick, onFAQClick, onSupportClick, onWinsClick, onApplyClick, onQuizClick, onPrivacyClick, onTermsClick, onDisclosuresClick, onResourcesClick, hideCTA }: FooterProps) {
+export function Footer({
+  onAboutClick,
+  onHowItWorksClick,
+  onReviewsClick,
+  onBlogClick,
+  onFAQClick,
+  onSupportClick,
+  onWinsClick,
+  onApplyClick,
+  onQuizClick,
+  onPrivacyClick,
+  onTermsClick,
+  onDisclosuresClick,
+  onResourcesClick,
+  hideCTA,
+}: FooterProps) {
   const currentYear = new Date().getFullYear();
-  const { t } = useLanguage();
 
   return (
-    <footer className="bg-[#041E42] dark:bg-[#0A1F35] text-white">
-      {/* CTA Section */}
+    <footer
+      style={{
+        background: '#0F0E17',
+        color: '#F7F5F0',
+        fontFamily: 'var(--font-body)',
+      }}
+    >
+      {/* CTA band */}
       {!hideCTA && (
-      <div className="relative overflow-hidden bg-gradient-to-br from-[#4945ff] via-[#5B57FF] to-[#7B77FF]">
-        {/* Decorative curved shapes */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -left-20 top-0 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
-          <div className="absolute -right-20 bottom-0 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
-          <div className="absolute left-1/4 -top-20 w-64 h-64 bg-[#1510DD]/30 rounded-full blur-2xl"></div>
-        </div>
-        
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-10">
-            <ScrollReveal direction="up" distance={40}>
-              <h2 className="text-4xl md:text-5xl lg:text-6xl text-white">
-                <span className="italic font-light">{t('cta.title').split(' ')[0]}</span>{' '}
-                <span>{t('cta.title').split(' ').slice(1).join(' ')}</span>
-              </h2>
-            </ScrollReveal>
-            <ScrollReveal direction="up" distance={30} delay={0.15}>
-              <div className="flex flex-col items-start md:items-start gap-5 shrink-0">
-                <Button 
-                  onClick={onApplyClick}
-                  className="bg-white hover:bg-gray-100 text-[#4945ff] font-semibold px-10 py-7 text-lg shadow-xl hover:shadow-2xl transition-all hover:scale-105"
+        <section
+          style={{
+            borderBottom: '1px solid rgba(231,227,218,0.08)',
+            padding: '88px 0',
+          }}
+        >
+          <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 32px' }}>
+            <div
+              className="grid items-center"
+              style={{ gridTemplateColumns: 'minmax(0, 1.2fr) minmax(0, 1fr)', gap: 48 }}
+            >
+              <div>
+                <Eyebrow color="#C4B5FD">Next move</Eyebrow>
+                <h2
+                  style={{
+                    marginTop: 20,
+                    marginBottom: 0,
+                    fontFamily: 'var(--font-display)',
+                    fontSize: 'clamp(2rem, 4.5vw, 3.5rem)',
+                    fontWeight: 600,
+                    letterSpacing: '-0.04em',
+                    lineHeight: 1.03,
+                    color: '#F7F5F0',
+                  }}
                 >
-                  {t('cta.button')}
-                </Button>
-                <p className="text-sm text-white/80 leading-relaxed">
-                  {t('cta.subtitle').split('\n')[0]}<br />
-                  {t('cta.subtitle').split('\n')[1]?.split('Resources and Guides')[0]}
-                  <span className="underline underline-offset-2 cursor-pointer hover:text-white transition-colors" onClick={onResourcesClick}>Resources and Guides</span>
-                  {t('cta.subtitle').split('\n')[1]?.split('Resources and Guides')[1]}
-                </p>
+                  See your rate in 60 seconds.
+                  <br />
+                  <span
+                    style={{
+                      fontFamily: 'var(--font-serif)',
+                      fontStyle: 'italic',
+                      fontWeight: 400,
+                      background: 'linear-gradient(90deg, #7C3AED, #A78BFA)',
+                      WebkitBackgroundClip: 'text',
+                      backgroundClip: 'text',
+                      color: 'transparent',
+                    }}
+                  >
+                    No credit hit.
+                  </span>
+                </h2>
               </div>
-            </ScrollReveal>
+              <div
+                className="flex flex-wrap items-center gap-3"
+                style={{ justifySelf: 'end' }}
+              >
+                <button
+                  onClick={onApplyClick}
+                  className="transition-transform"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    background: 'linear-gradient(135deg, #4F46E5, #7C3AED)',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: 8,
+                    padding: '14px 24px',
+                    fontFamily: 'var(--font-body)',
+                    fontSize: 14,
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    boxShadow: '0 10px 24px -8px rgba(124,58,237,0.5)',
+                  }}
+                >
+                  Get funded →
+                </button>
+                <button
+                  onClick={onQuizClick}
+                  style={{
+                    background: 'transparent',
+                    color: '#F7F5F0',
+                    border: '1px solid rgba(231,227,218,0.28)',
+                    borderRadius: 8,
+                    padding: '14px 22px',
+                    fontFamily: 'var(--font-body)',
+                    fontSize: 14,
+                    fontWeight: 500,
+                    cursor: 'pointer',
+                  }}
+                >
+                  Run prequal
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </section>
       )}
 
-      {/* Footer Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid md:grid-cols-4 gap-6 mb-6">
-          {/* Company Info */}
-          <div>
-            <div className="mb-1">
-              <img src={logoWhiteImg} alt="Delt" className="h-7 w-auto object-contain" />
+      {/* Main footer grid */}
+      <section style={{ padding: '72px 0 40px' }}>
+        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 32px' }}>
+          <div
+            className="grid"
+            style={{
+              gridTemplateColumns: 'minmax(0, 1.4fr) repeat(3, minmax(0, 1fr))',
+              gap: 48,
+            }}
+          >
+            {/* Brand block */}
+            <div>
+              <div
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 24,
+                  fontWeight: 700,
+                  letterSpacing: '-0.03em',
+                  color: '#F7F5F0',
+                }}
+              >
+                Delt<span style={{ color: '#7C3AED' }}>.</span>
+              </div>
+              <p
+                style={{
+                  marginTop: 14,
+                  marginBottom: 0,
+                  maxWidth: 340,
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 14,
+                  lineHeight: 1.6,
+                  color: 'rgba(231,227,218,0.65)',
+                }}
+              >
+                Revenue-based capital for operators who don&rsquo;t overpay. Direct lender, no brokers, no games — one factor rate, priced on your trailing book.
+              </p>
+              <div
+                className="flex flex-col gap-2"
+                style={{ marginTop: 24 }}
+              >
+                <ContactRow icon={<Mail size={14} />} text="hello@delt.capital" />
+                <ContactRow icon={<Phone size={14} />} text="(800) 555-0147 · Mon–Fri, 8am–8pm ET" />
+                <ContactRow icon={<MapPin size={14} />} text="New York · Miami · Austin" />
+              </div>
             </div>
-            {/* Social Icons */}
-            <div className="flex items-center" style={{ marginTop: 12, marginBottom: 12 }}>
-              <a href="#" aria-label="LinkedIn" style={{ marginRight: 12 }}>
-                <Linkedin style={{ width: 24, height: 24, color: 'rgba(255,255,255,0.4)', transition: 'color 0.2s' }} className="hover:!text-white" />
-              </a>
-              <a href="#" aria-label="X / Twitter" style={{ marginRight: 12 }}>
-                <Twitter style={{ width: 24, height: 24, color: 'rgba(255,255,255,0.4)', transition: 'color 0.2s' }} className="hover:!text-white" />
-              </a>
-              <a href="#" aria-label="Instagram" style={{ marginRight: 12 }}>
-                <Instagram style={{ width: 24, height: 24, color: 'rgba(255,255,255,0.4)', transition: 'color 0.2s' }} className="hover:!text-white" />
-              </a>
-              <a href="#" aria-label="Facebook">
-                <Facebook style={{ width: 24, height: 24, color: 'rgba(255,255,255,0.4)', transition: 'color 0.2s' }} className="hover:!text-white" />
-              </a>
-            </div>
-            <p className="text-gray-300 text-sm leading-relaxed">
-              {t('footer.description')}
+
+            <LinkColumn title="Product">
+              <FooterLink onClick={onHowItWorksClick}>How it works</FooterLink>
+              <FooterLink onClick={onApplyClick}>Calculator</FooterLink>
+              <FooterLink onClick={onApplyClick}>Apply</FooterLink>
+              <FooterLink onClick={onResourcesClick}>Resources</FooterLink>
+            </LinkColumn>
+
+            <LinkColumn title="Company">
+              <FooterLink onClick={onAboutClick}>About</FooterLink>
+              <FooterLink onClick={onReviewsClick}>Operators</FooterLink>
+              <FooterLink onClick={onWinsClick}>Case files</FooterLink>
+              <FooterLink onClick={onBlogClick}>Ledger (blog)</FooterLink>
+            </LinkColumn>
+
+            <LinkColumn title="Support">
+              <FooterLink onClick={onFAQClick}>FAQ</FooterLink>
+              <FooterLink onClick={onSupportClick}>Contact support</FooterLink>
+              <FooterLink onClick={onPrivacyClick}>Privacy policy</FooterLink>
+              <FooterLink onClick={onTermsClick}>Terms of use</FooterLink>
+              <FooterLink onClick={onDisclosuresClick}>Disclosures</FooterLink>
+            </LinkColumn>
+          </div>
+
+          {/* Divider */}
+          <div
+            style={{
+              marginTop: 56,
+              height: 1,
+              background: 'rgba(231,227,218,0.08)',
+            }}
+          />
+
+          {/* Bottom row */}
+          <div
+            className="flex flex-wrap items-center justify-between gap-6"
+            style={{ marginTop: 28 }}
+          >
+            <p
+              style={{
+                margin: 0,
+                fontFamily: 'var(--font-mono)',
+                fontSize: 11,
+                letterSpacing: '0.14em',
+                textTransform: 'uppercase',
+                color: 'rgba(231,227,218,0.45)',
+              }}
+            >
+              © {currentYear} Delt Capital · Est. 2019
             </p>
-          </div>
-
-          {/* Quick Links */}
-          <div>
-            <h3 className="font-semibold mb-3">{t('footer.company')}</h3>
-            <ul className="space-y-2 text-sm">
-              <li><button onClick={onAboutClick} className="text-gray-300 hover:text-white transition-colors">{t('footer.about')}</button></li>
-              <li><button onClick={onQuizClick || onHowItWorksClick} className="text-gray-300 hover:text-white transition-colors">{t('footer.howItWorks')}</button></li>
-              <li><button onClick={onReviewsClick} className="text-gray-300 hover:text-white transition-colors">{t('footer.reviews')}</button></li>
-              <li><button onClick={onBlogClick} className="text-gray-300 hover:text-white transition-colors">{t('footer.blog')}</button></li>
-            </ul>
-          </div>
-
-          {/* Resources */}
-          <div>
-            <h3 className="font-semibold mb-3">{t('footer.resources')}</h3>
-            <ul className="space-y-2 text-sm">
-              <li><button onClick={onFAQClick} className="text-gray-300 hover:text-white transition-colors">{t('footer.faq')}</button></li>
-              <li><button onClick={onSupportClick} className="text-gray-300 hover:text-white transition-colors">{t('footer.support')}</button></li>
-              <li><button onClick={onWinsClick} className="text-gray-300 hover:text-white transition-colors">Wins</button></li>
-              <li><button onClick={onResourcesClick} className="text-gray-300 hover:text-white transition-colors">Resources</button></li>
-            </ul>
-          </div>
-
-          {/* Contact */}
-          <div>
-            <h3 className="font-semibold mb-3">{t('footer.contact')}</h3>
-            <ul className="space-y-2 text-sm">
-              <li className="flex items-start">
-                <Phone className="w-4 h-4 text-[#4945ff] mr-2 mt-0.5 flex-shrink-0" />
-                <div>
-                  <a href="tel:+18647293358" className="hover:text-[#4945ff] transition-colors text-lg font-medium">
-                    (864) 729-3358
-                  </a>
-                  <p className="text-xs text-gray-400">{t('footer.hours')}</p>
-                </div>
-              </li>
-              <li className="flex items-start">
-                <Mail className="w-4 h-4 text-[#4945ff] mr-2 mt-0.5 flex-shrink-0" />
-                <a href="mailto:info@deltcapital.com" className="hover:text-[#4945ff] transition-colors">info@deltcapital.com</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="border-t border-gray-700 pt-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-gray-400 text-sm">
-              © {currentYear} Delt. {t('footer.rights')}
-            </p>
-            <div className="flex space-x-6 text-sm">
-              <button onClick={onPrivacyClick} className="text-gray-400 hover:text-white transition-colors">{t('footer.privacy')}</button>
-              <button onClick={onTermsClick} className="text-gray-400 hover:text-white transition-colors">{t('footer.terms')}</button>
-              <button onClick={onDisclosuresClick} className="text-gray-400 hover:text-white transition-colors">{t('footer.disclosures')}</button>
+            <div className="flex items-center gap-2">
+              {[
+                { icon: <Linkedin size={14} />, label: 'LinkedIn' },
+                { icon: <Twitter size={14} />, label: 'Twitter' },
+                { icon: <Instagram size={14} />, label: 'Instagram' },
+              ].map((s) => (
+                <a
+                  key={s.label}
+                  href="#"
+                  aria-label={s.label}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: 32,
+                    height: 32,
+                    borderRadius: 6,
+                    color: 'rgba(231,227,218,0.65)',
+                    border: '1px solid rgba(231,227,218,0.14)',
+                    background: 'transparent',
+                    transition: 'background 150ms ease, color 150ms ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(231,227,218,0.06)';
+                    e.currentTarget.style.color = '#F7F5F0';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.color = 'rgba(231,227,218,0.65)';
+                  }}
+                >
+                  {s.icon}
+                </a>
+              ))}
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Disclaimer */}
-      <div className="bg-[#0A1F35] py-4">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-xs text-gray-400 text-center leading-relaxed">
-            {t('footer.disclaimer')}
+          {/* Compliance */}
+          <p
+            style={{
+              marginTop: 20,
+              marginBottom: 0,
+              maxWidth: 920,
+              fontFamily: 'var(--font-body)',
+              fontSize: 11.5,
+              fontStyle: 'italic',
+              color: 'rgba(231,227,218,0.42)',
+              lineHeight: 1.55,
+            }}
+          >
+            Delt Capital provides commercial funding solutions, including merchant cash advances. Funding may be provided directly by Delt or through third-party funding partners. Offers are subject to underwriting. This is not an offer of credit; equal opportunity funder.
           </p>
         </div>
-      </div>
+      </section>
     </footer>
+  );
+}
+
+function LinkColumn({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <div
+        style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: 10.5,
+          letterSpacing: '0.18em',
+          textTransform: 'uppercase',
+          color: 'rgba(231,227,218,0.5)',
+          fontWeight: 600,
+          marginBottom: 16,
+        }}
+      >
+        {title}
+      </div>
+      <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {children}
+      </ul>
+    </div>
+  );
+}
+
+function FooterLink({
+  children,
+  onClick,
+}: {
+  children: React.ReactNode;
+  onClick?: () => void;
+}) {
+  return (
+    <li>
+      <button
+        onClick={onClick}
+        style={{
+          background: 'transparent',
+          border: 'none',
+          padding: 0,
+          cursor: 'pointer',
+          fontFamily: 'var(--font-body)',
+          fontSize: 14,
+          color: 'rgba(231,227,218,0.75)',
+          textAlign: 'left',
+          transition: 'color 150ms ease',
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.color = '#F7F5F0')}
+        onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(231,227,218,0.75)')}
+      >
+        {children}
+      </button>
+    </li>
+  );
+}
+
+function ContactRow({ icon, text }: { icon: React.ReactNode; text: string }) {
+  return (
+    <div
+      className="flex items-center gap-2"
+      style={{
+        fontFamily: 'var(--font-body)',
+        fontSize: 13,
+        color: 'rgba(231,227,218,0.7)',
+      }}
+    >
+      <span style={{ color: 'rgba(231,227,218,0.45)', display: 'inline-flex' }}>{icon}</span>
+      {text}
+    </div>
+  );
+}
+
+function Eyebrow({ children, color = '#4F46E5' }: { children: React.ReactNode; color?: string }) {
+  return (
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 10,
+        fontFamily: 'var(--font-mono)',
+        fontSize: 11,
+        fontWeight: 600,
+        letterSpacing: '0.18em',
+        textTransform: 'uppercase',
+        color,
+      }}
+    >
+      <span
+        aria-hidden
+        style={{ display: 'inline-block', width: 18, height: 1, background: color }}
+      />
+      {children}
+    </span>
   );
 }

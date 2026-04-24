@@ -312,7 +312,7 @@ function AppContent() {
     null;
 
   return (
-    <div className="relative min-h-screen bg-[#ededf6] transition-colors duration-300">
+    <div className="relative min-h-screen bg-[#F7F5F0] transition-colors duration-300">
       {!overlayMap && <ScrollProgressBar />}
       <Navbar
         onApplyClick={handleApplyClick}
@@ -329,26 +329,26 @@ function AppContent() {
         <HeroSection onApplyClick={handleApplyClick} onApplyFromQuiz={handleApplyFromQuiz} onCalculatorClick={() => setShowCalculator(true)} />
         {/* Everything after hero needs relative + z-index to scroll over the fixed hero */}
         <div
-          className="relative z-10 bg-[#ededf6]"
+          className="relative z-10 bg-[#F7F5F0]"
           style={{ transform: `translateY(${contentYVal}px)`, opacity: contentOpacityVal }}
         >
         <div style={{ zoom: viewportZoom } as React.CSSProperties}>
-          <section className="py-20 bg-[#ededf6]">
+          <section className="py-20 bg-[#F7F5F0]">
             <ScrollReveal direction="up" distance={50}>
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <CapitalCostAnalyzer onApplyClick={handleApplyFromCalculator} onDeltLearnMore={handleDeltLearnMoreClick} />
               </div>
             </ScrollReveal>
           </section>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div className="h-px bg-[#4945ff0F]" /></div>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div className="h-px bg-[#E7E3DA]" /></div>
           <ComparisonTable />
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div className="h-px bg-[#4945ff0F]" /></div>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div className="h-px bg-[#E7E3DA]" /></div>
           <UseCapitalSection onTalkToSpecialist={handleTalkToSpecialist} />
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div className="h-px bg-[#4945ff0F]" /></div>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div className="h-px bg-[#E7E3DA]" /></div>
           <StatsSection />
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div className="h-px bg-[#4945ff0F]" /></div>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div className="h-px bg-[#E7E3DA]" /></div>
           <PreQualificationSection ref={preQualSectionRef} onApplyClick={handleApplyClick} onApplyFromQuiz={handleApplyFromQuiz} onCalculatorClick={handleCalculatorClick} />
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div className="h-px bg-[#4945ff0F]" /></div>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div className="h-px bg-[#E7E3DA]" /></div>
           <TestimonialsSection />
         </div>
         </div>
@@ -389,8 +389,8 @@ function AppContent() {
       
       <AnimatePresence>
         {showAbout && (
-          <motion.div key="about" className="fixed inset-0 bg-[#ededf6] z-50 overflow-y-auto" {...pageTransitionProps}>
-            <div className="sticky top-0 z-10 bg-[#ededf6] border-b border-[#041E42]/10">
+          <motion.div key="about" className="fixed inset-0 bg-[#F7F5F0] z-50 overflow-y-auto" {...pageTransitionProps}>
+            <div className="sticky top-0 z-10 bg-[#F7F5F0] border-b border-[#E7E3DA]">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
                 <div className="flex items-center gap-0 h-14 w-auto cursor-pointer" onClick={handleCloseAbout}>
                   <img src={logoImg} alt="Delt" className="h-10 w-auto object-contain" />
@@ -478,9 +478,9 @@ function AppContent() {
       {/* Calculator Page */}
       <AnimatePresence>
         {showCalculator && (
-          <motion.div key="calculator" className="fixed inset-0 bg-[#ededf6] z-50 flex flex-col" {...pageTransitionProps}>
+          <motion.div key="calculator" className="fixed inset-0 bg-[#F7F5F0] z-50 flex flex-col" {...pageTransitionProps}>
             {/* Spacer for navbar */}
-            <div className="flex-shrink-0 h-[73px]" />
+            <div className="flex-shrink-0 h-[88px]" />
             {/* Scrollable content below navbar */}
             <div className="flex-1 overflow-y-auto flex flex-col items-center justify-center">
               <div className="max-w-6xl mx-auto px-4 py-10 w-full">
@@ -494,8 +494,8 @@ function AppContent() {
       {/* Delt Learn More Page */}
       <AnimatePresence>
         {showDeltLearnMore && (
-          <motion.div key="delt-learn-more" className="fixed inset-0 bg-[#ededf6] z-50 overflow-y-auto" {...pageTransitionProps}>
-            <div className="flex-shrink-0 h-[73px]" />
+          <motion.div key="delt-learn-more" className="fixed inset-0 bg-[#F7F5F0] z-50 overflow-y-auto" {...pageTransitionProps}>
+            <div className="flex-shrink-0 h-[88px]" />
             <DeltLearnMorePage onApplyClick={handleApplyClick} calculatorData={calculatorData} onAboutClick={handleAboutClick} onHowItWorksClick={handleHowItWorksClick} onReviewsClick={handleReviewsClick} onBlogClick={handleBlogClick} onFAQClick={handleFAQClick} onSupportClick={handleSupportClick} onWinsClick={handleWinsClick} onResourcesClick={handleResourcesClick} onPrivacyClick={() => handleLegalLinkClick('privacy')} onTermsClick={() => handleLegalLinkClick('terms')} onDisclosuresClick={() => handleLegalLinkClick('eca')} />
           </motion.div>
         )}
@@ -538,7 +538,7 @@ function AppContent() {
       {/* Legal Pages Overlay */}
       <AnimatePresence>
         {legalPage && (
-          <motion.div key={legalPage} className="fixed inset-0 bg-[#ededf6] z-[60] overflow-y-auto" {...pageTransitionProps}>
+          <motion.div key={legalPage} className="fixed inset-0 bg-[#F7F5F0] z-[60] overflow-y-auto" {...pageTransitionProps}>
             {legalPage === 'terms' && <TermsOfUse onClose={() => setLegalPage(null)} />}
             {legalPage === 'privacy' && <PrivacyPolicy onClose={() => setLegalPage(null)} />}
             {legalPage === 'eca' && <ElectronicCommunicationsAgreement onClose={() => setLegalPage(null)} />}

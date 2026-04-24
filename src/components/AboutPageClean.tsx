@@ -91,23 +91,23 @@ export function AboutPage({ onClose, onApplyClick, onCalculatorClick, onReviewsC
   };
 
   return (
-    <div className="min-h-screen bg-[#ededf6]">
+    <div className="min-h-screen bg-[#F7F5F0]">
       {/* Hero Section */}
-      <section className="py-24 px-4 text-center bg-[#ededf6]">
+      <section className="py-24 px-4 text-center bg-[#F7F5F0]">
         <h1
-          className="text-4xl sm:text-5xl md:text-6xl text-[#041E42] dark:text-white mb-4 tracking-tight max-w-6xl mx-auto"
+          className="text-4xl sm:text-5xl md:text-6xl text-[#0F0E17] dark:text-white mb-4 tracking-tight max-w-6xl mx-auto"
           style={{ fontWeight: 700 }}
         >
           {t.hero.title}
           <br />
-          {t.hero.subtitle} <em className="text-[#4945ff] not-italic" style={{ fontStyle: 'italic' }}>{t.hero.accent}</em>
+          {t.hero.subtitle} <em className="text-[#4F46E5] not-italic" style={{ fontStyle: 'italic' }}>{t.hero.accent}</em>
         </h1>
       </section>
 
       {/* Who We Are Section */}
-      <section className="py-16 px-4 bg-[#F7F8FC]">
+      <section className="py-16 px-4 bg-[#FFFFFF]">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-[#041E42] dark:text-white mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-[#0F0E17] dark:text-white mb-16">
             {t.whoWeAre}
           </h2>
 
@@ -126,7 +126,7 @@ export function AboutPage({ onClose, onApplyClick, onCalculatorClick, onReviewsC
 
               {/* Text Content */}
               <div className="w-full md:w-1/2">
-                <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#041E42] dark:text-white mb-6">
+                <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#0F0E17] dark:text-white mb-6">
                   {t.slides[activeSlide].title}
                 </h3>
                 <p className="text-base md:text-lg lg:text-xl text-gray-700 dark:text-gray-300 leading-relaxed">
@@ -140,7 +140,7 @@ export function AboutPage({ onClose, onApplyClick, onCalculatorClick, onReviewsC
               {/* Prev Button */}
               <button
                 onClick={prevSlide}
-                className="w-12 h-12 rounded-full bg-[#4945ff]/15 hover:bg-[#4945ff]/25 text-[#4945ff] flex items-center justify-center transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-12 h-12 rounded-full bg-[#4F46E5]/15 hover:bg-[#4F46E5]/25 text-[#4F46E5] flex items-center justify-center transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={activeSlide === 0}
               >
                 <ChevronLeft className="w-6 h-6" />
@@ -154,7 +154,7 @@ export function AboutPage({ onClose, onApplyClick, onCalculatorClick, onReviewsC
                     onClick={() => setActiveSlide(index)}
                     className={`h-2 rounded-full transition-all ${
                       index === activeSlide
-                        ? 'w-8 bg-[#041E42] dark:bg-white'
+                        ? 'w-8 bg-[#0F0E17] dark:bg-white'
                         : 'w-2 bg-gray-300 dark:bg-gray-600'
                     }`}
                     aria-label={`Go to slide ${index + 1}`}
@@ -165,7 +165,7 @@ export function AboutPage({ onClose, onApplyClick, onCalculatorClick, onReviewsC
               {/* Next Button */}
               <button
                 onClick={nextSlide}
-                className="w-12 h-12 rounded-full bg-[#4945ff] hover:bg-[#3b38d9] text-white flex items-center justify-center transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-12 h-12 rounded-full bg-[#4F46E5] hover:bg-[#3730A3] text-white flex items-center justify-center transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={activeSlide === t.slides.length - 1}
               >
                 <ChevronRight className="w-6 h-6" />
@@ -176,9 +176,9 @@ export function AboutPage({ onClose, onApplyClick, onCalculatorClick, onReviewsC
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 bg-[#ededf6] text-center">
+      <section className="py-20 px-4 bg-[#F7F5F0] text-center">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-[#041E42] dark:text-white mb-8">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-[#0F0E17] dark:text-white mb-8">
             Ready to grow your business?
           </h2>
           <p className="text-base md:text-lg lg:text-xl text-gray-600 dark:text-gray-400 mb-10">
@@ -194,7 +194,7 @@ export function AboutPage({ onClose, onApplyClick, onCalculatorClick, onReviewsC
                   onApplyClick();
                 }, 100);
               }}
-              className="bg-[#4945ff] hover:bg-[#3b38d9] text-white px-6 py-3 rounded-xl font-semibold text-base transition-all shadow-lg hover:shadow-xl"
+              className="bg-[#4F46E5] hover:bg-[#3730A3] text-white px-6 py-3 rounded-xl font-semibold text-base transition-all shadow-lg hover:shadow-xl"
             >
               Get Your Funding Offer
             </button>
@@ -211,7 +211,7 @@ export function AboutPage({ onClose, onApplyClick, onCalculatorClick, onReviewsC
                     onCalculatorClick();
                   }, 100);
                 }}
-                className="bg-[#F7F8FC] border border-[#4945ff]/20 text-[#4945ff] px-6 py-4 rounded-xl font-semibold hover:bg-[#4945ff] hover:text-white transition-all shadow-sm hover:shadow-lg flex items-center justify-center gap-2"
+                className="bg-[#FFFFFF] border border-[#4F46E5]/20 text-[#4F46E5] px-6 py-4 rounded-xl font-semibold hover:bg-[#4F46E5] hover:text-white transition-all shadow-sm hover:shadow-lg flex items-center justify-center gap-2"
               >
                 <Calculator className="w-5 h-5" />
                 Calculator
@@ -227,7 +227,7 @@ export function AboutPage({ onClose, onApplyClick, onCalculatorClick, onReviewsC
                     onWinsClick();
                   }, 100);
                 }}
-                className="bg-[#F7F8FC] border border-[#4945ff]/20 text-[#4945ff] px-6 py-4 rounded-xl font-semibold hover:bg-[#4945ff] hover:text-white transition-all shadow-sm hover:shadow-lg flex items-center justify-center gap-2"
+                className="bg-[#FFFFFF] border border-[#4F46E5]/20 text-[#4F46E5] px-6 py-4 rounded-xl font-semibold hover:bg-[#4F46E5] hover:text-white transition-all shadow-sm hover:shadow-lg flex items-center justify-center gap-2"
               >
                 <TrendingUp className="w-5 h-5" />
                 View Success Stories

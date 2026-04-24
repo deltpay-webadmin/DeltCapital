@@ -1,53 +1,47 @@
 @custom-variant dark (&:is(.dark *));
 
-/* Import Codec Pro Font */
-@import url('https://fonts.cdnfonts.com/css/codec-pro');
-
-/* Import Open Sauce Sans Font */
-@import url('https://fonts.cdnfonts.com/css/open-sauce-sans');
-
 /* Import Institutional Color System */
 @import './colors.css';
 
 :root {
   --font-size: 16px;
-  --background: #ededf5;
-  --foreground: #041E42;
+  --background: #F7F5F0;
+  --foreground: #0F0E17;
   --card: #FFFFFF;
-  --card-foreground: #041E42;
+  --card-foreground: #0F0E17;
   --popover: #FFFFFF;
-  --popover-foreground: #041E42;
-  --primary: #4945ff;
+  --popover-foreground: #0F0E17;
+  --primary: #4F46E5;
   --primary-foreground: #FFFFFF;
-  --secondary: #F5F7FA;
-  --secondary-foreground: #041E42;
-  --muted: #F5F7FA;
-  --muted-foreground: #52606D;
-  --accent: #E6EDFF;
-  --accent-foreground: #041E42;
-  --destructive: #DE350B;
+  --secondary: #FAF8F3;
+  --secondary-foreground: #0F0E17;
+  --muted: #FAF8F3;
+  --muted-foreground: #6A6876;
+  --accent: #EFECE4;
+  --accent-foreground: #0F0E17;
+  --destructive: #BE123C;
   --destructive-foreground: #FFFFFF;
-  --border: #E4E7EB;
+  --border: #E7E3DA;
   --input: transparent;
   --input-background: #FFFFFF;
-  --switch-background: #E4E7EB;
+  --switch-background: #E7E3DA;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --ring: #4945ff;
-  --chart-1: #4945ff;
-  --chart-2: #0052FF;
-  --chart-3: #52606D;
-  --chart-4: #CBD2D9;
-  --chart-5: #E6EDFF;
-  --radius: 0.75rem;
+  --ring: #4F46E5;
+  --chart-1: #4F46E5;
+  --chart-2: #7C3AED;
+  --chart-3: #6A6876;
+  --chart-4: #E7E3DA;
+  --chart-5: #EFECE4;
+  --radius: 0.625rem;
   --sidebar: #FFFFFF;
-  --sidebar-foreground: #041E42;
-  --sidebar-primary: #4945ff;
+  --sidebar-foreground: #0F0E17;
+  --sidebar-primary: #4F46E5;
   --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #F5F7FA;
-  --sidebar-accent-foreground: #041E42;
-  --sidebar-border: #E4E7EB;
-  --sidebar-ring: #4945ff;
+  --sidebar-accent: #FAF8F3;
+  --sidebar-accent-foreground: #0F0E17;
+  --sidebar-border: #E7E3DA;
+  --sidebar-ring: #4F46E5;
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
   --text-base: 1rem;
@@ -58,43 +52,62 @@
   --text-4xl: 2.25rem;
   --text-5xl: 3rem;
   --text-6xl: 3.75rem;
+
+  /* V1 Ledger typography stack */
+  --font-display: 'Inter Tight', 'Söhne', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+  --font-serif: 'Source Serif Pro', Georgia, serif;
+
+  /* V1 extended palette */
+  --ink: #0F0E17;
+  --ink-soft: #2B2A35;
+  --ink-mute: #6A6876;
+  --line: #E7E3DA;
+  --line-soft: #EFECE4;
+  --paper: #F7F5F0;
+  --paper-warm: #FAF8F3;
+  --indigo: #4F46E5;
+  --indigo-deep: #3730A3;
+  --violet: #7C3AED;
+  --ok: #0F7A5A;
 }
 
 .dark {
-  --background: #0A1F35;
-  --foreground: #FFFFFF;
-  --card: #1F2933;
-  --card-foreground: #FFFFFF;
-  --popover: #1F2933;
-  --popover-foreground: #FFFFFF;
-  --primary: #4945ff;
+  --background: #0F0E17;
+  --foreground: #F7F5F0;
+  --card: #1A1923;
+  --card-foreground: #F7F5F0;
+  --popover: #1A1923;
+  --popover-foreground: #F7F5F0;
+  --primary: #7C3AED;
   --primary-foreground: #FFFFFF;
-  --secondary: #132030;
-  --secondary-foreground: #CBD2D9;
-  --muted: #132030;
-  --muted-foreground: #9AA5B1;
-  --accent: #132030;
-  --accent-foreground: #CBD2D9;
-  --destructive: #DE350B;
+  --secondary: #1A1923;
+  --secondary-foreground: #E7E3DA;
+  --muted: #1A1923;
+  --muted-foreground: #9A98A5;
+  --accent: #1A1923;
+  --accent-foreground: #E7E3DA;
+  --destructive: #BE123C;
   --destructive-foreground: #FFFFFF;
-  --border: #3E4C59;
-  --input: #132030;
-  --ring: #4945ff;
+  --border: #2B2A35;
+  --input: #1A1923;
+  --ring: #7C3AED;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --chart-1: #4945ff;
-  --chart-2: #0052FF;
-  --chart-3: #9AA5B1;
-  --chart-4: #3E4C59;
-  --chart-5: #132030;
-  --sidebar: #1F2933;
-  --sidebar-foreground: #FFFFFF;
-  --sidebar-primary: #4945ff;
+  --chart-1: #7C3AED;
+  --chart-2: #4F46E5;
+  --chart-3: #9A98A5;
+  --chart-4: #2B2A35;
+  --chart-5: #1A1923;
+  --sidebar: #1A1923;
+  --sidebar-foreground: #F7F5F0;
+  --sidebar-primary: #7C3AED;
   --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #132030;
-  --sidebar-accent-foreground: #CBD2D9;
-  --sidebar-border: #3E4C59;
-  --sidebar-ring: #4945ff;
+  --sidebar-accent: #1A1923;
+  --sidebar-accent-foreground: #E7E3DA;
+  --sidebar-border: #2B2A35;
+  --sidebar-ring: #7C3AED;
 }
 
 @theme inline {
@@ -148,6 +161,7 @@
 
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -253,20 +267,20 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(73, 69, 255, 0.25);
+  background: rgba(79, 70, 229, 0.25);
   border-radius: 100px;
   border: 2px solid transparent;
   background-clip: content-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(73, 69, 255, 0.45);
+  background: rgba(79, 70, 229, 0.45);
   border: 2px solid transparent;
   background-clip: content-box;
 }
 
 ::-webkit-scrollbar-thumb:active {
-  background: rgba(73, 69, 255, 0.6);
+  background: rgba(79, 70, 229, 0.6);
   border: 2px solid transparent;
   background-clip: content-box;
 }
@@ -274,5 +288,5 @@ html {
 /* Firefox */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(73, 69, 255, 0.25) transparent;
+  scrollbar-color: rgba(79, 70, 229, 0.25) transparent;
 }

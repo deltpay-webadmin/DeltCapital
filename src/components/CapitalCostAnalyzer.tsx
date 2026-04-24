@@ -231,13 +231,13 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
   const hasTIB = timeInBusiness !== '';
 
   return (
-    <div className="bg-[#F7F8FC] rounded-2xl shadow-xl max-w-5xl mx-auto border border-[#e8eaf0] overflow-hidden">
+    <div className="bg-[#FFFFFF] rounded-2xl shadow-xl max-w-5xl mx-auto border border-[#e8eaf0] overflow-hidden">
 
       {/* ── Header ── */}
       <div className="text-center pt-8 sm:pt-9 md:pt-11 pb-2 px-4 sm:px-5">
         <h2
           className="mb-2"
-          style={{ fontSize: 'clamp(1.35rem, 3.5vw, 2rem)', fontWeight: 700, color: '#041e42', lineHeight: 1.2 }}
+          style={{ fontSize: 'clamp(1.35rem, 3.5vw, 2rem)', fontWeight: 700, color: '#0F0E17', lineHeight: 1.2 }}
         >
           How Much Could You Qualify For?
         </h2>
@@ -264,7 +264,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
               Monthly Revenue
             </label>
             <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#041E42] pointer-events-none select-none" style={{ fontSize: '1.15rem', fontWeight: 700 }}>$</span>
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#0F0E17] pointer-events-none select-none" style={{ fontSize: '1.15rem', fontWeight: 700 }}>$</span>
               <input
                 type="text"
                 inputMode="numeric"
@@ -272,7 +272,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                 value={revenueInputValue}
                 onChange={(e) => handleRevenueInput(e.target.value)}
                 onBlur={handleRevenueBlur}
-                className="w-full rounded-lg border border-[#e8eaf0] bg-[#F7F8FC] py-3 pl-9 pr-4 text-[#041E42] tabular-nums outline-none transition-all duration-200 focus:border-[#4945ff] focus:ring-2 focus:ring-[#4945ff]/15"
+                className="w-full rounded-lg border border-[#e8eaf0] bg-[#FFFFFF] py-3 pl-9 pr-4 text-[#0F0E17] tabular-nums outline-none transition-all duration-200 focus:border-[#4F46E5] focus:ring-2 focus:ring-[#4F46E5]/15"
                 style={{ fontSize: '1.15rem', fontWeight: 700 }}
               />
             </div>
@@ -308,8 +308,8 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                           onClick={() => setTimeInBusiness(isActive ? '' : opt.value)}
                           className={`px-3 py-2.5 rounded-lg border text-[13px] transition-all duration-200 ${
                             isActive
-                              ? 'border-[#4945ff] bg-[#4945ff]/[0.04] text-[#4945ff]'
-                              : 'border-[#e8eaf0] text-[#4a5568] hover:border-[#4945ff]/30'
+                              ? 'border-[#4F46E5] bg-[#4F46E5]/[0.04] text-[#4F46E5]'
+                              : 'border-[#e8eaf0] text-[#4a5568] hover:border-[#4F46E5]/30'
                           }`}
                           style={{ fontWeight: isActive ? 600 : 450 }}
                         >
@@ -346,8 +346,8 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                       onClick={() => handleAcceptCards(true)}
                       className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border text-[13.5px] transition-all duration-200 ${
                         acceptsCards === true
-                          ? 'border-[#4945ff] bg-[#4945ff]/[0.04] text-[#4945ff]'
-                          : 'border-[#e8eaf0] text-[#4a5568] hover:border-[#4945ff]/30'
+                          ? 'border-[#4F46E5] bg-[#4F46E5]/[0.04] text-[#4F46E5]'
+                          : 'border-[#e8eaf0] text-[#4a5568] hover:border-[#4F46E5]/30'
                       }`}
                       style={{ fontWeight: acceptsCards === true ? 600 : 450 }}
                     >
@@ -358,8 +358,8 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                       onClick={() => handleAcceptCards(false)}
                       className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border text-[13.5px] transition-all duration-200 ${
                         acceptsCards === false
-                          ? 'border-[#4945ff] bg-[#4945ff]/[0.04] text-[#4945ff]'
-                          : 'border-[#e8eaf0] text-[#4a5568] hover:border-[#4945ff]/30'
+                          ? 'border-[#4F46E5] bg-[#4F46E5]/[0.04] text-[#4F46E5]'
+                          : 'border-[#e8eaf0] text-[#4a5568] hover:border-[#4F46E5]/30'
                       }`}
                       style={{ fontWeight: acceptsCards === false ? 600 : 450 }}
                     >
@@ -386,7 +386,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                             Monthly Card Sales
                           </label>
                           <div className="relative">
-                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#041E42] pointer-events-none select-none" style={{ fontSize: '0.95rem', fontWeight: 600 }}>$</span>
+                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#0F0E17] pointer-events-none select-none" style={{ fontSize: '0.95rem', fontWeight: 600 }}>$</span>
                             <input
                               type="text"
                               inputMode="numeric"
@@ -394,7 +394,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                               value={cardSalesInputValue}
                               onChange={(e) => handleCardSalesInput(e.target.value)}
                               onBlur={handleCardSalesBlur}
-                              className="w-full rounded-lg border border-[#e8eaf0] bg-[#F7F8FC] py-2.5 pl-9 pr-4 text-[#041E42] tabular-nums outline-none transition-all duration-200 focus:border-[#4945ff] focus:ring-2 focus:ring-[#4945ff]/15"
+                              className="w-full rounded-lg border border-[#e8eaf0] bg-[#FFFFFF] py-2.5 pl-9 pr-4 text-[#0F0E17] tabular-nums outline-none transition-all duration-200 focus:border-[#4F46E5] focus:ring-2 focus:ring-[#4F46E5]/15"
                               style={{ fontSize: '0.95rem', fontWeight: 600 }}
                             />
                           </div>
@@ -418,19 +418,19 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
               onClick={() => ctaIsDeltInfo ? onDeltLearnMore?.() : onApplyClick?.(getCalculatorData())}
               className={`relative overflow-hidden w-full py-3.5 sm:py-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2.5 ${
                 !allFieldsFilled
-                  ? 'bg-[#4945ff]/35 text-white/60 cursor-default'
+                  ? 'bg-[#4F46E5]/35 text-white/60 cursor-default'
                   : ctaIsDeltInfo
-                    ? 'bg-[#4945ff] hover:bg-[#3d3ae0] text-white shadow-lg shadow-[#4945ff]/12 hover:shadow-xl hover:shadow-[#4945ff]/20 active:scale-[0.985]'
+                    ? 'bg-[#4F46E5] hover:bg-[#3d3ae0] text-white shadow-lg shadow-[#4F46E5]/12 hover:shadow-xl hover:shadow-[#4F46E5]/20 active:scale-[0.985]'
                     : ctaIsUpgraded
                       ? 'text-white active:scale-[0.985]'
-                      : 'bg-[#4945ff] hover:bg-[#3d3ae0] text-white shadow-lg shadow-[#4945ff]/12 hover:shadow-xl hover:shadow-[#4945ff]/20 active:scale-[0.985]'
+                      : 'bg-[#4F46E5] hover:bg-[#3d3ae0] text-white shadow-lg shadow-[#4F46E5]/12 hover:shadow-xl hover:shadow-[#4F46E5]/20 active:scale-[0.985]'
               }`}
               style={{
                 fontWeight: 600,
                 fontSize: '0.9375rem',
                 ...(ctaIsUpgraded && !ctaIsDeltInfo
                   ? {
-                      background: 'linear-gradient(135deg, #4945ff 0%, #3B5BF7 50%, #6366f1 100%)',
+                      background: 'linear-gradient(135deg, #4F46E5 0%, #3B5BF7 50%, #6366f1 100%)',
                       boxShadow: '0 4px 20px rgba(73,69,255,0.28), 0 0 0 1px rgba(73,69,255,0.10)',
                     }
                   : {}),
@@ -481,8 +481,8 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
             className="relative rounded-xl md:rounded-2xl flex-1 overflow-hidden flex flex-col"
             style={{
               background: hasRevenue && isDeltBoosted
-                ? 'linear-gradient(145deg, #F5F7FA 0%, #EDEFFF 50%, #F5F7FA 100%)'
-                : '#F5F7FA',
+                ? 'linear-gradient(145deg, #FAF8F3 0%, #EDEFFF 50%, #FAF8F3 100%)'
+                : '#FAF8F3',
               border: hasRevenue && isDeltBoosted
                 ? '1.5px solid rgba(73,69,255,0.18)'
                 : '1px solid #e8eaf0',
@@ -525,10 +525,10 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                         color: !hasRevenue
                           ? '#d1d5db'
                           : customFundingAmount
-                            ? '#4945ff'
+                            ? '#4F46E5'
                             : isDeltBoosted
-                              ? '#4945ff'
-                              : '#041E42',
+                              ? '#4F46E5'
+                              : '#0F0E17',
                         transition: 'color 0.4s ease',
                       }}
                     >
@@ -572,7 +572,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                     >
                       <span
                         className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px]"
-                        style={{ background: 'rgba(73,69,255,0.08)', color: '#4945ff', fontWeight: 600 }}
+                        style={{ background: 'rgba(73,69,255,0.08)', color: '#4F46E5', fontWeight: 600 }}
                       >
                         <Sparkles className="w-3.5 h-3.5" />
                         0% processing on your first $5,000
@@ -599,7 +599,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                         Custom Amount
                       </label>
                       <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#041E42] pointer-events-none select-none" style={{ fontSize: '1rem', fontWeight: 700 }}>$</span>
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#0F0E17] pointer-events-none select-none" style={{ fontSize: '1rem', fontWeight: 700 }}>$</span>
                         <input
                           type="text"
                           inputMode="numeric"
@@ -607,7 +607,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                           value={customFundingInputValue}
                           onChange={(e) => handleCustomFundingInput(e.target.value)}
                           onBlur={handleCustomFundingBlur}
-                          className="w-full rounded-lg border border-[#e8eaf0] bg-[#F5F7FA] py-2.5 pl-8 pr-3 text-[#041E42] tabular-nums outline-none transition-all duration-200 focus:border-[#4945ff] focus:ring-2 focus:ring-[#4945ff]/15"
+                          className="w-full rounded-lg border border-[#e8eaf0] bg-[#FAF8F3] py-2.5 pl-8 pr-3 text-[#0F0E17] tabular-nums outline-none transition-all duration-200 focus:border-[#4F46E5] focus:ring-2 focus:ring-[#4F46E5]/15"
                           style={{ fontSize: '0.95rem', fontWeight: 600 }}
                         />
                       </div>
@@ -615,7 +615,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                         <motion.p
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
-                          className="text-[11px] text-[#4945ff] mt-1.5"
+                          className="text-[11px] text-[#4F46E5] mt-1.5"
                           style={{ fontWeight: 500 }}
                         >
                           Custom amount selected
@@ -636,8 +636,8 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                       className="mt-4 space-y-3"
                     >
                       <div className="rounded-xl p-4" style={{ border: '1.5px solid rgba(73,69,255,0.12)', background: 'rgba(73,69,255,0.02)' }}>
-                        <Rocket className="w-5 h-5 mb-2" style={{ color: '#4945ff' }} />
-                        <p className="text-[13px] text-[#041E42] mb-1" style={{ fontWeight: 700, lineHeight: 1.35 }}>
+                        <Rocket className="w-5 h-5 mb-2" style={{ color: '#4F46E5' }} />
+                        <p className="text-[13px] text-[#0F0E17] mb-1" style={{ fontWeight: 700, lineHeight: 1.35 }}>
                           Get started with Delt today.
                         </p>
                         <p className="text-[11.5px] text-gray-500" style={{ fontWeight: 400, lineHeight: 1.5 }}>
@@ -674,7 +674,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                         className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-300"
                         style={{
                           background: deltToggle
-                            ? 'linear-gradient(135deg, #4945ff, #6366f1)'
+                            ? 'linear-gradient(135deg, #4F46E5, #6366f1)'
                             : '#d5d7de',
                           color: deltToggle ? '#fff' : '#9ca3af',
                           boxShadow: deltToggle ? '0 3px 10px rgba(73,69,255,0.25)' : 'none',
@@ -687,7 +687,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                           className="text-[13px] block"
                           style={{
                             fontWeight: 600,
-                            color: deltToggle ? '#041E42' : '#6b7280',
+                            color: deltToggle ? '#0F0E17' : '#6b7280',
                             transition: 'color 0.3s',
                           }}
                         >
@@ -698,7 +698,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             className="text-[11.5px] block mt-0.5 tabular-nums"
-                            style={{ fontWeight: 500, color: '#4945ff' }}
+                            style={{ fontWeight: 500, color: '#4F46E5' }}
                           >
                             {formatK(preBoostLow)} → {formatK(fundingLow)}–{formatK(fundingHigh)}
                           </motion.span>
@@ -712,7 +712,7 @@ export function CapitalCostAnalyzer({ onApplyClick, onDeltLearnMore }: CapitalCo
                       style={{
                         width: '44px',
                         height: '26px',
-                        background: deltToggle ? '#4945ff' : '#c7c9d1',
+                        background: deltToggle ? '#4F46E5' : '#c7c9d1',
                         boxShadow: deltToggle ? '0 0 10px rgba(73,69,255,0.30)' : 'none',
                       }}
                     >

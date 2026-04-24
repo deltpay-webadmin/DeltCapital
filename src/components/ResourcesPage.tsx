@@ -97,9 +97,9 @@ export function ResourcesPage({ onClose, onFAQClick, onSupportClick, onCalculato
   ];
 
   return (
-    <div className="fixed inset-0 bg-[#ededf6] z-50 overflow-y-auto">
+    <div className="fixed inset-0 bg-[#F7F5F0] z-50 overflow-y-auto">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-[#ededf6] border-b border-[#041E42]/10">
+      <div className="sticky top-0 z-10 bg-[#F7F5F0] border-b border-[#0F0E17]/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <div className="flex items-center h-14 w-auto cursor-pointer" onClick={onClose}>
             <img src={logoImg} alt="Delt" className="h-8 w-auto object-contain" />
@@ -108,20 +108,20 @@ export function ResourcesPage({ onClose, onFAQClick, onSupportClick, onCalculato
       </div>
 
       {/* Hero */}
-      <div className="bg-[#ededf6]">
+      <div className="bg-[#F7F5F0]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28 text-center">
           <motion.h1
-            className="text-4xl md:text-5xl lg:text-6xl text-[#041E42] mb-5"
+            className="text-4xl md:text-5xl lg:text-6xl text-[#0F0E17] mb-5"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <em className="text-[#4945ff] not-italic" style={{ fontStyle: 'italic' }}>Resources</em> for every stage{'\n'}
+            <em className="text-[#4F46E5] not-italic" style={{ fontStyle: 'italic' }}>Resources</em> for every stage{'\n'}
             <br className="hidden sm:block" />
             of your Delt journey.
           </motion.h1>
           <motion.p
-            className="text-lg text-[#041E42]/70 max-w-2xl mx-auto"
+            className="text-lg text-[#0F0E17]/70 max-w-2xl mx-auto"
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.15 }}
@@ -132,7 +132,7 @@ export function ResourcesPage({ onClose, onFAQClick, onSupportClick, onCalculato
       </div>
 
       {/* Category Cards */}
-      <div className="bg-[#041E42]">
+      <div className="bg-[#0F0E17]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
           <motion.h2
             className="text-3xl md:text-4xl text-white mb-12"
@@ -149,7 +149,7 @@ export function ResourcesPage({ onClose, onFAQClick, onSupportClick, onCalculato
             {categories.map((cat, i) => (
               <motion.div
                 key={cat.title}
-                className="bg-white rounded-2xl p-8 flex flex-col items-center text-center cursor-pointer group shadow-sm hover:shadow-md transition-all border border-gray-100 hover:border-[#4945ff]/30"
+                className="bg-white rounded-2xl p-8 flex flex-col items-center text-center cursor-pointer group shadow-sm hover:shadow-md transition-all border border-gray-100 hover:border-[#4F46E5]/30"
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, margin: '-60px' }}
@@ -157,12 +157,12 @@ export function ResourcesPage({ onClose, onFAQClick, onSupportClick, onCalculato
                 custom={i + 1}
                 onClick={() => { cat.action(); onClose(); }}
               >
-                <div className="w-16 h-16 rounded-full bg-[#4945ff]/10 flex items-center justify-center mb-5 group-hover:bg-[#4945ff]/15 transition-colors">
-                  <cat.icon className="w-8 h-8 text-[#4945ff]" />
+                <div className="w-16 h-16 rounded-full bg-[#4F46E5]/10 flex items-center justify-center mb-5 group-hover:bg-[#4F46E5]/15 transition-colors">
+                  <cat.icon className="w-8 h-8 text-[#4F46E5]" />
                 </div>
-                <h3 className="text-xl text-[#041E42] mb-2">{cat.title}</h3>
-                <p className="text-sm text-[#041E42]/60 mb-5 flex-1">{cat.description}</p>
-                <span className="text-[#4945ff] text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
+                <h3 className="text-xl text-[#0F0E17] mb-2">{cat.title}</h3>
+                <p className="text-sm text-[#0F0E17]/60 mb-5 flex-1">{cat.description}</p>
+                <span className="text-[#4F46E5] text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
                   {cat.actionLabel} <ArrowRight className="w-4 h-4" />
                 </span>
               </motion.div>
@@ -175,7 +175,7 @@ export function ResourcesPage({ onClose, onFAQClick, onSupportClick, onCalculato
       <div className="bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
           <motion.h2
-            className="text-3xl md:text-4xl text-[#041E42] mb-4"
+            className="text-3xl md:text-4xl text-[#0F0E17] mb-4"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: '-80px' }}
@@ -185,7 +185,7 @@ export function ResourcesPage({ onClose, onFAQClick, onSupportClick, onCalculato
             Featured Guides
           </motion.h2>
           <motion.p
-            className="text-[#041E42]/60 mb-12 max-w-xl"
+            className="text-[#0F0E17]/60 mb-12 max-w-xl"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: '-80px' }}
@@ -199,7 +199,7 @@ export function ResourcesPage({ onClose, onFAQClick, onSupportClick, onCalculato
             {guides.map((guide, i) => (
               <motion.div
                 key={guide.title}
-                className="border border-gray-200 rounded-2xl p-7 hover:border-[#4945ff]/30 hover:shadow-md transition-all cursor-pointer group"
+                className="border border-gray-200 rounded-2xl p-7 hover:border-[#4F46E5]/30 hover:shadow-md transition-all cursor-pointer group"
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, margin: '-40px' }}
@@ -210,15 +210,15 @@ export function ResourcesPage({ onClose, onFAQClick, onSupportClick, onCalculato
                 }}
               >
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-lg bg-[#4945ff]/8 flex items-center justify-center">
-                    <guide.icon className="w-5 h-5 text-[#4945ff]" />
+                  <div className="w-10 h-10 rounded-lg bg-[#4F46E5]/8 flex items-center justify-center">
+                    <guide.icon className="w-5 h-5 text-[#4F46E5]" />
                   </div>
-                  <span className="text-xs tracking-wide text-[#4945ff] bg-[#4945ff]/8 px-2.5 py-1 rounded-full">
+                  <span className="text-xs tracking-wide text-[#4F46E5] bg-[#4F46E5]/8 px-2.5 py-1 rounded-full">
                     {guide.tag}
                   </span>
                 </div>
-                <h3 className="text-[#041E42] mb-2">{guide.title}</h3>
-                <p className="text-sm text-[#041E42]/60 leading-relaxed">{guide.description}</p>
+                <h3 className="text-[#0F0E17] mb-2">{guide.title}</h3>
+                <p className="text-sm text-[#0F0E17]/60 leading-relaxed">{guide.description}</p>
               </motion.div>
             ))}
           </div>
@@ -226,10 +226,10 @@ export function ResourcesPage({ onClose, onFAQClick, onSupportClick, onCalculato
       </div>
 
       {/* Bottom CTA */}
-      <div className="bg-[#ededf6]">
+      <div className="bg-[#F7F5F0]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
           <motion.h2
-            className="text-2xl md:text-3xl lg:text-4xl text-[#041E42] mb-8"
+            className="text-2xl md:text-3xl lg:text-4xl text-[#0F0E17] mb-8"
             style={{ fontWeight: 700 }}
             initial="hidden"
             whileInView="visible"
@@ -261,7 +261,7 @@ export function ResourcesPage({ onClose, onFAQClick, onSupportClick, onCalculato
           >
             <button
               onClick={() => { onSupportClick(); onClose(); }}
-              className="bg-[#4945ff] hover:bg-[#3b38d9] text-white px-6 py-3 rounded-xl font-semibold text-base transition-all shadow-lg hover:shadow-xl"
+              className="bg-[#4F46E5] hover:bg-[#3730A3] text-white px-6 py-3 rounded-xl font-semibold text-base transition-all shadow-lg hover:shadow-xl"
             >
               Contact Support
             </button>
@@ -278,14 +278,14 @@ export function ResourcesPage({ onClose, onFAQClick, onSupportClick, onCalculato
           >
             <a
               href="tel:+18647293358"
-              className="bg-[#F7F8FC] border border-[#4945ff]/20 text-[#4945ff] px-6 py-4 rounded-xl font-semibold hover:bg-[#4945ff] hover:text-white transition-all shadow-sm hover:shadow-lg flex items-center justify-center gap-2"
+              className="bg-[#FFFFFF] border border-[#4F46E5]/20 text-[#4F46E5] px-6 py-4 rounded-xl font-semibold hover:bg-[#4F46E5] hover:text-white transition-all shadow-sm hover:shadow-lg flex items-center justify-center gap-2"
             >
               <Phone className="w-5 h-5" />
               (864) 729-3358
             </a>
             <button
               onClick={() => { onCalculatorClick(); onClose(); }}
-              className="bg-[#F7F8FC] border border-[#4945ff]/20 text-[#4945ff] px-6 py-4 rounded-xl font-semibold hover:bg-[#4945ff] hover:text-white transition-all shadow-sm hover:shadow-lg flex items-center justify-center gap-2"
+              className="bg-[#FFFFFF] border border-[#4F46E5]/20 text-[#4F46E5] px-6 py-4 rounded-xl font-semibold hover:bg-[#4F46E5] hover:text-white transition-all shadow-sm hover:shadow-lg flex items-center justify-center gap-2"
             >
               <Calculator className="w-5 h-5" />
               Calculator

@@ -116,12 +116,12 @@ function generateTransactions() {
 const transactions = generateTransactions();
 
 const totalPaidData = [
-  { name: 'Principal', value: PRINCIPAL_PAID, color: '#4945ff' },
+  { name: 'Principal', value: PRINCIPAL_PAID, color: '#4F46E5' },
   { name: 'Factor Fees', value: FEES_PAID, color: '#F97316' },
 ];
 
 const payoffData = [
-  { name: 'Principal', value: PRINCIPAL_REMAINING, color: '#4945ff' },
+  { name: 'Principal', value: PRINCIPAL_REMAINING, color: '#4F46E5' },
   { name: 'Factor Fees', value: FEES_REMAINING, color: '#F97316' },
 ];
 
@@ -168,18 +168,18 @@ export function LoanDashboard({ userEmail, onLogout }: LoanDashboardProps) {
   const displayedTransactions = showAllTransactions ? transactions : transactions.slice(0, 6);
 
   return (
-    <div className="fixed inset-0 z-[55] bg-[#ededf6] flex flex-col">
+    <div className="fixed inset-0 z-[55] bg-[#F7F5F0] flex flex-col">
       {/* Spacer for main Navbar (z-70) */}
       <div className="flex-shrink-0 h-[73px]" />
 
       {/* Dashboard header — sticky below main Navbar */}
-      <header className="flex-shrink-0 bg-[#F7F8FC] border-b border-[#4945ff0F] shadow-sm">
+      <header className="flex-shrink-0 bg-[#FFFFFF] border-b border-[#4F46E50F] shadow-sm">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-14">
             <div className="flex items-center gap-4">
               <img src={logoImg} alt="Delt" className="h-8 w-auto object-contain" />
               <div className="hidden sm:flex items-center gap-2">
-                <span className="font-mono font-semibold text-[#041E42] dark:text-white">{loanData.loanId}</span>
+                <span className="font-mono font-semibold text-[#0F0E17] dark:text-white">{loanData.loanId}</span>
                 <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-700">{loanData.status}</span>
                 <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">{loanData.performance}</span>
               </div>
@@ -190,14 +190,14 @@ export function LoanDashboard({ userEmail, onLogout }: LoanDashboardProps) {
                 <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
               </button>
               <div className="flex items-center gap-2 pl-3 border-l border-gray-200 dark:border-gray-600">
-                <div className="w-8 h-8 rounded-full bg-[#4945ff] flex items-center justify-center text-white text-sm font-semibold">
+                <div className="w-8 h-8 rounded-full bg-[#4F46E5] flex items-center justify-center text-white text-sm font-semibold">
                   {userEmail.charAt(0).toUpperCase()}
                 </div>
                 <span className="hidden md:block text-sm text-gray-700 dark:text-gray-300 max-w-[150px] truncate">{userEmail}</span>
               </div>
               <button
                 onClick={onLogout}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold text-[#4945ff] bg-[#4945ff]/10 hover:bg-[#4945ff]/20 transition-colors"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold text-[#4F46E5] bg-[#4F46E5]/10 hover:bg-[#4F46E5]/20 transition-colors"
               >
                 <LogOut className="w-4 h-4" />
                 <span className="hidden sm:inline">Log out</span>
@@ -208,7 +208,7 @@ export function LoanDashboard({ userEmail, onLogout }: LoanDashboardProps) {
       </header>
 
       {/* Tab Navigation — sticky below dashboard header */}
-      <div className="flex-shrink-0 bg-[#F7F8FC] border-b border-[#4945ff0F]">
+      <div className="flex-shrink-0 bg-[#FFFFFF] border-b border-[#4F46E50F]">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
           <nav className="flex gap-0 -mb-px overflow-x-auto">
             {([
@@ -222,7 +222,7 @@ export function LoanDashboard({ userEmail, onLogout }: LoanDashboardProps) {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-5 py-3.5 border-b-2 transition-colors whitespace-nowrap ${
                   activeTab === tab.id
-                    ? 'border-[#4945ff] text-[#4945ff]'
+                    ? 'border-[#4F46E5] text-[#4F46E5]'
                     : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300'
                 }`}
               >
@@ -279,18 +279,18 @@ function SummaryTab({
           sub={`Principal Balance: $${fmt(loanData.principalBalance)}`}
           accent="blue"
         />
-        <div className="bg-[#F7F8FC] rounded-xl border border-[#4945ff0F] p-5 flex flex-col gap-2">
+        <div className="bg-[#FFFFFF] rounded-xl border border-[#4F46E50F] p-5 flex flex-col gap-2">
           <div className="flex items-center gap-2">
             <CheckCircle2 className="w-5 h-5 text-green-500" />
             <span className="text-sm text-gray-500 dark:text-gray-400">AutoPay Enabled</span>
           </div>
-          <p className="text-sm text-[#041E42] dark:text-white">
+          <p className="text-sm text-[#0F0E17] dark:text-white">
             Payment of <span className="font-semibold">${fmt(loanData.nextPaymentAmount)}</span> due on <span className="font-semibold">{loanData.nextPaymentDate}</span>
           </p>
           <span className="text-xs text-gray-400">Due in {loanData.dueIn} days · Payment {loanData.paymentsMade + 1} of {loanData.termMonths}</span>
         </div>
-        <div className="bg-[#F7F8FC] rounded-xl border border-[#4945ff0F] p-5 flex items-center justify-center">
-          <button className="w-full py-3 bg-[#4945ff] hover:bg-[#3b38d9] text-white font-semibold rounded-xl transition-colors shadow-lg shadow-[#4945ff]/20 flex items-center justify-center gap-2">
+        <div className="bg-[#FFFFFF] rounded-xl border border-[#4F46E50F] p-5 flex items-center justify-center">
+          <button className="w-full py-3 bg-[#4F46E5] hover:bg-[#3730A3] text-white font-semibold rounded-xl transition-colors shadow-lg shadow-[#4F46E5]/20 flex items-center justify-center gap-2">
             <DollarSign className="w-5 h-5" />
             Make a Payment
           </button>
@@ -298,14 +298,14 @@ function SummaryTab({
       </div>
 
       {/* Loan Balance Bar */}
-      <div className="bg-[#F7F8FC] rounded-xl border border-[#4945ff0F] p-6">
+      <div className="bg-[#FFFFFF] rounded-xl border border-[#4F46E50F] p-6">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="font-semibold text-[#041E42] dark:text-white">Repayment Progress</h3>
+          <h3 className="font-semibold text-[#0F0E17] dark:text-white">Repayment Progress</h3>
           <span className="text-xs text-gray-400">Factor Rate: {loanData.factorRate.toFixed(2)}x · {loanData.termMonths}-month term</span>
         </div>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 mb-4">
           <div className="text-center">
-            <p className="text-2xl font-bold text-[#041E42] dark:text-white">${fmt(loanData.totalRepayment)}</p>
+            <p className="text-2xl font-bold text-[#0F0E17] dark:text-white">${fmt(loanData.totalRepayment)}</p>
             <p className="text-xs text-gray-400">Total Repayment</p>
           </div>
           <span className="text-2xl text-gray-300">—</span>
@@ -315,13 +315,13 @@ function SummaryTab({
           </div>
           <span className="text-2xl text-gray-300">=</span>
           <div className="text-center">
-            <p className="text-2xl font-bold text-[#4945ff]">${fmt(loanData.totalRemaining)}</p>
+            <p className="text-2xl font-bold text-[#4F46E5]">${fmt(loanData.totalRemaining)}</p>
             <p className="text-xs text-gray-400">{loanData.paymentsRemaining} Payments Left</p>
           </div>
         </div>
         <div className="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
           <div
-            className="h-full rounded-full bg-gradient-to-r from-[#4945ff] to-[#8B5CF6] transition-all duration-500"
+            className="h-full rounded-full bg-gradient-to-r from-[#4F46E5] to-[#A78BFA] transition-all duration-500"
             style={{ width: `${(loanData.totalPaid / loanData.totalRepayment) * 100}%` }}
           />
         </div>
@@ -331,11 +331,11 @@ function SummaryTab({
         </div>
         <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700 grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
           <div>
-            <p className="text-sm font-semibold text-[#041E42] dark:text-white">${fmt(ORIGINAL_ADVANCE)}</p>
+            <p className="text-sm font-semibold text-[#0F0E17] dark:text-white">${fmt(ORIGINAL_ADVANCE)}</p>
             <p className="text-xs text-gray-400">Original Advance</p>
           </div>
           <div>
-            <p className="text-sm font-semibold text-[#041E42] dark:text-white">${fmt(COST_OF_CAPITAL)}</p>
+            <p className="text-sm font-semibold text-[#0F0E17] dark:text-white">${fmt(COST_OF_CAPITAL)}</p>
             <p className="text-xs text-gray-400">Cost of Capital</p>
           </div>
           <div>
@@ -343,7 +343,7 @@ function SummaryTab({
             <p className="text-xs text-gray-400">Principal Repaid</p>
           </div>
           <div>
-            <p className="text-sm font-semibold text-[#4945ff]">${fmt(PRINCIPAL_REMAINING)}</p>
+            <p className="text-sm font-semibold text-[#4F46E5]">${fmt(PRINCIPAL_REMAINING)}</p>
             <p className="text-xs text-gray-400">Principal Outstanding</p>
           </div>
         </div>
@@ -352,9 +352,9 @@ function SummaryTab({
       {/* Charts + Transactions Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Transactions */}
-        <div className="bg-[#F7F8FC] rounded-xl border border-[#4945ff0F] p-6">
+        <div className="bg-[#FFFFFF] rounded-xl border border-[#4F46E50F] p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-[#041E42] dark:text-white">Transactions</h3>
+            <h3 className="font-semibold text-[#0F0E17] dark:text-white">Transactions</h3>
             <span className="text-xs text-gray-400">{totalCount} total</span>
           </div>
           <div className="space-y-3">
@@ -365,12 +365,12 @@ function SummaryTab({
                     <Check className="w-4 h-4 text-green-500" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-[#041E42] dark:text-white">{tx.type}</p>
+                    <p className="text-sm font-semibold text-[#0F0E17] dark:text-white">{tx.type}</p>
                     <p className="text-xs text-gray-400">{tx.date}</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="text-sm font-semibold text-[#041E42] dark:text-white">
+                  <span className="text-sm font-semibold text-[#0F0E17] dark:text-white">
                     -${fmt(tx.amount)}
                   </span>
                   <p className="text-[10px] text-gray-400">${fmt(tx.principalPortion)} prin · ${fmt(tx.feePortion)} fee</p>
@@ -380,15 +380,15 @@ function SummaryTab({
           </div>
           <button
             onClick={onToggleTransactions}
-            className="mt-4 text-sm text-[#4945ff] hover:text-[#3b38d9] font-semibold transition-colors"
+            className="mt-4 text-sm text-[#4F46E5] hover:text-[#3730A3] font-semibold transition-colors"
           >
             {showAllTransactions ? 'Show Recent' : `View All ${totalCount}`}
           </button>
         </div>
 
         {/* Total Paid Donut */}
-        <div className="bg-[#F7F8FC] rounded-xl border border-[#4945ff0F] p-6">
-          <h3 className="font-semibold text-[#041E42] dark:text-white mb-2">Total Paid</h3>
+        <div className="bg-[#FFFFFF] rounded-xl border border-[#4F46E50F] p-6">
+          <h3 className="font-semibold text-[#0F0E17] dark:text-white mb-2">Total Paid</h3>
           <p className="text-xs text-gray-400 mb-3">{PAYMENTS_MADE} payments · ${fmt(MONTHLY_PAYMENT)}/mo</p>
           <div className="flex items-center gap-4 mb-3">
             {totalPaidData.map((d) => (
@@ -418,7 +418,7 @@ function SummaryTab({
               <Tooltip key="tooltip-total-paid" formatter={(value: number) => `$${fmt(value)}`} />
             </PieChart>
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-              <span className="text-xl font-bold text-[#041E42] dark:text-white">
+              <span className="text-xl font-bold text-[#0F0E17] dark:text-white">
                 ${fmt(TOTAL_PAID)}
               </span>
               <span className="text-[10px] text-gray-400">total paid</span>
@@ -427,8 +427,8 @@ function SummaryTab({
         </div>
 
         {/* Payoff Breakdown Donut */}
-        <div className="bg-[#F7F8FC] rounded-xl border border-[#4945ff0F] p-6">
-          <h3 className="font-semibold text-[#041E42] dark:text-white mb-2">Payoff Breakdown</h3>
+        <div className="bg-[#FFFFFF] rounded-xl border border-[#4F46E50F] p-6">
+          <h3 className="font-semibold text-[#0F0E17] dark:text-white mb-2">Payoff Breakdown</h3>
           <p className="text-xs text-gray-400 mb-3">{PAYMENTS_REMAINING} payments remaining · est. Apr 2028</p>
           <div className="flex items-center gap-4 mb-3">
             {payoffData.map((d) => (
@@ -458,7 +458,7 @@ function SummaryTab({
               <Tooltip key="tooltip-payoff" formatter={(value: number) => `$${fmt(value)}`} />
             </PieChart>
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-              <span className="text-xl font-bold text-[#041E42] dark:text-white">
+              <span className="text-xl font-bold text-[#0F0E17] dark:text-white">
                 ${fmt(TOTAL_REMAINING)}
               </span>
               <span className="text-[10px] text-gray-400">to pay off</span>
@@ -473,9 +473,9 @@ function SummaryTab({
 /* ─── KPI Card ───────────────────────────────────────────── */
 function KPICard({ label, value, sub, accent }: { label: string; value: string; sub: string; accent: 'green' | 'blue' }) {
   return (
-    <div className="bg-[#F7F8FC] rounded-xl border border-[#4945ff0F] p-5">
+    <div className="bg-[#FFFFFF] rounded-xl border border-[#4F46E50F] p-5">
       <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">{label}</p>
-      <p className={`text-2xl font-bold ${accent === 'green' ? 'text-green-600' : 'text-[#041E42] dark:text-white'}`}>{value}</p>
+      <p className={`text-2xl font-bold ${accent === 'green' ? 'text-green-600' : 'text-[#0F0E17] dark:text-white'}`}>{value}</p>
       <p className="text-xs text-gray-400 mt-1">{sub}</p>
     </div>
   );
@@ -486,8 +486,8 @@ function PaymentsTab() {
   return (
     <div className="space-y-6">
       {/* Payment History Grid */}
-      <div className="bg-[#F7F8FC] rounded-xl border border-[#4945ff0F] p-6">
-        <h3 className="font-semibold text-[#041E42] dark:text-white mb-2">PAYMENT HISTORY</h3>
+      <div className="bg-[#FFFFFF] rounded-xl border border-[#4F46E50F] p-6">
+        <h3 className="font-semibold text-[#0F0E17] dark:text-white mb-2">PAYMENT HISTORY</h3>
         <p className="text-xs text-gray-400 mb-5">
           Monthly payment history for this account. A check mark indicates an on-time payment. Numbers indicate days past due.
           Months before origination or in the future are shown as dashes.
@@ -506,7 +506,7 @@ function PaymentsTab() {
             <tbody>
               {Object.entries(paymentHistory).sort(([a],[b]) => Number(b) - Number(a)).map(([year, data]) => (
                 <tr key={year} className="border-t border-gray-100 dark:border-gray-700">
-                  <td className="py-2.5 pr-4 font-semibold text-[#041E42] dark:text-white">{year}</td>
+                  <td className="py-2.5 pr-4 font-semibold text-[#0F0E17] dark:text-white">{year}</td>
                   {data.map((cell, i) => (
                     <td key={i} className="py-2.5 px-1 text-center">
                       {cell === '✓' ? (
@@ -535,21 +535,21 @@ function PaymentsTab() {
       </div>
 
       {/* Payment Details */}
-      <div className="bg-[#F7F8FC] rounded-xl border border-[#4945ff0F] p-6">
-        <h3 className="font-semibold text-[#041E42] dark:text-white mb-4">PAYMENT DETAILS</h3>
+      <div className="bg-[#FFFFFF] rounded-xl border border-[#4F46E50F] p-6">
+        <h3 className="font-semibold text-[#0F0E17] dark:text-white mb-4">PAYMENT DETAILS</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-0">
           {paymentDetails.map((item, i) => (
             <div key={i} className="flex justify-between py-3 border-b border-gray-100 dark:border-gray-700">
               <span className="text-sm text-gray-500 dark:text-gray-400">{item.label}</span>
-              <span className="text-sm font-semibold text-[#041E42] dark:text-white">{item.value}</span>
+              <span className="text-sm font-semibold text-[#0F0E17] dark:text-white">{item.value}</span>
             </div>
           ))}
         </div>
       </div>
 
       {/* Loan Summary Verification */}
-      <div className="bg-[#F7F8FC] rounded-xl border border-[#4945ff0F] p-6">
-        <h3 className="font-semibold text-[#041E42] dark:text-white mb-4">LOAN SUMMARY</h3>
+      <div className="bg-[#FFFFFF] rounded-xl border border-[#4F46E50F] p-6">
+        <h3 className="font-semibold text-[#0F0E17] dark:text-white mb-4">LOAN SUMMARY</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-0">
           {[
             { label: 'Original Advance', value: `$${fmt(ORIGINAL_ADVANCE)}` },
@@ -567,7 +567,7 @@ function PaymentsTab() {
           ].map((item, i) => (
             <div key={i} className="flex justify-between py-3 border-b border-gray-100 dark:border-gray-700">
               <span className="text-sm text-gray-500 dark:text-gray-400">{item.label}</span>
-              <span className="text-sm font-semibold text-[#041E42] dark:text-white">{item.value}</span>
+              <span className="text-sm font-semibold text-[#0F0E17] dark:text-white">{item.value}</span>
             </div>
           ))}
         </div>
@@ -590,21 +590,21 @@ function DocumentsTab() {
   ];
 
   return (
-    <div className="bg-[#F7F8FC] rounded-xl border border-[#4945ff0F] p-6">
-      <h3 className="font-semibold text-[#041E42] dark:text-white mb-5">Documents</h3>
+    <div className="bg-[#FFFFFF] rounded-xl border border-[#4F46E50F] p-6">
+      <h3 className="font-semibold text-[#0F0E17] dark:text-white mb-5">Documents</h3>
       <div className="space-y-0">
         {docs.map((doc, i) => (
           <div key={i} className="flex items-center justify-between py-4 border-b border-gray-100 dark:border-gray-700 last:border-0">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-[#4945ff]/10 flex items-center justify-center">
-                <FileText className="w-5 h-5 text-[#4945ff]" />
+              <div className="w-10 h-10 rounded-lg bg-[#4F46E5]/10 flex items-center justify-center">
+                <FileText className="w-5 h-5 text-[#4F46E5]" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-[#041E42] dark:text-white">{doc.name}</p>
+                <p className="text-sm font-semibold text-[#0F0E17] dark:text-white">{doc.name}</p>
                 <p className="text-xs text-gray-400">{doc.type} · {doc.date}</p>
               </div>
             </div>
-            <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-[#4945ff] hover:bg-[#4945ff]/10 rounded-lg transition-colors font-semibold">
+            <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-[#4F46E5] hover:bg-[#4F46E5]/10 rounded-lg transition-colors font-semibold">
               <ExternalLink className="w-4 h-4" />
               View
             </button>
@@ -619,48 +619,48 @@ function DocumentsTab() {
 function SettingsTab({ userEmail }: { userEmail: string }) {
   return (
     <div className="space-y-6 max-w-2xl">
-      <div className="bg-[#F7F8FC] rounded-xl border border-[#4945ff0F] p-6">
-        <h3 className="font-semibold text-[#041E42] dark:text-white mb-5">Account Settings</h3>
+      <div className="bg-[#FFFFFF] rounded-xl border border-[#4F46E50F] p-6">
+        <h3 className="font-semibold text-[#0F0E17] dark:text-white mb-5">Account Settings</h3>
         <div className="space-y-4">
           <div className="flex justify-between items-center py-3 border-b border-gray-100 dark:border-gray-700">
             <div>
-              <p className="text-sm font-semibold text-[#041E42] dark:text-white">Email Address</p>
+              <p className="text-sm font-semibold text-[#0F0E17] dark:text-white">Email Address</p>
               <p className="text-sm text-gray-400">{userEmail}</p>
             </div>
-            <button className="text-sm text-[#4945ff] font-semibold">Edit</button>
+            <button className="text-sm text-[#4F46E5] font-semibold">Edit</button>
           </div>
           <div className="flex justify-between items-center py-3 border-b border-gray-100 dark:border-gray-700">
             <div>
-              <p className="text-sm font-semibold text-[#041E42] dark:text-white">Password</p>
+              <p className="text-sm font-semibold text-[#0F0E17] dark:text-white">Password</p>
               <p className="text-sm text-gray-400">Last changed 30 days ago</p>
             </div>
-            <button className="text-sm text-[#4945ff] font-semibold">Change</button>
+            <button className="text-sm text-[#4F46E5] font-semibold">Change</button>
           </div>
           <div className="flex justify-between items-center py-3 border-b border-gray-100 dark:border-gray-700">
             <div>
-              <p className="text-sm font-semibold text-[#041E42] dark:text-white">AutoPay</p>
+              <p className="text-sm font-semibold text-[#0F0E17] dark:text-white">AutoPay</p>
               <p className="text-sm text-gray-400">Enabled — Bank account ending in 4821</p>
             </div>
-            <button className="text-sm text-[#4945ff] font-semibold">Manage</button>
+            <button className="text-sm text-[#4F46E5] font-semibold">Manage</button>
           </div>
           <div className="flex justify-between items-center py-3">
             <div>
-              <p className="text-sm font-semibold text-[#041E42] dark:text-white">Notifications</p>
+              <p className="text-sm font-semibold text-[#0F0E17] dark:text-white">Notifications</p>
               <p className="text-sm text-gray-400">Email & SMS reminders enabled</p>
             </div>
-            <button className="text-sm text-[#4945ff] font-semibold">Configure</button>
+            <button className="text-sm text-[#4F46E5] font-semibold">Configure</button>
           </div>
         </div>
       </div>
 
-      <div className="bg-[#F7F8FC] rounded-xl border border-[#4945ff0F] p-6">
-        <h3 className="font-semibold text-[#041E42] dark:text-white mb-3">Need Help?</h3>
+      <div className="bg-[#FFFFFF] rounded-xl border border-[#4F46E50F] p-6">
+        <h3 className="font-semibold text-[#0F0E17] dark:text-white mb-3">Need Help?</h3>
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
           Contact our support team for any questions about your loan.
         </p>
         <div className="flex items-center gap-3 text-sm">
-          <HelpCircle className="w-5 h-5 text-[#4945ff]" />
-          <span className="text-[#041E42] dark:text-white font-semibold">(864) 729-3358</span>
+          <HelpCircle className="w-5 h-5 text-[#4F46E5]" />
+          <span className="text-[#0F0E17] dark:text-white font-semibold">(864) 729-3358</span>
         </div>
       </div>
     </div>

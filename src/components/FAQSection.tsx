@@ -43,7 +43,7 @@ export function FAQSection() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-24 bg-[#ededf6] dark:bg-[#132030]">
+    <section ref={sectionRef} className="py-24 bg-[#F7F5F0] dark:bg-[#1A1923]">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16 overflow-hidden">
           <button
@@ -52,7 +52,7 @@ export function FAQSection() {
           >
             <h2 
               id="faq-section"
-              className={`font-bold text-[#041e42] dark:text-white transition-all duration-700 ease-out ${
+              className={`font-bold text-[#0F0E17] dark:text-white transition-all duration-700 ease-out ${
                 isExpanded 
                   ? 'text-4xl opacity-100 translate-y-0' 
                   : 'text-2xl opacity-50 -translate-y-2'
@@ -61,9 +61,9 @@ export function FAQSection() {
               {t('faq.title')}
             </h2>
             {isSectionOpen ? (
-              <ChevronUp className="w-8 h-8 text-[#4945ff] flex-shrink-0 transition-transform" />
+              <ChevronUp className="w-8 h-8 text-[#4F46E5] flex-shrink-0 transition-transform" />
             ) : (
-              <ChevronDown className="w-8 h-8 text-[#9AA5B1] group-hover:text-[#4945ff] flex-shrink-0 transition-colors" />
+              <ChevronDown className="w-8 h-8 text-[#8A8895] group-hover:text-[#4F46E5] flex-shrink-0 transition-colors" />
             )}
           </button>
           
@@ -85,24 +85,24 @@ export function FAQSection() {
             {faqs.map((faq, index) => (
               <div 
                 key={index} 
-                className="bg-[#F5F7FA] dark:bg-[#1F2933] rounded-xl border border-[#E4E7EB] dark:border-[#3E4C59] overflow-hidden"
+                className="bg-[#FAF8F3] dark:bg-[#1A1923] rounded-xl border border-[#E7E3DA] dark:border-[#3E3D49] overflow-hidden"
               >
                 <button
                   onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                  className="w-full flex items-center justify-between p-6 text-left hover:bg-white dark:hover:bg-[#132030] transition-colors"
+                  className="w-full flex items-center justify-between p-6 text-left hover:bg-white dark:hover:bg-[#1A1923] transition-colors"
                 >
-                  <span className="text-lg font-semibold text-[#041e42] dark:text-white pr-8">
+                  <span className="text-lg font-semibold text-[#0F0E17] dark:text-white pr-8">
                     {faq.question}
                   </span>
                   {openIndex === index ? (
-                    <ChevronUp className="w-6 h-6 text-[#4945ff] flex-shrink-0" />
+                    <ChevronUp className="w-6 h-6 text-[#4F46E5] flex-shrink-0" />
                   ) : (
-                    <ChevronDown className="w-6 h-6 text-[#9AA5B1] flex-shrink-0" />
+                    <ChevronDown className="w-6 h-6 text-[#8A8895] flex-shrink-0" />
                   )}
                 </button>
                 {openIndex === index && (
                   <div className="px-6 pb-6">
-                    <p className="text-[#52606D] dark:text-[#CBD2D9] leading-relaxed">
+                    <p className="text-[#6A6876] dark:text-[#D9D4C7] leading-relaxed">
                       {faq.answer}
                     </p>
                   </div>
@@ -114,10 +114,10 @@ export function FAQSection() {
 
         {isSectionOpen && (
           <div className="mt-12 text-center animate-in slide-in-from-top-4 duration-500 delay-100">
-            <p className="text-[#52606D] dark:text-[#CBD2D9] mb-4">{t('faq.stillQuestions')}</p>
+            <p className="text-[#6A6876] dark:text-[#D9D4C7] mb-4">{t('faq.stillQuestions')}</p>
             <a 
               href="tel:+18647293358" 
-              className="inline-block bg-[#4945ff] hover:bg-[#3b38d9] text-white font-semibold px-8 py-3 rounded-xl transition-colors"
+              className="inline-block bg-[#4F46E5] hover:bg-[#3730A3] text-white font-semibold px-8 py-3 rounded-xl transition-colors"
             >
               {t('faq.callUs')}
             </a>

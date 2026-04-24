@@ -19,12 +19,12 @@ export function LoginPage({ onClose, onSignIn, onLegalLink }: LoginPageProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-[60] bg-[#ededf6] dark:bg-[#0A1F35] overflow-y-auto">
+    <div className="fixed inset-0 z-[60] bg-[#F7F5F0] dark:bg-[#0F0E17] overflow-y-auto">
       {/* Back button */}
       <div className="max-w-xl mx-auto px-4 pt-6">
         <button
           onClick={onClose}
-          className="flex items-center gap-2 text-[#4945ff] hover:text-[#3b38d9] transition-colors"
+          className="flex items-center gap-2 text-[#4F46E5] hover:text-[#3730A3] transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
           <span className="font-semibold">Back</span>
@@ -34,20 +34,20 @@ export function LoginPage({ onClose, onSignIn, onLegalLink }: LoginPageProps) {
       {/* Main content */}
       <div className="flex flex-col items-center justify-center px-4 pt-8 pb-16">
         {/* Lock icon */}
-        <div className="w-14 h-14 rounded-2xl bg-[#4945ff] flex items-center justify-center mb-6 shadow-lg shadow-[#4945ff]/25">
+        <div className="w-14 h-14 rounded-2xl bg-[#4F46E5] flex items-center justify-center mb-6 shadow-lg shadow-[#4F46E5]/25">
           <Lock className="w-7 h-7 text-white" />
         </div>
 
         {/* Heading */}
-        <h1 className="text-3xl font-bold text-[#041E42] dark:text-white mb-2">Welcome back</h1>
+        <h1 className="text-3xl font-bold text-[#0F0E17] dark:text-white mb-2">Welcome back</h1>
         <p className="text-gray-500 dark:text-gray-400 mb-10">Sign in to your Delt account</p>
 
         {/* Card */}
-        <div className="w-full max-w-md bg-[#F7F8FC] rounded-2xl shadow-xl shadow-black/5 p-8 border border-[#4945ff0F]">
+        <div className="w-full max-w-md bg-[#FFFFFF] rounded-2xl shadow-xl shadow-black/5 p-8 border border-[#4F46E50F]">
           <form onSubmit={handleSignIn} className="space-y-5">
             {/* Email */}
             <div>
-              <label className="block text-sm font-semibold text-[#041E42] dark:text-white mb-2">
+              <label className="block text-sm font-semibold text-[#0F0E17] dark:text-white mb-2">
                 Email address
               </label>
               <div className="relative">
@@ -57,14 +57,14 @@ export function LoginPage({ onClose, onSignIn, onLegalLink }: LoginPageProps) {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@company.com"
-                  className="w-full pl-11 pr-4 py-3 rounded-xl border border-[#4945ff0F] bg-[#F7F8FC] text-[#041E42] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4945ff]/30 focus:border-[#4945ff] transition-all"
+                  className="w-full pl-11 pr-4 py-3 rounded-xl border border-[#4F46E50F] bg-[#FFFFFF] text-[#0F0E17] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4F46E5]/30 focus:border-[#4F46E5] transition-all"
                 />
               </div>
             </div>
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-semibold text-[#041E42] dark:text-white mb-2">
+              <label className="block text-sm font-semibold text-[#0F0E17] dark:text-white mb-2">
                 Password
               </label>
               <div className="relative">
@@ -74,7 +74,7 @@ export function LoginPage({ onClose, onSignIn, onLegalLink }: LoginPageProps) {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
-                  className="w-full pl-11 pr-12 py-3 rounded-xl border border-[#4945ff0F] bg-[#F7F8FC] text-[#041E42] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4945ff]/30 focus:border-[#4945ff] transition-all"
+                  className="w-full pl-11 pr-12 py-3 rounded-xl border border-[#4F46E50F] bg-[#FFFFFF] text-[#0F0E17] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4F46E5]/30 focus:border-[#4F46E5] transition-all"
                 />
                 <button
                   type="button"
@@ -93,13 +93,13 @@ export function LoginPage({ onClose, onSignIn, onLegalLink }: LoginPageProps) {
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  className="w-4 h-4 rounded border-gray-300 text-[#4945ff] focus:ring-[#4945ff] cursor-pointer"
+                  className="w-4 h-4 rounded border-gray-300 text-[#4F46E5] focus:ring-[#4F46E5] cursor-pointer"
                 />
                 <span className="text-sm text-gray-600 dark:text-gray-400">Remember me</span>
               </label>
               <button
                 type="button"
-                className="text-sm text-[#4945ff] hover:text-[#3b38d9] font-semibold transition-colors"
+                className="text-sm text-[#4F46E5] hover:text-[#3730A3] font-semibold transition-colors"
               >
                 Forgot password?
               </button>
@@ -108,7 +108,7 @@ export function LoginPage({ onClose, onSignIn, onLegalLink }: LoginPageProps) {
             {/* Sign in button */}
             <button
               type="submit"
-              className="w-full py-3.5 bg-[#4945ff] hover:bg-[#3b38d9] text-white font-semibold rounded-xl flex items-center justify-center gap-2 transition-colors shadow-lg shadow-[#4945ff]/25"
+              className="w-full py-3.5 bg-[#4F46E5] hover:bg-[#3730A3] text-white font-semibold rounded-xl flex items-center justify-center gap-2 transition-colors shadow-lg shadow-[#4F46E5]/25"
             >
               Sign in
               <ArrowRight className="w-5 h-5" />
@@ -134,7 +134,7 @@ export function LoginPage({ onClose, onSignIn, onLegalLink }: LoginPageProps) {
                 <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
               </svg>
-              <span className="text-sm font-semibold text-[#041E42] dark:text-white">Google</span>
+              <span className="text-sm font-semibold text-[#0F0E17] dark:text-white">Google</span>
             </button>
             <button
               type="button"
@@ -143,7 +143,7 @@ export function LoginPage({ onClose, onSignIn, onLegalLink }: LoginPageProps) {
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" fill="#1877F2"/>
               </svg>
-              <span className="text-sm font-semibold text-[#041E42] dark:text-white">Facebook</span>
+              <span className="text-sm font-semibold text-[#0F0E17] dark:text-white">Facebook</span>
             </button>
           </div>
         </div>
@@ -151,7 +151,7 @@ export function LoginPage({ onClose, onSignIn, onLegalLink }: LoginPageProps) {
         {/* Bottom text */}
         <p className="mt-8 text-sm text-gray-500 dark:text-gray-400">
           Don't have an account?{' '}
-          <button className="text-[#4945ff] hover:text-[#3b38d9] font-semibold transition-colors">
+          <button className="text-[#4F46E5] hover:text-[#3730A3] font-semibold transition-colors">
             Sign up for free
           </button>
         </p>
@@ -159,14 +159,14 @@ export function LoginPage({ onClose, onSignIn, onLegalLink }: LoginPageProps) {
           By signing in, you agree to our{' '}
           <button
             onClick={() => onLegalLink?.('terms')}
-            className="text-[#4945ff] hover:underline"
+            className="text-[#4F46E5] hover:underline"
           >
             Terms of Service
           </button>{' '}
           and{' '}
           <button
             onClick={() => onLegalLink?.('privacy')}
-            className="text-[#4945ff] hover:underline"
+            className="text-[#4F46E5] hover:underline"
           >
             Privacy Policy
           </button>

@@ -1,114 +1,78 @@
-/* Delt Institutional Color System */
-/* Designed for trust, compliance, and bank-adjacent professionalism */
+/* Delt Capital — Ledger (V1) Color System */
+/* Editorial, paper-on-ink with indigo accent. Warm neutrals, hairline borders. */
 
 :root {
   /* Brand Colors */
-  --color-primary-blue: #1B17FF;
-  --color-primary-navy: #041E42;
-  --color-secondary-blue: #0052FF;
-  --color-accent-blue: #E6EDFF;
-  
-  /* Neutrals */
-  --color-gray-900: #0A1F35;
-  --color-gray-800: #1F2933;
-  --color-gray-700: #3E4C59;
-  --color-gray-600: #52606D;
-  --color-gray-500: #616E7C;
-  --color-gray-400: #9AA5B1;
-  --color-gray-300: #CBD2D9;
-  --color-gray-200: #E4E7EB;
-  --color-gray-100: #F5F7FA;
-  --color-gray-50: #ededf5;
-  --color-white: #FFFFFF;
-  
+  --color-primary-blue: #4F46E5;       /* indigo (primary accent) */
+  --color-primary-navy: #0F0E17;       /* ink (primary text / dark surfaces) */
+  --color-secondary-blue: #7C3AED;     /* violet (gradient partner) */
+  --color-accent-blue: #EFECE4;        /* soft paper tint */
+
+  /* Neutrals (paper → ink) */
+  --color-gray-900: #0F0E17;
+  --color-gray-800: #2B2A35;
+  --color-gray-700: #3E3D49;
+  --color-gray-600: #6A6876;
+  --color-gray-500: #8A8895;
+  --color-gray-400: #B8B5AB;
+  --color-gray-300: #D9D4C7;
+  --color-gray-200: #E7E3DA;
+  --color-gray-100: #EFECE4;
+  --color-gray-50:  #F7F5F0;
+  --color-white:    #FFFFFF;
+
   /* Status Colors */
-  --color-success: #00875A;
-  --color-success-bg: #E3FCEF;
-  --color-warning: #FF991F;
-  --color-warning-bg: #FFF4E5;
-  --color-error: #DE350B;
-  --color-error-bg: #FFEBE6;
-  --color-info: #0052CC;
-  --color-info-bg: #DEEBFF;
-  
+  --color-success: #0F7A5A;
+  --color-success-bg: #E0F5EC;
+  --color-warning: #B45309;
+  --color-warning-bg: #FBEFE1;
+  --color-error: #BE123C;
+  --color-error-bg: #FBE7EC;
+  --color-info: #4F46E5;
+  --color-info-bg: #EAE8FB;
+
   /* Surface Colors */
-  --surface-background: #ededf5;
+  --surface-background: #F7F5F0;       /* paper */
   --surface-card: #FFFFFF;
-  --surface-card-secondary: #F5F7FA;
+  --surface-card-secondary: #FAF8F3;   /* paper-warm */
   --surface-elevated: #FFFFFF;
-  
+
   /* Border Colors */
-  --border-default: #E4E7EB;
-  --border-subtle: #F0F2F5;
-  --border-strong: #CBD2D9;
-  
+  --border-default: #E7E3DA;           /* hairline */
+  --border-subtle: #EFECE4;
+  --border-strong: #D9D4C7;
+
   /* Text Colors */
-  --text-primary: #041E42;
-  --text-secondary: #52606D;
-  --text-tertiary: #9AA5B1;
-  --text-inverse: #FFFFFF;
-  
+  --text-primary: #0F0E17;
+  --text-secondary: #6A6876;
+  --text-tertiary: #8A8895;
+  --text-inverse: #F7F5F0;
+
   /* Interactive States */
-  --interactive-primary: #1B17FF;
-  --interactive-primary-hover: #1510DD;
-  --interactive-secondary: #0052FF;
-  --interactive-secondary-hover: #0041CC;
-  
-  /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(4, 30, 66, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(4, 30, 66, 0.08), 0 2px 4px -1px rgba(4, 30, 66, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(4, 30, 66, 0.08), 0 4px 6px -2px rgba(4, 30, 66, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(4, 30, 66, 0.08), 0 10px 10px -5px rgba(4, 30, 66, 0.04);
+  --interactive-primary: #4F46E5;
+  --interactive-primary-hover: #3730A3;
+  --interactive-secondary: #7C3AED;
+  --interactive-secondary-hover: #5B21B6;
+
+  /* Shadows (ink-tinted, subtle) */
+  --shadow-sm: 0 1px 2px 0 rgba(15, 14, 23, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(15, 14, 23, 0.08), 0 2px 4px -1px rgba(15, 14, 23, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(15, 14, 23, 0.08), 0 4px 6px -2px rgba(15, 14, 23, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(15, 14, 23, 0.08), 0 10px 10px -5px rgba(15, 14, 23, 0.04);
 }
 
 /* Dark Mode */
 .dark {
-  --surface-background: #0A1F35;
-  --surface-card: #1F2933;
-  --surface-card-secondary: #132030;
-  --surface-elevated: #2A3A4F;
-  
-  --border-default: #3E4C59;
-  --border-subtle: #2A3A4F;
-  --border-strong: #52606D;
-  
-  --text-primary: #FFFFFF;
-  --text-secondary: #CBD2D9;
-  --text-tertiary: #9AA5B1;
-}
+  --surface-background: #0F0E17;
+  --surface-card: #1A1923;
+  --surface-card-secondary: #2B2A35;
+  --surface-elevated: #1A1923;
 
-/* Usage Guidelines:
- * 
- * Brand / Primary Blue (#1B17FF)
- * - Primary CTAs only
- * - Critical actions
- * - Progress indicators
- * - Never use for large backgrounds
- * 
- * Primary Navy (#041E42)
- * - Headlines
- * - Logo
- * - Primary text in light mode
- * 
- * Secondary Blue (#0052FF)
- * - Links
- * - Secondary actions
- * - Info status
- * 
- * Accent Blue (#E6EDFF)
- * - Subtle backgrounds
- * - Hover states on white
- * - Info backgrounds (very light)
- * 
- * Neutrals (Gray 50-900)
- * - Use for 90% of UI
- * - Creates institutional, calm feel
- * - Gray 100/50 for section backgrounds
- * - White for cards
- * - Gray 300/200 for borders
- * 
- * Status Colors
- * - Use sparingly, only for status
- * - Pair with light backgrounds
- * - Never use bright versions
- */
+  --border-default: #2B2A35;
+  --border-subtle: #1A1923;
+  --border-strong: #3E3D49;
+
+  --text-primary: #F7F5F0;
+  --text-secondary: #B8B5AB;
+  --text-tertiary: #8A8895;
+}

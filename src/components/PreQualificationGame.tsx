@@ -145,7 +145,7 @@ function DocumentUploadSection({
 
   return (
     <div className="mb-10">
-      <h4 className="text-[17px] font-semibold text-[#041E42] dark:text-white mb-1.5">
+      <h4 className="text-[17px] font-semibold text-[#0F0E17] dark:text-white mb-1.5">
         {title}
       </h4>
       <div className="text-[13.5px] text-[#6B7280] dark:text-slate-400 mb-5 leading-relaxed max-w-xl">
@@ -153,12 +153,12 @@ function DocumentUploadSection({
       </div>
 
       {files.length > 0 ? (
-        <div className="rounded-xl border border-[#E5E7EB] dark:border-[#3E4C59] bg-white dark:bg-[#1F2933] overflow-hidden">
+        <div className="rounded-xl border border-[#E5E7EB] dark:border-[#3E3D49] bg-white dark:bg-[#1A1923] overflow-hidden">
           {/* Document thumbnail preview area */}
-          <div className="bg-[#F3F4F6] dark:bg-[#0A1F35] px-6 py-8 flex items-center justify-center">
+          <div className="bg-[#F3F4F6] dark:bg-[#0F0E17] px-6 py-8 flex items-center justify-center">
             <div className="flex gap-4 flex-wrap justify-center">
               {files.map((file, index) => (
-                <div key={index} className="w-[100px] h-[130px] bg-white dark:bg-[#020C1B] rounded-md shadow-sm border border-[#E5E7EB] dark:border-[#3E4C59] flex flex-col items-center justify-center p-3">
+                <div key={index} className="w-[100px] h-[130px] bg-white dark:bg-[#020C1B] rounded-md shadow-sm border border-[#E5E7EB] dark:border-[#3E3D49] flex flex-col items-center justify-center p-3">
                   <FileText className="w-8 h-8 text-[#9CA3AF] mb-2" />
                   <div className="w-full space-y-1">
                     <div className="h-[3px] bg-[#D1D5DB] rounded-full w-full" />
@@ -173,16 +173,16 @@ function DocumentUploadSection({
 
           {/* Slim progress bar */}
           {uploadStatus === 'processing' && (
-            <div className="h-[3px] bg-[#E5E7EB] dark:bg-[#3E4C59] w-full">
+            <div className="h-[3px] bg-[#E5E7EB] dark:bg-[#3E3D49] w-full">
               <div 
-                className="h-full bg-[#4945ff] transition-all duration-100 ease-linear rounded-r-full"
+                className="h-full bg-[#4F46E5] transition-all duration-100 ease-linear rounded-r-full"
                 style={{ width: `${progress}%` }}
               />
             </div>
           )}
 
           {/* File info rows */}
-          <div className="divide-y divide-[#F3F4F6] dark:divide-[#3E4C59]">
+          <div className="divide-y divide-[#F3F4F6] dark:divide-[#3E3D49]">
             {files.map((file, index) => (
               <div key={index} className="px-5 py-3 flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
@@ -202,11 +202,11 @@ function DocumentUploadSection({
           </div>
 
           {/* Status line */}
-          <div className="px-5 py-3 border-t border-[#F3F4F6] dark:border-[#3E4C59]">
+          <div className="px-5 py-3 border-t border-[#F3F4F6] dark:border-[#3E3D49]">
             {uploadStatus === 'processing' ? (
               <div className="flex items-center gap-2">
-                <div className="w-3.5 h-3.5 border-2 border-[#4945ff] border-t-transparent rounded-full animate-spin flex-shrink-0" />
-                <span className="text-[13px] font-medium text-[#4945ff]">
+                <div className="w-3.5 h-3.5 border-2 border-[#4F46E5] border-t-transparent rounded-full animate-spin flex-shrink-0" />
+                <span className="text-[13px] font-medium text-[#4F46E5]">
                   {progressSteps[Math.min(currentStepIndex, progressSteps.length - 1)]}
                 </span>
               </div>
@@ -229,12 +229,12 @@ function DocumentUploadSection({
           onDrop={handleDrop}
           className={`cursor-pointer block rounded-xl border-2 border-dashed transition-all ${
             isDragging
-              ? 'border-[#4945ff] bg-[#EEF2FF]'
-              : 'border-[#D1D5DB] dark:border-[#3E4C59] hover:border-[#4945ff] hover:bg-[#FAFAFA] dark:hover:bg-[#1F2933]'
+              ? 'border-[#4F46E5] bg-[#EEF2FF]'
+              : 'border-[#D1D5DB] dark:border-[#3E3D49] hover:border-[#4F46E5] hover:bg-[#FAFAFA] dark:hover:bg-[#1A1923]'
           }`}
         >
           <div className="flex flex-col items-center justify-center py-12 px-6">
-            <div className="w-11 h-11 bg-[#F3F4F6] dark:bg-[#1F2933] rounded-full flex items-center justify-center mb-3">
+            <div className="w-11 h-11 bg-[#F3F4F6] dark:bg-[#1A1923] rounded-full flex items-center justify-center mb-3">
               <Upload className="w-5 h-5 text-[#6B7280]" />
             </div>
             <p className="text-[13.5px] font-medium text-[#374151] dark:text-white mb-0.5">
@@ -1365,11 +1365,11 @@ export function PreQualificationGame({
     return (
       <>
         {/* Simple background - no scrolling, no content */}
-        <div className="fixed inset-0 bg-[#ededf6] dark:bg-[#0A1F35] flex items-center justify-center overflow-hidden" />
+        <div className="fixed inset-0 bg-[#F7F5F0] dark:bg-[#0F0E17] flex items-center justify-center overflow-hidden" />
 
         {/* Question Modal - Pure popup experience, perfectly centered */}
         <Dialog open={isOpen} onOpenChange={() => {}}>
-          <DialogContent className="max-w-2xl p-0 bg-white dark:bg-[#020C1B] border-[#E4E7EB] dark:border-[#1F2933] shadow-2xl" hideClose>
+          <DialogContent className="max-w-2xl p-0 bg-white dark:bg-[#020C1B] border-[#E7E3DA] dark:border-[#1A1923] shadow-2xl" hideClose>
             <DialogTitle className="sr-only">
               Pre-Qualification Question {currentQuestion + 1} of {quizQuestions.length}
             </DialogTitle>
@@ -1388,14 +1388,14 @@ export function PreQualificationGame({
                 {/* Progress indicator at top of modal */}
                 <div className="mb-8">
                   <div className="flex justify-between items-center mb-3">
-                    <span className="text-sm font-semibold text-[#1E40AF] dark:text-[#60A5FA]">
+                    <span className="text-sm font-semibold text-[#1E40AF] dark:text-[#C4B5FD]">
                       Question {currentQuestion + 1} of {quizQuestions.length}
                     </span>
-                    <span className="text-sm text-[#52606D] dark:text-[#CBD2D9]">
+                    <span className="text-sm text-[#6A6876] dark:text-[#D9D4C7]">
                       {Math.round(progress)}% Complete
                     </span>
                   </div>
-                  <div className="w-full h-2 bg-[#E4E7EB] dark:bg-[#1F2933] rounded-full overflow-hidden">
+                  <div className="w-full h-2 bg-[#E7E3DA] dark:bg-[#1A1923] rounded-full overflow-hidden">
                     <motion.div
                       className="h-full bg-gradient-to-r from-[#1E40AF] to-[#3B82F6]"
                       initial={{ width: `${((currentQuestion) / quizQuestions.length) * 100}%` }}
@@ -1415,12 +1415,12 @@ export function PreQualificationGame({
                   {question.id === 1 && (
                     <div className="mb-6">
                       <div className="relative">
-                        <span className="absolute left-6 top-1/2 -translate-y-1/2 text-4xl font-bold text-[#041E42] dark:text-white">$</span>
+                        <span className="absolute left-6 top-1/2 -translate-y-1/2 text-4xl font-bold text-[#0F0E17] dark:text-white">$</span>
                         <input
                           type="text"
                           placeholder="30,000"
                           autoFocus
-                          className="w-full text-4xl md:text-5xl font-bold text-[#041E42] dark:text-white bg-[#F3F4F6] dark:bg-[#1F2933] rounded-2xl px-16 py-6 text-center border-2 border-transparent focus:border-[#4945ff] focus:outline-none transition-colors"
+                          className="w-full text-4xl md:text-5xl font-bold text-[#0F0E17] dark:text-white bg-[#F3F4F6] dark:bg-[#1A1923] rounded-2xl px-16 py-6 text-center border-2 border-transparent focus:border-[#4F46E5] focus:outline-none transition-colors"
                           onChange={(e) => {
                             const value = e.target.value.replace(/[^0-9]/g, '');
                             if (value) {
@@ -1477,13 +1477,13 @@ export function PreQualificationGame({
                         onClick={() => handleOptionSelect(question.id, option)}
                         className={`w-full p-5 rounded-xl border-2 text-center transition-all ${
                           selectedOption === option.value
-                            ? 'border-[#4945ff] bg-[#EEF2FF] dark:bg-[#4945ff]/20 shadow-lg scale-[1.02]'
+                            ? 'border-[#4F46E5] bg-[#EEF2FF] dark:bg-[#4F46E5]/20 shadow-lg scale-[1.02]'
                             : quizAnswers[question.id]?.value === option.value
-                            ? 'border-[#4945ff] bg-[#EEF2FF] dark:bg-[#4945ff]/20'
-                            : 'border-[#E4E7EB] dark:border-[#3E4C59] hover:border-[#4945ff] hover:bg-[#F9FAFB] dark:hover:bg-[#1F2933]'
+                            ? 'border-[#4F46E5] bg-[#EEF2FF] dark:bg-[#4F46E5]/20'
+                            : 'border-[#E7E3DA] dark:border-[#3E3D49] hover:border-[#4F46E5] hover:bg-[#F9FAFB] dark:hover:bg-[#1A1923]'
                         }`}
                       >
-                        <span className="text-base font-medium text-[#041E42] dark:text-white">
+                        <span className="text-base font-medium text-[#0F0E17] dark:text-white">
                           {option.label}
                         </span>
                       </motion.button>
@@ -1501,7 +1501,7 @@ export function PreQualificationGame({
   // LOADING RESULTS PHASE
   if (isLoadingResults) {
     return (
-      <div className="fixed inset-0 bg-[#ededf6] dark:bg-[#0A1F35] flex items-center justify-center overflow-hidden">
+      <div className="fixed inset-0 bg-[#F7F5F0] dark:bg-[#0F0E17] flex items-center justify-center overflow-hidden">
         <div className="text-center">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -1510,7 +1510,7 @@ export function PreQualificationGame({
             className="mb-6"
           >
             <div className="w-20 h-20 mx-auto mb-4">
-              <svg className="animate-spin text-[#041E42] dark:text-white" viewBox="0 0 24 24">
+              <svg className="animate-spin text-[#0F0E17] dark:text-white" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
               </svg>
@@ -1520,7 +1520,7 @@ export function PreQualificationGame({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-2xl font-bold text-[#041E42] dark:text-white mb-2"
+            className="text-2xl font-bold text-[#0F0E17] dark:text-white mb-2"
           >
             Calculating Your Funding Range
           </motion.h3>
@@ -1540,9 +1540,9 @@ export function PreQualificationGame({
   // RESULTS PHASE - With left summary panel
   if ((phase === 'quiz' && showResults && estimate) || showResultsOnly) {
     return (
-      <div className="min-h-screen bg-[#ededf6] dark:bg-[#0A1F35]">
+      <div className="min-h-screen bg-[#F7F5F0] dark:bg-[#0F0E17]">
         {/* Logo Header */}
-        <div className="bg-white dark:bg-[#1F2933] border-b border-[#E4E7EB] dark:border-[#3E4C59] py-4">
+        <div className="bg-white dark:bg-[#1A1923] border-b border-[#E7E3DA] dark:border-[#3E3D49] py-4">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center gap-0 h-14 w-auto">
               <img src={logoImg} alt="Delt Capital" className="h-10 w-auto object-contain" />
@@ -1558,9 +1558,9 @@ export function PreQualificationGame({
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-white dark:bg-[#1F2933] rounded-2xl border border-[#E4E7EB] dark:border-[#3E4C59] p-6 h-fit sticky top-8"
+              className="bg-white dark:bg-[#1A1923] rounded-2xl border border-[#E7E3DA] dark:border-[#3E3D49] p-6 h-fit sticky top-8"
             >
-              <h3 className="text-lg font-bold text-[#041E42] dark:text-white mb-6">Your Information</h3>
+              <h3 className="text-lg font-bold text-[#0F0E17] dark:text-white mb-6">Your Information</h3>
               <div className="space-y-4">
                 {Object.values(quizAnswers).map((answer, index) => {
                   const question = quizQuestions.find(q => q.id === answer.questionId);
@@ -1570,12 +1570,12 @@ export function PreQualificationGame({
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.3 + index * 0.1 }}
-                      className="pb-4 border-b border-[#E4E7EB] dark:border-[#3E4C59] last:border-0 last:pb-0"
+                      className="pb-4 border-b border-[#E7E3DA] dark:border-[#3E3D49] last:border-0 last:pb-0"
                     >
                       <div className="text-[11px] uppercase tracking-wider text-[#9CA3AF] dark:text-slate-400 mb-1.5 font-semibold">
                         {question?.question}
                       </div>
-                      <div className="text-[15px] font-semibold text-[#041E42] dark:text-white">
+                      <div className="text-[15px] font-semibold text-[#0F0E17] dark:text-white">
                         {answer.label}
                       </div>
                     </motion.div>
@@ -1590,10 +1590,10 @@ export function PreQualificationGame({
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="bg-white dark:bg-[#1F2933] rounded-2xl border border-[#E4E7EB] dark:border-[#3E4C59] overflow-hidden mb-6"
+                className="bg-white dark:bg-[#1A1923] rounded-2xl border border-[#E7E3DA] dark:border-[#3E3D49] overflow-hidden mb-6"
               >
                 {/* Funding Range Header */}
-                <div className="bg-[#041E42] dark:bg-[#1E40AF]/20 py-12 px-8 text-center">
+                <div className="bg-[#0F0E17] dark:bg-[#1E40AF]/20 py-12 px-8 text-center">
                   <div className="text-[11px] uppercase tracking-[0.15em] text-slate-300 mb-3 font-semibold">
                     Estimated Funding Range
                   </div>
@@ -1608,10 +1608,10 @@ export function PreQualificationGame({
                 {/* Approval Likelihood */}
                 <div className="p-8">
                   <div className="flex items-center justify-between mb-3">
-                    <h4 className="text-base font-semibold text-[#041E42] dark:text-white">Approval Likelihood</h4>
+                    <h4 className="text-base font-semibold text-[#0F0E17] dark:text-white">Approval Likelihood</h4>
                     <span className="text-2xl font-bold text-[#16A34A]">{Math.round(estimate.percentage)}%</span>
                   </div>
-                  <div className="w-full h-3 bg-[#E4E7EB] dark:bg-[#1F2933] rounded-full overflow-hidden">
+                  <div className="w-full h-3 bg-[#E7E3DA] dark:bg-[#1A1923] rounded-full overflow-hidden">
                     <motion.div
                       className="h-full bg-gradient-to-r from-[#16A34A] to-[#22C55E]"
                       initial={{ width: 0 }}
@@ -1627,9 +1627,9 @@ export function PreQualificationGame({
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="bg-gradient-to-br from-[#EFF6FF] to-[#F0FDF4] dark:from-[#132030] dark:to-[#1F2933] rounded-2xl p-6 border border-[#1E40AF]/20"
+                className="bg-gradient-to-br from-[#EFF6FF] to-[#F0FDF4] dark:from-[#1A1923] dark:to-[#1A1923] rounded-2xl p-6 border border-[#1E40AF]/20"
               >
-                <h4 className="text-base font-semibold text-[#041E42] dark:text-white mb-4 flex items-center gap-2">
+                <h4 className="text-base font-semibold text-[#0F0E17] dark:text-white mb-4 flex items-center gap-2">
                   <Zap className="w-5 h-5 text-[#1E40AF]" />
                   What Happens Next
                 </h4>
@@ -1639,8 +1639,8 @@ export function PreQualificationGame({
                       1
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-[#041E42] dark:text-white">Complete Application</p>
-                      <p className="text-xs text-[#52606D] dark:text-[#CBD2D9]">Takes 2-3 minutes</p>
+                      <p className="text-sm font-semibold text-[#0F0E17] dark:text-white">Complete Application</p>
+                      <p className="text-xs text-[#6A6876] dark:text-[#D9D4C7]">Takes 2-3 minutes</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
@@ -1648,8 +1648,8 @@ export function PreQualificationGame({
                       2
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-[#041E42] dark:text-white">Instant Review</p>
-                      <p className="text-xs text-[#52606D] dark:text-[#CBD2D9]">Get decision in minutes</p>
+                      <p className="text-sm font-semibold text-[#0F0E17] dark:text-white">Instant Review</p>
+                      <p className="text-xs text-[#6A6876] dark:text-[#D9D4C7]">Get decision in minutes</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
@@ -1657,8 +1657,8 @@ export function PreQualificationGame({
                       3
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-[#041E42] dark:text-white">Get Funded</p>
-                      <p className="text-xs text-[#52606D] dark:text-[#CBD2D9]">Funds in 24-48 hours</p>
+                      <p className="text-sm font-semibold text-[#0F0E17] dark:text-white">Get Funded</p>
+                      <p className="text-xs text-[#6A6876] dark:text-[#D9D4C7]">Funds in 24-48 hours</p>
                     </div>
                   </div>
                 </div>
@@ -1673,7 +1673,7 @@ export function PreQualificationGame({
               >
                 <button
                   onClick={handleStartApplication}
-                  className="w-full h-12 text-base font-semibold rounded-xl bg-[#041E42] hover:bg-[#03152F] text-white transition-all duration-300 flex items-center justify-center gap-2 shadow-sm"
+                  className="w-full h-12 text-base font-semibold rounded-xl bg-[#0F0E17] hover:bg-[#03152F] text-white transition-all duration-300 flex items-center justify-center gap-2 shadow-sm"
                 >
                   <span>Continue Application</span>
                   <ArrowRight className="w-5 h-5" />
@@ -1681,7 +1681,7 @@ export function PreQualificationGame({
                 <Button
                   variant="ghost"
                   size="lg"
-                  className="w-full text-slate-500 hover:text-[#041E42] hover:bg-slate-50 dark:hover:bg-[#1E40AF]/10 h-12 text-sm font-medium rounded-xl"
+                  className="w-full text-slate-500 hover:text-[#0F0E17] hover:bg-slate-50 dark:hover:bg-[#1E40AF]/10 h-12 text-sm font-medium rounded-xl"
                   onClick={() => setShowBooking(true)}
                 >
                   <Phone className="w-4 h-4 mr-2" />
@@ -1690,7 +1690,7 @@ export function PreQualificationGame({
               </motion.div>
 
               {/* Disclaimer */}
-              <p className="text-xs text-slate-400 dark:text-slate-500 text-center mt-6 border-t border-slate-100 dark:border-[#3E4C59] pt-4">
+              <p className="text-xs text-slate-400 dark:text-slate-500 text-center mt-6 border-t border-slate-100 dark:border-[#3E3D49] pt-4">
                 This is an estimate based on the information provided. Final funding amount subject to approval and verification.
               </p>
             </div>
@@ -1703,8 +1703,8 @@ export function PreQualificationGame({
   // TRANSITION PHASE - Smooth bridge from quiz to application
   if (phase === 'transition' && showTransition) {
     return (
-      <div className="bg-white dark:bg-[#020C1B] rounded-lg shadow-sm border border-slate-200 dark:border-[#1F2933] overflow-hidden max-w-4xl mx-auto">
-        <div className="bg-[#041E42] dark:bg-[#1E40AF]/20 p-10 md:p-12 text-center">
+      <div className="bg-white dark:bg-[#020C1B] rounded-lg shadow-sm border border-slate-200 dark:border-[#1A1923] overflow-hidden max-w-4xl mx-auto">
+        <div className="bg-[#0F0E17] dark:bg-[#1E40AF]/20 p-10 md:p-12 text-center">
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
@@ -1741,13 +1741,13 @@ export function PreQualificationGame({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="bg-slate-50 dark:bg-[#1F2933] rounded-md p-4 border border-slate-200 dark:border-[#3E4C59]"
+                className="bg-slate-50 dark:bg-[#1A1923] rounded-md p-4 border border-slate-200 dark:border-[#3E3D49]"
               >
                 <div className="flex items-center gap-2 mb-1">
                   <CheckCircle className="w-4 h-4 text-[#16A34A]" />
                   <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Funding Amount</span>
                 </div>
-                <p className="text-lg font-bold text-[#041E42] dark:text-white">
+                <p className="text-lg font-bold text-[#0F0E17] dark:text-white">
                   {formatFundingK(activeLow)} – {formatFundingK(activeHigh)}{formData.deltBoostEnabled ? ' (Delt)' : ''}
                 </p>
               </motion.div>
@@ -1756,13 +1756,13 @@ export function PreQualificationGame({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.45 }}
-                className="bg-slate-50 dark:bg-[#1F2933] rounded-md p-4 border border-slate-200 dark:border-[#3E4C59]"
+                className="bg-slate-50 dark:bg-[#1A1923] rounded-md p-4 border border-slate-200 dark:border-[#3E3D49]"
               >
                 <div className="flex items-center gap-2 mb-1">
                   <CheckCircle className="w-4 h-4 text-[#16A34A]" />
                   <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Use of Funds</span>
                 </div>
-                <p className="text-lg font-bold text-[#041E42] dark:text-white">
+                <p className="text-lg font-bold text-[#0F0E17] dark:text-white">
                   {formData.intendedUse}
                 </p>
               </motion.div>
@@ -1771,13 +1771,13 @@ export function PreQualificationGame({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
-                className="bg-slate-50 dark:bg-[#1F2933] rounded-md p-4 border border-slate-200 dark:border-[#3E4C59]"
+                className="bg-slate-50 dark:bg-[#1A1923] rounded-md p-4 border border-slate-200 dark:border-[#3E3D49]"
               >
                 <div className="flex items-center gap-2 mb-1">
                   <CheckCircle className="w-4 h-4 text-[#16A34A]" />
                   <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Monthly Revenue</span>
                 </div>
-                <p className="text-lg font-bold text-[#041E42] dark:text-white">
+                <p className="text-lg font-bold text-[#0F0E17] dark:text-white">
                   {formData.monthlyRevenue && !formData.monthlyRevenue.startsWith('$') ? `$${formData.monthlyRevenue}/mo` : formData.monthlyRevenue}
                 </p>
               </motion.div>
@@ -1786,13 +1786,13 @@ export function PreQualificationGame({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.55 }}
-                className="bg-slate-50 dark:bg-[#1F2933] rounded-md p-4 border border-slate-200 dark:border-[#3E4C59]"
+                className="bg-slate-50 dark:bg-[#1A1923] rounded-md p-4 border border-slate-200 dark:border-[#3E3D49]"
               >
                 <div className="flex items-center gap-2 mb-1">
                   <CheckCircle className="w-4 h-4 text-[#16A34A]" />
                   <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Time in Business</span>
                 </div>
-                <p className="text-lg font-bold text-[#041E42] dark:text-white">
+                <p className="text-lg font-bold text-[#0F0E17] dark:text-white">
                   {formData.timeInBusiness}
                 </p>
               </motion.div>
@@ -1801,13 +1801,13 @@ export function PreQualificationGame({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
-                className="bg-slate-50 dark:bg-[#1F2933] rounded-md p-4 border border-slate-200 dark:border-[#3E4C59]"
+                className="bg-slate-50 dark:bg-[#1A1923] rounded-md p-4 border border-slate-200 dark:border-[#3E3D49]"
               >
                 <div className="flex items-center gap-2 mb-1">
                   <CheckCircle className="w-4 h-4 text-[#16A34A]" />
                   <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Card Processing</span>
                 </div>
-                <p className="text-lg font-bold text-[#041E42] dark:text-white">
+                <p className="text-lg font-bold text-[#0F0E17] dark:text-white">
                   {formData.creditCardProcessing === 'No credit card processing' ? 'None' : formData.creditCardProcessing && !formData.creditCardProcessing.startsWith('$') ? `$${formData.creditCardProcessing}/mo` : formData.creditCardProcessing}
                 </p>
               </motion.div>
@@ -1816,13 +1816,13 @@ export function PreQualificationGame({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.65 }}
-                className="bg-slate-50 dark:bg-[#1F2933] rounded-md p-4 border border-slate-200 dark:border-[#3E4C59]"
+                className="bg-slate-50 dark:bg-[#1A1923] rounded-md p-4 border border-slate-200 dark:border-[#3E3D49]"
               >
                 <div className="flex items-center gap-2 mb-1">
                   <CheckCircle className="w-4 h-4 text-[#16A34A]" />
                   <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Credit Score</span>
                 </div>
-                <p className="text-lg font-bold text-[#041E42] dark:text-white">
+                <p className="text-lg font-bold text-[#0F0E17] dark:text-white">
                   {formData.creditScore}
                 </p>
               </motion.div>
@@ -1835,8 +1835,8 @@ export function PreQualificationGame({
             transition={{ delay: 0.7 }}
             className="flex items-center justify-center gap-3"
           >
-            <div className="w-5 h-5 border-2 border-[#4945ff] border-t-transparent rounded-full animate-spin" />
-            <p className="text-sm font-medium text-[#041E42] dark:text-white">
+            <div className="w-5 h-5 border-2 border-[#4F46E5] border-t-transparent rounded-full animate-spin" />
+            <p className="text-sm font-medium text-[#0F0E17] dark:text-white">
               Preparing your application secure environment...
             </p>
           </motion.div>
@@ -1876,8 +1876,8 @@ export function PreQualificationGame({
       return (
         <>
         <div className="flex items-center justify-center min-h-[60vh] md:min-h-[70vh]">
-          <div className="bg-white dark:bg-[#1F2933] rounded-2xl shadow-xl max-w-lg w-full p-8 md:p-10 border border-slate-100 dark:border-[#3E4C59]">
-            <h2 className="text-3xl font-semibold text-[#041E42] dark:text-white mb-2">Get started</h2>
+          <div className="bg-white dark:bg-[#1A1923] rounded-2xl shadow-xl max-w-lg w-full p-8 md:p-10 border border-slate-100 dark:border-[#3E3D49]">
+            <h2 className="text-3xl font-semibold text-[#0F0E17] dark:text-white mb-2">Get started</h2>
             <p className="text-slate-500 dark:text-slate-400 mb-8">Apply in 10 minutes.</p>
             
             <div className="grid grid-cols-2 gap-4 mb-6"
@@ -1894,7 +1894,7 @@ export function PreQualificationGame({
                   value={formData.firstName}
                   onChange={(e) => updateFormData('firstName', e.target.value)}
                   placeholder="John"
-                  className="w-full px-3 py-2.5 border border-slate-300 dark:border-slate-600 rounded-md text-[#041E42] dark:text-white focus:ring-2 focus:ring-[#4945ff] focus:border-transparent outline-none transition-all"
+                  className="w-full px-3 py-2.5 border border-slate-300 dark:border-slate-600 rounded-md text-[#0F0E17] dark:text-white focus:ring-2 focus:ring-[#4F46E5] focus:border-transparent outline-none transition-all"
                 />
               </div>
               <div>
@@ -1904,24 +1904,24 @@ export function PreQualificationGame({
                   value={formData.lastName}
                   onChange={(e) => updateFormData('lastName', e.target.value)}
                   placeholder="Citizen"
-                  className="w-full px-3 py-2.5 border border-slate-300 dark:border-slate-600 rounded-md text-[#041E42] dark:text-white focus:ring-2 focus:ring-[#4945ff] focus:border-transparent outline-none transition-all"
+                  className="w-full px-3 py-2.5 border border-slate-300 dark:border-slate-600 rounded-md text-[#0F0E17] dark:text-white focus:ring-2 focus:ring-[#4F46E5] focus:border-transparent outline-none transition-all"
                 />
               </div>
             </div>
             
             <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
               By continuing, I agree to Delt's{' '}
-              <button type="button" onClick={() => handleLegalLink('terms')} className="underline hover:text-[#4945ff]">Terms of Use</button>,{' '}
-              <button type="button" onClick={() => handleLegalLink('privacy')} className="underline hover:text-[#4945ff]">Privacy Policy</button>{' '}
+              <button type="button" onClick={() => handleLegalLink('terms')} className="underline hover:text-[#4F46E5]">Terms of Use</button>,{' '}
+              <button type="button" onClick={() => handleLegalLink('privacy')} className="underline hover:text-[#4F46E5]">Privacy Policy</button>{' '}
               and to receive electronic communication about my accounts and services per Delt's{' '}
-              <button type="button" onClick={() => handleLegalLink('eca')} className="underline hover:text-[#4945ff]">Electronic Communications Agreement</button>.
+              <button type="button" onClick={() => handleLegalLink('eca')} className="underline hover:text-[#4F46E5]">Electronic Communications Agreement</button>.
             </p>
 
             {onOpenPlaidOnboarding ? (
               <button
                 type="button"
                 onClick={onOpenPlaidOnboarding}
-                className="w-full mt-6 bg-[#041E42] hover:bg-[#03152F] dark:bg-[#4945ff] dark:hover:bg-[#3936cc] text-white font-semibold py-2.5 px-6 rounded-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full mt-6 bg-[#0F0E17] hover:bg-[#03152F] dark:bg-[#4F46E5] dark:hover:bg-[#3936cc] text-white font-semibold py-2.5 px-6 rounded-md transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 Get Started
               </button>
@@ -1929,7 +1929,7 @@ export function PreQualificationGame({
               <Button
                 onClick={handleNext}
                 disabled={formData.firstName.trim() === '' || formData.lastName.trim() === ''}
-                className="w-full mt-6 bg-[#041E42] hover:bg-[#03152F] dark:bg-[#4945ff] dark:hover:bg-[#3936cc] text-white font-semibold py-2.5 px-6 rounded-md transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                className="w-full mt-6 bg-[#0F0E17] hover:bg-[#03152F] dark:bg-[#4F46E5] dark:hover:bg-[#3936cc] text-white font-semibold py-2.5 px-6 rounded-md transition-all disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 Start Application
               </Button>
@@ -1939,7 +1939,7 @@ export function PreQualificationGame({
 
         {/* Local Legal Page Overlay */}
         {localLegalPage && (
-          <div className="fixed inset-0 bg-white dark:bg-[#0A1F35] z-[70] overflow-y-auto">
+          <div className="fixed inset-0 bg-white dark:bg-[#0F0E17] z-[70] overflow-y-auto">
             {localLegalPage === 'terms' && <TermsOfUse onClose={() => setLocalLegalPage(null)} />}
             {localLegalPage === 'privacy' && <PrivacyPolicy onClose={() => setLocalLegalPage(null)} />}
             {localLegalPage === 'eca' && <ElectronicCommunicationsAgreement onClose={() => setLocalLegalPage(null)} />}
@@ -1950,21 +1950,21 @@ export function PreQualificationGame({
     }
 
     return (
-      <div className="min-h-screen bg-[#ededf6] dark:bg-[#0A1628] py-6 md:py-10 px-4">
-        <div className="bg-white dark:bg-[#020C1B] rounded-2xl border border-slate-200/80 dark:border-[#1F2933] shadow-[0_4px_32px_rgba(0,0,0,0.06)] max-w-4xl mx-auto p-6 md:p-8">
+      <div className="min-h-screen bg-[#F7F5F0] dark:bg-[#0A1628] py-6 md:py-10 px-4">
+        <div className="bg-white dark:bg-[#020C1B] rounded-2xl border border-slate-200/80 dark:border-[#1A1923] shadow-[0_4px_32px_rgba(0,0,0,0.06)] max-w-4xl mx-auto p-6 md:p-8">
           {/* Header & Back Button Row */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-5 pb-4 border-b border-slate-100 dark:border-[#1F2933]">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-5 pb-4 border-b border-slate-100 dark:border-[#1A1923]">
             <div>
               {(currentStep > 0 || basicInfoMicroStep > 0) && (
                 <button
                   onClick={handleBack}
-                  className="flex items-center gap-2 text-slate-500 hover:text-[#041E42] dark:text-slate-400 dark:hover:text-white transition-colors mb-2 text-xs font-semibold tracking-wide uppercase"
+                  className="flex items-center gap-2 text-slate-500 hover:text-[#0F0E17] dark:text-slate-400 dark:hover:text-white transition-colors mb-2 text-xs font-semibold tracking-wide uppercase"
                 >
                   <ArrowLeft className="w-3 h-3" />
                   Back
                 </button>
               )}
-              <h2 className="text-xl md:text-2xl font-bold text-[#041E42] dark:text-white tracking-tight">
+              <h2 className="text-xl md:text-2xl font-bold text-[#0F0E17] dark:text-white tracking-tight">
                 See What You Qualify For
               </h2>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -1973,16 +1973,16 @@ export function PreQualificationGame({
             </div>
             
             {/* Trust Indicator - Top Right */}
-            <div className="hidden md:flex items-center gap-2 bg-slate-50 dark:bg-[#1F2933] px-3 py-1.5 rounded-md border border-slate-100 dark:border-[#3E4C59]">
-              <Shield className="w-3.5 h-3.5 text-[#041E42] dark:text-white" />
-              <span className="text-xs font-medium text-[#041E42] dark:text-white">Bank-Grade Security</span>
+            <div className="hidden md:flex items-center gap-2 bg-slate-50 dark:bg-[#1A1923] px-3 py-1.5 rounded-md border border-slate-100 dark:border-[#3E3D49]">
+              <Shield className="w-3.5 h-3.5 text-[#0F0E17] dark:text-white" />
+              <span className="text-xs font-medium text-[#0F0E17] dark:text-white">Bank-Grade Security</span>
             </div>
           </div>
 
           {/* Progress Stepper - Institutional Style */}
           <div className="mb-6">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-bold uppercase tracking-wider text-[#041E42] dark:text-white">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#0F0E17] dark:text-white">
                 {plaidCompleted 
                   ? (currentStep === 2 ? 'Intended Use' : currentStep === 4 ? 'Verify Identity' : steps[5]?.title || 'Review & Submit')
                   : (currentStep === 0 
@@ -2021,9 +2021,9 @@ export function PreQualificationGame({
                 }
 
                 return (
-                  <div key={origIndex} className="h-1.5 flex-1 bg-slate-100 dark:bg-[#1F2933] rounded-sm overflow-hidden">
+                  <div key={origIndex} className="h-1.5 flex-1 bg-slate-100 dark:bg-[#1A1923] rounded-sm overflow-hidden">
                     <motion.div
-                      className="h-full bg-[#041E42] dark:bg-white"
+                      className="h-full bg-[#0F0E17] dark:bg-white"
                       initial={{ width: 0 }}
                       animate={{ width: `${segmentProgress}%` }}
                       transition={{ duration: 0.3, ease: "easeInOut" }}
@@ -2059,7 +2059,7 @@ export function PreQualificationGame({
                       <>
                         <div className="grid md:grid-cols-2 gap-5">
                           <div>
-                            <label className="block text-sm font-semibold text-[#041E42] dark:text-white mb-2">
+                            <label className="block text-sm font-semibold text-[#0F0E17] dark:text-white mb-2">
                               Legal Business Name <span className="text-red-500">*</span>
                             </label>
                             <input
@@ -2068,12 +2068,12 @@ export function PreQualificationGame({
                               onChange={(e) => updateFormData('businessLegalName', e.target.value)}
                               placeholder="e.g. Acme Corporation LLC"
                               autoComplete="organization"
-                              className="w-full px-4 py-3 border border-slate-300 dark:border-[#1F2933] rounded-md bg-white dark:bg-[#020C1B] text-[#041E42] dark:text-white placeholder-slate-400 focus:border-[#4945ff] focus:ring-1 focus:ring-[#4945ff] focus:outline-none transition-all shadow-sm"
+                              className="w-full px-4 py-3 border border-slate-300 dark:border-[#1A1923] rounded-md bg-white dark:bg-[#020C1B] text-[#0F0E17] dark:text-white placeholder-slate-400 focus:border-[#4F46E5] focus:ring-1 focus:ring-[#4F46E5] focus:outline-none transition-all shadow-sm"
                             />
                             <p className="text-xs text-slate-500 mt-1">Please enter the name as it appears on tax documents.</p>
                           </div>
                           <div>
-                            <label className="block text-sm font-semibold text-[#041E42] dark:text-white mb-2">
+                            <label className="block text-sm font-semibold text-[#0F0E17] dark:text-white mb-2">
                               DBA (Doing Business As)
                             </label>
                             <input
@@ -2084,7 +2084,7 @@ export function PreQualificationGame({
                                 if (sameAsLegalName) setSameAsLegalName(false);
                               }}
                               placeholder="If different from legal name"
-                              className="w-full px-4 py-3 border border-slate-300 dark:border-[#1F2933] rounded-md bg-white dark:bg-[#020C1B] text-[#041E42] dark:text-white placeholder-slate-400 focus:border-[#4945ff] focus:ring-1 focus:ring-[#4945ff] focus:outline-none transition-all shadow-sm"
+                              className="w-full px-4 py-3 border border-slate-300 dark:border-[#1A1923] rounded-md bg-white dark:bg-[#020C1B] text-[#0F0E17] dark:text-white placeholder-slate-400 focus:border-[#4F46E5] focus:ring-1 focus:ring-[#4F46E5] focus:outline-none transition-all shadow-sm"
                             />
                             <label className="flex items-center gap-2 mt-2 text-xs font-medium text-slate-600 dark:text-slate-400 cursor-pointer select-none">
                               <input
@@ -2098,7 +2098,7 @@ export function PreQualificationGame({
                                     updateFormData('businessDBA', '');
                                   }
                                 }}
-                                className="w-4 h-4 rounded border-slate-300 text-[#041E42] focus:ring-[#041E42] focus:ring-offset-0"
+                                className="w-4 h-4 rounded border-slate-300 text-[#0F0E17] focus:ring-[#0F0E17] focus:ring-offset-0"
                               />
                               Same as legal name
                             </label>
@@ -2111,7 +2111,7 @@ export function PreQualificationGame({
                     {basicInfoMicroStep === 1 && (
                       <>
                         <div>
-                          <label className="block text-sm font-semibold text-[#041E42] dark:text-white mb-2">
+                          <label className="block text-sm font-semibold text-[#0F0E17] dark:text-white mb-2">
                             Physical Address <span className="text-red-500">*</span>
                           </label>
                           <input
@@ -2120,13 +2120,13 @@ export function PreQualificationGame({
                             onChange={(e) => updateFormData('businessAddress', e.target.value)}
                             placeholder="Street Address, P.O. Box"
                             autoComplete="street-address"
-                            className="w-full px-4 py-3 border border-slate-300 dark:border-[#1F2933] rounded-md bg-white dark:bg-[#020C1B] text-[#041E42] dark:text-white placeholder-slate-400 focus:border-[#4945ff] focus:ring-1 focus:ring-[#4945ff] focus:outline-none transition-all shadow-sm"
+                            className="w-full px-4 py-3 border border-slate-300 dark:border-[#1A1923] rounded-md bg-white dark:bg-[#020C1B] text-[#0F0E17] dark:text-white placeholder-slate-400 focus:border-[#4F46E5] focus:ring-1 focus:ring-[#4F46E5] focus:outline-none transition-all shadow-sm"
                           />
                         </div>
 
                         <div className="grid md:grid-cols-3 gap-5">
                           <div>
-                            <label className="block text-sm font-semibold text-[#041E42] dark:text-white mb-2">
+                            <label className="block text-sm font-semibold text-[#0F0E17] dark:text-white mb-2">
                               City <span className="text-red-500">*</span>
                             </label>
                             <input
@@ -2134,21 +2134,21 @@ export function PreQualificationGame({
                               value={formData.businessCity}
                               onChange={(e) => updateFormData('businessCity', e.target.value)}
                               placeholder="City"
-                              className="w-full px-4 py-3 border border-slate-300 dark:border-[#1F2933] rounded-md bg-white dark:bg-[#020C1B] text-[#041E42] dark:text-white placeholder-slate-400 focus:border-[#4945ff] focus:ring-1 focus:ring-[#4945ff] focus:outline-none transition-all shadow-sm"
+                              className="w-full px-4 py-3 border border-slate-300 dark:border-[#1A1923] rounded-md bg-white dark:bg-[#020C1B] text-[#0F0E17] dark:text-white placeholder-slate-400 focus:border-[#4F46E5] focus:ring-1 focus:ring-[#4F46E5] focus:outline-none transition-all shadow-sm"
                             />
                           </div>
                           <div>
-                            <label className="block text-sm font-semibold text-[#041E42] dark:text-white mb-2">
+                            <label className="block text-sm font-semibold text-[#0F0E17] dark:text-white mb-2">
                               State <span className="text-red-500">*</span>
                             </label>
                             <StateSelect
                               value={formData.businessState}
                               onChange={(value) => updateFormData('businessState', value)}
-                              className="w-full px-4 py-3 border border-slate-300 dark:border-[#1F2933] rounded-md bg-white dark:bg-[#020C1B] text-[#041E42] dark:text-white focus:border-[#4945ff] focus:ring-1 focus:ring-[#4945ff] focus:outline-none transition-all shadow-sm"
+                              className="w-full px-4 py-3 border border-slate-300 dark:border-[#1A1923] rounded-md bg-white dark:bg-[#020C1B] text-[#0F0E17] dark:text-white focus:border-[#4F46E5] focus:ring-1 focus:ring-[#4F46E5] focus:outline-none transition-all shadow-sm"
                             />
                           </div>
                           <div>
-                            <label className="block text-sm font-semibold text-[#041E42] dark:text-white mb-2">
+                            <label className="block text-sm font-semibold text-[#0F0E17] dark:text-white mb-2">
                               ZIP Code <span className="text-red-500">*</span>
                             </label>
                             <input
@@ -2157,10 +2157,10 @@ export function PreQualificationGame({
                               onChange={(e) => updateFormData('businessZip', e.target.value.replace(/\D/g, '').slice(0, 5))}
                               placeholder="00000"
                               maxLength={5}
-                              className={`w-full px-4 py-3 border rounded-md bg-white dark:bg-[#020C1B] text-[#041E42] dark:text-white placeholder-slate-400 focus:ring-1 focus:outline-none transition-all shadow-sm ${
+                              className={`w-full px-4 py-3 border rounded-md bg-white dark:bg-[#020C1B] text-[#0F0E17] dark:text-white placeholder-slate-400 focus:ring-1 focus:outline-none transition-all shadow-sm ${
                                 formData.businessZip && !validateZip(formData.businessZip)
                                   ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
-                                  : 'border-slate-300 dark:border-[#1F2933] focus:border-[#4945ff] focus:ring-[#4945ff]'
+                                  : 'border-slate-300 dark:border-[#1A1923] focus:border-[#4F46E5] focus:ring-[#4F46E5]'
                               }`}
                             />
                             {formData.businessZip && !validateZip(formData.businessZip) && (
@@ -2171,7 +2171,7 @@ export function PreQualificationGame({
                                 initial={{ opacity: 0, y: -5 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0 }}
-                                className="text-[#4945ff] text-xs mt-1 flex items-center gap-1 font-medium"
+                                className="text-[#4F46E5] text-xs mt-1 flex items-center gap-1 font-medium"
                               >
                                 <Check className="w-3 h-3" />
                                 City and state auto-filled
@@ -2187,7 +2187,7 @@ export function PreQualificationGame({
                       <>
                         <div className="grid md:grid-cols-2 gap-5">
                           <div>
-                            <label className="block text-sm font-semibold text-[#041E42] dark:text-white mb-2">
+                            <label className="block text-sm font-semibold text-[#0F0E17] dark:text-white mb-2">
                               Primary Business Phone <span className="text-red-500">*</span>
                             </label>
                             <input
@@ -2196,10 +2196,10 @@ export function PreQualificationGame({
                               onChange={(e) => updateFormData('businessPhone', e.target.value.replace(/\D/g, '').slice(0, 10))}
                               placeholder="(000) 000-0000"
                               maxLength={14}
-                              className={`w-full px-4 py-3 border rounded-md bg-white dark:bg-[#020C1B] text-[#041E42] dark:text-white placeholder-slate-400 focus:ring-1 focus:outline-none transition-all shadow-sm ${
+                              className={`w-full px-4 py-3 border rounded-md bg-white dark:bg-[#020C1B] text-[#0F0E17] dark:text-white placeholder-slate-400 focus:ring-1 focus:outline-none transition-all shadow-sm ${
                                 formData.businessPhone && !validatePhone(formData.businessPhone)
                                   ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
-                                  : 'border-slate-300 dark:border-[#1F2933] focus:border-[#4945ff] focus:ring-[#4945ff]'
+                                  : 'border-slate-300 dark:border-[#1A1923] focus:border-[#4F46E5] focus:ring-[#4F46E5]'
                               }`}
                             />
                             {formData.businessPhone && !validatePhone(formData.businessPhone) && (
@@ -2207,7 +2207,7 @@ export function PreQualificationGame({
                             )}
                           </div>
                           <div>
-                            <label className="block text-sm font-semibold text-[#041E42] dark:text-white mb-2">
+                            <label className="block text-sm font-semibold text-[#0F0E17] dark:text-white mb-2">
                               Federal Tax ID (EIN) <span className="text-red-500">*</span>
                             </label>
                             <input
@@ -2219,10 +2219,10 @@ export function PreQualificationGame({
                               }}
                               placeholder="00-0000000"
                               maxLength={10}
-                              className={`w-full px-4 py-3 border rounded-md bg-white dark:bg-[#020C1B] text-[#041E42] dark:text-white placeholder-slate-400 focus:ring-1 focus:outline-none transition-all shadow-sm ${
+                              className={`w-full px-4 py-3 border rounded-md bg-white dark:bg-[#020C1B] text-[#0F0E17] dark:text-white placeholder-slate-400 focus:ring-1 focus:outline-none transition-all shadow-sm ${
                                 formData.businessEIN && !validateEIN(formData.businessEIN)
                                   ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
-                                  : 'border-slate-300 dark:border-[#1F2933] focus:border-[#4945ff] focus:ring-[#4945ff]'
+                                  : 'border-slate-300 dark:border-[#1A1923] focus:border-[#4F46E5] focus:ring-[#4F46E5]'
                               }`}
                             />
                             {formData.businessEIN && !validateEIN(formData.businessEIN) && (
@@ -2236,15 +2236,15 @@ export function PreQualificationGame({
                           <motion.div
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="bg-slate-50 dark:bg-[#4945ff]/5 border border-slate-200 dark:border-blue-900/30 rounded-md p-4 flex items-start gap-3 mt-4"
+                            className="bg-slate-50 dark:bg-[#4F46E5]/5 border border-slate-200 dark:border-blue-900/30 rounded-md p-4 flex items-start gap-3 mt-4"
                           >
-                            <Shield className="w-5 h-5 text-[#041E42] dark:text-[#4945ff] flex-shrink-0 mt-0.5" />
+                            <Shield className="w-5 h-5 text-[#0F0E17] dark:text-[#4F46E5] flex-shrink-0 mt-0.5" />
                             <div>
-                              <p className="text-sm font-semibold text-[#041E42] dark:text-white mb-1">
+                              <p className="text-sm font-semibold text-[#0F0E17] dark:text-white mb-1">
                                 No Hard Credit Inquiry
                               </p>
                               <p className="text-sm text-slate-600 dark:text-slate-400">
-                                This pre-qualification step utilizes a <span className="font-semibold text-[#041E42] dark:text-white">soft credit check</span> only. It will not impact your credit score.
+                                This pre-qualification step utilizes a <span className="font-semibold text-[#0F0E17] dark:text-white">soft credit check</span> only. It will not impact your credit score.
                               </p>
                             </div>
                           </motion.div>
@@ -2257,7 +2257,7 @@ export function PreQualificationGame({
                       <>
                         <div className="grid md:grid-cols-2 gap-5">
                           <div>
-                            <label className="block text-sm font-semibold text-[#041E42] dark:text-white mb-2">
+                            <label className="block text-sm font-semibold text-[#0F0E17] dark:text-white mb-2">
                               Primary Industry <span className="text-red-500">*</span>
                             </label>
                             <Select
@@ -2270,7 +2270,7 @@ export function PreQualificationGame({
                                 }
                               }}
                             >
-                              <SelectTrigger className="w-full h-auto px-4 py-3 border border-slate-300 dark:border-[#1F2933] rounded-md bg-white dark:bg-[#020C1B] text-[#041E42] dark:text-white focus:border-[#4945ff] focus:ring-1 focus:ring-[#4945ff] focus:outline-none transition-all shadow-sm">
+                              <SelectTrigger className="w-full h-auto px-4 py-3 border border-slate-300 dark:border-[#1A1923] rounded-md bg-white dark:bg-[#020C1B] text-[#0F0E17] dark:text-white focus:border-[#4F46E5] focus:ring-1 focus:ring-[#4F46E5] focus:outline-none transition-all shadow-sm">
                                 <SelectValue placeholder="Select Industry" />
                               </SelectTrigger>
                               <SelectContent>
@@ -2288,20 +2288,20 @@ export function PreQualificationGame({
                                   value={formData.industryOther}
                                   onChange={(e) => updateFormData('industryOther', e.target.value)}
                                   placeholder="Please specify your industry"
-                                  className="w-full px-4 py-3 border border-slate-300 dark:border-[#1F2933] rounded-md bg-white dark:bg-[#020C1B] text-[#041E42] dark:text-white placeholder-slate-400 focus:border-[#4945ff] focus:ring-1 focus:ring-[#4945ff] focus:outline-none transition-all shadow-sm"
+                                  className="w-full px-4 py-3 border border-slate-300 dark:border-[#1A1923] rounded-md bg-white dark:bg-[#020C1B] text-[#0F0E17] dark:text-white placeholder-slate-400 focus:border-[#4F46E5] focus:ring-1 focus:ring-[#4F46E5] focus:outline-none transition-all shadow-sm"
                                 />
                               </div>
                             )}
                           </div>
                           <div>
-                            <label className="block text-sm font-semibold text-[#041E42] dark:text-white mb-2">
+                            <label className="block text-sm font-semibold text-[#0F0E17] dark:text-white mb-2">
                               Time in Business <span className="text-red-500">*</span>
                             </label>
                             <Select
                               value={formData.timeInBusiness}
                               onValueChange={(value) => updateFormData('timeInBusiness', value)}
                             >
-                              <SelectTrigger className="w-full h-auto px-4 py-3 border border-slate-300 dark:border-[#1F2933] rounded-md bg-white dark:bg-[#020C1B] text-[#041E42] dark:text-white focus:border-[#4945ff] focus:ring-1 focus:ring-[#4945ff] focus:outline-none transition-all shadow-sm">
+                              <SelectTrigger className="w-full h-auto px-4 py-3 border border-slate-300 dark:border-[#1A1923] rounded-md bg-white dark:bg-[#020C1B] text-[#0F0E17] dark:text-white focus:border-[#4F46E5] focus:ring-1 focus:ring-[#4F46E5] focus:outline-none transition-all shadow-sm">
                                 <SelectValue placeholder="Select Duration" />
                               </SelectTrigger>
                               <SelectContent>
@@ -2323,11 +2323,11 @@ export function PreQualificationGame({
                         <div className="space-y-5">
                           {/* 1. Monthly Revenue (always visible) */}
                           <div>
-                            <label className="block text-sm font-semibold text-[#041E42] dark:text-white mb-2">
+                            <label className="block text-sm font-semibold text-[#0F0E17] dark:text-white mb-2">
                               Average Monthly Revenue <span className="text-red-500">*</span>
                             </label>
                             <div className="relative max-w-sm">
-                              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#041E42] dark:text-white pointer-events-none select-none" style={{ fontSize: '0.95rem', fontWeight: 600 }}>$</span>
+                              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#0F0E17] dark:text-white pointer-events-none select-none" style={{ fontSize: '0.95rem', fontWeight: 600 }}>$</span>
                               <input
                                 type="text"
                                 inputMode="numeric"
@@ -2339,7 +2339,7 @@ export function PreQualificationGame({
                                   const clamped = Math.min(num, 999999);
                                   updateFormData('monthlyRevenue', clamped > 0 ? clamped.toLocaleString() : '');
                                 }}
-                                className="w-full px-4 py-3 pl-9 pr-16 border border-slate-300 dark:border-[#1F2933] rounded-md bg-white dark:bg-[#020C1B] text-[#041E42] dark:text-white tabular-nums focus:border-[#4945ff] focus:ring-1 focus:ring-[#4945ff] focus:outline-none transition-all shadow-sm"
+                                className="w-full px-4 py-3 pl-9 pr-16 border border-slate-300 dark:border-[#1A1923] rounded-md bg-white dark:bg-[#020C1B] text-[#0F0E17] dark:text-white tabular-nums focus:border-[#4F46E5] focus:ring-1 focus:ring-[#4F46E5] focus:outline-none transition-all shadow-sm"
                                 style={{ fontSize: '0.95rem', fontWeight: 600 }}
                               />
                               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none select-none text-xs">/month</span>
@@ -2357,14 +2357,14 @@ export function PreQualificationGame({
                                 className="overflow-hidden"
                               >
                                 <div>
-                                  <label className="block text-sm font-semibold text-[#041E42] dark:text-white mb-2">
+                                  <label className="block text-sm font-semibold text-[#0F0E17] dark:text-white mb-2">
                                     Estimated Credit Score <span className="text-red-500">*</span>
                                   </label>
                                   <Select
                                     value={formData.creditScore}
                                     onValueChange={(value) => updateFormData('creditScore', value)}
                                   >
-                                    <SelectTrigger className="w-full max-w-sm h-auto px-4 py-3 border border-slate-300 dark:border-[#1F2933] rounded-md bg-white dark:bg-[#020C1B] text-[#041E42] dark:text-white focus:border-[#4945ff] focus:ring-1 focus:ring-[#4945ff] focus:outline-none transition-all shadow-sm">
+                                    <SelectTrigger className="w-full max-w-sm h-auto px-4 py-3 border border-slate-300 dark:border-[#1A1923] rounded-md bg-white dark:bg-[#020C1B] text-[#0F0E17] dark:text-white focus:border-[#4F46E5] focus:ring-1 focus:ring-[#4F46E5] focus:outline-none transition-all shadow-sm">
                                       <SelectValue placeholder="Select Range" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -2391,7 +2391,7 @@ export function PreQualificationGame({
                                 className="overflow-hidden"
                               >
                                 <div>
-                                  <label className="block text-sm font-semibold text-[#041E42] dark:text-white mb-2">
+                                  <label className="block text-sm font-semibold text-[#0F0E17] dark:text-white mb-2">
                                     Do you currently accept credit cards? <span className="text-red-500">*</span>
                                   </label>
                                   <div className="grid grid-cols-2 gap-3 max-w-sm">
@@ -2405,8 +2405,8 @@ export function PreQualificationGame({
                                       }}
                                       className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border text-sm transition-all duration-200 cursor-pointer ${
                                         formData.acceptsCreditCards === true
-                                          ? 'border-[#4945ff] bg-[#4945ff]/[0.04] text-[#4945ff]'
-                                          : 'border-slate-300 text-[#4a5568] hover:border-[#4945ff]/30'
+                                          ? 'border-[#4F46E5] bg-[#4F46E5]/[0.04] text-[#4F46E5]'
+                                          : 'border-slate-300 text-[#4a5568] hover:border-[#4F46E5]/30'
                                       }`}
                                       style={{ fontWeight: formData.acceptsCreditCards === true ? 600 : 450 }}
                                     >
@@ -2421,8 +2421,8 @@ export function PreQualificationGame({
                                       }}
                                       className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border text-sm transition-all duration-200 cursor-pointer ${
                                         formData.acceptsCreditCards === false
-                                          ? 'border-[#4945ff] bg-[#4945ff]/[0.04] text-[#4945ff]'
-                                          : 'border-slate-300 text-[#4a5568] hover:border-[#4945ff]/30'
+                                          ? 'border-[#4F46E5] bg-[#4F46E5]/[0.04] text-[#4F46E5]'
+                                          : 'border-slate-300 text-[#4a5568] hover:border-[#4F46E5]/30'
                                       }`}
                                       style={{ fontWeight: formData.acceptsCreditCards === false ? 600 : 450 }}
                                     >
@@ -2446,11 +2446,11 @@ export function PreQualificationGame({
                                 className="overflow-hidden"
                               >
                                 <div>
-                                  <label className="block text-sm font-semibold text-[#041E42] dark:text-white mb-2">
+                                  <label className="block text-sm font-semibold text-[#0F0E17] dark:text-white mb-2">
                                     Credit Card Volume <span className="text-red-500">*</span>
                                   </label>
                                   <div className="relative max-w-sm">
-                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#041E42] dark:text-white pointer-events-none select-none" style={{ fontSize: '0.95rem', fontWeight: 600 }}>$</span>
+                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#0F0E17] dark:text-white pointer-events-none select-none" style={{ fontSize: '0.95rem', fontWeight: 600 }}>$</span>
                                     <input
                                       type="text"
                                       inputMode="numeric"
@@ -2462,7 +2462,7 @@ export function PreQualificationGame({
                                         const clamped = Math.min(num, 999999);
                                         updateFormData('creditCardProcessing', clamped > 0 ? clamped.toLocaleString() : '');
                                       }}
-                                      className="w-full px-4 py-3 pl-9 pr-16 border border-slate-300 dark:border-[#1F2933] rounded-md bg-white dark:bg-[#020C1B] text-[#041E42] dark:text-white tabular-nums focus:border-[#4945ff] focus:ring-1 focus:ring-[#4945ff] focus:outline-none transition-all shadow-sm"
+                                      className="w-full px-4 py-3 pl-9 pr-16 border border-slate-300 dark:border-[#1A1923] rounded-md bg-white dark:bg-[#020C1B] text-[#0F0E17] dark:text-white tabular-nums focus:border-[#4F46E5] focus:ring-1 focus:ring-[#4F46E5] focus:outline-none transition-all shadow-sm"
                                       style={{ fontSize: '0.95rem', fontWeight: 600 }}
                                     />
                                     <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none select-none text-xs">/month</span>
@@ -2487,15 +2487,15 @@ export function PreQualificationGame({
                 <>
                 {/* Estimated Funding Range Card */}
                 <div>
-                  <label className="block text-sm font-semibold text-[#041E42] dark:text-white mb-3">
+                  <label className="block text-sm font-semibold text-[#0F0E17] dark:text-white mb-3">
                     Estimated Funding Range
                   </label>
                   <div
                     className="relative rounded-xl border overflow-hidden transition-all duration-400"
                     style={{
                       background: formData.deltBoostEnabled
-                        ? 'linear-gradient(145deg, #F5F7FA 0%, #EDEFFF 50%, #F5F7FA 100%)'
-                        : '#F7F8FC',
+                        ? 'linear-gradient(145deg, #FAF8F3 0%, #EDEFFF 50%, #FAF8F3 100%)'
+                        : '#FFFFFF',
                       border: formData.deltBoostEnabled
                         ? '1.5px solid rgba(73,69,255,0.18)'
                         : '1px solid #e2e5ea',
@@ -2507,7 +2507,7 @@ export function PreQualificationGame({
                     <div className="p-5 sm:p-6">
                       <span
                         className="text-[11px] uppercase tracking-widest block mb-1"
-                        style={{ fontWeight: 600, letterSpacing: '0.1em', color: formData.deltBoostEnabled ? '#4945ff' : '#9ca3af' }}
+                        style={{ fontWeight: 600, letterSpacing: '0.1em', color: formData.deltBoostEnabled ? '#4F46E5' : '#9ca3af' }}
                       >
                         {formData.deltBoostEnabled ? 'Boosted Funding Range' : 'Based on your profile'}
                       </span>
@@ -2531,7 +2531,7 @@ export function PreQualificationGame({
                                 fontSize: 'clamp(1.75rem, 5vw, 2.5rem)',
                                 fontWeight: 800,
                                 lineHeight: 1.1,
-                                color: formData.deltBoostEnabled ? '#4945ff' : '#041E42',
+                                color: formData.deltBoostEnabled ? '#4F46E5' : '#0F0E17',
                                 transition: 'color 0.4s ease',
                               }}
                             >
@@ -2564,10 +2564,10 @@ export function PreQualificationGame({
                                   {formatFundingK(fundingRange.low)} – {formatFundingK(fundingRange.high)}
                                 </span>
                               </div>
-                              <ArrowRight className="w-4 h-4 text-[#4945ff] flex-shrink-0" />
+                              <ArrowRight className="w-4 h-4 text-[#4F46E5] flex-shrink-0" />
                               <div className="flex-1 text-center">
-                                <span className="text-[10px] text-[#4945ff] uppercase tracking-widest block mb-0.5" style={{ fontWeight: 600 }}>With Delt</span>
-                                <span className="text-sm text-[#4945ff] tabular-nums" style={{ fontWeight: 800 }}>
+                                <span className="text-[10px] text-[#4F46E5] uppercase tracking-widest block mb-0.5" style={{ fontWeight: 600 }}>With Delt</span>
+                                <span className="text-sm text-[#4F46E5] tabular-nums" style={{ fontWeight: 800 }}>
                                   {formatFundingK(fundingRange.boostedLow)} – {formatFundingK(fundingRange.boostedHigh)}
                                 </span>
                               </div>
@@ -2614,7 +2614,7 @@ export function PreQualificationGame({
                           <div
                             className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
                             style={{
-                              background: 'linear-gradient(135deg, #4945ff, #6366f1)',
+                              background: 'linear-gradient(135deg, #4F46E5, #6366f1)',
                               color: '#fff',
                               boxShadow: '0 4px 14px rgba(73,69,255,0.30)',
                             }}
@@ -2626,7 +2626,7 @@ export function PreQualificationGame({
                               className="text-[14px] block"
                               style={{
                                 fontWeight: 700,
-                                color: '#041E42',
+                                color: '#0F0E17',
                               }}
                             >
                               Sign up with Delt payment processing
@@ -2648,7 +2648,7 @@ export function PreQualificationGame({
                                   className="text-[11px] flex items-center gap-1"
                                   style={{
                                     fontWeight: 500,
-                                    color: '#4945ff',
+                                    color: '#4F46E5',
                                   }}
                                 >
                                   <Check className="w-3 h-3 flex-shrink-0" />
@@ -2711,7 +2711,7 @@ export function PreQualificationGame({
                             className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-400 mt-0.5"
                             style={{
                               background: formData.deltBoostEnabled
-                                ? 'linear-gradient(135deg, #4945ff, #6366f1)'
+                                ? 'linear-gradient(135deg, #4F46E5, #6366f1)'
                                 : '#d5d7de',
                               color: formData.deltBoostEnabled ? '#fff' : '#9ca3af',
                               boxShadow: formData.deltBoostEnabled ? '0 4px 14px rgba(73,69,255,0.30)' : 'none',
@@ -2724,7 +2724,7 @@ export function PreQualificationGame({
                               className="text-[14px] block"
                               style={{
                                 fontWeight: 700,
-                                color: formData.deltBoostEnabled ? '#041E42' : '#6b7280',
+                                color: formData.deltBoostEnabled ? '#0F0E17' : '#6b7280',
                                 transition: 'color 0.3s',
                               }}
                             >
@@ -2748,7 +2748,7 @@ export function PreQualificationGame({
                                   className="text-[11px] flex items-center gap-1"
                                   style={{
                                     fontWeight: 500,
-                                    color: formData.deltBoostEnabled ? '#4945ff' : '#b0b4bc',
+                                    color: formData.deltBoostEnabled ? '#4F46E5' : '#b0b4bc',
                                     transition: 'color 0.3s',
                                   }}
                                 >
@@ -2767,7 +2767,7 @@ export function PreQualificationGame({
                             style={{
                               width: '48px',
                               height: '28px',
-                              background: formData.deltBoostEnabled ? '#4945ff' : '#c7c9d1',
+                              background: formData.deltBoostEnabled ? '#4F46E5' : '#c7c9d1',
                               boxShadow: formData.deltBoostEnabled ? '0 0 12px rgba(73,69,255,0.35)' : 'none',
                             }}
                           >
@@ -2792,10 +2792,10 @@ export function PreQualificationGame({
                     style={{
                       background: 'transparent',
                       border: '1px solid #d5d7de',
-                      color: '#4945ff',
+                      color: '#4F46E5',
                     }}
                     whileHover={{
-                      borderColor: '#4945ff',
+                      borderColor: '#4F46E5',
                       boxShadow: '0 2px 8px rgba(73,69,255,0.12)',
                     }}
                     whileTap={{ scale: 0.98 }}
@@ -2812,14 +2812,14 @@ export function PreQualificationGame({
 
                 {/* Intended Use of Funds */}
                 <div>
-                  <label className="block text-sm font-semibold text-[#041E42] dark:text-white mb-2">
+                  <label className="block text-sm font-semibold text-[#0F0E17] dark:text-white mb-2">
                     Intended Use of Funds <span className="text-red-500">*</span>
                   </label>
                   <Select
                     value={formData.intendedUse}
                     onValueChange={(value) => updateFormData('intendedUse', value)}
                   >
-                    <SelectTrigger className="w-full h-auto px-4 py-3 border border-slate-300 dark:border-[#1F2933] rounded-md bg-white dark:bg-[#020C1B] text-[#041E42] dark:text-white focus:border-[#4945ff] focus:ring-1 focus:ring-[#4945ff] focus:outline-none transition-all shadow-sm">
+                    <SelectTrigger className="w-full h-auto px-4 py-3 border border-slate-300 dark:border-[#1A1923] rounded-md bg-white dark:bg-[#020C1B] text-[#0F0E17] dark:text-white focus:border-[#4F46E5] focus:ring-1 focus:ring-[#4F46E5] focus:outline-none transition-all shadow-sm">
                       <SelectValue placeholder="Select Use" />
                     </SelectTrigger>
                     <SelectContent>
@@ -2838,13 +2838,13 @@ export function PreQualificationGame({
               {/* Step 3: Financial Documents (only shown if user accepts credit cards) */}
               {currentStep === 3 && formData.acceptsCreditCards !== false && (
                 <div>
-                  <h2 className="text-[22px] font-semibold text-[#041E42] dark:text-white mb-8">
+                  <h2 className="text-[22px] font-semibold text-[#0F0E17] dark:text-white mb-8">
                     Financial documents
                   </h2>
 
                   {/* Credit Card Processor Selection */}
                   <div className="mb-10">
-                    <h4 className="text-[17px] font-semibold text-[#041E42] dark:text-white mb-1.5">
+                    <h4 className="text-[17px] font-semibold text-[#0F0E17] dark:text-white mb-1.5">
                       Credit card processor
                     </h4>
                     <p className="text-[13.5px] text-[#6B7280] dark:text-slate-400 mb-4 leading-relaxed max-w-xl">
@@ -2859,7 +2859,7 @@ export function PreQualificationGame({
                         }
                       }}
                     >
-                      <SelectTrigger className="w-full max-w-md h-auto px-4 py-3 border border-[#D1D5DB] dark:border-[#1F2933] rounded-lg bg-white dark:bg-[#020C1B] text-[#041E42] dark:text-white focus:border-[#4945ff] focus:ring-1 focus:ring-[#4945ff] focus:outline-none transition-all">
+                      <SelectTrigger className="w-full max-w-md h-auto px-4 py-3 border border-[#D1D5DB] dark:border-[#1A1923] rounded-lg bg-white dark:bg-[#020C1B] text-[#0F0E17] dark:text-white focus:border-[#4F46E5] focus:ring-1 focus:ring-[#4F46E5] focus:outline-none transition-all">
                         <SelectValue placeholder="Select your processor" />
                       </SelectTrigger>
                       <SelectContent>
@@ -2876,7 +2876,7 @@ export function PreQualificationGame({
                         value={formData.creditCardProcessorOther}
                         onChange={(e) => updateFormData('creditCardProcessorOther', e.target.value)}
                         placeholder="Enter your processor name"
-                        className="mt-3 w-full max-w-md px-4 py-3 border border-[#D1D5DB] dark:border-[#1F2933] rounded-lg bg-white dark:bg-[#020C1B] text-[#041E42] dark:text-white focus:border-[#4945ff] focus:ring-1 focus:ring-[#4945ff] focus:outline-none transition-all placeholder:text-[#9CA3AF]"
+                        className="mt-3 w-full max-w-md px-4 py-3 border border-[#D1D5DB] dark:border-[#1A1923] rounded-lg bg-white dark:bg-[#020C1B] text-[#0F0E17] dark:text-white focus:border-[#4F46E5] focus:ring-1 focus:ring-[#4F46E5] focus:outline-none transition-all placeholder:text-[#9CA3AF]"
                         required
                       />
                     )}
@@ -2884,7 +2884,7 @@ export function PreQualificationGame({
 
                   {/* Credit Card Processing Statements — Plaid-styled UI */}
                   <div className="mb-10">
-                    <h4 className="text-[17px] font-semibold text-[#041E42] dark:text-white mb-1.5">
+                    <h4 className="text-[17px] font-semibold text-[#0F0E17] dark:text-white mb-1.5">
                       Credit card processing statements
                     </h4>
                     <p className="text-[13.5px] text-[#6B7280] dark:text-slate-400 mb-5 leading-relaxed max-w-xl">
@@ -2895,12 +2895,12 @@ export function PreQualificationGame({
                     {formData.processorStatements.length > 0 && !plaidDocModalOpen && (
                       <div className="mb-4 space-y-2 max-w-md">
                         {formData.processorStatements.map((file, index) => (
-                          <div key={index} className="flex items-center justify-between bg-white dark:bg-[#1F2933] rounded-lg px-3 py-2.5 border border-slate-200 dark:border-slate-600">
+                          <div key={index} className="flex items-center justify-between bg-white dark:bg-[#1A1923] rounded-lg px-3 py-2.5 border border-slate-200 dark:border-slate-600">
                             <div className="flex items-center gap-2.5">
                               <div className="w-5 h-5 bg-[#10B981] rounded-full flex items-center justify-center flex-shrink-0">
                                 <Check className="w-3 h-3 text-white" strokeWidth={3} />
                               </div>
-                              <span className="text-sm text-[#041E42] dark:text-white truncate max-w-[200px]">{file.name}</span>
+                              <span className="text-sm text-[#0F0E17] dark:text-white truncate max-w-[200px]">{file.name}</span>
                             </div>
                             <button
                               type="button"
@@ -2925,7 +2925,7 @@ export function PreQualificationGame({
                         setPlaidDocModalOpen(true);
                         setPlaidDocStep('upload');
                       }}
-                      className="w-full max-w-md py-3.5 rounded-xl bg-[#4945ff] hover:bg-[#3b38d9] text-white font-semibold text-base text-center transition-all cursor-pointer flex items-center justify-center gap-2"
+                      className="w-full max-w-md py-3.5 rounded-xl bg-[#4F46E5] hover:bg-[#3730A3] text-white font-semibold text-base text-center transition-all cursor-pointer flex items-center justify-center gap-2"
                     >
                       <Upload className="w-4 h-4" />
                       {formData.processorStatements.length > 0 ? 'Upload more documents' : 'Upload statements'}
@@ -2952,7 +2952,7 @@ export function PreQualificationGame({
                           animate={{ opacity: 1, scale: 1, y: 0 }}
                           exit={{ opacity: 0, scale: 0.95, y: 10 }}
                           transition={{ duration: 0.25 }}
-                          className="relative z-10 w-full max-w-sm mx-4 rounded-2xl bg-white dark:bg-[#1F2933] shadow-2xl overflow-hidden flex flex-col"
+                          className="relative z-10 w-full max-w-sm mx-4 rounded-2xl bg-white dark:bg-[#1A1923] shadow-2xl overflow-hidden flex flex-col"
                           onClick={(e) => e.stopPropagation()}
                         >
                           {/* Header — X close */}
@@ -2988,10 +2988,10 @@ export function PreQualificationGame({
                                   </div>
                                 </div>
 
-                                <h3 className="text-center text-lg text-[#041E42] dark:text-white mb-1">
+                                <h3 className="text-center text-lg text-[#0F0E17] dark:text-white mb-1">
                                   Upload processing statements
                                 </h3>
-                                <p className="text-center text-lg text-[#041E42] dark:text-white mb-8">
+                                <p className="text-center text-lg text-[#0F0E17] dark:text-white mb-8">
                                   from the last <span className="font-semibold">3 Months</span>
                                 </p>
 
@@ -3004,7 +3004,7 @@ export function PreQualificationGame({
                                           <div className="w-5 h-5 bg-[#10B981] rounded-full flex items-center justify-center flex-shrink-0">
                                             <Check className="w-3 h-3 text-white" strokeWidth={3} />
                                           </div>
-                                          <span className="text-sm text-[#041E42] dark:text-white truncate max-w-[200px]">{file.name}</span>
+                                          <span className="text-sm text-[#0F0E17] dark:text-white truncate max-w-[200px]">{file.name}</span>
                                         </div>
                                         <button
                                           type="button"
@@ -3025,7 +3025,7 @@ export function PreQualificationGame({
                                 <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-2">
                                   <span className="text-amber-500 mr-1">⚡</span>
                                   Upload your merchant processing statements so we can analyze card volume and maximize your offer.{' '}
-                                  <button type="button" className="underline hover:text-[#4945ff] transition-colors">Learn more</button>
+                                  <button type="button" className="underline hover:text-[#4F46E5] transition-colors">Learn more</button>
                                 </p>
 
                                 <div className="mt-auto pt-6 space-y-3">
@@ -3050,7 +3050,7 @@ export function PreQualificationGame({
 
                                 <div className="mt-6">
                                   <p className="text-[11px] text-slate-400 dark:text-slate-500 text-center leading-relaxed">
-                                    <button type="button" className="underline hover:text-[#4945ff] transition-colors">Terms</button> apply. Documents are encrypted with 256-bit SSL and used solely for underwriting.
+                                    <button type="button" className="underline hover:text-[#4F46E5] transition-colors">Terms</button> apply. Documents are encrypted with 256-bit SSL and used solely for underwriting.
                                   </p>
                                 </div>
                               </motion.div>
@@ -3075,10 +3075,10 @@ export function PreQualificationGame({
                                   </div>
                                 </div>
 
-                                <h3 className="text-center text-lg text-[#041E42] dark:text-white mb-1">
+                                <h3 className="text-center text-lg text-[#0F0E17] dark:text-white mb-1">
                                   Documents <span className="font-semibold">uploaded</span>
                                 </h3>
-                                <p className="text-center text-lg text-[#041E42] dark:text-white mb-6">
+                                <p className="text-center text-lg text-[#0F0E17] dark:text-white mb-6">
                                   successfully
                                 </p>
 
@@ -3093,7 +3093,7 @@ export function PreQualificationGame({
                                   </ul>
                                   <button
                                     type="button"
-                                    className="flex items-center gap-1.5 text-sm text-[#4945ff] hover:underline cursor-pointer"
+                                    className="flex items-center gap-1.5 text-sm text-[#4F46E5] hover:underline cursor-pointer"
                                   >
                                     <AlertCircle className="w-3.5 h-3.5" />
                                     How to find your processing statements
@@ -3103,12 +3103,12 @@ export function PreQualificationGame({
                                 {formData.processorStatements.length > 0 && (
                                   <div className="mb-4 space-y-2">
                                     {formData.processorStatements.map((file, index) => (
-                                      <div key={index} className="flex items-center justify-between bg-white dark:bg-[#1F2933] rounded-lg px-3 py-2.5 border border-slate-200 dark:border-slate-600">
+                                      <div key={index} className="flex items-center justify-between bg-white dark:bg-[#1A1923] rounded-lg px-3 py-2.5 border border-slate-200 dark:border-slate-600">
                                         <div className="flex items-center gap-2.5">
                                           <div className="w-5 h-5 bg-[#10B981] rounded-full flex items-center justify-center flex-shrink-0">
                                             <Check className="w-3 h-3 text-white" strokeWidth={3} />
                                           </div>
-                                          <span className="text-sm text-[#041E42] dark:text-white truncate max-w-[200px]">{file.name}</span>
+                                          <span className="text-sm text-[#0F0E17] dark:text-white truncate max-w-[200px]">{file.name}</span>
                                         </div>
                                         <button
                                           type="button"
@@ -3158,7 +3158,7 @@ export function PreQualificationGame({
 
                                 <div className="mt-6">
                                   <p className="text-[11px] text-slate-400 dark:text-slate-500 text-center leading-relaxed">
-                                    <button type="button" className="underline hover:text-[#4945ff] transition-colors">Terms</button> apply. Documents are encrypted with 256-bit SSL and used solely for underwriting.
+                                    <button type="button" className="underline hover:text-[#4F46E5] transition-colors">Terms</button> apply. Documents are encrypted with 256-bit SSL and used solely for underwriting.
                                   </p>
                                 </div>
                               </motion.div>
@@ -3206,17 +3206,17 @@ export function PreQualificationGame({
                       className="space-y-4"
                     >
                       <div>
-                        <h4 className="text-lg font-bold text-[#041E42] dark:text-white mb-4">
+                        <h4 className="text-lg font-bold text-[#0F0E17] dark:text-white mb-4">
                           Connect Your Bank Account
                         </h4>
-                        <div className="bg-gradient-to-br from-[#E8EBF0] to-[#F5F7FA] dark:from-[#1F2933] dark:to-[#132030] rounded-xl p-6 border border-[#041E42]/15">
+                        <div className="bg-gradient-to-br from-[#E8EBF0] to-[#FAF8F3] dark:from-[#1A1923] dark:to-[#1A1923] rounded-xl p-6 border border-[#0F0E17]/15">
                           <div className="flex items-start gap-4 mb-4">
-                            <Shield className="w-10 h-10 text-[#041E42] dark:text-white flex-shrink-0" />
+                            <Shield className="w-10 h-10 text-[#0F0E17] dark:text-white flex-shrink-0" />
                             <div>
-                              <p className="text-base font-semibold text-[#041E42] dark:text-white mb-2">
+                              <p className="text-base font-semibold text-[#0F0E17] dark:text-white mb-2">
                                 Secure Bank Connection via Plaid
                               </p>
-                              <p className="text-sm text-[#52606D] dark:text-[#CBD2D9]">
+                              <p className="text-sm text-[#6A6876] dark:text-[#D9D4C7]">
                                 We use bank-level encryption to securely connect your account and verify 3-4 months of transactions. This helps us provide you with the best funding options.
                               </p>
                             </div>
@@ -3233,7 +3233,7 @@ export function PreQualificationGame({
                             className={`w-full h-12 ${
                               formData.bankConnected
                                 ? 'bg-[#16A34A] hover:bg-[#15803D]'
-                                : 'bg-[#041E42] hover:bg-[#03152F]'
+                                : 'bg-[#0F0E17] hover:bg-[#03152F]'
                             } text-white font-semibold`}
                           >
                             {formData.bankConnected ? (
@@ -3257,7 +3257,7 @@ export function PreQualificationGame({
                                   updateFormData('bankConnectionSkipped', true);
                                   updateFormData('bankConnected', false);
                                 }}
-                                className="text-sm text-slate-500 hover:text-[#041E42] underline transition-colors"
+                                className="text-sm text-slate-500 hover:text-[#0F0E17] underline transition-colors"
                               >
                                 I prefer to upload bank statements manually
                               </button>
@@ -3294,7 +3294,7 @@ export function PreQualificationGame({
                               updateFormData('bankConnectionSkipped', false);
                               updateFormData('bankStatements', []);
                             }}
-                            className="text-sm text-slate-500 hover:text-[#4945ff] underline transition-colors mt-3"
+                            className="text-sm text-slate-500 hover:text-[#4F46E5] underline transition-colors mt-3"
                           >
                             Connect via Plaid instead
                           </button>
@@ -3317,7 +3317,7 @@ export function PreQualificationGame({
                               exit={{ opacity: 0, scale: 0.95, y: 20 }}
                               transition={{ type: 'spring', damping: 25, stiffness: 350 }}
                               onClick={(e) => e.stopPropagation()}
-                              className="bg-white dark:bg-[#1F2933] rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden flex flex-col"
+                              className="bg-white dark:bg-[#1A1923] rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden flex flex-col"
                               style={{ maxHeight: '90vh' }}
                             >
                               {/* Plaid Step 1: Phone Number */}
@@ -3347,13 +3347,13 @@ export function PreQualificationGame({
                                       </div>
                                     </div>
 
-                                    <h3 className="text-center text-lg text-[#041E42] dark:text-white mb-1">
+                                    <h3 className="text-center text-lg text-[#0F0E17] dark:text-white mb-1">
                                       Delt uses <span className="font-semibold">Plaid</span> to connect
                                     </h3>
-                                    <p className="text-center text-lg text-[#041E42] dark:text-white mb-8">your account</p>
+                                    <p className="text-center text-lg text-[#0F0E17] dark:text-white mb-8">your account</p>
 
                                     {/* Phone Input */}
-                                    <div className="border border-slate-200 dark:border-slate-600 rounded-lg flex items-center px-3 py-3 mb-3 focus-within:border-[#4945ff] focus-within:ring-1 focus-within:ring-[#4945ff] transition-all">
+                                    <div className="border border-slate-200 dark:border-slate-600 rounded-lg flex items-center px-3 py-3 mb-3 focus-within:border-[#4F46E5] focus-within:ring-1 focus-within:ring-[#4F46E5] transition-all">
                                       <span className="text-lg mr-2">🇺🇸</span>
                                       <span className="text-sm text-slate-500 dark:text-slate-400 mr-2">+1</span>
                                       <input
@@ -3372,7 +3372,7 @@ export function PreQualificationGame({
                                           setPlaidPhone(formatted);
                                         }}
                                         placeholder="Phone"
-                                        className="flex-1 outline-none bg-transparent text-[#041E42] dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-sm"
+                                        className="flex-1 outline-none bg-transparent text-[#0F0E17] dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-sm"
                                         autoFocus
                                       />
                                     </div>
@@ -3380,13 +3380,13 @@ export function PreQualificationGame({
                                     <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
                                       <span className="text-amber-500 mr-1">⚡</span>
                                       Use your phone number to log in or sign up with Plaid to go faster next time.{' '}
-                                      <button className="underline hover:text-[#4945ff] transition-colors">Learn more</button>
+                                      <button className="underline hover:text-[#4F46E5] transition-colors">Learn more</button>
                                     </p>
 
                                     <div className="mt-auto pt-8">
                                       <p className="text-[11px] text-slate-400 dark:text-slate-500 text-center leading-relaxed">
-                                        <button className="underline hover:text-[#4945ff] transition-colors">Terms</button> apply. By continuing, you agree to Plaid's{' '}
-                                        <button className="underline hover:text-[#4945ff] transition-colors">Privacy Policy</button> and to receive updates on plaid.com
+                                        <button className="underline hover:text-[#4F46E5] transition-colors">Terms</button> apply. By continuing, you agree to Plaid's{' '}
+                                        <button className="underline hover:text-[#4F46E5] transition-colors">Privacy Policy</button> and to receive updates on plaid.com
                                       </p>
                                     </div>
                                   </div>
@@ -3438,7 +3438,7 @@ export function PreQualificationGame({
                                       </div>
                                     </div>
 
-                                    <h3 className="text-center text-lg font-semibold text-[#041E42] dark:text-white mb-6">
+                                    <h3 className="text-center text-lg font-semibold text-[#0F0E17] dark:text-white mb-6">
                                       Choose how you'll link your bank account
                                     </h3>
 
@@ -3447,23 +3447,23 @@ export function PreQualificationGame({
                                       onClick={() => setPlaidLinkMethod('instant')}
                                       className={`w-full text-left border rounded-xl p-4 mb-3 transition-all ${
                                         plaidLinkMethod === 'instant'
-                                          ? 'border-[#4945ff] bg-[#F8F8FF] dark:bg-[#4945ff]/10 ring-1 ring-[#4945ff]'
+                                          ? 'border-[#4F46E5] bg-[#F8F8FF] dark:bg-[#4F46E5]/10 ring-1 ring-[#4F46E5]'
                                           : 'border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:hover:border-slate-500'
                                       }`}
                                     >
                                       <div className="flex items-start gap-3">
                                         <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-0.5 ${
                                           plaidLinkMethod === 'instant'
-                                            ? 'border-[#4945ff]'
+                                            ? 'border-[#4F46E5]'
                                             : 'border-slate-300 dark:border-slate-500'
                                         }`}>
                                           {plaidLinkMethod === 'instant' && (
-                                            <div className="w-2.5 h-2.5 rounded-full bg-[#4945ff]" />
+                                            <div className="w-2.5 h-2.5 rounded-full bg-[#4F46E5]" />
                                           )}
                                         </div>
                                         <div>
                                           <div className="flex items-center gap-2 mb-1">
-                                            <span className="font-semibold text-sm text-[#041E42] dark:text-white">Instant</span>
+                                            <span className="font-semibold text-sm text-[#0F0E17] dark:text-white">Instant</span>
                                             <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-[10px] font-semibold rounded-full uppercase tracking-wide">
                                               <CheckCircle className="w-3 h-3" /> Recommended
                                             </span>
@@ -3480,22 +3480,22 @@ export function PreQualificationGame({
                                       onClick={() => setPlaidLinkMethod('manual')}
                                       className={`w-full text-left border rounded-xl p-4 transition-all ${
                                         plaidLinkMethod === 'manual'
-                                          ? 'border-[#4945ff] bg-[#F8F8FF] dark:bg-[#4945ff]/10 ring-1 ring-[#4945ff]'
+                                          ? 'border-[#4F46E5] bg-[#F8F8FF] dark:bg-[#4F46E5]/10 ring-1 ring-[#4F46E5]'
                                           : 'border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:hover:border-slate-500'
                                       }`}
                                     >
                                       <div className="flex items-start gap-3">
                                         <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-0.5 ${
                                           plaidLinkMethod === 'manual'
-                                            ? 'border-[#4945ff]'
+                                            ? 'border-[#4F46E5]'
                                             : 'border-slate-300 dark:border-slate-500'
                                         }`}>
                                           {plaidLinkMethod === 'manual' && (
-                                            <div className="w-2.5 h-2.5 rounded-full bg-[#4945ff]" />
+                                            <div className="w-2.5 h-2.5 rounded-full bg-[#4F46E5]" />
                                           )}
                                         </div>
                                         <div>
-                                          <span className="font-semibold text-sm text-[#041E42] dark:text-white block mb-1">Manual</span>
+                                          <span className="font-semibold text-sm text-[#0F0E17] dark:text-white block mb-1">Manual</span>
                                           <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
                                             Enter account and routing numbers. Typically takes 1-2 days to verify.
                                           </p>
@@ -3533,23 +3533,23 @@ export function PreQualificationGame({
                       className="space-y-4"
                     >
                       <div>
-                        <h4 className="text-lg font-bold text-[#041E42] dark:text-white mb-4">
+                        <h4 className="text-lg font-bold text-[#0F0E17] dark:text-white mb-4">
                           Verify Your Identity
                         </h4>
-                        <div className="bg-gradient-to-br from-[#E8EBF0] to-[#F5F7FA] dark:from-[#1F2933] dark:to-[#132030] rounded-xl p-6 border border-[#041E42]/15">
+                        <div className="bg-gradient-to-br from-[#E8EBF0] to-[#FAF8F3] dark:from-[#1A1923] dark:to-[#1A1923] rounded-xl p-6 border border-[#0F0E17]/15">
                           <div className="flex items-start gap-4 mb-4">
-                            <Shield className="w-10 h-10 text-[#041E42] dark:text-white flex-shrink-0" />
+                            <Shield className="w-10 h-10 text-[#0F0E17] dark:text-white flex-shrink-0" />
                             <div>
-                              <p className="text-base font-semibold text-[#041E42] dark:text-white mb-2">
+                              <p className="text-base font-semibold text-[#0F0E17] dark:text-white mb-2">
                                 Social Security Number (Last 4 Digits)
                               </p>
-                              <p className="text-sm text-[#52606D] dark:text-[#CBD2D9]">
+                              <p className="text-sm text-[#6A6876] dark:text-[#D9D4C7]">
                                 Used for identity verification only. Your information is encrypted and secure.
                               </p>
                             </div>
                           </div>
                           <div className="max-w-xs mx-auto">
-                            <label className="block text-sm font-semibold text-[#041E42] dark:text-white mb-3 text-center">
+                            <label className="block text-sm font-semibold text-[#0F0E17] dark:text-white mb-3 text-center">
                               Last 4 Digits of SSN <span className="text-red-500">*</span>
                             </label>
                             <input
@@ -3577,7 +3577,7 @@ export function PreQualificationGame({
                               }}
                               placeholder="****"
                               maxLength={4}
-                              className="w-full px-4 py-4 border-2 border-[#D1D5DB] dark:border-[#1F2933] rounded-lg bg-white dark:bg-[#020C1B] text-[#041E42] dark:text-white focus:border-[#4945ff] focus:outline-none transition-colors text-center text-3xl font-mono tracking-[0.5em]"
+                              className="w-full px-4 py-4 border-2 border-[#D1D5DB] dark:border-[#1A1923] rounded-lg bg-white dark:bg-[#020C1B] text-[#0F0E17] dark:text-white focus:border-[#4F46E5] focus:outline-none transition-colors text-center text-3xl font-mono tracking-[0.5em]"
                             />
                           </div>
                         </div>
@@ -3606,34 +3606,34 @@ export function PreQualificationGame({
               {/* Step 5: Review & Submit */}
               {currentStep === 5 && (
                 <div className="space-y-3">
-                <div className="bg-slate-50 dark:bg-[#1F2933] border border-slate-200 dark:border-[#3E4C59] rounded-md p-4 md:p-5">
-                  <h4 className="text-base font-bold text-[#041E42] dark:text-white mb-3 flex items-center gap-2">
-                    <FileText className="w-4 h-4 text-[#041E42] dark:text-white" />
+                <div className="bg-slate-50 dark:bg-[#1A1923] border border-slate-200 dark:border-[#3E3D49] rounded-md p-4 md:p-5">
+                  <h4 className="text-base font-bold text-[#0F0E17] dark:text-white mb-3 flex items-center gap-2">
+                    <FileText className="w-4 h-4 text-[#0F0E17] dark:text-white" />
                     Application Summary
                   </h4>
                   <div className="space-y-3">
                     <div className="grid md:grid-cols-2 gap-x-6 gap-y-3">
                       <div>
                         <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">Business Information</p>
-                        <p className="text-sm font-semibold text-[#041E42] dark:text-white">{formData.businessLegalName}</p>
+                        <p className="text-sm font-semibold text-[#0F0E17] dark:text-white">{formData.businessLegalName}</p>
                         <p className="text-xs text-slate-600 dark:text-slate-300 mt-0.5">
                           {formData.businessAddress}{formData.businessCity ? `, ${formData.businessCity}` : ''}{formData.businessState ? `, ${formData.businessState}` : ''} {formData.businessZip}
                         </p>
                         <div className="flex gap-2 mt-1.5 text-xs text-slate-600 dark:text-slate-300">
-                          {formData.industry && <span className="bg-white dark:bg-[#020C1B] px-1.5 py-0.5 rounded border border-slate-200 dark:border-[#3E4C59]">{formData.industry}</span>}
-                          {formData.timeInBusiness && <span className="bg-white dark:bg-[#020C1B] px-1.5 py-0.5 rounded border border-slate-200 dark:border-[#3E4C59]">{formData.timeInBusiness}</span>}
+                          {formData.industry && <span className="bg-white dark:bg-[#020C1B] px-1.5 py-0.5 rounded border border-slate-200 dark:border-[#3E3D49]">{formData.industry}</span>}
+                          {formData.timeInBusiness && <span className="bg-white dark:bg-[#020C1B] px-1.5 py-0.5 rounded border border-slate-200 dark:border-[#3E3D49]">{formData.timeInBusiness}</span>}
                         </div>
                       </div>
                       
                       <div>
                         <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">Owner Information</p>
-                        <p className="text-sm font-semibold text-[#041E42] dark:text-white">{formData.ownerFullName}</p>
+                        <p className="text-sm font-semibold text-[#0F0E17] dark:text-white">{formData.ownerFullName}</p>
                         <p className="text-xs text-slate-600 dark:text-slate-300 mt-0.5">{formData.ownerEmail}</p>
                         {formData.ownerPhone && <p className="text-xs text-slate-600 dark:text-slate-300">{formData.ownerPhone}</p>}
                       </div>
                     </div>
 
-                    <div className="border-t border-slate-200 dark:border-[#3E4C59] pt-3">
+                    <div className="border-t border-slate-200 dark:border-[#3E3D49] pt-3">
                       <div className="grid md:grid-cols-2 gap-x-6 gap-y-3">
                         <div>
                           <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">Financial Details</p>
@@ -3641,25 +3641,25 @@ export function PreQualificationGame({
                             {formData.monthlyRevenue && (
                               <div className="flex justify-between text-xs">
                                 <span className="text-slate-600 dark:text-slate-300">Monthly Revenue</span>
-                                <span className="font-semibold text-[#041E42] dark:text-white">{formData.monthlyRevenue.startsWith('$') ? formData.monthlyRevenue : `$${formData.monthlyRevenue}`}</span>
+                                <span className="font-semibold text-[#0F0E17] dark:text-white">{formData.monthlyRevenue.startsWith('$') ? formData.monthlyRevenue : `$${formData.monthlyRevenue}`}</span>
                               </div>
                             )}
                             {formData.creditCardProcessing && formData.creditCardProcessing !== 'No credit card processing' && (
                               <div className="flex justify-between text-xs">
                                 <span className="text-slate-600 dark:text-slate-300">CC Processing</span>
-                                <span className="font-semibold text-[#041E42] dark:text-white">{formData.creditCardProcessing.startsWith('$') ? `${formData.creditCardProcessing}/mo` : `$${formData.creditCardProcessing}/mo`}</span>
+                                <span className="font-semibold text-[#0F0E17] dark:text-white">{formData.creditCardProcessing.startsWith('$') ? `${formData.creditCardProcessing}/mo` : `$${formData.creditCardProcessing}/mo`}</span>
                               </div>
                             )}
                             {formData.creditCardProcessing === 'No credit card processing' && (
                               <div className="flex justify-between text-xs">
                                 <span className="text-slate-600 dark:text-slate-300">CC Processing</span>
-                                <span className="font-semibold text-[#041E42] dark:text-white">None</span>
+                                <span className="font-semibold text-[#0F0E17] dark:text-white">None</span>
                               </div>
                             )}
                             {formData.creditScore && (
                               <div className="flex justify-between text-xs">
                                 <span className="text-slate-600 dark:text-slate-300">Credit Score</span>
-                                <span className="font-semibold text-[#041E42] dark:text-white">{formData.creditScore}</span>
+                                <span className="font-semibold text-[#0F0E17] dark:text-white">{formData.creditScore}</span>
                               </div>
                             )}
                           </div>
@@ -3667,7 +3667,7 @@ export function PreQualificationGame({
                         
                         <div>
                           <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">Funding Request</p>
-                          <p className="text-xl font-bold text-[#041E42] dark:text-white">
+                          <p className="text-xl font-bold text-[#0F0E17] dark:text-white">
                             {plaidCompleted && quizData?.selectedOfferAmount
                               ? `$${Number(quizData.selectedOfferAmount).toLocaleString()}${formData.deltBoostEnabled ? ' (Delt Preferred)' : ''}`
                               : `${formatFundingK(activeLow)} – ${formatFundingK(activeHigh)}${formData.deltBoostEnabled ? ' (Delt)' : ''}`}
@@ -3679,12 +3679,12 @@ export function PreQualificationGame({
                       </div>
                     </div>
 
-                    <div className="border-t border-slate-200 dark:border-[#3E4C59] pt-3">
+                    <div className="border-t border-slate-200 dark:border-[#3E3D49] pt-3">
                       <div className="grid md:grid-cols-2 gap-x-6 gap-y-3">
                         <div>
                           <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">Verification Status</p>
                           <div className="space-y-1">
-                            <div className="flex items-center gap-1.5 text-xs font-medium text-[#041E42] dark:text-white">
+                            <div className="flex items-center gap-1.5 text-xs font-medium text-[#0F0E17] dark:text-white">
                               <Check className="w-3.5 h-3.5 text-green-600 dark:text-green-400" />
                               <span>
                                 {formData.bankConnected 
@@ -3692,11 +3692,11 @@ export function PreQualificationGame({
                                   : 'Bank statements provided'}
                               </span>
                             </div>
-                            <div className="flex items-center gap-1.5 text-xs font-medium text-[#041E42] dark:text-white">
+                            <div className="flex items-center gap-1.5 text-xs font-medium text-[#0F0E17] dark:text-white">
                               <Check className="w-3.5 h-3.5 text-green-600 dark:text-green-400" />
                               <span>Identity verified (SSN & ID)</span>
                             </div>
-                            <div className="flex items-center gap-1.5 text-xs font-medium text-[#041E42] dark:text-white">
+                            <div className="flex items-center gap-1.5 text-xs font-medium text-[#0F0E17] dark:text-white">
                               <Check className="w-3.5 h-3.5 text-green-600 dark:text-green-400" />
                               <span>Processing statements uploaded</span>
                             </div>
@@ -3708,7 +3708,7 @@ export function PreQualificationGame({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-[#041E42] dark:text-white mb-1.5">
+                  <label className="block text-sm font-semibold text-[#0F0E17] dark:text-white mb-1.5">
                     Electronic Signature <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -3716,26 +3716,26 @@ export function PreQualificationGame({
                     value={formData.eSignature}
                     onChange={(e) => updateFormData('eSignature', e.target.value)}
                     placeholder="Type your full name"
-                    className="w-full px-4 py-2.5 border-2 border-[#D1D5DB] dark:border-[#1F2933] rounded-lg bg-white dark:bg-[#020C1B] text-[#041E42] dark:text-white focus:border-[#4945ff] focus:outline-none transition-colors text-xl"
+                    className="w-full px-4 py-2.5 border-2 border-[#D1D5DB] dark:border-[#1A1923] rounded-lg bg-white dark:bg-[#020C1B] text-[#0F0E17] dark:text-white focus:border-[#4F46E5] focus:outline-none transition-colors text-xl"
                     style={{ fontFamily: "'Brush Script MT', 'Lucida Handwriting', 'Apple Chancery', cursive" }}
                   />
-                  <p className="text-[11px] text-[#52606D] dark:text-[#CBD2D9] mt-1">
+                  <p className="text-[11px] text-[#6A6876] dark:text-[#D9D4C7] mt-1">
                     By typing your name, you agree to use electronic signatures
                   </p>
                 </div>
 
-                <div className="bg-[#F5F7FA] dark:bg-[#1F2933] rounded-lg p-3">
+                <div className="bg-[#FAF8F3] dark:bg-[#1A1923] rounded-lg p-3">
                   <label className="flex items-start gap-2.5 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={formData.agreedToTerms}
                       onChange={(e) => updateFormData('agreedToTerms', e.target.checked)}
-                      className="mt-0.5 w-4 h-4 rounded border-[#D1D5DB] dark:border-[#3E4C59] text-[#4945ff] focus:ring-[#4945ff]"
+                      className="mt-0.5 w-4 h-4 rounded border-[#D1D5DB] dark:border-[#3E3D49] text-[#4F46E5] focus:ring-[#4F46E5]"
                     />
-                    <p className="flex-1 text-xs text-[#041E42] dark:text-white leading-relaxed">
+                    <p className="flex-1 text-xs text-[#0F0E17] dark:text-white leading-relaxed">
                       I authorize Delt to obtain my credit report and verify the information provided. I agree to the{' '}
-                      <span className="text-[#4945ff] font-semibold">Terms of Service</span> and{' '}
-                      <span className="text-[#4945ff] font-semibold">Privacy Policy</span>.
+                      <span className="text-[#4F46E5] font-semibold">Terms of Service</span> and{' '}
+                      <span className="text-[#4F46E5] font-semibold">Privacy Policy</span>.
                     </p>
                   </label>
                 </div>
@@ -3756,7 +3756,7 @@ export function PreQualificationGame({
           </AnimatePresence>
 
           {/* Navigation Buttons */}
-          <div className="mt-6 pt-4 border-t border-slate-100 dark:border-[#1F2933]">
+          <div className="mt-6 pt-4 border-t border-slate-100 dark:border-[#1A1923]">
             <div className="flex flex-col-reverse sm:flex-row gap-4 justify-end">
               <Button
                 onClick={() => {
@@ -3790,7 +3790,7 @@ export function PreQualificationGame({
                   }
                 }}
                 variant="ghost"
-                className="w-full sm:w-auto text-slate-500 hover:text-[#041E42] hover:bg-slate-50 dark:hover:bg-[#1F2933] font-medium py-3 px-6 rounded transition-all"
+                className="w-full sm:w-auto text-slate-500 hover:text-[#0F0E17] hover:bg-slate-50 dark:hover:bg-[#1A1923] font-medium py-3 px-6 rounded transition-all"
               >
                 Skip Step
               </Button>
@@ -3807,7 +3807,7 @@ export function PreQualificationGame({
                         (currentSubStep === 2 && !idVerificationComplete)
                       : !canProceed()
                 }
-                className="w-full sm:w-auto bg-[#041E42] hover:bg-[#03152F] dark:bg-[#4945ff] dark:hover:bg-[#3936cc] text-white font-semibold py-3 px-8 rounded shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed min-w-[140px]"
+                className="w-full sm:w-auto bg-[#0F0E17] hover:bg-[#03152F] dark:bg-[#4F46E5] dark:hover:bg-[#3936cc] text-white font-semibold py-3 px-8 rounded shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed min-w-[140px]"
               >
                 {currentStep === steps.length - 1 ? 'Submit Application' : 
                  (currentStep === 4 && plaidCompleted) ? 'Save & Continue' :

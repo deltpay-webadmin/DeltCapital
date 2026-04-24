@@ -1,43 +1,13 @@
-import React, { useState, useRef, useImperativeHandle, forwardRef, useEffect, useCallback } from 'react';
-import { X, Sparkles } from 'lucide-react';
+import {
+  useState,
+  useRef,
+  useImperativeHandle,
+  forwardRef,
+  useEffect,
+} from 'react';
+import { X } from 'lucide-react';
 import { PreQualificationGame } from './PreQualificationGame';
-import phoneMockup from 'figma:asset/71c57b806f1b63be76a88b51a3a97efac7f0c5ee.png';
-import { useLanguage } from '../contexts/LanguageContext';
-import { animate } from 'animejs';
-
-/*
- * ══════════════════════════════════════════════════════════════
- * PRE-QUALIFICATION SECTION — Institutional Capital Aesthetic
- * ══════════════════════════════════════════════════════════════
- *
- * MOTION SPEC (AnimeJS)
- * ─────────────────────
- * Trigger: IntersectionObserver (once, 20% threshold)
- * Ease:    'easeInOutQuad' / 'easeOutCubic' — measured, no bounce
- *
- * ENTRANCE TIMELINE (plays once on scroll-into-view):
- * ───────────────────────────────────────────────────
- * T + 0ms     │ Sparkles icon  — opacity 0→1, scale 0.6→1, 600ms
- * T + 150ms    Headline       — opacity 0→1, translateY 24→0, 700ms
- * T + 300ms   │ Subtitle       — opacity 0→1, translateY 18→0, 600ms
- * T + 400ms   │ Questions line — opacity 0→1, translateY 14→0, 600ms
- * T + 500ms   │ Bullet points  — opacity 0→1, translateY 10→0, 500ms
- * T + 650ms   │ CTA button     — opacity 0→1, translateX -20→0, 600ms
- * T + 750ms   │ Badges         — opacity 0→1, translateY 8→0, 500ms
- * T + 900ms   │ Join text      — opacity 0→1, 400ms
- *
- * T + 200ms   │ Phone          — opacity 0→1, translateY 60→0,
- *             │                   rotateY -8→-12°, rotateX 4→2°,
- *             │                   rotateZ 0→1°, 1000ms easeOutCubic
- * T + 1200ms  │ Phone shadow   — opacity 0→0.35, scaleX 0.7→1, 600ms
- *
- * AMBIENT LOOP (after entrance):
- * ──────────────────────────────
- * Phone float  — translateY ±6px, 4000ms, easeInOutSine, infinite
- * Shadow pulse — scaleX 0.95↔1.05, opacity 0.3↔0.4, 4000ms, synced
- *
- * BG orbs      — STATIC gradients, no pulsing (institutional)
- */
+import { motion } from 'motion/react';
 
 interface PreQualificationSectionProps {
   onApplyClick?: () => void;
@@ -50,29 +20,22 @@ export interface PreQualificationSectionRef {
   scrollToSection: () => void;
 }
 
-export const PreQualificationSection = forwardRef<PreQualificationSectionRef, PreQualificationSectionProps>(({ onApplyClick, onApplyFromQuiz, onCalculatorClick }, ref) => {
-  const { t } = useLanguage();
+export const PreQualificationSection = forwardRef<
+  PreQualificationSectionRef,
+  PreQualificationSectionProps
+>(({ onApplyClick, onApplyFromQuiz, onCalculatorClick }, ref) => {
   const [showModal, setShowModal] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [quizData, setQuizData] = useState<any>(null);
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const hasAnimated = useRef(false);
-
-  // Refs for each animatable text element
-  const iconRef = useRef<HTMLDivElement>(null);
-  const headlineRef = useRef<HTMLHeadingElement>(null);
-  const subtitleRef = useRef<HTMLParagraphElement>(null);
-  const ctaRef = useRef<HTMLDivElement>(null);
-  const joinRef = useRef<HTMLParagraphElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
 
   useImperativeHandle(ref, () => ({
     openQuiz: () => setShowModal(true),
     scrollToSection: () => {
       sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
+    },
   }));
 
-  // Lock body scroll when quiz modal or results are open
   useEffect(() => {
     if (showModal || showResults) {
       document.body.style.overflow = 'hidden';
@@ -84,78 +47,6 @@ export const PreQualificationSection = forwardRef<PreQualificationSectionRef, Pr
     };
   }, [showModal, showResults]);
 
-  /* ─── AnimeJS entrance timeline + ambient loop ─── */
-  const runAnimation = useCallback(() => {
-    if (hasAnimated.current) return;
-    hasAnimated.current = true;
-
-    // Collect all entrance targets and their configs
-    const entranceAnims: { targets: HTMLElement; props: Record<string, any>; offset: number }[] = [];
-
-    if (iconRef.current) entranceAnims.push({
-      targets: iconRef.current,
-      props: { opacity: [0, 1], scale: [0.6, 1] },
-      offset: 0,
-    });
-    if (headlineRef.current) entranceAnims.push({
-      targets: headlineRef.current,
-      props: { opacity: [0, 1], translateY: [24, 0] },
-      offset: 150,
-    });
-    if (subtitleRef.current) entranceAnims.push({
-      targets: subtitleRef.current,
-      props: { opacity: [0, 1], translateY: [18, 0] },
-      offset: 300,
-    });
-    if (ctaRef.current) entranceAnims.push({
-      targets: ctaRef.current,
-      props: { opacity: [0, 1], translateX: [-20, 0] },
-      offset: 650,
-    });
-    if (joinRef.current) entranceAnims.push({
-      targets: joinRef.current,
-      props: { opacity: [0, 1] },
-      offset: 900,
-    });
-
-    // Run all entrance animations with individual delays
-    const entrancePromises = entranceAnims.map(({ targets, props, offset }) => {
-      const duration = offset >= 900 ? 400 : 600;
-      const anim = animate(targets, {
-        ...props,
-        duration,
-        ease: 'inOutQuad',
-        delay: offset,
-      });
-      return anim.then ? anim : Promise.resolve();
-    });
-  }, []);
-
-  /* ─── IntersectionObserver trigger ─── */
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          runAnimation();
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.2 }
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [runAnimation]);
-
-  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) {
-      setShowModal(false);
-    }
-  };
-
   const handleShowResults = (data?: any) => {
     setQuizData(data);
     setShowModal(false);
@@ -164,131 +55,371 @@ export const PreQualificationSection = forwardRef<PreQualificationSectionRef, Pr
 
   const handleStartApplication = () => {
     setShowResults(false);
-    if (onApplyFromQuiz) {
-      onApplyFromQuiz(quizData);
-    } else if (onApplyClick) {
-      onApplyClick();
-    }
+    if (onApplyFromQuiz) onApplyFromQuiz(quizData);
+    else if (onApplyClick) onApplyClick();
   };
+
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) setShowModal(false);
+  };
+
+  const CHECKS = [
+    'Soft credit pull — no FICO hit',
+    '3 questions, no documents',
+    'Range delivered in 60 seconds',
+  ];
 
   return (
     <>
-      <section ref={sectionRef} className="py-12 md:py-16 lg:py-20 bg-[#ededf6] relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 items-center w-full">
-
-            {/* ═══════════ LEFT — Content ═══════════ */}
-            <div className="text-center lg:text-left">
-
-              {/* Icon */}
-              <div
-                ref={iconRef}
-                className="inline-flex items-center justify-center w-10 h-10 lg:w-12 lg:h-12 bg-[#4945ff]/10 rounded-full mb-5 lg:mb-8"
-                style={{ opacity: 0 }}
-              >
-                <Sparkles className="w-5 h-5 lg:w-6 lg:h-6 text-[#4945ff]" />
-              </div>
-
-              {/* Headline */}
+      <section
+        ref={sectionRef}
+        style={{
+          background: 'var(--paper)',
+          padding: '120px 0',
+          fontFamily: 'var(--font-body)',
+        }}
+      >
+        <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 32px' }}>
+          <div
+            className="grid"
+            style={{
+              gridTemplateColumns: 'minmax(0, 1.1fr) minmax(0, 1fr)',
+              gap: 56,
+              alignItems: 'center',
+            }}
+          >
+            {/* Left — copy */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+            >
+              <Eyebrow>Prequalify · 60 seconds</Eyebrow>
               <h2
-                ref={headlineRef}
-                className="text-2xl sm:text-3xl md:text-4xl lg:text-[2.6rem] xl:text-[3.2rem] 2xl:text-[3.6rem] text-[#041e42] mb-4 lg:mb-5 leading-[1.05] tracking-tight"
-                style={{ opacity: 0, fontWeight: 700 }}
+                style={{
+                  marginTop: 18,
+                  marginBottom: 0,
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 'clamp(2.25rem, 4.8vw, 3.75rem)',
+                  fontWeight: 600,
+                  letterSpacing: '-0.04em',
+                  lineHeight: 1.03,
+                  color: '#0F0E17',
+                }}
               >
-                {t('preQual.title')}
+                Get a funding range
+                <br />
+                before you ever
+                <br />
+                <span
+                  style={{
+                    fontFamily: 'var(--font-serif)',
+                    fontStyle: 'italic',
+                    fontWeight: 400,
+                    color: '#4F46E5',
+                  }}
+                >
+                  fill out a form.
+                </span>
               </h2>
-
-              {/* Subtitle — single trust line */}
               <p
-                ref={subtitleRef}
-                className="text-black/60 mb-5 lg:mb-8 text-sm sm:text-base lg:text-lg"
-                style={{ opacity: 0, lineHeight: 1.6 }}
+                style={{
+                  marginTop: 20,
+                  marginBottom: 0,
+                  maxWidth: 520,
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 16.5,
+                  lineHeight: 1.6,
+                  color: 'var(--ink-soft)',
+                }}
               >
-                6 questions. No credit impact. Instant results.
+                Three questions, soft-pull only, no bank upload. You&rsquo;ll see a low / high range and a factor rate — and you decide whether that&rsquo;s worth a full application.
               </p>
 
-              {/* CTA button + trust line */}
+              <ul
+                style={{
+                  listStyle: 'none',
+                  margin: '28px 0 0',
+                  padding: 0,
+                }}
+              >
+                {CHECKS.map((c) => (
+                  <li
+                    key={c}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 12,
+                      padding: '10px 0',
+                      borderBottom: '1px solid var(--line)',
+                      fontFamily: 'var(--font-body)',
+                      fontSize: 14.5,
+                      color: 'var(--ink-soft)',
+                    }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden>
+                      <path
+                        d="M3.5 8.2L6.4 11 12 5"
+                        stroke="#4F46E5"
+                        strokeWidth="1.8"
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    {c}
+                  </li>
+                ))}
+              </ul>
+
               <div
-                ref={ctaRef}
-                className="flex flex-col items-center lg:items-start gap-3 lg:gap-4 mb-0"
-                style={{ opacity: 0 }}
+                className="flex flex-wrap items-center gap-3"
+                style={{ marginTop: 32 }}
               >
                 <button
-                  onClick={() => {
-                    if (onCalculatorClick) {
-                      onCalculatorClick();
-                    } else {
-                      setShowModal(true);
-                    }
+                  onClick={() => setShowModal(true)}
+                  className="transition-transform"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    background: '#0F0E17',
+                    color: '#FFFFFF',
+                    border: '1px solid #0F0E17',
+                    borderRadius: 8,
+                    padding: '12px 20px',
+                    fontFamily: 'var(--font-body)',
+                    fontSize: 14,
+                    fontWeight: 600,
+                    cursor: 'pointer',
                   }}
-                  className="prequal-cta-button bg-[#4945ff] hover:bg-[#3b38d9] text-base sm:text-lg md:text-xl lg:text-2xl py-3 sm:py-4 lg:py-5 px-6 sm:px-8 lg:px-10 rounded-xl font-semibold transition-all duration-300 whitespace-nowrap cursor-pointer text-white"
                 >
-                  {t('preQual.button')}
+                  Start prequal
+                  <span aria-hidden>→</span>
                 </button>
-
-                {/* Trust line — directly under CTA */}
-                <p
-                  ref={joinRef}
-                  className="text-xs sm:text-sm"
-                  style={{ opacity: 0, color: '#999' }}
+                <button
+                  onClick={onCalculatorClick}
+                  style={{
+                    background: 'transparent',
+                    color: '#0F0E17',
+                    border: '1px solid var(--line)',
+                    borderRadius: 8,
+                    padding: '12px 18px',
+                    fontFamily: 'var(--font-body)',
+                    fontSize: 14,
+                    fontWeight: 500,
+                    cursor: 'pointer',
+                  }}
                 >
-                  {t('preQual.joinText')}
-                </p>
+                  Run the full calculator
+                </button>
               </div>
-            </div>
+            </motion.div>
 
-            {/* ═══════════ RIGHT — Phone Mockup ═══════════ */}
-            <div className="hidden lg:flex justify-center items-center relative">
-              <img
-                src={phoneMockup}
-                alt="Delt Capital qualification result showing $125,000 in funding"
-                loading="eager"
-                className="w-full max-w-[220px] xl:max-w-[280px]"
-              />
-            </div>
+            {/* Right — prequal card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6, delay: 0.15, ease: [0.25, 0.46, 0.45, 0.94] }}
+              style={{
+                background: '#FFFFFF',
+                border: '1px solid var(--line)',
+                borderRadius: 20,
+                padding: '32px',
+                boxShadow:
+                  '0 1px 2px rgba(15,14,23,0.03), 0 40px 80px -50px rgba(15,14,23,0.2)',
+              }}
+            >
+              <div className="flex items-center justify-between" style={{ marginBottom: 22 }}>
+                <span
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 10.5,
+                    letterSpacing: '0.18em',
+                    textTransform: 'uppercase',
+                    color: 'var(--ink-mute)',
+                    fontWeight: 600,
+                  }}
+                >
+                  Sample estimate
+                </span>
+                <span
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 6,
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 10.5,
+                    letterSpacing: '0.14em',
+                    textTransform: 'uppercase',
+                    color: '#0F7A5A',
+                    fontWeight: 600,
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 6,
+                      height: 6,
+                      borderRadius: 999,
+                      background: '#0F7A5A',
+                    }}
+                  />
+                  Live
+                </span>
+              </div>
+
+              <div
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 10.5,
+                  letterSpacing: '0.14em',
+                  textTransform: 'uppercase',
+                  color: 'var(--ink-mute)',
+                  fontWeight: 600,
+                }}
+              >
+                Funding range
+              </div>
+              <div
+                style={{
+                  marginTop: 10,
+                  display: 'flex',
+                  alignItems: 'baseline',
+                  gap: 12,
+                  fontFamily: 'var(--font-display)',
+                  letterSpacing: '-0.04em',
+                  color: '#0F0E17',
+                  lineHeight: 1,
+                  fontVariantNumeric: 'tabular-nums',
+                }}
+              >
+                <span style={{ fontSize: 48, fontWeight: 700 }}>$72K</span>
+                <span style={{ fontSize: 20, color: 'var(--ink-mute)' }}>—</span>
+                <span style={{ fontSize: 48, fontWeight: 700 }}>$108K</span>
+              </div>
+
+              <div
+                className="grid"
+                style={{
+                  gridTemplateColumns: 'repeat(3, 1fr)',
+                  gap: 10,
+                  marginTop: 28,
+                }}
+              >
+                {[
+                  { l: 'Factor', v: '1.18×' },
+                  { l: 'Term', v: '6 mo' },
+                  { l: 'Weekly debit', v: '$4.2K' },
+                ].map((k) => (
+                  <div
+                    key={k.l}
+                    style={{
+                      padding: '14px',
+                      border: '1px solid var(--line)',
+                      borderRadius: 12,
+                      background: 'var(--paper-warm)',
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: 10,
+                        letterSpacing: '0.16em',
+                        textTransform: 'uppercase',
+                        color: 'var(--ink-mute)',
+                        fontWeight: 600,
+                      }}
+                    >
+                      {k.l}
+                    </div>
+                    <div
+                      style={{
+                        marginTop: 6,
+                        fontFamily: 'var(--font-display)',
+                        fontSize: 18,
+                        fontWeight: 700,
+                        letterSpacing: '-0.02em',
+                        color: '#0F0E17',
+                        fontVariantNumeric: 'tabular-nums',
+                      }}
+                    >
+                      {k.v}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Progress / scan bar */}
+              <div
+                style={{
+                  marginTop: 28,
+                  height: 4,
+                  background: 'var(--line-soft)',
+                  borderRadius: 2,
+                  position: 'relative',
+                  overflow: 'hidden',
+                }}
+              >
+                <motion.span
+                  aria-hidden
+                  initial={{ x: '-30%' }}
+                  animate={{ x: '120%' }}
+                  transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    width: '30%',
+                    background: 'linear-gradient(90deg, transparent, #4F46E5, transparent)',
+                  }}
+                />
+              </div>
+              <div
+                style={{
+                  marginTop: 14,
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 12.5,
+                  color: 'var(--ink-mute)',
+                  fontStyle: 'italic',
+                }}
+              >
+                Illustrative range based on $50K/mo revenue, 2+ years in business.
+              </div>
+            </motion.div>
           </div>
         </div>
-
-        {/* ── Bottom border accent ── */}
-        <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-black/10 to-transparent" />
       </section>
 
-      {/* ── CTA hover style (no bounce — just color shift) ── */}
-      <style>{`
-        .prequal-cta-button {
-          position: relative;
-        }
-        .prequal-cta-button:hover {
-          transform: translateY(-1px);
-          box-shadow: 0 4px 20px rgba(73, 69, 255, 0.3);
-        }
-        .prequal-cta-button:active {
-          transform: translateY(0);
-        }
-      `}</style>
-
-      {/* Modal */}
+      {/* Quiz Modal */}
       {showModal && (
         <div
-          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-hidden"
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-start justify-center p-4 pt-8 overflow-y-auto"
           onClick={handleBackdropClick}
+          style={{ scrollbarGutter: 'stable' }}
         >
-          <div className="w-full max-w-4xl relative">
+          <div className="w-full max-w-4xl mb-16 relative">
             <button
               onClick={() => setShowModal(false)}
-              className="absolute top-3 right-3 w-10 h-10 bg-white/90 hover:bg-white rounded-full shadow-lg flex items-center justify-center z-10 transition-all hover:scale-110"
+              className="absolute -top-4 -right-4 w-12 h-12 bg-white hover:bg-gray-100 rounded-full shadow-2xl flex items-center justify-center z-10 transition-all hover:scale-110"
             >
-              <X className="w-5 h-5 text-gray-600" />
+              <X className="w-6 h-6 text-gray-600" />
             </button>
-            <PreQualificationGame startWithQuiz={true} onShowResults={handleShowResults} />
+            <PreQualificationGame
+              startWithQuiz={true}
+              onShowResults={handleShowResults}
+            />
           </div>
         </div>
       )}
 
       {/* Results Full Page */}
       {showResults && (
-        <div className="fixed inset-0 bg-[#ededf6] dark:bg-[#0A1F35] z-50 flex items-center justify-center p-4">
-          <div className="w-full max-w-4xl">
+        <div
+          className="fixed inset-0 bg-[#F7F5F0] z-50 flex items-start justify-center p-4 overflow-y-auto"
+          style={{ scrollbarGutter: 'stable' }}
+        >
+          <div className="w-full max-w-4xl my-auto">
             <PreQualificationGame
               startWithQuiz={true}
               showResultsOnly={true}
@@ -303,3 +434,27 @@ export const PreQualificationSection = forwardRef<PreQualificationSectionRef, Pr
 });
 
 PreQualificationSection.displayName = 'PreQualificationSection';
+
+function Eyebrow({ children, color = '#4F46E5' }: { children: React.ReactNode; color?: string }) {
+  return (
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 10,
+        fontFamily: 'var(--font-mono)',
+        fontSize: 11,
+        fontWeight: 600,
+        letterSpacing: '0.18em',
+        textTransform: 'uppercase',
+        color,
+      }}
+    >
+      <span
+        aria-hidden
+        style={{ display: 'inline-block', width: 18, height: 1, background: color }}
+      />
+      {children}
+    </span>
+  );
+}

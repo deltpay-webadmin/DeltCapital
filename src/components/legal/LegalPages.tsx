@@ -28,7 +28,7 @@ function TableOfContents({ items, activeId, onItemClick }: {
       {/* Mobile toggle */}
       <button
         onClick={() => setMobileOpen(!mobileOpen)}
-        className="xl:hidden fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full bg-[#1B17FF] text-white shadow-lg shadow-[#1B17FF]/30 flex items-center justify-center hover:bg-[#1510d9] transition-colors"
+        className="xl:hidden fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full bg-[#4F46E5] text-white shadow-lg shadow-[#4F46E5]/30 flex items-center justify-center hover:bg-[#1510d9] transition-colors"
         aria-label="Table of contents"
       >
         <List className="w-5 h-5" />
@@ -39,10 +39,10 @@ function TableOfContents({ items, activeId, onItemClick }: {
         <div className="xl:hidden fixed inset-0 z-50 flex justify-end" onClick={() => setMobileOpen(false)}>
           <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" />
           <div
-            className="relative w-80 max-w-[85vw] bg-white dark:bg-[#1F2933] h-full overflow-y-auto shadow-2xl"
+            className="relative w-80 max-w-[85vw] bg-white dark:bg-[#1A1923] h-full overflow-y-auto shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="sticky top-0 bg-white dark:bg-[#1F2933] border-b border-gray-100 dark:border-gray-700 px-5 py-4 flex items-center justify-between">
+            <div className="sticky top-0 bg-white dark:bg-[#1A1923] border-b border-gray-100 dark:border-gray-700 px-5 py-4 flex items-center justify-between">
               <span className="text-xs font-semibold tracking-widest text-gray-400 uppercase">On this page</span>
               <button onClick={() => setMobileOpen(false)} className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700">
                 <X className="w-4 h-4 text-gray-400" />
@@ -65,7 +65,7 @@ function TableOfContents({ items, activeId, onItemClick }: {
       {/* Desktop sidebar */}
       <aside className="hidden xl:block w-64 flex-shrink-0">
         <div className="sticky top-[73px] max-h-[calc(100vh-90px)] overflow-y-auto">
-          <div className="border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-[#1F2933] shadow-sm">
+          <div className="border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-[#1A1923] shadow-sm">
             <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-700">
               <span className="text-[11px] font-semibold tracking-widest text-gray-400 uppercase">On this page</span>
             </div>
@@ -95,15 +95,15 @@ function TocLink({ item, isActive, onClick }: { item: TocItem; isActive: boolean
         group w-full text-left px-3 py-2 rounded-lg text-[13px] transition-all duration-200 flex items-start gap-2
         ${isSubLevel ? 'pl-7' : ''}
         ${isActive
-          ? 'bg-[#1B17FF]/8 text-[#1B17FF] font-semibold'
-          : 'text-gray-500 dark:text-gray-400 hover:text-[#041E42] dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800/50'
+          ? 'bg-[#4F46E5]/8 text-[#4F46E5] font-semibold'
+          : 'text-gray-500 dark:text-gray-400 hover:text-[#0F0E17] dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800/50'
         }
       `}
     >
       <span
         className={`
           mt-[3px] w-1.5 h-1.5 rounded-full flex-shrink-0 transition-all duration-200
-          ${isActive ? 'bg-[#1B17FF] scale-100' : 'bg-transparent scale-0 group-hover:bg-gray-300 group-hover:scale-100'}
+          ${isActive ? 'bg-[#4F46E5] scale-100' : 'bg-transparent scale-0 group-hover:bg-gray-300 group-hover:scale-100'}
         `}
       />
       <span className="leading-snug">{item.label}</span>
@@ -154,9 +154,9 @@ export function LegalPageLayout({ title, children, onClose, tocItems }: LegalPag
   const hasToc = tocItems && tocItems.length > 0;
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#0A1F35]">
+    <div className="min-h-screen bg-white dark:bg-[#0F0E17]">
       {/* Sticky header */}
-      <div className="sticky top-0 z-50 bg-white dark:bg-[#0A1F35] border-b border-gray-200 dark:border-gray-800">
+      <div className="sticky top-0 z-50 bg-white dark:bg-[#0F0E17] border-b border-gray-200 dark:border-gray-800">
         <div className={`${hasToc ? 'max-w-6xl' : 'max-w-4xl'} mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center`}>
           <div className="flex items-center gap-0 h-10 w-auto">
             <img src={logoImg} alt="Delt Capital" className="h-full w-auto object-contain" />
@@ -178,7 +178,7 @@ export function LegalPageLayout({ title, children, onClose, tocItems }: LegalPag
           <div className="flex gap-10">
             {/* Content */}
             <div className="flex-1 min-w-0 [&_h3]:scroll-mt-24 [&_h4]:scroll-mt-24" ref={contentRef}>
-              <h1 className="text-3xl font-bold text-[#041E42] dark:text-white mb-8">{title}</h1>
+              <h1 className="text-3xl font-bold text-[#0F0E17] dark:text-white mb-8">{title}</h1>
               <div className="prose prose-slate dark:prose-invert max-w-none">
                 {children}
               </div>
@@ -188,7 +188,7 @@ export function LegalPageLayout({ title, children, onClose, tocItems }: LegalPag
           </div>
         ) : (
           <>
-            <h1 className="text-3xl font-bold text-[#041E42] dark:text-white mb-8">{title}</h1>
+            <h1 className="text-3xl font-bold text-[#0F0E17] dark:text-white mb-8">{title}</h1>
             <div className="prose prose-slate dark:prose-invert max-w-none">
               {children}
             </div>
@@ -285,8 +285,8 @@ export function PrivacyPolicy({ onClose }: { onClose?: () => void }) {
   return (
     <LegalPageLayout title="Privacy Policy" onClose={onClose} tocItems={privacyToc}>
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-[#041E42] dark:text-white">DELT PAY LLC</h2>
-        <p className="text-lg font-semibold text-[#041E42] dark:text-white">Privacy Policy</p>
+        <h2 className="text-2xl font-bold text-[#0F0E17] dark:text-white">DELT PAY LLC</h2>
+        <p className="text-lg font-semibold text-[#0F0E17] dark:text-white">Privacy Policy</p>
         <p className="text-sm italic text-gray-500">Effective Date: March 1, 2026</p>
       </div>
 
@@ -294,9 +294,9 @@ export function PrivacyPolicy({ onClose }: { onClose?: () => void }) {
       <p>Delt Pay LLC ("Delt Pay," "we," "our," or "us") provides merchant cash advance ("MCA") and other credit and lending products to businesses. This Privacy Policy explains how we collect, use, store, and share information — including personal data about business owners, authorized representatives, and other individuals ("you") — when you use our platform and apply for or manage a financing product with us.</p>
       <p>Our services are powered in part by Plaid Inc. ("Plaid") and Plaid Consumer Reporting Agency, Inc. ("Plaid CRA"), third-party financial data and consumer reporting platforms. When you connect a bank account or undergo identity verification through our platform, you interact with Plaid and/or Plaid CRA directly. We encourage you to review the following Plaid policies for a full description of Plaid's own data practices:</p>
       <ul>
-        <li>Plaid End User Privacy Policy: <a href="https://plaid.com/legal" target="_blank" rel="noopener noreferrer" className="text-[#1B17FF] underline">https://plaid.com/legal</a></li>
-        <li>Plaid CRA Privacy Policy: <a href="https://plaid.com/plaid-check-consumer-report/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-[#1B17FF] underline">https://plaid.com/plaid-check-consumer-report/privacy-policy</a></li>
-        <li>Plaid Biometric Policy and Release: <a href="https://plaid.com/legal/#biometric-policy" target="_blank" rel="noopener noreferrer" className="text-[#1B17FF] underline">https://plaid.com/legal/#biometric-policy</a></li>
+        <li>Plaid End User Privacy Policy: <a href="https://plaid.com/legal" target="_blank" rel="noopener noreferrer" className="text-[#4F46E5] underline">https://plaid.com/legal</a></li>
+        <li>Plaid CRA Privacy Policy: <a href="https://plaid.com/plaid-check-consumer-report/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-[#4F46E5] underline">https://plaid.com/plaid-check-consumer-report/privacy-policy</a></li>
+        <li>Plaid Biometric Policy and Release: <a href="https://plaid.com/legal/#biometric-policy" target="_blank" rel="noopener noreferrer" className="text-[#4F46E5] underline">https://plaid.com/legal/#biometric-policy</a></li>
       </ul>
       <p>This Policy does not govern Plaid's or Plaid CRA's independent processing of your data — only Delt Pay's.</p>
 
@@ -306,7 +306,7 @@ export function PrivacyPolicy({ onClose }: { onClose?: () => void }) {
       <h3 id="pp-3" className="text-xl font-bold text-[#2B3674] dark:text-blue-300 border-b border-gray-300 pb-1">3. Information We Collect</h3>
       <p>We collect several categories of information in connection with providing our services:</p>
 
-      <h4 id="pp-3-1" className="font-bold text-[#041E42] dark:text-white">3.1 Information You Provide Directly</h4>
+      <h4 id="pp-3-1" className="font-bold text-[#0F0E17] dark:text-white">3.1 Information You Provide Directly</h4>
       <ul>
         <li><strong>Business information:</strong> Legal business name, EIN/Tax ID, business address, industry, years in operation, and monthly revenue.</li>
         <li><strong>Personal identifiers about business representatives:</strong> Name, date of birth, Social Security number (for identity verification and credit evaluation), email address, phone number, and mailing address.</li>
@@ -314,7 +314,7 @@ export function PrivacyPolicy({ onClose }: { onClose?: () => void }) {
         <li><strong>Account credentials:</strong> If required to connect your financial accounts via Plaid, usernames, passwords, security tokens, or one-time passwords (collected and processed by Plaid on our behalf).</li>
       </ul>
 
-      <h4 id="pp-3-2" className="font-bold text-[#041E42] dark:text-white">3.2 Information Collected via Plaid</h4>
+      <h4 id="pp-3-2" className="font-bold text-[#0F0E17] dark:text-white">3.2 Information Collected via Plaid</h4>
       <p>When you connect your bank account through our platform using Plaid, Plaid collects and transmits financial data to us on your behalf. Depending on the services you use, this may include:</p>
       <ul>
         <li><strong>Bank account details:</strong> Institution name, account name, account type, account and routing numbers, and ownership information.</li>
@@ -325,7 +325,7 @@ export function PrivacyPolicy({ onClose }: { onClose?: () => void }) {
       </ul>
       <p>By connecting your accounts through Plaid, you authorize Plaid to access and transmit this data to Delt Pay for the purposes described in this Policy.</p>
 
-      <h4 id="pp-3-3" className="font-bold text-[#041E42] dark:text-white">3.3 Information Collected via Plaid CRA (Consumer Reporting Data)</h4>
+      <h4 id="pp-3-3" className="font-bold text-[#0F0E17] dark:text-white">3.3 Information Collected via Plaid CRA (Consumer Reporting Data)</h4>
       <p>In connection with evaluating your financing application, we may obtain a consumer report about you through Plaid Consumer Reporting Agency, Inc. ("Plaid CRA"). Plaid CRA is a consumer reporting agency subject to the Fair Credit Reporting Act ("FCRA"). The data obtained through Plaid CRA may include:</p>
       <ul>
         <li>Account and transaction history from your connected financial institutions.</li>
@@ -333,19 +333,19 @@ export function PrivacyPolicy({ onClose }: { onClose?: () => void }) {
         <li>Credit-related data, including account balances, repayment history, and credit utilization.</li>
         <li>Scores and assessments generated by Plaid CRA based on your financial data.</li>
       </ul>
-      <p>This data is used exclusively for permissible purposes under the FCRA, including evaluating your application for credit and assessing creditworthiness and repayment capacity. For more information about Plaid CRA's practices and your rights under the FCRA, please review the <a href="https://plaid.com/plaid-check-consumer-report/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-[#1B17FF] underline">Plaid CRA Privacy Policy</a>.</p>
+      <p>This data is used exclusively for permissible purposes under the FCRA, including evaluating your application for credit and assessing creditworthiness and repayment capacity. For more information about Plaid CRA's practices and your rights under the FCRA, please review the <a href="https://plaid.com/plaid-check-consumer-report/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-[#4F46E5] underline">Plaid CRA Privacy Policy</a>.</p>
 
-      <h4 id="pp-3-4" className="font-bold text-[#041E42] dark:text-white">3.4 Biometric Data (Collected via Plaid Identity Verification)</h4>
+      <h4 id="pp-3-4" className="font-bold text-[#0F0E17] dark:text-white">3.4 Biometric Data (Collected via Plaid Identity Verification)</h4>
       <p>As part of our onboarding and identity verification process, we use Plaid's Identity Verification ("IDV") service. This service may require you to provide a government-issued identity document containing your photograph and/or a photograph or video image of yourself (a "selfie"). Plaid and/or its service providers use facial recognition technology to compare the facial geometry derived from your identity document to the facial geometry derived from your selfie in order to verify your identity and help prevent fraud.</p>
       <p>The images you provide and any derived facial geometry data may be considered biometric data in certain jurisdictions. Plaid processes this biometric data as a service provider on behalf of Delt Pay. Plaid and its service providers store biometric data in encrypted form and do not use it to enhance, improve, or develop their own services.</p>
       <p>Your biometric data is used solely for the purposes of identity verification and fraud prevention in connection with your financing application.</p>
-      <p>For full details on how Plaid collects, uses, stores, and deletes biometric data, please review <a href="https://plaid.com/legal/#biometric-policy" target="_blank" rel="noopener noreferrer" className="text-[#1B17FF] underline">Plaid's Biometric Policy and Release</a>.</p>
+      <p>For full details on how Plaid collects, uses, stores, and deletes biometric data, please review <a href="https://plaid.com/legal/#biometric-policy" target="_blank" rel="noopener noreferrer" className="text-[#4F46E5] underline">Plaid's Biometric Policy and Release</a>.</p>
       <div className="bg-[#FFF8E1] border border-[#FFD54F] rounded-lg p-4 my-4">
-        <p className="font-bold text-[#041E42] mb-1">Special Notice for Illinois and Texas Residents:</p>
+        <p className="font-bold text-[#0F0E17] mb-1">Special Notice for Illinois and Texas Residents:</p>
         <p className="mb-0">If you are a resident of Illinois or Texas, the data derived from your face that Plaid and Plaid's service providers collect and process on Delt Pay's behalf may be considered biometric data under applicable state law, including the Illinois Biometric Information Privacy Act ("BIPA"). By using our identity verification services, you acknowledge that you have read, understand, and consent to the collection and processing of your biometric data as described in this Section and in Plaid's Biometric Policy and Release. Your biometric data will be stored by Plaid for no longer than three (3) years, unless otherwise required by law. Delt Pay does not directly store biometric data; all biometric data is processed and stored by Plaid on our behalf.</p>
       </div>
 
-      <h4 id="pp-3-5" className="font-bold text-[#041E42] dark:text-white">3.5 Information Collected Automatically</h4>
+      <h4 id="pp-3-5" className="font-bold text-[#0F0E17] dark:text-white">3.5 Information Collected Automatically</h4>
       <p>When you use our website or platform, we may automatically collect:</p>
       <ul>
         <li><strong>Device and usage data:</strong> IP address, browser type, operating system, device model, and pages visited.</li>
@@ -354,7 +354,7 @@ export function PrivacyPolicy({ onClose }: { onClose?: () => void }) {
         <li><strong>Approximate location:</strong> Inferred from your IP address or device timezone settings.</li>
       </ul>
 
-      <h4 id="pp-3-6" className="font-bold text-[#041E42] dark:text-white">3.6 Information from Third Parties</h4>
+      <h4 id="pp-3-6" className="font-bold text-[#0F0E17] dark:text-white">3.6 Information from Third Parties</h4>
       <p>We may receive information about you or your business from third parties, including identity verification services, fraud prevention providers, consumer reporting agencies (including Plaid CRA), and other data sources, where permitted by law and as necessary to evaluate financing applications.</p>
 
       <h3 id="pp-4" className="text-xl font-bold text-[#2B3674] dark:text-blue-300 border-b border-gray-300 pb-1">4. How We Use Your Information</h3>
@@ -374,19 +374,19 @@ export function PrivacyPolicy({ onClose }: { onClose?: () => void }) {
       <h3 id="pp-5" className="text-xl font-bold text-[#2B3674] dark:text-blue-300 border-b border-gray-300 pb-1">5. How We Share Your Information</h3>
       <p>Delt Pay does not sell your personal information. We do not share your information with third-party marketers or advertisers. We share information only in the following limited circumstances:</p>
 
-      <h4 id="pp-5-1" className="font-bold text-[#041E42] dark:text-white">5.1 Plaid and Plaid CRA</h4>
+      <h4 id="pp-5-1" className="font-bold text-[#0F0E17] dark:text-white">5.1 Plaid and Plaid CRA</h4>
       <p>We share information with Plaid to enable bank account connectivity, identity verification (including biometric verification), income verification, transaction data retrieval, and balance checks. We share information with Plaid CRA to obtain consumer reports and scores for credit evaluation purposes. Plaid and Plaid CRA act as service providers and/or data processors on our behalf and under their own agreements with you. Their use of your data is governed by their respective privacy policies.</p>
 
-      <h4 id="pp-5-2" className="font-bold text-[#041E42] dark:text-white">5.2 Service Providers</h4>
+      <h4 id="pp-5-2" className="font-bold text-[#0F0E17] dark:text-white">5.2 Service Providers</h4>
       <p>We may share information with carefully selected third-party service providers who assist us in operating our platform, processing applications, verifying identity, providing analytics, maintaining security, and fulfilling legal obligations. These providers are contractually required to use your information only as directed by us and in accordance with applicable law.</p>
 
-      <h4 id="pp-5-3" className="font-bold text-[#041E42] dark:text-white">5.3 Legal and Regulatory Disclosures</h4>
+      <h4 id="pp-5-3" className="font-bold text-[#0F0E17] dark:text-white">5.3 Legal and Regulatory Disclosures</h4>
       <p>We may disclose information when required by law, regulation, court order, or government request, or when we believe in good faith that disclosure is necessary to protect our legal rights, prevent fraud, or protect the safety of any person.</p>
 
-      <h4 id="pp-5-4" className="font-bold text-[#041E42] dark:text-white">5.4 Business Transfers</h4>
+      <h4 id="pp-5-4" className="font-bold text-[#0F0E17] dark:text-white">5.4 Business Transfers</h4>
       <p>If Delt Pay undergoes a merger, acquisition, sale of assets, or similar corporate transaction, your information may be transferred as part of that transaction. We will notify you of any such change as required by applicable law.</p>
 
-      <h4 id="pp-5-5" className="font-bold text-[#041E42] dark:text-white">5.5 With Your Consent</h4>
+      <h4 id="pp-5-5" className="font-bold text-[#0F0E17] dark:text-white">5.5 With Your Consent</h4>
       <p>We may share your information for other purposes with your explicit consent.</p>
 
       <h3 id="pp-6" className="text-xl font-bold text-[#2B3674] dark:text-blue-300 border-b border-gray-300 pb-1">6. Data Security</h3>
@@ -398,7 +398,7 @@ export function PrivacyPolicy({ onClose }: { onClose?: () => void }) {
         <li>Timely patching of known security vulnerabilities.</li>
         <li>Incident response procedures to address security events promptly.</li>
       </ul>
-      <p>We comply with the Safeguards Rule under the Gramm-Leach-Bliley Act ("GLBA"), which requires us to maintain a comprehensive information security program. While we work hard to protect your information, no system is completely secure. If you believe your information has been compromised, please contact us immediately at <a href="mailto:privacy@delt.com" className="text-[#1B17FF] underline">privacy@delt.com</a>.</p>
+      <p>We comply with the Safeguards Rule under the Gramm-Leach-Bliley Act ("GLBA"), which requires us to maintain a comprehensive information security program. While we work hard to protect your information, no system is completely secure. If you believe your information has been compromised, please contact us immediately at <a href="mailto:privacy@delt.com" className="text-[#4F46E5] underline">privacy@delt.com</a>.</p>
 
       <h3 id="pp-7" className="text-xl font-bold text-[#2B3674] dark:text-blue-300 border-b border-gray-300 pb-1">7. Data Retention</h3>
       <p>We retain your information for as long as necessary to fulfill the purposes described in this Policy, to maintain your account, and to comply with our legal, regulatory, and contractual obligations.</p>
@@ -414,7 +414,7 @@ export function PrivacyPolicy({ onClose }: { onClose?: () => void }) {
         <li><strong>Deletion:</strong> You may request deletion of your personal information, subject to our legal retention obligations.</li>
         <li><strong>Opt-out of non-essential communications:</strong> You may opt out of marketing communications at any time by following the unsubscribe instructions in any email or by contacting us directly.</li>
       </ul>
-      <p className="font-bold text-[#041E42] dark:text-white mt-4">Your Rights Under the FCRA</p>
+      <p className="font-bold text-[#0F0E17] dark:text-white mt-4">Your Rights Under the FCRA</p>
       <p>If Delt Pay has obtained a consumer report about you through Plaid CRA, you have specific rights under the Fair Credit Reporting Act, including the right to:</p>
       <ul>
         <li>Access the information in your consumer file.</li>
@@ -422,11 +422,11 @@ export function PrivacyPolicy({ onClose }: { onClose?: () => void }) {
         <li>Be notified if information in your consumer report has been used against you in a credit decision.</li>
         <li>Request that your information not be used for prescreened offers of credit.</li>
       </ul>
-      <p>To exercise your FCRA rights with Plaid CRA, you may visit <a href="https://plaid.com/check/consumer-service-center/" target="_blank" rel="noopener noreferrer" className="text-[#1B17FF] underline">Plaid CRA's Consumer Service Center</a> or contact Plaid CRA at 844-204-5860.</p>
-      <p>To exercise any rights with Delt Pay, please contact us at <a href="mailto:privacy@delt.com" className="text-[#1B17FF] underline">privacy@delt.com</a>. We will respond within a reasonable time and in accordance with applicable law. We may require you to verify your identity before fulfilling a request.</p>
+      <p>To exercise your FCRA rights with Plaid CRA, you may visit <a href="https://plaid.com/check/consumer-service-center/" target="_blank" rel="noopener noreferrer" className="text-[#4F46E5] underline">Plaid CRA's Consumer Service Center</a> or contact Plaid CRA at 844-204-5860.</p>
+      <p>To exercise any rights with Delt Pay, please contact us at <a href="mailto:privacy@delt.com" className="text-[#4F46E5] underline">privacy@delt.com</a>. We will respond within a reasonable time and in accordance with applicable law. We may require you to verify your identity before fulfilling a request.</p>
 
       <h3 id="pp-9" className="text-xl font-bold text-[#2B3674] dark:text-blue-300 border-b border-gray-300 pb-1">9. Plaid's Role and Your Rights with Plaid</h3>
-      <p>When you connect your financial accounts or undergo identity verification using Plaid, Plaid collects and processes your data as described in Plaid's End User Privacy Policy (<a href="https://plaid.com/legal" target="_blank" rel="noopener noreferrer" className="text-[#1B17FF] underline">https://plaid.com/legal</a>). You have rights with respect to Plaid's processing of your data directly with Plaid, including the ability to manage and revoke data connections through the Plaid Portal at <a href="https://my.plaid.com" target="_blank" rel="noopener noreferrer" className="text-[#1B17FF] underline">my.plaid.com</a>.</p>
+      <p>When you connect your financial accounts or undergo identity verification using Plaid, Plaid collects and processes your data as described in Plaid's End User Privacy Policy (<a href="https://plaid.com/legal" target="_blank" rel="noopener noreferrer" className="text-[#4F46E5] underline">https://plaid.com/legal</a>). You have rights with respect to Plaid's processing of your data directly with Plaid, including the ability to manage and revoke data connections through the Plaid Portal at <a href="https://my.plaid.com" target="_blank" rel="noopener noreferrer" className="text-[#4F46E5] underline">my.plaid.com</a>.</p>
       <p>Disconnecting your accounts through Plaid's Portal will terminate Plaid's ongoing access to your financial data, but will not affect information already transmitted to and retained by Delt Pay in connection with your application or account.</p>
 
       <h3 id="pp-10" className="text-xl font-bold text-[#2B3674] dark:text-blue-300 border-b border-gray-300 pb-1">10. GLBA Privacy Notice</h3>
@@ -435,30 +435,30 @@ export function PrivacyPolicy({ onClose }: { onClose?: () => void }) {
         <li>We do not share your nonpublic personal information with non-affiliated third parties for marketing purposes.</li>
         <li>We share nonpublic personal information only as permitted under GLBA, including with service providers who help us operate our business and as required by law.</li>
       </ul>
-      <p>You do not need to take any action to limit our sharing, as we already limit sharing to what is described in this Policy. If you have questions about our GLBA practices, contact us at <a href="mailto:privacy@delt.com" className="text-[#1B17FF] underline">privacy@delt.com</a>.</p>
+      <p>You do not need to take any action to limit our sharing, as we already limit sharing to what is described in this Policy. If you have questions about our GLBA practices, contact us at <a href="mailto:privacy@delt.com" className="text-[#4F46E5] underline">privacy@delt.com</a>.</p>
 
       <h3 id="pp-11" className="text-xl font-bold text-[#2B3674] dark:text-blue-300 border-b border-gray-300 pb-1">11. FCRA Compliance Notice</h3>
       <p>When Delt Pay obtains a consumer report about you from Plaid CRA or any other consumer reporting agency, we do so for permissible purposes under the Fair Credit Reporting Act ("FCRA"), including evaluating your application for a merchant cash advance or other financing product. We will provide you with any required adverse action notices if a credit decision is based in whole or in part on information contained in a consumer report. You have the right to obtain a free copy of any consumer report used in connection with an adverse action, and to dispute the accuracy or completeness of any information in that report.</p>
 
       <h3 id="pp-12" className="text-xl font-bold text-[#2B3674] dark:text-blue-300 border-b border-gray-300 pb-1">12. California Privacy Notice</h3>
-      <p>If you are a California resident, you may have additional rights under the California Consumer Privacy Act ("CCPA"), as amended by the California Privacy Rights Act ("CPRA"). However, please note that the CCPA provides exemptions for personal information collected, processed, sold, or disclosed pursuant to the Gramm-Leach-Bliley Act and for activities subject to the Fair Credit Reporting Act. To the extent these exemptions apply to your data, CCPA requirements may not apply. Regardless of applicable exemptions, we are committed to transparency about our data practices as described throughout this Policy. If you have questions about your California privacy rights, please contact us at <a href="mailto:privacy@delt.com" className="text-[#1B17FF] underline">privacy@delt.com</a>.</p>
+      <p>If you are a California resident, you may have additional rights under the California Consumer Privacy Act ("CCPA"), as amended by the California Privacy Rights Act ("CPRA"). However, please note that the CCPA provides exemptions for personal information collected, processed, sold, or disclosed pursuant to the Gramm-Leach-Bliley Act and for activities subject to the Fair Credit Reporting Act. To the extent these exemptions apply to your data, CCPA requirements may not apply. Regardless of applicable exemptions, we are committed to transparency about our data practices as described throughout this Policy. If you have questions about your California privacy rights, please contact us at <a href="mailto:privacy@delt.com" className="text-[#4F46E5] underline">privacy@delt.com</a>.</p>
 
       <h3 id="pp-13" className="text-xl font-bold text-[#2B3674] dark:text-blue-300 border-b border-gray-300 pb-1">13. Cookie Policy</h3>
       <p>When you visit the Delt Pay website or platform, we and our third-party partners use cookies and similar tracking technologies to collect information about your browsing activity.</p>
-      <p className="font-bold text-[#041E42] dark:text-white mt-4">What Are Cookies</p>
+      <p className="font-bold text-[#0F0E17] dark:text-white mt-4">What Are Cookies</p>
       <p>Cookies are small data files stored on your browser or device. They may be session cookies (which expire when you close your browser) or persistent cookies (which remain until they expire or you delete them).</p>
-      <p className="font-bold text-[#041E42] dark:text-white mt-4">Types of Cookies We Use</p>
+      <p className="font-bold text-[#0F0E17] dark:text-white mt-4">Types of Cookies We Use</p>
       <ul>
         <li><strong>Strictly Necessary Cookies:</strong> Required for our platform to function properly. These enable core features such as security, authentication, and session management.</li>
         <li><strong>Analytics and Performance Cookies:</strong> We use third-party analytics services, including Google Analytics, to understand how visitors interact with our website and to improve our platform. These cookies collect information such as pages visited, time spent on pages, and traffic sources.</li>
         <li><strong>Functional Cookies:</strong> These enable enhanced functionality and personalization, such as remembering your preferences and settings.</li>
       </ul>
       <p>We do not use advertising or targeting cookies.</p>
-      <p className="font-bold text-[#041E42] dark:text-white mt-4">Google Analytics</p>
-      <p>We use Google Analytics to collect anonymized usage data about our website visitors. Google Analytics uses cookies to collect information such as how often users visit our site, what pages they view, and what other sites they visited before coming to ours. Google's ability to use and share information collected by Google Analytics is restricted by the Google Analytics Terms of Service and the Google Privacy Policy. You can opt out of Google Analytics by installing Google's opt-out browser add-on, available at <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer" className="text-[#1B17FF] underline">https://tools.google.com/dlpage/gaoptout</a>.</p>
-      <p className="font-bold text-[#041E42] dark:text-white mt-4">Your Choices</p>
+      <p className="font-bold text-[#0F0E17] dark:text-white mt-4">Google Analytics</p>
+      <p>We use Google Analytics to collect anonymized usage data about our website visitors. Google Analytics uses cookies to collect information such as how often users visit our site, what pages they view, and what other sites they visited before coming to ours. Google's ability to use and share information collected by Google Analytics is restricted by the Google Analytics Terms of Service and the Google Privacy Policy. You can opt out of Google Analytics by installing Google's opt-out browser add-on, available at <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer" className="text-[#4F46E5] underline">https://tools.google.com/dlpage/gaoptout</a>.</p>
+      <p className="font-bold text-[#0F0E17] dark:text-white mt-4">Your Choices</p>
       <p>Most web browsers allow you to manage cookie preferences through browser settings. You can set your browser to refuse cookies or alert you when cookies are being sent. Please note that disabling cookies may affect the functionality of our platform.</p>
-      <p className="font-bold text-[#041E42] dark:text-white mt-4">Google reCAPTCHA</p>
+      <p className="font-bold text-[#0F0E17] dark:text-white mt-4">Google reCAPTCHA</p>
       <p>When you interact with our platform through Plaid, Google reCAPTCHA may be used to help detect fraud and abuse. Google reCAPTCHA processes certain data, including your IP address and browsing behavior. When reCAPTCHA is used, Google's Privacy Policy and Terms of Use apply.</p>
 
       <h3 id="pp-14" className="text-xl font-bold text-[#2B3674] dark:text-blue-300 border-b border-gray-300 pb-1">14. Adverse Action Notices</h3>
@@ -476,11 +476,11 @@ export function PrivacyPolicy({ onClose }: { onClose?: () => void }) {
       <h3 id="pp-16" className="text-xl font-bold text-[#2B3674] dark:text-blue-300 border-b border-gray-300 pb-1">16. Contact Us</h3>
       <p>If you have questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us:</p>
       <div className="mt-4 mb-4">
-        <p className="font-bold text-[#041E42] dark:text-white">Delt Pay LLC</p>
+        <p className="font-bold text-[#0F0E17] dark:text-white">Delt Pay LLC</p>
         <p>Attn: Privacy</p>
         <p>1603 Capitol Ave Ste 415 #644712</p>
         <p>Cheyenne, Wyoming 82001 USA</p>
-        <p>Email: <a href="mailto:privacy@delt.com" className="text-[#1B17FF] underline">privacy@delt.com</a></p>
+        <p>Email: <a href="mailto:privacy@delt.com" className="text-[#4F46E5] underline">privacy@delt.com</a></p>
       </div>
       <p className="italic font-semibold">We take privacy concerns seriously and will respond to your inquiry as promptly as possible.</p>
     </LegalPageLayout>

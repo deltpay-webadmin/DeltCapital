@@ -43,7 +43,7 @@ export function MCACalculator() {
   return (
     <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 md:p-8 border border-gray-200 dark:border-gray-700">
       <div className="mb-6">
-        <h3 className="text-2xl font-bold text-[#041e42] dark:text-white mb-2">MCA Cost Calculator</h3>
+        <h3 className="text-2xl font-bold text-[#0F0E17] dark:text-white mb-2">MCA Cost Calculator</h3>
         <p className="text-gray-600 dark:text-gray-300">Calculate your merchant cash advance costs and repayment</p>
       </div>
 
@@ -53,11 +53,11 @@ export function MCACalculator() {
           {/* Loan Amount */}
           <div>
             <div className="flex items-center justify-between mb-4">
-              <label className="text-sm font-semibold text-[#041e42] flex items-center gap-2">
-                <DollarSign className="w-4 h-4 text-[#4945ff]" />
+              <label className="text-sm font-semibold text-[#0F0E17] flex items-center gap-2">
+                <DollarSign className="w-4 h-4 text-[#4F46E5]" />
                 Advance Amount
               </label>
-              <span className="text-2xl font-bold text-[#4945ff]">
+              <span className="text-2xl font-bold text-[#4F46E5]">
                 ${loanAmount.toLocaleString()}
               </span>
             </div>
@@ -74,7 +74,7 @@ export function MCACalculator() {
               <span>$250K</span>
             </div>
             <div className="mt-3 p-3 bg-blue-50 rounded-lg">
-              <p className="text-sm text-[#041e42]">
+              <p className="text-sm text-[#0F0E17]">
                 <span className="font-semibold">Typical use:</span> {getLoanPurpose(loanAmount)}
               </p>
             </div>
@@ -83,11 +83,11 @@ export function MCACalculator() {
           {/* Factor Rate */}
           <div>
             <div className="flex items-center justify-between mb-4">
-              <label className="text-sm font-semibold text-[#041e42] flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-[#4945ff]" />
+              <label className="text-sm font-semibold text-[#0F0E17] flex items-center gap-2">
+                <TrendingUp className="w-4 h-4 text-[#4F46E5]" />
                 Factor Rate
               </label>
-              <span className="text-2xl font-bold text-[#4945ff]">
+              <span className="text-2xl font-bold text-[#4F46E5]">
                 {factorRate.toFixed(2)}
               </span>
             </div>
@@ -111,11 +111,11 @@ export function MCACalculator() {
           {/* Payment Percentage */}
           <div>
             <div className="flex items-center justify-between mb-4">
-              <label className="text-sm font-semibold text-[#041e42] dark:text-white flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-[#4945ff]" />
+              <label className="text-sm font-semibold text-[#0F0E17] dark:text-white flex items-center gap-2">
+                <TrendingUp className="w-4 h-4 text-[#4F46E5]" />
                 Daily Payment %
               </label>
-              <span className="text-2xl font-bold text-[#4945ff]">
+              <span className="text-2xl font-bold text-[#4F46E5]">
                 {dailyPercentage}%
               </span>
             </div>
@@ -132,7 +132,7 @@ export function MCACalculator() {
               <span>25% (Higher)</span>
             </div>
             <div className="mt-3 p-3 bg-purple-50 dark:bg-purple-900/30 rounded-lg">
-              <p className="text-sm text-[#041e42] dark:text-white">
+              <p className="text-sm text-[#0F0E17] dark:text-white">
                 <span className="font-semibold">{getRepaymentDescription(estimatedMonths, repaymentFrequency)}</span>
               </p>
             </div>
@@ -141,7 +141,7 @@ export function MCACalculator() {
 
         {/* Right Side - Results */}
         <div>
-          <div className="bg-gradient-to-br from-[#4945ff] to-[#3b38d9] rounded-xl p-8 text-white mb-6">
+          <div className="bg-gradient-to-br from-[#4F46E5] to-[#3730A3] rounded-xl p-8 text-white mb-6">
             <h4 className="text-lg font-semibold mb-6 opacity-90">Your MCA Summary</h4>
             
             <div className="space-y-6">
@@ -169,7 +169,7 @@ export function MCACalculator() {
                       onClick={() => setRepaymentFrequency('daily')}
                       className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${
                         repaymentFrequency === 'daily'
-                          ? 'bg-white text-[#4945ff] shadow-md'
+                          ? 'bg-white text-[#4F46E5] shadow-md'
                           : 'text-white/70 hover:text-white'
                       }`}
                     >
@@ -179,7 +179,7 @@ export function MCACalculator() {
                       onClick={() => setRepaymentFrequency('weekly')}
                       className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${
                         repaymentFrequency === 'weekly'
-                          ? 'bg-white text-[#4945ff] shadow-md'
+                          ? 'bg-white text-[#4F46E5] shadow-md'
                           : 'text-white/70 hover:text-white'
                       }`}
                     >
@@ -206,7 +206,7 @@ export function MCACalculator() {
           </div>
 
           <div className="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-700 rounded-lg p-4">
-            <p className="text-sm text-[#041e42] dark:text-white font-semibold mb-2">Important Note:</p>
+            <p className="text-sm text-[#0F0E17] dark:text-white font-semibold mb-2">Important Note:</p>
             <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
               This is an estimate. Actual costs depend on your sales volume and repayment speed. 
               Higher sales = faster repayment. Lower sales = extended timeline.
@@ -215,7 +215,7 @@ export function MCACalculator() {
           </div>
 
           <div className="mt-6 flex gap-3">
-            <button className="flex-1 bg-[#4945ff] hover:bg-[#3b38d9] text-white py-3 px-6 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2">
+            <button className="flex-1 bg-[#4F46E5] hover:bg-[#3730A3] text-white py-3 px-6 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2">
               Apply Now
               <ArrowRight className="w-4 h-4" />
             </button>
@@ -225,23 +225,23 @@ export function MCACalculator() {
 
       {/* APR Equivalent */}
       <div className="mt-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
-        <h4 className="font-bold text-[#041e42] dark:text-white mb-3">Understanding Your Costs</h4>
+        <h4 className="font-bold text-[#0F0E17] dark:text-white mb-3">Understanding Your Costs</h4>
         <div className="grid md:grid-cols-3 gap-4 text-sm">
           <div>
             <p className="text-gray-600 dark:text-gray-400 mb-1">Cost as Percentage</p>
-            <p className="text-xl font-bold text-[#041e42] dark:text-white">
+            <p className="text-xl font-bold text-[#0F0E17] dark:text-white">
               {(((totalCost / loanAmount) * 100)).toFixed(1)}%
             </p>
           </div>
           <div>
             <p className="text-gray-600 dark:text-gray-400 mb-1">Approximate APR*</p>
-            <p className="text-xl font-bold text-[#041e42] dark:text-white">
+            <p className="text-xl font-bold text-[#0F0E17] dark:text-white">
               {(((totalCost / loanAmount) / (estimatedMonths / 12)) * 100).toFixed(1)}%
             </p>
           </div>
           <div>
             <p className="text-gray-600 dark:text-gray-400 mb-1">{repaymentFrequency === 'daily' ? 'Daily Cost' : 'Weekly Cost'}</p>
-            <p className="text-xl font-bold text-[#041e42] dark:text-white">
+            <p className="text-xl font-bold text-[#0F0E17] dark:text-white">
               ${repaymentFrequency === 'daily' 
                 ? (totalCost / estimatedDays).toFixed(2)
                 : ((totalCost / estimatedDays) * 5).toFixed(2)}

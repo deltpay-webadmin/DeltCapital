@@ -15,13 +15,13 @@ export function RepaymentGuide() {
   return (
     <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 md:p-8 border border-gray-200 dark:border-gray-700">
       <div className="mb-6">
-        <h3 className="text-2xl font-bold text-[#041e42] dark:text-white mb-2">Revenue-Based Repayment Guide</h3>
+        <h3 className="text-2xl font-bold text-[#0F0E17] dark:text-white mb-2">Revenue-Based Repayment Guide</h3>
         <p className="text-gray-600 dark:text-gray-300">Understand how flexible, sales-based payments work</p>
       </div>
 
       {/* How It Works */}
       <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-800 dark:to-gray-900 rounded-xl p-8 mb-8 border border-blue-200 dark:border-gray-700">
-        <h4 className="text-2xl font-bold text-[#041e42] dark:text-white mb-4">How Revenue-Based Repayment Works</h4>
+        <h4 className="text-2xl font-bold text-[#0F0E17] dark:text-white mb-4">How Revenue-Based Repayment Works</h4>
         <p className="text-gray-700 dark:text-gray-300 mb-6 text-lg">
           Instead of fixed monthly payments, we automatically deduct a small percentage (typically 10-20%) 
           of your daily credit card sales. This means your payments flex with your business performance.
@@ -30,27 +30,27 @@ export function RepaymentGuide() {
           <div className="bg-white dark:bg-gray-800 rounded-lg p-4 text-center">
             <Percent className="w-8 h-8 text-[#1b17ff] mx-auto mb-2" />
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Fixed Percentage</p>
-            <p className="text-2xl font-bold text-[#041e42] dark:text-white">10-20%</p>
+            <p className="text-2xl font-bold text-[#0F0E17] dark:text-white">10-20%</p>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-lg p-4 text-center">
             <Calendar className="w-8 h-8 text-[#1b17ff] mx-auto mb-2" />
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Deducted</p>
-            <p className="text-2xl font-bold text-[#041e42] dark:text-white">Daily</p>
+            <p className="text-2xl font-bold text-[#0F0E17] dark:text-white">Daily</p>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-lg p-4 text-center">
             <DollarSign className="w-8 h-8 text-[#1b17ff] mx-auto mb-2" />
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Based On</p>
-            <p className="text-2xl font-bold text-[#041e42] dark:text-white">Your Sales</p>
+            <p className="text-2xl font-bold text-[#0F0E17] dark:text-white">Your Sales</p>
           </div>
         </div>
       </div>
 
       {/* Interactive Example */}
       <div className="mb-8">
-        <h4 className="text-xl font-bold text-[#041e42] dark:text-white mb-4">Interactive Example</h4>
+        <h4 className="text-xl font-bold text-[#0F0E17] dark:text-white mb-4">Interactive Example</h4>
         <div className="bg-[#f4f4f4] dark:bg-gray-800 rounded-xl p-6 mb-6">
           <div className="mb-4">
-            <label className="text-sm font-semibold text-[#041e42] dark:text-white mb-2 block">
+            <label className="text-sm font-semibold text-[#0F0E17] dark:text-white mb-2 block">
               Your Daily Credit Card Sales: ${dailySales.toLocaleString()}
             </label>
             <input
@@ -76,7 +76,7 @@ export function RepaymentGuide() {
             </div>
             <div className="bg-white dark:bg-gray-900 rounded-lg p-5">
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Est. Monthly Payment</p>
-              <p className="text-4xl font-bold text-[#041e42] dark:text-white mb-2">
+              <p className="text-4xl font-bold text-[#0F0E17] dark:text-white mb-2">
                 ${(dailyPayment * 22).toLocaleString()}
               </p>
               <p className="text-xs text-gray-500">Based on ~22 business days/month</p>
@@ -112,7 +112,7 @@ export function RepaymentGuide() {
 
       {/* Key Benefits */}
       <div className="mb-8">
-        <h4 className="text-xl font-bold text-[#041e42] dark:text-white mb-4">Key Benefits of Revenue-Based Repayment</h4>
+        <h4 className="text-xl font-bold text-[#0F0E17] dark:text-white mb-4">Key Benefits of Revenue-Based Repayment</h4>
         <div className="grid md:grid-cols-2 gap-4">
           <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-lg p-5 border border-green-200 dark:border-green-800">
             <h5 className="font-bold text-green-800 dark:text-green-400 mb-2">Cash Flow Protection</h5>
@@ -142,7 +142,7 @@ export function RepaymentGuide() {
       </div>
 
       {/* Comparison to Fixed Payments */}
-      <div className="bg-gradient-to-r from-[#041e42] to-[#0a2d5a] rounded-xl p-8 text-white">
+      <div className="bg-gradient-to-r from-[#0F0E17] to-[#0a2d5a] rounded-xl p-8 text-white">
         <h4 className="text-2xl font-bold mb-6">Revenue-Based vs. Fixed Monthly Payments</h4>
         <div className="grid md:grid-cols-2 gap-6">
           <div>

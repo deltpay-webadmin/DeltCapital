@@ -11,20 +11,20 @@ export function BlogPostInventory() {
         Stockouts cost businesses $1 trillion annually. Not because they can't forecast demand—but because they can't capitalize on it when cash is tight.
       </p>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-4">The Hidden Cost of Running Out</h2>
+      <h2 className="text-3xl text-[#0F0E17] dark:text-white mt-12 mb-4">The Hidden Cost of Running Out</h2>
       <p>
         When customers can't buy what they want from you, they buy from competitors. Sixty-nine percent never come back. That's not a lost sale—it's a lost customer.
       </p>
 
       <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg my-8">
-        <h3 className="text-2xl text-[#1B17FF] mb-4">The Inventory Equation</h3>
+        <h3 className="text-2xl text-[#4F46E5] mb-4">The Inventory Equation</h3>
         <p>Having inventory = Making sales<br/>
         Running out = Losing customers<br/>
         Ordering late = Paying premium prices<br/>
         Ordering with MCA = Buying when prices are low, selling when demand is high</p>
       </div>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-4">How Revenue-Based Financing Transforms Inventory Strategy</h2>
+      <h2 className="text-3xl text-[#0F0E17] dark:text-white mt-12 mb-4">How Revenue-Based Financing Transforms Inventory Strategy</h2>
       
       <p>
         Smart businesses don't buy inventory when they need it—they buy when it's cheap. Suppliers offer bulk discounts. Seasonal items cost less off-season. Wholesale prices fluctuate.
@@ -42,7 +42,7 @@ export function BlogPostInventory() {
       </ul>
 
       <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg my-8">
-        <h3 className="text-2xl text-[#041E42] dark:text-white mb-4">Case Study: E-Commerce Electronics Retailer</h3>
+        <h3 className="text-2xl text-[#0F0E17] dark:text-white mb-4">Case Study: E-Commerce Electronics Retailer</h3>
         <p className="mb-2">
           <strong>Challenge:</strong> Viral TikTok drove 10x normal traffic but inventory only covered 2 days of demand.
         </p>
@@ -54,7 +54,7 @@ export function BlogPostInventory() {
         </p>
       </div>
 
-      <h2 className="text-3xl text-[#041E42] dark:text-white mt-12 mb-4">Turn Inventory Into Your Competitive Weapon</h2>
+      <h2 className="text-3xl text-[#0F0E17] dark:text-white mt-12 mb-4">Turn Inventory Into Your Competitive Weapon</h2>
       
       <p>
         Businesses with strong inventory positions dominate their markets. They can run promotions without worrying about stockouts. They can negotiate from strength with suppliers. They never turn away customers.
@@ -64,10 +64,10 @@ export function BlogPostInventory() {
         Revenue-Based Financing makes that level of inventory strength accessible to businesses of any size—without tying up all your working capital or waiting for traditional financing.
       </p>
 
-      <div className="bg-[#1B17FF] text-white p-8 rounded-xl my-12 text-center">
+      <div className="bg-[#4F46E5] text-white p-8 rounded-xl my-12 text-center">
         <h3 className="text-2xl mb-4">Never Run Out of Bestsellers Again</h3>
         <p className="text-lg mb-6">Get inventory capital in 24-48 hours. No collateral. Apply in minutes.</p>
-        <button className="bg-white text-[#1B17FF] px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition-colors">
+        <button className="bg-white text-[#4F46E5] px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition-colors">
           Fund Your Inventory Today
         </button>
       </div>

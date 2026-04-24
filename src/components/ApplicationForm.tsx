@@ -138,7 +138,7 @@ export function ApplicationForm({ onClose }: ApplicationFormProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="text-4xl font-bold text-[#041e42] mb-4"
+            className="text-4xl font-bold text-[#0F0E17] mb-4"
           >
             Application Submitted! 🎉
           </motion.h2>
@@ -149,8 +149,8 @@ export function ApplicationForm({ onClose }: ApplicationFormProps) {
             transition={{ delay: 0.4 }}
             className="text-xl text-gray-600 mb-8"
           >
-            Thank you, <span className="font-semibold text-[#041e42]">{formData.ownerName}</span>!<br />
-            Your application for <span className="font-semibold text-[#041e42]">{formData.businessName}</span> is being reviewed.
+            Thank you, <span className="font-semibold text-[#0F0E17]">{formData.ownerName}</span>!<br />
+            Your application for <span className="font-semibold text-[#0F0E17]">{formData.businessName}</span> is being reviewed.
           </motion.p>
 
           <motion.div
@@ -159,7 +159,7 @@ export function ApplicationForm({ onClose }: ApplicationFormProps) {
             transition={{ delay: 0.45 }}
             className="bg-blue-50 border-2 border-blue-200 rounded-xl p-6 mb-8"
           >
-            <p className="text-lg font-semibold text-[#041e42] mb-2">📱 Check Your Phone!</p>
+            <p className="text-lg font-semibold text-[#0F0E17] mb-2">📱 Check Your Phone!</p>
             <p className="text-gray-600">
               We've sent a confirmation text to <span className="font-semibold">{formData.phone}</span> and an email to <span className="font-semibold">{formData.email}</span>
             </p>
@@ -174,28 +174,28 @@ export function ApplicationForm({ onClose }: ApplicationFormProps) {
             <div className="grid md:grid-cols-2 gap-6">
               <div className="bg-white rounded-lg p-4">
                 <p className="text-sm text-gray-600 mb-2">Application ID</p>
-                <p className="font-mono font-bold text-[#041e42] text-lg">DT-{Date.now().toString().slice(-8)}</p>
+                <p className="font-mono font-bold text-[#0F0E17] text-lg">DT-{Date.now().toString().slice(-8)}</p>
               </div>
               <div className="bg-white rounded-lg p-4">
                 <p className="text-sm text-gray-600 mb-2">Requested Amount</p>
-                <p className="font-bold text-[#041e42] text-lg">${parseInt(formData.requestedAmount || '0').toLocaleString()}</p>
+                <p className="font-bold text-[#0F0E17] text-lg">${parseInt(formData.requestedAmount || '0').toLocaleString()}</p>
               </div>
             </div>
 
             <div className="mt-6 text-left">
-              <h3 className="font-bold text-[#041e42] mb-4">What Happens Next?</h3>
+              <h3 className="font-bold text-[#0F0E17] mb-4">What Happens Next?</h3>
               <div className="space-y-3">
                 <div className="flex items-center">
-                  <div className="w-8 h-8 bg-[#4945ff] text-white rounded-full flex items-center justify-center mr-3 text-sm font-bold">✓</div>
-                  <p className="text-[#52606D]">Decision within 4 hours</p>
+                  <div className="w-8 h-8 bg-[#4F46E5] text-white rounded-full flex items-center justify-center mr-3 text-sm font-bold">✓</div>
+                  <p className="text-[#6A6876]">Decision within 4 hours</p>
                 </div>
                 <div className="flex items-center">
-                  <div className="w-8 h-8 bg-[#4945ff] text-white rounded-full flex items-center justify-center mr-3 text-sm font-bold">✓</div>
-                  <p className="text-[#52606D]">Offer sent to {formData.email}</p>
+                  <div className="w-8 h-8 bg-[#4F46E5] text-white rounded-full flex items-center justify-center mr-3 text-sm font-bold">✓</div>
+                  <p className="text-[#6A6876]">Offer sent to {formData.email}</p>
                 </div>
                 <div className="flex items-center">
-                  <div className="w-8 h-8 bg-[#4945ff] text-white rounded-full flex items-center justify-center mr-3 text-sm font-bold">✓</div>
-                  <p className="text-[#52606D]">Funds in 24-48 hours</p>
+                  <div className="w-8 h-8 bg-[#4F46E5] text-white rounded-full flex items-center justify-center mr-3 text-sm font-bold">✓</div>
+                  <p className="text-[#6A6876]">Funds in 24-48 hours</p>
                 </div>
               </div>
             </div>
@@ -203,7 +203,7 @@ export function ApplicationForm({ onClose }: ApplicationFormProps) {
 
           <Button
             onClick={onClose}
-            className="bg-[#4945ff] hover:bg-[#3b38d9] text-white px-8 py-6"
+            className="bg-[#4F46E5] hover:bg-[#3730A3] text-white px-8 py-6"
           >
             Back to Home
           </Button>
@@ -213,7 +213,7 @@ export function ApplicationForm({ onClose }: ApplicationFormProps) {
   }
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-[#041e42] to-[#0a2d5a] z-50 flex items-center justify-center p-4 overflow-y-auto">
+    <div className="fixed inset-0 bg-gradient-to-br from-[#0F0E17] to-[#0a2d5a] z-50 flex items-center justify-center p-4 overflow-y-auto">
       <div className="max-w-5xl w-full my-8">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
@@ -223,7 +223,7 @@ export function ApplicationForm({ onClose }: ApplicationFormProps) {
             className="text-white"
           >
             <h1 className="text-2xl font-bold flex items-center gap-2">
-              <Sparkles className="w-6 h-6 text-[#4945ff]" />
+              <Sparkles className="w-6 h-6 text-[#4F46E5]" />
               Delt Capital Application
             </h1>
             <p className="text-gray-300">Step {currentStep + 1} of {totalSteps}: {steps[currentStep].title}</p>
@@ -252,7 +252,7 @@ export function ApplicationForm({ onClose }: ApplicationFormProps) {
                         isCompleted
                           ? 'bg-green-500'
                           : isCurrent
-                          ? 'bg-[#4945ff]'
+                          ? 'bg-[#4F46E5]'
                           : 'bg-white/20'
                       }`}
                     >
@@ -290,57 +290,57 @@ export function ApplicationForm({ onClose }: ApplicationFormProps) {
               <div className="space-y-6">
                 <div className="text-center mb-8">
                   <div className="text-5xl mb-4">🏢</div>
-                  <h2 className="text-3xl font-bold text-[#041e42] mb-2">Basic Information</h2>
+                  <h2 className="text-3xl font-bold text-[#0F0E17] mb-2">Basic Information</h2>
                   <p className="text-gray-600">Tell us about your business - no social security number needed yet</p>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <Label className="text-[#041e42] font-semibold mb-2">Business Name *</Label>
+                    <Label className="text-[#0F0E17] font-semibold mb-2">Business Name *</Label>
                     <Input
                       value={formData.businessName}
                       onChange={(e) => handleInputChange('businessName', e.target.value)}
                       placeholder="e.g., ABC Corporation"
-                      className="p-4 border-2 border-[#E4E7EB] focus:border-[#4945ff]"
+                      className="p-4 border-2 border-[#E7E3DA] focus:border-[#4F46E5]"
                     />
                   </div>
 
                   <div>
-                    <Label className="text-[#041e42] font-semibold mb-2">Owner Name *</Label>
+                    <Label className="text-[#0F0E17] font-semibold mb-2">Owner Name *</Label>
                     <Input
                       value={formData.ownerName}
                       onChange={(e) => handleInputChange('ownerName', e.target.value)}
                       placeholder="e.g., John Smith"
-                      className="p-4 border-2 border-[#E4E7EB] focus:border-[#4945ff]"
+                      className="p-4 border-2 border-[#E7E3DA] focus:border-[#4F46E5]"
                     />
                   </div>
 
                   <div>
-                    <Label className="text-[#041e42] font-semibold mb-2">Email Address *</Label>
+                    <Label className="text-[#0F0E17] font-semibold mb-2">Email Address *</Label>
                     <Input
                       type="email"
                       value={formData.email}
                       onChange={(e) => handleInputChange('email', e.target.value)}
                       placeholder="e.g., john@business.com"
-                      className="p-4 border-2 border-[#E4E7EB] focus:border-[#4945ff]"
+                      className="p-4 border-2 border-[#E7E3DA] focus:border-[#4F46E5]"
                     />
                   </div>
 
                   <div>
-                    <Label className="text-[#041e42] font-semibold mb-2">Phone Number *</Label>
+                    <Label className="text-[#0F0E17] font-semibold mb-2">Phone Number *</Label>
                     <Input
                       type="tel"
                       value={formData.phone}
                       onChange={(e) => handleInputChange('phone', e.target.value)}
                       placeholder="e.g., (555) 123-4567"
-                      className="p-4 border-2 border-[#E4E7EB] focus:border-[#4945ff]"
+                      className="p-4 border-2 border-[#E7E3DA] focus:border-[#4F46E5]"
                     />
                   </div>
 
                   <div>
-                    <Label className="text-[#041e42] font-semibold mb-2">Business Type *</Label>
+                    <Label className="text-[#0F0E17] font-semibold mb-2">Business Type *</Label>
                     <Select onValueChange={(value) => handleInputChange('businessType', value)} value={formData.businessType}>
-                      <SelectTrigger className="p-4 border-2 border-[#E4E7EB] focus:border-[#4945ff]">
+                      <SelectTrigger className="p-4 border-2 border-[#E7E3DA] focus:border-[#4F46E5]">
                         <SelectValue placeholder="Select your business type" />
                       </SelectTrigger>
                       <SelectContent>
@@ -357,9 +357,9 @@ export function ApplicationForm({ onClose }: ApplicationFormProps) {
                   </div>
 
                   <div>
-                    <Label className="text-[#041e42] font-semibold mb-2">Monthly Revenue *</Label>
+                    <Label className="text-[#0F0E17] font-semibold mb-2">Monthly Revenue *</Label>
                     <Select onValueChange={(value) => handleInputChange('monthlyRevenue', value)} value={formData.monthlyRevenue}>
-                      <SelectTrigger className="p-4 border-2 border-[#E4E7EB] focus:border-[#4945ff]">
+                      <SelectTrigger className="p-4 border-2 border-[#E7E3DA] focus:border-[#4F46E5]">
                         <SelectValue placeholder="Select revenue range" />
                       </SelectTrigger>
                       <SelectContent>
@@ -373,9 +373,9 @@ export function ApplicationForm({ onClose }: ApplicationFormProps) {
                   </div>
 
                   <div>
-                    <Label className="text-[#041e42] font-semibold mb-2">Time in Business *</Label>
+                    <Label className="text-[#0F0E17] font-semibold mb-2">Time in Business *</Label>
                     <Select onValueChange={(value) => handleInputChange('timeInBusiness', value)} value={formData.timeInBusiness}>
-                      <SelectTrigger className="p-4 border-2 border-[#E4E7EB] focus:border-[#4945ff]">
+                      <SelectTrigger className="p-4 border-2 border-[#E7E3DA] focus:border-[#4F46E5]">
                         <SelectValue placeholder="Select duration" />
                       </SelectTrigger>
                       <SelectContent>
@@ -395,15 +395,15 @@ export function ApplicationForm({ onClose }: ApplicationFormProps) {
               <div className="space-y-6">
                 <div className="text-center mb-8">
                   <div className="text-5xl mb-4">💰</div>
-                  <h2 className="text-3xl font-bold text-[#041e42] mb-2">Funding Request</h2>
+                  <h2 className="text-3xl font-bold text-[#0F0E17] mb-2">Funding Request</h2>
                   <p className="text-gray-600">Tell us how much you need and what you'll use it for</p>
                 </div>
 
                 <div className="space-y-6 max-w-2xl mx-auto">
                   <div>
-                    <Label className="text-[#041e42] font-semibold mb-2">Requested Funding Amount *</Label>
+                    <Label className="text-[#0F0E17] font-semibold mb-2">Requested Funding Amount *</Label>
                     <Select onValueChange={(value) => handleInputChange('requestedAmount', value)} value={formData.requestedAmount}>
-                      <SelectTrigger className="p-6 text-xl border-2 border-[#E4E7EB] focus:border-[#4945ff]">
+                      <SelectTrigger className="p-6 text-xl border-2 border-[#E7E3DA] focus:border-[#4F46E5]">
                         <SelectValue placeholder="Select funding amount" />
                       </SelectTrigger>
                       <SelectContent>
@@ -417,12 +417,12 @@ export function ApplicationForm({ onClose }: ApplicationFormProps) {
                   </div>
 
                   <div>
-                    <Label className="text-[#041e42] font-semibold mb-2">How will you use the funds? *</Label>
+                    <Label className="text-[#0F0E17] font-semibold mb-2">How will you use the funds? *</Label>
                     <Textarea
                       value={formData.useOfFunds}
                       onChange={(e) => handleInputChange('useOfFunds', e.target.value)}
                       placeholder="e.g., Purchase inventory for peak season, hire 2 new employees, launch marketing campaign, expand to new location..."
-                      className="text-lg p-6 border-2 border-[#E4E7EB] focus:border-[#4945ff] min-h-[200px]"
+                      className="text-lg p-6 border-2 border-[#E7E3DA] focus:border-[#4F46E5] min-h-[200px]"
                     />
                     <p className="text-sm text-gray-500 mt-2">Be specific - this helps us tailor your offer</p>
                   </div>
@@ -435,7 +435,7 @@ export function ApplicationForm({ onClose }: ApplicationFormProps) {
               <div className="space-y-6">
                 <div className="text-center mb-8">
                   <div className="text-5xl mb-4">🔐</div>
-                  <h2 className="text-3xl font-bold text-[#041e42] mb-2">Connect & Verify Identity</h2>
+                  <h2 className="text-3xl font-bold text-[#0F0E17] mb-2">Connect & Verify Identity</h2>
                   <p className="text-gray-600">Secure bank connection, ID verification, and SSN last 4 digits</p>
                 </div>
 
@@ -447,7 +447,7 @@ export function ApplicationForm({ onClose }: ApplicationFormProps) {
                         <img src={plaidLogo} alt="Plaid" className="w-10 h-10" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="text-xl font-bold text-[#041e42] mb-1">Connect Your Bank Account</h3>
+                        <h3 className="text-xl font-bold text-[#0F0E17] mb-1">Connect Your Bank Account</h3>
                         <p className="text-sm text-gray-600">Secure instant verification via Plaid</p>
                       </div>
                     </div>
@@ -470,7 +470,7 @@ export function ApplicationForm({ onClose }: ApplicationFormProps) {
                         </div>
                         <button
                           onClick={handlePlaidConnect}
-                          className="w-full py-4 bg-[#4945ff] hover:bg-[#3b38d9] text-white font-semibold rounded-lg transition-all flex items-center justify-center gap-2"
+                          className="w-full py-4 bg-[#4F46E5] hover:bg-[#3730A3] text-white font-semibold rounded-lg transition-all flex items-center justify-center gap-2"
                         >
                           <Lock className="w-5 h-5" />
                           Connect with Plaid
@@ -492,11 +492,11 @@ export function ApplicationForm({ onClose }: ApplicationFormProps) {
                   {/* ID Photo Upload */}
                   <div className="bg-gray-50 rounded-xl p-8 border-2 border-gray-200">
                     <div className="flex items-start gap-4 mb-6">
-                      <div className="w-12 h-12 bg-[#4945ff] rounded-lg flex items-center justify-center flex-shrink-0">
+                      <div className="w-12 h-12 bg-[#4F46E5] rounded-lg flex items-center justify-center flex-shrink-0">
                         <Camera className="w-6 h-6 text-white" />
                       </div>
                       <div>
-                        <h3 className="text-xl font-bold text-[#041e42] mb-1">Government ID Picture</h3>
+                        <h3 className="text-xl font-bold text-[#0F0E17] mb-1">Government ID Picture</h3>
                         <p className="text-sm text-gray-600">Upload a photo of your driver's license or passport</p>
                       </div>
                     </div>
@@ -513,9 +513,9 @@ export function ApplicationForm({ onClose }: ApplicationFormProps) {
                               if (file) setIdPhoto(file);
                             }}
                           />
-                          <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-[#4945ff] hover:bg-blue-50 transition-all cursor-pointer">
+                          <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-[#4F46E5] hover:bg-blue-50 transition-all cursor-pointer">
                             <Upload className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                            <p className="text-sm font-semibold text-[#041e42] mb-1">Click to upload ID photo</p>
+                            <p className="text-sm font-semibold text-[#0F0E17] mb-1">Click to upload ID photo</p>
                             <p className="text-xs text-gray-500">PNG, JPG up to 10MB</p>
                           </div>
                         </label>
@@ -544,11 +544,11 @@ export function ApplicationForm({ onClose }: ApplicationFormProps) {
                   {/* Selfie Upload */}
                   <div className="bg-gray-50 rounded-xl p-8 border-2 border-gray-200">
                     <div className="flex items-start gap-4 mb-6">
-                      <div className="w-12 h-12 bg-[#4945ff] rounded-lg flex items-center justify-center flex-shrink-0">
+                      <div className="w-12 h-12 bg-[#4F46E5] rounded-lg flex items-center justify-center flex-shrink-0">
                         <Camera className="w-6 h-6 text-white" />
                       </div>
                       <div>
-                        <h3 className="text-xl font-bold text-[#041e42] mb-1">Selfie Photo</h3>
+                        <h3 className="text-xl font-bold text-[#0F0E17] mb-1">Selfie Photo</h3>
                         <p className="text-sm text-gray-600">Take a clear photo of yourself for identity verification</p>
                       </div>
                     </div>
@@ -566,9 +566,9 @@ export function ApplicationForm({ onClose }: ApplicationFormProps) {
                               if (file) setSelfiePhoto(file);
                             }}
                           />
-                          <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-[#4945ff] hover:bg-blue-50 transition-all cursor-pointer">
+                          <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-[#4F46E5] hover:bg-blue-50 transition-all cursor-pointer">
                             <Camera className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                            <p className="text-sm font-semibold text-[#041e42] mb-1">Click to take selfie</p>
+                            <p className="text-sm font-semibold text-[#0F0E17] mb-1">Click to take selfie</p>
                             <p className="text-xs text-gray-500">PNG, JPG up to 10MB</p>
                           </div>
                         </label>
@@ -604,70 +604,70 @@ export function ApplicationForm({ onClose }: ApplicationFormProps) {
               <div className="space-y-6">
                 <div className="text-center mb-8">
                   <div className="text-5xl mb-4">✅</div>
-                  <h2 className="text-3xl font-bold text-[#041e42] mb-2">Review & Submit</h2>
+                  <h2 className="text-3xl font-bold text-[#0F0E17] mb-2">Review & Submit</h2>
                   <p className="text-gray-600">Please review your information before submitting</p>
                 </div>
 
                 <div className="space-y-4 max-w-3xl mx-auto">
                   {/* Basic Information */}
                   <div className="bg-gray-50 rounded-xl p-6 border-2 border-gray-200">
-                    <h3 className="font-bold text-[#041e42] mb-4 flex items-center gap-2">
-                      <Building2 className="w-5 h-5 text-[#4945ff]" />
+                    <h3 className="font-bold text-[#0F0E17] mb-4 flex items-center gap-2">
+                      <Building2 className="w-5 h-5 text-[#4F46E5]" />
                       Basic Information
                     </h3>
                     <div className="grid md:grid-cols-2 gap-4 text-sm">
                       <div>
                         <p className="text-gray-600">Business Name</p>
-                        <p className="font-semibold text-[#041e42]">{formData.businessName}</p>
+                        <p className="font-semibold text-[#0F0E17]">{formData.businessName}</p>
                       </div>
                       <div>
                         <p className="text-gray-600">Owner Name</p>
-                        <p className="font-semibold text-[#041e42]">{formData.ownerName}</p>
+                        <p className="font-semibold text-[#0F0E17]">{formData.ownerName}</p>
                       </div>
                       <div>
                         <p className="text-gray-600">Email</p>
-                        <p className="font-semibold text-[#041e42]">{formData.email}</p>
+                        <p className="font-semibold text-[#0F0E17]">{formData.email}</p>
                       </div>
                       <div>
                         <p className="text-gray-600">Phone</p>
-                        <p className="font-semibold text-[#041e42]">{formData.phone}</p>
+                        <p className="font-semibold text-[#0F0E17]">{formData.phone}</p>
                       </div>
                       <div>
                         <p className="text-gray-600">Business Type</p>
-                        <p className="font-semibold text-[#041e42]">{formData.businessType}</p>
+                        <p className="font-semibold text-[#0F0E17]">{formData.businessType}</p>
                       </div>
                       <div>
                         <p className="text-gray-600">Monthly Revenue</p>
-                        <p className="font-semibold text-[#041e42]">{formData.monthlyRevenue}</p>
+                        <p className="font-semibold text-[#0F0E17]">{formData.monthlyRevenue}</p>
                       </div>
                       <div>
                         <p className="text-gray-600">Time in Business</p>
-                        <p className="font-semibold text-[#041e42]">{formData.timeInBusiness}</p>
+                        <p className="font-semibold text-[#0F0E17]">{formData.timeInBusiness}</p>
                       </div>
                     </div>
                   </div>
 
                   {/* Funding Request */}
                   <div className="bg-blue-50 rounded-xl p-6 border-2 border-blue-200">
-                    <h3 className="font-bold text-[#041e42] mb-4 flex items-center gap-2">
-                      <DollarSign className="w-5 h-5 text-[#4945ff]" />
+                    <h3 className="font-bold text-[#0F0E17] mb-4 flex items-center gap-2">
+                      <DollarSign className="w-5 h-5 text-[#4F46E5]" />
                       Funding Request
                     </h3>
                     <div className="space-y-3 text-sm">
                       <div>
                         <p className="text-gray-600">Requested Amount</p>
-                        <p className="font-bold text-2xl text-[#041e42]">${parseInt(formData.requestedAmount || '0').toLocaleString()}</p>
+                        <p className="font-bold text-2xl text-[#0F0E17]">${parseInt(formData.requestedAmount || '0').toLocaleString()}</p>
                       </div>
                       <div>
                         <p className="text-gray-600">Use of Funds</p>
-                        <p className="font-semibold text-[#041e42]">{formData.useOfFunds}</p>
+                        <p className="font-semibold text-[#0F0E17]">{formData.useOfFunds}</p>
                       </div>
                     </div>
                   </div>
 
                   {/* Verification Status */}
                   <div className="bg-green-50 rounded-xl p-6 border-2 border-green-200">
-                    <h3 className="font-bold text-[#041e42] mb-4 flex items-center gap-2">
+                    <h3 className="font-bold text-[#0F0E17] mb-4 flex items-center gap-2">
                       <Shield className="w-5 h-5 text-green-600" />
                       Verification Status
                     </h3>
@@ -719,7 +719,7 @@ export function ApplicationForm({ onClose }: ApplicationFormProps) {
               <Button
                 onClick={handleNext}
                 disabled={!isStepValid()}
-                className="flex-1 bg-[#4945ff] hover:bg-[#3b38d9] text-white py-6 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 bg-[#4F46E5] hover:bg-[#3730A3] text-white py-6 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {currentStep === totalSteps - 1 ? 'Submit Application' : 'Continue'}
                 <ArrowRight className="w-5 h-5 ml-2" />

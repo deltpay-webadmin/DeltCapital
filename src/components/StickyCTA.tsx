@@ -47,7 +47,7 @@ export function StickyCTA({ onApplyClick }: StickyCTAProps) {
       <button
         onClick={onApplyClick}
         style={{
-          background: '#4945ff',
+          background: '#4F46E5',
           color: '#fff',
           borderRadius: '10px',
           padding: '12px 32px',
