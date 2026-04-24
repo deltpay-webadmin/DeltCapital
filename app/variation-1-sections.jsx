@@ -519,63 +519,305 @@ function V1FAQSection() {
 // ═══════════════════════════════════════════════════════════════
 // CTA — final push, navy band
 // ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+// CTA — closing spread, editorial: oversized "60s", animated timeline
+// ═══════════════════════════════════════════════════════════════
 function V1CTASection({ onApply, onTalk }) {
+  const [secRef, inView] = useV1InView(0.2, '0px 0px -40px 0px');
+  const [hoverPrimary, setHoverPrimary] = React.useState(false);
+  const [hoverGhost, setHoverGhost]     = React.useState(false);
+  const steps = [
+    { n: '01', t: 'NOW',       d: 'Soft pull · 3 questions'  },
+    { n: '02', t: '60s',       d: 'A real funding range'      },
+    { n: '03', t: 'SAME DAY',  d: 'Single-page offer'         },
+    { n: '04', t: '+24h',      d: 'Money wired'               },
+  ];
+
   return (
-    <section style={{ background: V1.ink, padding: '96px 0', color: '#fff' }}>
-      <div style={{ maxWidth: 1080, margin: '0 auto', padding: '0 40px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 64, alignItems: 'center' }}>
+    <section ref={secRef} style={{
+      background: V1.ink, color: '#fff',
+      padding: '100px 0 96px',
+      position: 'relative', overflow: 'hidden',
+    }}>
+      {/* Ambient indigo bloom — subtle, decorative */}
+      <div aria-hidden style={{
+        position: 'absolute', top: -240, right: -200, width: 640, height: 640,
+        background: `radial-gradient(circle, ${V1.blue}22 0%, transparent 60%)`,
+        filter: 'blur(24px)', pointerEvents: 'none',
+        opacity: inView ? 1 : 0,
+        transition: 'opacity 1400ms ease-out 200ms',
+      }} />
+      <div aria-hidden style={{
+        position: 'absolute', bottom: -280, left: -180, width: 520, height: 520,
+        background: `radial-gradient(circle, #818CF81A 0%, transparent 60%)`,
+        filter: 'blur(24px)', pointerEvents: 'none',
+        opacity: inView ? 1 : 0,
+        transition: 'opacity 1400ms ease-out 400ms',
+      }} />
+
+      {/* Corner marker — volume / dateline */}
+      <div style={{
+        position: 'absolute', top: 28, right: 40,
+        fontFamily: V1.fontMono, fontSize: 11, letterSpacing: '0.18em',
+        color: 'rgba(255,255,255,0.42)', textTransform: 'uppercase',
+        display: 'flex', alignItems: 'center', gap: 10,
+        opacity: inView ? 1 : 0,
+        transform: inView ? 'translateX(0)' : 'translateX(12px)',
+        transition: 'opacity 700ms cubic-bezier(0.22,1,0.36,1) 80ms, transform 700ms cubic-bezier(0.22,1,0.36,1) 80ms',
+      }}>
+        Vol. VII · Closing
+        <span style={{ width: 18, height: 1, background: 'rgba(255,255,255,0.32)' }} />
+      </div>
+
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 40px', position: 'relative' }}>
+        {/* Eyebrow */}
+        <div style={{
+          opacity: inView ? 1 : 0,
+          transform: inView ? 'translateY(0)' : 'translateY(8px)',
+          transition: 'opacity 700ms cubic-bezier(0.22,1,0.36,1) 40ms, transform 700ms cubic-bezier(0.22,1,0.36,1) 40ms',
+        }}>
+          <V1Eyebrow color={V1.blueSoft}>Final word</V1Eyebrow>
+        </div>
+
+        {/* Headline row: big copy left, oversized "60s" card right */}
+        <div style={{
+          marginTop: 32,
+          display: 'grid',
+          gridTemplateColumns: '1fr 360px',
+          gap: 72,
+          alignItems: 'center',
+        }}>
           <div>
-            <V1Eyebrow color={V1.blueSoft}>Get funded</V1Eyebrow>
-            <h2 style={{ ...v1H2, color: '#fff', marginTop: 18 }}>
-              Ready when your business is.
+            <h2 style={{
+              fontFamily: V1.fontDisplay,
+              fontSize: 'clamp(2.6rem, 5.4vw, 4.6rem)',
+              fontWeight: 600, lineHeight: 1.02, letterSpacing: '-0.04em',
+              color: '#fff', margin: 0, maxWidth: 680,
+            }}>
+              <V1LineMask ready={inView} delay={120} duration={900}>Ready when your</V1LineMask>
+              <V1LineMask ready={inView} delay={240} duration={900}>
+                business is.
+              </V1LineMask>
             </h2>
             <p style={{
               fontFamily: V1.fontBody, fontSize: 17.5, lineHeight: 1.6,
-              color: 'rgba(255,255,255,0.7)', marginTop: 20, maxWidth: 520,
+              color: 'rgba(255,255,255,0.7)', margin: '28px 0 0', maxWidth: 540,
+              opacity: inView ? 1 : 0,
+              transform: inView ? 'translateY(0)' : 'translateY(10px)',
+              transition: 'opacity 700ms cubic-bezier(0.22,1,0.36,1) 520ms, transform 700ms cubic-bezier(0.22,1,0.36,1) 520ms',
             }}>
-              Three questions, a soft pull, and a real funding range in 60 seconds.
+              Three questions, a soft pull, and a real funding range.
               No obligation. No impact to your credit.
             </p>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 14, justifySelf: 'end', alignItems: 'stretch', minWidth: 300 }}>
-            <button onClick={onApply} style={{
-              display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 10,
-              background: V1.blue, color: '#fff', border: 'none',
-              padding: '16px 28px', borderRadius: 10, cursor: 'pointer',
-              fontFamily: V1.fontBody, fontSize: 15.5, fontWeight: 600, letterSpacing: '-0.005em',
-              transition: 'background .15s',
-            }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = '#6366F1'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = V1.blue; }}>
-              Get Funded
-              <svg width="14" height="14" viewBox="0 0 14 14">
-                <path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </button>
-            {onTalk && (
-              <button onClick={onTalk} style={{
-                display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 10,
-                background: 'transparent', color: '#fff',
-                border: '1px solid rgba(255,255,255,0.22)',
-                padding: '15px 28px', borderRadius: 10, cursor: 'pointer',
-                fontFamily: V1.fontBody, fontSize: 15, fontWeight: 500,
-                transition: 'background .15s, border-color .15s',
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.4)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.22)'; }}>
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="1.5" y="2.5" width="11" height="9" rx="1.5"/><path d="M4 1v2M10 1v2M1.5 5.5h11"/>
-                </svg>
-                Talk to an underwriter
-              </button>
-            )}
+
+          {/* Oversized "60s" focal card */}
+          <div style={{
+            position: 'relative',
+            padding: '38px 36px 32px',
+            border: '1px solid rgba(255,255,255,0.12)',
+            borderRadius: 22,
+            background: `linear-gradient(155deg, ${V1.blue}24 0%, ${V1.blue}0a 45%, rgba(255,255,255,0) 100%)`,
+            backdropFilter: 'blur(4px)',
+            textAlign: 'center',
+            opacity: inView ? 1 : 0,
+            transform: inView ? 'translateY(0) scale(1)' : 'translateY(14px) scale(0.97)',
+            transition: 'opacity 900ms cubic-bezier(0.22,1,0.36,1) 320ms, transform 900ms cubic-bezier(0.22,1,0.36,1) 320ms',
+          }}>
+            {/* Tiny corner marker */}
             <div style={{
-              fontFamily: V1.fontMono, fontSize: 11, letterSpacing: '0.12em',
-              textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)',
-              textAlign: 'center',
+              position: 'absolute', top: 14, left: 16,
+              fontFamily: V1.fontMono, fontSize: 10, letterSpacing: '0.18em',
+              color: V1.blueSoft, textTransform: 'uppercase', opacity: 0.7,
             }}>
-              Soft-pull · 60 seconds · no obligation
+              median
             </div>
+            <div style={{
+              display: 'flex', alignItems: 'baseline', justifyContent: 'center',
+              fontFamily: V1.fontDisplay,
+              fontSize: 132, fontWeight: 700,
+              lineHeight: 1, letterSpacing: '-0.06em',
+              color: '#fff', fontVariantNumeric: 'tabular-nums',
+            }}>
+              <V1CountUp value="60" duration={1600} start={380} />
+              <span style={{
+                fontSize: 64, fontWeight: 600, letterSpacing: '-0.04em',
+                color: V1.blueSoft, marginLeft: 6,
+              }}>s</span>
+            </div>
+            <div style={{
+              marginTop: 10,
+              fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 600,
+              letterSpacing: '0.18em', textTransform: 'uppercase',
+              color: 'rgba(255,255,255,0.6)',
+            }}>
+              From click → a real range
+            </div>
+          </div>
+        </div>
+
+        {/* CTA row — editorial buttons */}
+        <div style={{
+          marginTop: 64,
+          display: 'flex', gap: 14, alignItems: 'center', flexWrap: 'wrap',
+          opacity: inView ? 1 : 0,
+          transform: inView ? 'translateY(0)' : 'translateY(10px)',
+          transition: 'opacity 700ms cubic-bezier(0.22,1,0.36,1) 700ms, transform 700ms cubic-bezier(0.22,1,0.36,1) 700ms',
+        }}>
+          <button
+            onClick={onApply}
+            onMouseEnter={() => setHoverPrimary(true)}
+            onMouseLeave={() => setHoverPrimary(false)}
+            style={{
+              position: 'relative', overflow: 'hidden',
+              display: 'inline-flex', alignItems: 'center', gap: 12,
+              background: V1.blue, color: '#fff', border: 'none',
+              padding: '16px 26px', borderRadius: 10, cursor: 'pointer',
+              fontFamily: V1.fontBody, fontSize: 15.5, fontWeight: 600, letterSpacing: '-0.005em',
+              boxShadow: hoverPrimary
+                ? `0 12px 28px -10px ${V1.blue}cc, 0 2px 6px ${V1.blue}44`
+                : `0 6px 18px -8px ${V1.blue}aa`,
+              transform: hoverPrimary ? 'translateY(-1px)' : 'translateY(0)',
+              transition: 'background 180ms, box-shadow 240ms, transform 240ms',
+            }}
+          >
+            {/* Sheen sweep on hover */}
+            <span aria-hidden style={{
+              position: 'absolute', inset: 0, pointerEvents: 'none',
+              background: 'linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.18) 50%, transparent 70%)',
+              transform: hoverPrimary ? 'translateX(120%)' : 'translateX(-120%)',
+              transition: 'transform 900ms cubic-bezier(0.22, 1, 0.36, 1)',
+            }} />
+            Get Funded
+            <svg width="15" height="15" viewBox="0 0 14 14" style={{
+              transform: hoverPrimary ? 'translateX(3px)' : 'translateX(0)',
+              transition: 'transform 260ms cubic-bezier(0.22, 1, 0.36, 1)',
+            }}>
+              <path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+
+          {onTalk && (
+            <button
+              onClick={onTalk}
+              onMouseEnter={() => setHoverGhost(true)}
+              onMouseLeave={() => setHoverGhost(false)}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 10,
+                background: hoverGhost ? 'rgba(255,255,255,0.06)' : 'transparent',
+                color: '#fff',
+                border: `1px solid ${hoverGhost ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.22)'}`,
+                padding: '15px 24px', borderRadius: 10, cursor: 'pointer',
+                fontFamily: V1.fontBody, fontSize: 15, fontWeight: 500,
+                transition: 'background 220ms, border-color 220ms',
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="1.5" y="2.5" width="11" height="9" rx="1.5"/>
+                <path d="M4 1v2M10 1v2M1.5 5.5h11"/>
+              </svg>
+              Talk to an underwriter
+              <span style={{
+                opacity: hoverGhost ? 1 : 0,
+                transform: hoverGhost ? 'translateX(0)' : 'translateX(-4px)',
+                transition: 'opacity 220ms, transform 220ms cubic-bezier(0.22, 1, 0.36, 1)',
+                display: 'inline-flex', alignItems: 'center',
+              }}>→</span>
+            </button>
+          )}
+          <span style={{
+            fontFamily: V1.fontMono, fontSize: 11, letterSpacing: '0.14em',
+            color: 'rgba(255,255,255,0.45)', textTransform: 'uppercase',
+            marginLeft: 8,
+          }}>
+            Soft-pull · No obligation
+          </span>
+        </div>
+
+        {/* Separator eyebrow for timeline */}
+        <div style={{
+          marginTop: 88,
+          display: 'flex', alignItems: 'center', gap: 14,
+          opacity: inView ? 1 : 0,
+          transition: 'opacity 700ms ease-out 800ms',
+        }}>
+          <span style={{ width: 18, height: 1, background: V1.blueSoft }} />
+          <span style={{
+            fontFamily: V1.fontMono, fontSize: 11, fontWeight: 600,
+            letterSpacing: '0.2em', textTransform: 'uppercase', color: V1.blueSoft,
+          }}>
+            The arc — click to wire
+          </span>
+        </div>
+
+        {/* Timeline: horizontal progress rail + 4 dotted steps */}
+        <div style={{ position: 'relative', marginTop: 36, paddingTop: 16 }}>
+          {/* Base rail */}
+          <div style={{
+            position: 'absolute',
+            top: 20, left: 'calc(12.5% - 4px)', right: 'calc(12.5% - 4px)',
+            height: 1, background: 'rgba(255,255,255,0.1)',
+          }} />
+          {/* Filled rail (left → right draw) */}
+          <div style={{
+            position: 'absolute',
+            top: 20, left: 'calc(12.5% - 4px)',
+            height: 1,
+            background: `linear-gradient(90deg, ${V1.blue}, #818CF8)`,
+            width: inView ? 'calc(75% + 8px)' : '0%',
+            transition: 'width 1500ms cubic-bezier(0.22, 1, 0.36, 1) 900ms',
+          }} />
+
+          <div style={{
+            display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16,
+            position: 'relative',
+          }}>
+            {steps.map((s, i) => (
+              <div key={i} style={{
+                display: 'flex', flexDirection: 'column', alignItems: 'center',
+                textAlign: 'center', padding: '0 12px',
+              }}>
+                {/* Node dot with halo */}
+                <span style={{ position: 'relative', height: 24, width: 24, marginBottom: 20 }}>
+                  <span style={{
+                    position: 'absolute', left: '50%', top: 8,
+                    width: 10, height: 10, marginLeft: -5,
+                    borderRadius: 999,
+                    background: V1.blue,
+                    boxShadow: `0 0 0 4px rgba(79,70,229,0.2)`,
+                    transform: inView ? 'scale(1)' : 'scale(0)',
+                    transition: `transform 600ms cubic-bezier(0.22, 1, 0.36, 1) ${1100 + i * 160}ms`,
+                  }} />
+                </span>
+                <div style={{
+                  opacity: inView ? 1 : 0,
+                  transform: inView ? 'translateY(0)' : 'translateY(10px)',
+                  transition: `opacity 700ms cubic-bezier(0.22,1,0.36,1) ${1200 + i * 160}ms, transform 700ms cubic-bezier(0.22,1,0.36,1) ${1200 + i * 160}ms`,
+                }}>
+                  <div style={{
+                    fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 600,
+                    letterSpacing: '0.18em', textTransform: 'uppercase',
+                    color: V1.blueSoft, marginBottom: 8,
+                  }}>
+                    Step {s.n}
+                  </div>
+                  <div style={{
+                    fontFamily: V1.fontDisplay, fontSize: 26, fontWeight: 700,
+                    letterSpacing: '-0.025em', color: '#fff',
+                    fontVariantNumeric: 'tabular-nums', lineHeight: 1,
+                    marginBottom: 8,
+                  }}>
+                    {s.t}
+                  </div>
+                  <div style={{
+                    fontFamily: V1.fontBody, fontSize: 14, lineHeight: 1.45,
+                    color: 'rgba(255,255,255,0.68)',
+                  }}>
+                    {s.d}
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
