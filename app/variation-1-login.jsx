@@ -64,7 +64,7 @@ function V1LoginField({ id, label, type = 'text', value, onChange, icon, trailin
   );
 }
 
-function V1LoginPage({ onClose, onSignIn, onApply }) {
+function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
   const mounted = useV1Mounted(60);
   const [email, setEmail]                 = React.useState('');
   const [password, setPassword]           = React.useState('');
@@ -599,7 +599,28 @@ function V1LoginPage({ onClose, onSignIn, onApply }) {
               letterSpacing: '0.14em', textTransform: 'uppercase', color: V1.muted,
               ...enter(1080),
             }}>
-              By signing in you agree to Terms · Privacy
+              By signing in you agree to{' '}
+              <button
+                type="button"
+                onClick={() => onNavLegal && onNavLegal('terms')}
+                style={{
+                  background: 'transparent', border: 'none', padding: 0, cursor: 'pointer',
+                  fontFamily: 'inherit', fontSize: 'inherit', letterSpacing: 'inherit',
+                  textTransform: 'inherit', color: V1.blue, fontWeight: 600,
+                  textDecoration: 'underline', textUnderlineOffset: 3,
+                }}
+              >Terms</button>
+              {' · '}
+              <button
+                type="button"
+                onClick={() => onNavLegal && onNavLegal('privacy')}
+                style={{
+                  background: 'transparent', border: 'none', padding: 0, cursor: 'pointer',
+                  fontFamily: 'inherit', fontSize: 'inherit', letterSpacing: 'inherit',
+                  textTransform: 'inherit', color: V1.blue, fontWeight: 600,
+                  textDecoration: 'underline', textUnderlineOffset: 3,
+                }}
+              >Privacy</button>
             </div>
           </div>
 

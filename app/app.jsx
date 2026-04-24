@@ -353,7 +353,7 @@ function FAQSection({ accent = DELT.colors.indigo }) {
 }
 
 function FooterBlock({ accent = DELT.colors.indigo, brand, onNav }) {
-  const linkKeyMap = { 'Blog': 'blog', 'FAQ': 'faq', 'About': 'about', 'How it works': 'how', 'Calculator': 'calc', 'Reviews': 'reviews', 'Support': 'support', 'Contact': 'support' };
+  const linkKeyMap = { 'Blog': 'blog', 'FAQ': 'faq', 'About': 'about', 'How it works': 'how', 'Calculator': 'calc', 'Reviews': 'reviews', 'Support': 'support', 'Contact': 'support', 'Terms of Use': 'terms', 'Privacy Policy': 'privacy', 'Communications': 'eca' };
   const handle = (label) => (e) => {
     const k = linkKeyMap[label];
     if (k && onNav) { e.preventDefault(); onNav(k); }
@@ -383,8 +383,19 @@ function FooterBlock({ accent = DELT.colors.indigo, brand, onNav }) {
             </div>
           ))}
         </div>
-        <div style={{ paddingTop: 28, borderTop: '1px solid #2B2A35', fontFamily: DELT.font.body, fontSize: 12, color: '#6A6876' }}>
-          © 2026 Delt Capital, Inc. NMLS #—. California Finance Lender License #—.
+        <div style={{ paddingTop: 28, borderTop: '1px solid #2B2A35', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 24, flexWrap: 'wrap', fontFamily: DELT.font.body, fontSize: 12, color: '#6A6876' }}>
+          <span>© 2026 Delt Capital, Inc. NMLS #—. California Finance Lender License #—.</span>
+          <span style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
+            {['Terms of Use', 'Privacy Policy', 'Communications'].map(l => (
+              <a
+                key={l}
+                onClick={handle(l)}
+                style={{ color: '#9E9BA8', textDecoration: 'none', cursor: 'pointer', transition: 'color 180ms' }}
+                onMouseEnter={(e) => { e.currentTarget.style.color = '#E9E7DF'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = '#9E9BA8'; }}
+              >{l}</a>
+            ))}
+          </span>
         </div>
       </div>
     </footer>
