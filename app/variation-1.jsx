@@ -82,6 +82,18 @@ V1Chrome.brand = (
 );
 
 function V1Hero({ accent, onApply }) {
+  const mounted = useV1Mounted(80);
+  const scrollY = useV1ScrollY();
+  // Parallax: only active while the hero is on screen (roughly first 900px).
+  const py = Math.min(scrollY, 900);
+  const videoShift = -py * 0.12;
+  const videoScale = 1 + Math.min(py, 600) * 0.00018;
+  const enter = (base) => ({
+    opacity: mounted ? 1 : 0,
+    transform: mounted ? 'translate3d(0,0,0)' : 'translate3d(0, 14px, 0)',
+    transition: `opacity 820ms cubic-bezier(0.22, 1, 0.36, 1) ${base}ms, transform 820ms cubic-bezier(0.22, 1, 0.36, 1) ${base}ms`,
+  });
+
   return (
     <section style={{
       background: '#0B0820',
@@ -90,6 +102,14 @@ function V1Hero({ accent, onApply }) {
       overflow: 'hidden',
       borderBottom: '1px solid rgba(255,255,255,0.06)',
     }}>
+      <style>{`
+        @keyframes v1heroPulse { 0% { transform: translate(-50%,-50%) scale(1); opacity: 0.55; } 70% { transform: translate(-50%,-50%) scale(2.6); opacity: 0; } 100% { transform: translate(-50%,-50%) scale(2.6); opacity: 0; } }
+        @keyframes v1heroBob { 0%, 100% { transform: translateY(0); opacity: 0.55; } 50% { transform: translateY(5px); opacity: 1; } }
+        @media (prefers-reduced-motion: reduce) {
+          .v1hero-pulse, .v1hero-bob { animation: none !important; }
+        }
+      `}</style>
+
       {/* Dateline */}
       <div style={{
         maxWidth: 1280, margin: '0 auto', padding: '20px 32px 0',
@@ -97,11 +117,27 @@ function V1Hero({ accent, onApply }) {
         fontFamily: DELT.font.mono, fontSize: 11.5, color: 'rgba(247,245,240,0.5)',
         letterSpacing: '0.08em', textTransform: 'uppercase',
         position: 'relative', zIndex: 3,
+        ...enter(0),
       }}>
         <span>Vol. VII · Q1 2026</span>
         <span>Direct lender · Est. 2019</span>
         <span style={{ color: accent, display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ width: 7, height: 7, borderRadius: 999, background: accent, boxShadow: `0 0 10px ${accent}` }} />
+          <span style={{ position: 'relative', width: 7, height: 7 }}>
+            <span style={{
+              position: 'absolute', top: '50%', left: '50%',
+              transform: 'translate(-50%,-50%)',
+              width: 7, height: 7, borderRadius: 999,
+              background: accent, boxShadow: `0 0 10px ${accent}`,
+              zIndex: 1,
+            }} />
+            <span className="v1hero-pulse" style={{
+              position: 'absolute', top: '50%', left: '50%',
+              width: 7, height: 7, borderRadius: 999,
+              background: accent,
+              animation: 'v1heroPulse 2.2s cubic-bezier(0.22, 1, 0.36, 1) infinite',
+              willChange: 'transform, opacity',
+            }} />
+          </span>
           Quoting now
         </span>
       </div>
@@ -119,28 +155,34 @@ function V1Hero({ accent, onApply }) {
             letterSpacing: '-0.045em', color: '#F7F5F0', lineHeight: 0.95,
             margin: 0,
           }}>
-            Capital,<br />
-            priced the way<br />
-            you'd price it{' '}
-            <em style={{
-              fontStyle: 'italic',
-              fontFamily: '"Source Serif Pro", Georgia, serif',
-              fontWeight: 400,
-              color: accent,
-              background: `linear-gradient(90deg, ${accent}, #A78BFA)`,
-              WebkitBackgroundClip: 'text', backgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}>yourself.</em>
+            <V1LineMask ready={mounted} delay={120}>Capital,</V1LineMask>
+            <V1LineMask ready={mounted} delay={230}>priced the way</V1LineMask>
+            <V1LineMask ready={mounted} delay={340}>
+              you'd price it{' '}
+              <em style={{
+                fontStyle: 'italic',
+                fontFamily: '"Source Serif Pro", Georgia, serif',
+                fontWeight: 400,
+                color: accent,
+                background: `linear-gradient(90deg, ${accent}, #A78BFA)`,
+                WebkitBackgroundClip: 'text', backgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}>yourself.</em>
+            </V1LineMask>
           </h1>
 
           <p style={{
             fontFamily: DELT.font.body, fontSize: 18, lineHeight: 1.55,
             color: 'rgba(247,245,240,0.75)', margin: '32px 0 0', maxWidth: 520,
+            ...enter(560),
           }}>
             Revenue-based funding from <span style={{ color: '#F7F5F0', fontWeight: 500 }}>$5,000 to $500,000</span>, underwritten off deposits — not your FICO, not your collateral, not a call center's script. Median factor <span style={{ color: '#F7F5F0', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>1.18×</span>. Median time to funds, <span style={{ color: '#F7F5F0', fontWeight: 500 }}>24 hours</span>.
           </p>
 
-          <div style={{ display: 'flex', gap: 12, marginTop: 36, alignItems: 'center', flexWrap: 'wrap' }}>
+          <div style={{
+            display: 'flex', gap: 12, marginTop: 36, alignItems: 'center', flexWrap: 'wrap',
+            ...enter(700),
+          }}>
             <Btn variant="indigo" size="lg" onClick={onApply} style={{ background: accent, borderColor: accent }}>Get Funded <Arr /></Btn>
             <Btn variant="ghost" size="lg" style={{ background: 'transparent', color: '#F7F5F0', borderColor: 'rgba(247,245,240,0.2)' }}>See how pricing works</Btn>
           </div>
@@ -154,8 +196,8 @@ function V1Hero({ accent, onApply }) {
               ['Today\'s median', '1.18×', 'factor'],
               ['Time to funds', '24h', 'median'],
               ['Soft-pull', 'Yes', 'only'],
-            ].map(([l, v, s]) => (
-              <div key={l}>
+            ].map(([l, v, s], i) => (
+              <div key={l} style={enter(820 + i * 90)}>
                 <div style={{ fontFamily: DELT.font.body, fontSize: 10.5, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(247,245,240,0.45)' }}>{l}</div>
                 <div style={{ fontFamily: DELT.font.display, fontSize: 26, fontWeight: 600, color: '#F7F5F0', letterSpacing: '-0.02em', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
                   {v}
@@ -174,6 +216,9 @@ function V1Hero({ accent, onApply }) {
           marginTop: -32,
           marginBottom: -32,
           overflow: 'hidden',
+          clipPath: mounted ? 'inset(0 0 0 0)' : 'inset(0 100% 0 0)',
+          transition: 'clip-path 1100ms cubic-bezier(0.76, 0, 0.24, 1) 160ms',
+          willChange: mounted ? 'auto' : 'clip-path',
         }}>
           <video
             src="app/assets/hero.mp4"
@@ -182,6 +227,9 @@ function V1Hero({ accent, onApply }) {
               width: '100%', height: '100%',
               objectFit: 'cover',
               display: 'block',
+              transform: `translate3d(0, ${videoShift}px, 0) scale(${videoScale})`,
+              transformOrigin: 'center center',
+              willChange: 'transform',
             }}
           />
           {/* Left-edge fade so video melts into the copy column */}
@@ -202,6 +250,7 @@ function V1Hero({ accent, onApply }) {
             position: 'absolute', bottom: 28, right: 28,
             display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6,
             pointerEvents: 'none',
+            ...enter(1100),
           }}>
             <div style={{
               fontFamily: DELT.font.mono, fontSize: 10.5, color: 'rgba(247,245,240,0.55)',
@@ -222,8 +271,20 @@ function V1Hero({ accent, onApply }) {
         fontFamily: DELT.font.mono, fontSize: 11, color: 'rgba(247,245,240,0.45)',
         letterSpacing: '0.14em', textTransform: 'uppercase',
         position: 'relative', zIndex: 2,
+        ...enter(1000),
       }}>
-        <span>Scroll — the numbers</span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10 }}>
+          Scroll — the numbers
+          <span className="v1hero-bob" style={{
+            display: 'inline-block',
+            animation: 'v1heroBob 1.8s cubic-bezier(0.22, 1, 0.36, 1) infinite',
+            willChange: 'transform, opacity',
+          }}>
+            <svg width="10" height="12" viewBox="0 0 10 12" aria-hidden="true">
+              <path d="M5 1v9M1.5 7.5 5 11l3.5-3.5" stroke="currentColor" strokeWidth="1.3" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </span>
+        </span>
         <span>$200M+ deployed · 2,850+ funded · since 2019</span>
       </div>
     </section>

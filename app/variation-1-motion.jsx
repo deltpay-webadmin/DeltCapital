@@ -102,4 +102,53 @@ function V1CountUp({ value, duration = 1400, start = 0 }) {
   return <span ref={ref} style={{ fontVariantNumeric: 'tabular-nums' }}>{display || '\u00A0'}</span>;
 }
 
-Object.assign(window, { V1Reveal, V1Stagger, V1CountUp, useV1InView });
+// Hook: flips true a tick after mount (gives fonts a frame to load) so
+// on-mount animations can be keyed off a React state change. Used for hero
+// enter-on-load choreography rather than scroll-triggered reveals.
+function useV1Mounted(delay = 40) {
+  const [m, setM] = React.useState(false);
+  React.useEffect(() => {
+    if (V1_PRM) { setM(true); return; }
+    const t = setTimeout(() => setM(true), delay);
+    return () => clearTimeout(t);
+  }, [delay]);
+  return m;
+}
+
+// Hook: smoothed window.scrollY with RAF throttling. Consumers translate this
+// into parallax offsets/scales. Returns a number (pixels).
+function useV1ScrollY() {
+  const [y, setY] = React.useState(0);
+  React.useEffect(() => {
+    if (V1_PRM) return;
+    let raf = 0;
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => { raf = 0; setY(window.scrollY || 0); });
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => { window.removeEventListener('scroll', onScroll); if (raf) cancelAnimationFrame(raf); };
+  }, []);
+  return y;
+}
+
+// Line mask: a single line of text that slides up from behind an
+// overflow-hidden edge. `ready` is the trigger (use with useV1Mounted for hero
+// or useV1InView for scroll-entering headlines).
+function V1LineMask({ children, delay = 0, duration = 900, ready = true, style, ...rest }) {
+  return (
+    <span style={{ display: 'block', overflow: 'hidden', paddingBottom: '0.06em', ...style }} {...rest}>
+      <span style={{
+        display: 'inline-block',
+        transform: ready ? 'translate3d(0,0,0)' : 'translate3d(0, 108%, 0)',
+        transition: V1_PRM ? 'none' : `transform ${duration}ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms`,
+        willChange: ready ? 'auto' : 'transform',
+      }}>
+        {children}
+      </span>
+    </span>
+  );
+}
+
+Object.assign(window, { V1Reveal, V1Stagger, V1CountUp, useV1InView, useV1Mounted, useV1ScrollY, V1LineMask });
