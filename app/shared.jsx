@@ -45,7 +45,7 @@ const DeltContent = {
     { k: 'Prepayment penalty',  delt: 'None — early pays save', bank: 'Full factor owed' },
   ],
   steps: [
-    { n: '01', t: 'Prequalify', d: 'Three questions. Soft-pull only. Range in 60 seconds.', time: '1 min' },
+    { n: '01', t: 'Get Funded', d: 'Three questions. Soft-pull only. Range in 60 seconds.', time: '1 min' },
     { n: '02', t: 'Connect bank', d: 'Plaid read-only. No statements, no tax returns.', time: '2 min' },
     { n: '03', t: 'Offer', d: 'A single factor rate, flat fee schedule, no compounding.', time: 'Same day' },
     { n: '04', t: 'Fund', d: 'Wire or ACH to your operating account. You pick.', time: '24 h' },
@@ -65,7 +65,7 @@ const DeltContent = {
   faq: [
     { q: 'What\'s a factor rate, really?', a: 'One multiplier. $100K at 1.18× = $118K repaid, total. No compounding, no APR gymnastics. Pay early, pay less — we rebate unearned factor.' },
     { q: 'How is repayment structured?', a: 'A fixed daily or weekly debit sized to your revenue. Typically 4–10 months. You see the schedule in your offer before you sign anything.' },
-    { q: 'Will this hurt my credit?', a: 'No. Prequalification is a soft pull. A hard pull only happens if you counter-sign an offer — and only on the guarantor, not the business.' },
+    { q: 'Will this hurt my credit?', a: 'No. Get Funded is a soft pull. A hard pull only happens if you counter-sign an offer — and only on the guarantor, not the business.' },
     { q: 'Do I need collateral?', a: 'No UCC-1 filing, no personal guarantee beyond a standard assurance. We underwrite revenue, not assets.' },
     { q: 'What if revenue drops mid-term?', a: 'Call us. We\'ve restructured ~12% of active books without penalty. Talk to us before you miss a debit.' },
     { q: 'Do brokers get a different rate?', a: 'Broker-sourced deals carry the broker\'s points, not ours. Direct applicants always see the lowest published rate.' },

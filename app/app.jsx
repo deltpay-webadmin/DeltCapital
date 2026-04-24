@@ -448,7 +448,7 @@ function AboutPage({ accent }) {
 
 function HowItWorksPage({ accent, onApply }) {
   const steps = [
-    { n: '01', t: 'Prequalify', d: 'Three fields on the calculator — revenue, time in business, card processor. We return a funded-range estimate and a factor rate in under a minute. Soft-pull only; no impact to your business credit.', time: '< 1 minute', doc: 'No statements, no tax returns.' },
+    { n: '01', t: 'Get Funded', d: 'Three fields on the calculator — revenue, time in business, card processor. We return a funded-range estimate and a factor rate in under a minute. Soft-pull only; no impact to your business credit.', time: '< 1 minute', doc: 'No statements, no tax returns.' },
     { n: '02', t: 'Connect bank', d: 'Plaid read-only link to your primary operating account. We analyze 90 days of deposits, average daily balances, and negative-day frequency. This replaces the statement-review step other lenders drag out for weeks.', time: '~ 2 minutes', doc: 'Plaid. Read-only.' },
     { n: '03', t: 'Receive offer', d: 'One page. Amount, factor rate, term, daily or weekly debit size, total repayment, full amortization schedule. No other fees. Sign it or send it to your CFO — no "advisor" to route around.', time: 'Same day', doc: 'Single PDF. No addenda.' },
     { n: '04', t: 'Fund', d: 'Wire or ACH to your operating account. Wire before 2 pm ET clears same-day; ACH next business day. Funds are yours — no restricted accounts, no controlled disbursements.', time: '24 hours', doc: 'Wire or ACH. Your choice.' },

@@ -170,7 +170,7 @@ const FAQ_CATS = [
               We <i>can</i> fund: restaurants, retail, logistics, healthcare
               (ex-pharma), construction, trades, e-commerce, services,
               manufacturing, auto, beauty, fitness, and about 80 other NAICS
-              codes. If you're not sure, apply — the prequal tells you in 60s.
+              codes. If you're not sure, apply — Get Funded tells you in 60s.
             </p>
           </>
         ),
@@ -204,11 +204,11 @@ const FAQ_CATS = [
     items: [
       {
         q: 'Will this hurt my credit?',
-        short: 'No. Prequal is a soft pull. Hard pull only on counter-sign.',
+        short: 'No. Get Funded is a soft pull. Hard pull only on counter-sign.',
         a: (
           <>
             <p>
-              Prequalification runs a <b>soft inquiry</b> — no effect on your
+              Get Funded runs a <b>soft inquiry</b> — no effect on your
               score. A hard pull happens <i>only</i> if you counter-sign an
               offer, and it's on the personal guarantor, not the business EIN.
             </p>
@@ -232,7 +232,7 @@ const FAQ_CATS = [
             </p>
             <FaqMath
               rows={[
-                ['Prequal → applied',        '1–3 min'],
+                ['Get Funded → applied',     '1–3 min'],
                 ['Applied → bank connected', '5–10 min'],
                 ['Connected → offer issued', '2–6 hours'],
                 ['Offer → counter-signed',   'your call'],
@@ -928,7 +928,7 @@ function V1FAQPage({ accent, onApply, onTalk }) {
               onMouseEnter={(e) => { e.currentTarget.style.background = V1.bg; e.currentTarget.style.borderColor = V1.ink; }}
               onMouseLeave={(e) => { e.currentTarget.style.background = V1.white; e.currentTarget.style.borderColor = V1.line; }}
             >
-              Or start prequal
+              Or Get Funded
             </button>
             <div style={{
               marginTop: 4,

@@ -590,7 +590,7 @@ function V1CTASection({ onApply, onTalk }) {
             }}
             onMouseEnter={(e) => { e.currentTarget.style.background = '#8B5CF6'; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = V1.blue; }}>
-              Start prequal
+              Get Funded
               <svg width="14" height="14" viewBox="0 0 14 14">
                 <path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
