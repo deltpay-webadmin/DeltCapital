@@ -109,7 +109,7 @@ function V1Hero({ accent, onApply }) {
       position: 'relative',
       overflow: 'hidden',
       borderBottom: '1px solid rgba(255,255,255,0.06)',
-      minHeight: '100vh',
+      minHeight: 'calc(100vh - 82px)',
       display: 'flex',
       flexDirection: 'column',
     }}>
@@ -285,6 +285,12 @@ function V1Hero({ accent, onApply }) {
           <div style={{
             position: 'absolute', inset: 0,
             background: 'linear-gradient(180deg, #041E42 0%, rgba(4,30,66,0.6) 10%, rgba(4,30,66,0) 26%)',
+            pointerEvents: 'none',
+          }} />
+          {/* Bottom-edge fade so video melts into the section bottom rule */}
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: 'linear-gradient(0deg, #041E42 0%, rgba(4,30,66,0.6) 10%, rgba(4,30,66,0) 26%)',
             pointerEvents: 'none',
           }} />
           {/* Top/bottom subtle fades to help the band read as a hero */}
