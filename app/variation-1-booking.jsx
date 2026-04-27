@@ -155,7 +155,19 @@ const V1_SPECIALISTS = [
   },
 ];
 
-const V1_BK_TIMES = ['9:00am', '10:00am', '11:00am', '1:00pm', '2:30pm', '4:00pm'];
+// 8:00am → 5:30pm in 30-minute increments. Last slot starts at 5:30pm so
+// every meeting fits inside an 8am–6pm window.
+const V1_BK_TIMES = (() => {
+  const out = [];
+  for (let h = 8; h < 18; h++) {
+    for (const m of ['00', '30']) {
+      const hr12 = h > 12 ? h - 12 : (h === 0 ? 12 : h);
+      const ampm = h >= 12 ? 'pm' : 'am';
+      out.push(`${hr12}:${m}${ampm}`);
+    }
+  }
+  return out;
+})();
 
 function V1BookingCalendar({ currentDate, setCurrentDate, selectedDate, onPickDate, accent }) {
   const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -348,7 +360,13 @@ function V1TimeSlots({ selectedDate, selectedTime, onPickTime, accent }) {
       }}>
         {fmtDate(selectedDate)}
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <div
+        className="bk-slot-list"
+        style={{
+          display: 'flex', flexDirection: 'column', gap: 8,
+          maxHeight: 440, overflowY: 'auto', paddingRight: 6,
+        }}
+      >
         {V1_BK_TIMES.map((t, i) => {
           const sel = selectedTime === t;
           return (
@@ -364,7 +382,7 @@ function V1TimeSlots({ selectedDate, selectedTime, onPickTime, accent }) {
                 fontFamily: V1.fontBody, fontSize: 14.5, fontWeight: 500,
                 cursor: 'pointer',
                 transition: 'all .15s',
-                animation: `bkSlotIn 400ms cubic-bezier(.2,.7,.3,1) ${i * 50}ms both`,
+                animation: `bkSlotIn 400ms cubic-bezier(.2,.7,.3,1) ${Math.min(i, 8) * 50}ms both`,
               }}
               onMouseEnter={(e) => {
                 if (!sel) {
@@ -389,7 +407,13 @@ function V1TimeSlots({ selectedDate, selectedTime, onPickTime, accent }) {
           );
         })}
       </div>
-      <style>{`@keyframes bkSlotIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}`}</style>
+      <style>{`
+        @keyframes bkSlotIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+        .bk-slot-list { scrollbar-width: thin; scrollbar-color: ${V1.line} transparent; }
+        .bk-slot-list::-webkit-scrollbar { width: 6px; }
+        .bk-slot-list::-webkit-scrollbar-thumb { background: ${V1.line}; border-radius: 3px; }
+        .bk-slot-list::-webkit-scrollbar-track { background: transparent; }
+      `}</style>
     </div>
   );
 }
@@ -489,21 +513,166 @@ function V1SpecialistCard({ person, active, onPick, accent, idx }) {
   );
 }
 
-function V1ConfirmPanel({ specialist, date, time, accent, onReset }) {
-  const [phase, setPhase] = React.useState('idle'); // idle · submitting · done
-  const [progress, setProgress] = React.useState(0);
-
-  const submit = () => {
-    if (!specialist || !date || !time) return;
-    setPhase('submitting');
-    setProgress(0);
-    const id = setInterval(() => {
-      setProgress((p) => {
-        if (p >= 100) { clearInterval(id); setPhase('done'); return 100; }
-        return p + 4;
-      });
-    }, 30);
+function V1BookingForm({
+  phase, first, setFirst, last, setLast, emailAddr, setEmailAddr,
+  formValid, errorMsg, accent, specialist, dateLabel, time, onClose, onSubmit,
+}) {
+  const submitting = phase === 'submitting';
+  const inputStyle = {
+    width: '100%', padding: '11px 12px', borderRadius: 8,
+    border: `1px solid ${V1.line}`, background: V1.white,
+    fontFamily: V1.fontBody, fontSize: 14.5, color: V1.ink,
+    outline: 'none', transition: 'border-color .15s, box-shadow .15s',
   };
+  const labelStyle = {
+    fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 600,
+    letterSpacing: '0.14em', textTransform: 'uppercase', color: V1.muted,
+    marginBottom: 6, display: 'block',
+  };
+  const focus = (e) => { e.currentTarget.style.borderColor = accent; e.currentTarget.style.boxShadow = `0 0 0 3px ${accent}1f`; };
+  const blur = (e) => { e.currentTarget.style.borderColor = V1.line; e.currentTarget.style.boxShadow = 'none'; };
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Confirm your booking"
+      style={{
+        position: 'fixed', inset: 0, zIndex: 100,
+        background: 'rgba(10,37,64,0.55)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: 24, animation: 'bkOverlayIn 220ms ease-out both',
+      }}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    >
+      <div style={{
+        width: '100%', maxWidth: 480,
+        background: V1.white, border: `1px solid ${V1.line}`, borderRadius: 14,
+        padding: 28, display: 'flex', flexDirection: 'column', gap: 18,
+        animation: 'bkModalIn 280ms cubic-bezier(.2,.7,.3,1) both',
+        boxShadow: '0 24px 60px rgba(10,37,64,0.18)',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
+          <div>
+            <div style={{
+              fontFamily: V1.fontMono, fontSize: 11, fontWeight: 600,
+              letterSpacing: '0.18em', textTransform: 'uppercase', color: V1.muted,
+              marginBottom: 6,
+            }}>Confirm your booking</div>
+            <div style={{
+              fontFamily: V1.fontDisplay, fontSize: 22, fontWeight: 600,
+              color: V1.ink, letterSpacing: '-0.02em', lineHeight: 1.2,
+            }}>Tell us who's coming.</div>
+          </div>
+          <button
+            type="button"
+            aria-label="Close"
+            onClick={onClose}
+            disabled={submitting}
+            style={{
+              border: `1px solid ${V1.line}`, background: V1.white,
+              width: 32, height: 32, borderRadius: 8, cursor: submitting ? 'not-allowed' : 'pointer',
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              color: V1.muted,
+            }}
+          >
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"><path d="M3 3l8 8M11 3l-8 8"/></svg>
+          </button>
+        </div>
+
+        <div style={{
+          background: V1.bg, border: `1px solid ${V1.line}`, borderRadius: 10,
+          padding: 14, fontFamily: V1.fontMono, fontSize: 12.5,
+          color: V1.ink, lineHeight: 1.7, fontVariantNumeric: 'tabular-nums',
+        }}>
+          <div><span style={{ color: V1.muted }}>WITH </span>{specialist.name} · {specialist.title}</div>
+          <div><span style={{ color: V1.muted }}>DATE </span>{dateLabel}</div>
+          <div><span style={{ color: V1.muted }}>TIME </span>{time} ET · 30 min</div>
+        </div>
+
+        <form
+          onSubmit={(e) => { e.preventDefault(); onSubmit(); }}
+          style={{ display: 'flex', flexDirection: 'column', gap: 14 }}
+        >
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            <label>
+              <span style={labelStyle}>First name</span>
+              <input
+                type="text" required autoComplete="given-name"
+                value={first} onChange={(e) => setFirst(e.target.value)}
+                onFocus={focus} onBlur={blur}
+                style={inputStyle}
+                disabled={submitting}
+              />
+            </label>
+            <label>
+              <span style={labelStyle}>Last name</span>
+              <input
+                type="text" required autoComplete="family-name"
+                value={last} onChange={(e) => setLast(e.target.value)}
+                onFocus={focus} onBlur={blur}
+                style={inputStyle}
+                disabled={submitting}
+              />
+            </label>
+          </div>
+          <label>
+            <span style={labelStyle}>Email</span>
+            <input
+              type="email" required autoComplete="email"
+              value={emailAddr} onChange={(e) => setEmailAddr(e.target.value)}
+              onFocus={focus} onBlur={blur}
+              style={inputStyle}
+              disabled={submitting}
+              placeholder="you@company.com"
+            />
+          </label>
+
+          {errorMsg && (
+            <div style={{
+              background: '#FFF1F1', border: '1px solid #F2C5C5', borderRadius: 8,
+              padding: '10px 12px', color: '#9B1C1C',
+              fontFamily: V1.fontBody, fontSize: 13,
+            }}>{errorMsg}</div>
+          )}
+
+          <button
+            type="submit"
+            disabled={!formValid || submitting}
+            style={{
+              ...v1BkPrimaryBtn(accent),
+              opacity: !formValid || submitting ? 0.55 : 1,
+              cursor: !formValid || submitting ? 'not-allowed' : 'pointer',
+              marginTop: 4,
+            }}
+          >
+            {submitting ? 'Booking…' : 'Confirm booking'}
+            {!submitting && <V1BkIcon name="arrow" />}
+          </button>
+          <div style={{
+            fontFamily: V1.fontMono, fontSize: 10.5,
+            letterSpacing: '0.12em', textTransform: 'uppercase',
+            color: V1.muted, textAlign: 'center',
+          }}>
+            We'll email you a Zoom link · No credit pull
+          </div>
+        </form>
+      </div>
+      <style>{`
+        @keyframes bkOverlayIn{from{opacity:0}to{opacity:1}}
+        @keyframes bkModalIn{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+      `}</style>
+    </div>
+  );
+}
+
+function V1ConfirmPanel({ specialist, date, time, accent, onReset }) {
+  // idle → click → form (modal asks first/last/email) → submitting → done | error
+  const [phase, setPhase] = React.useState('idle');
+  const [first, setFirst] = React.useState('');
+  const [last, setLast] = React.useState('');
+  const [emailAddr, setEmailAddr] = React.useState('');
+  const [errorMsg, setErrorMsg] = React.useState('');
 
   const ready = !!(specialist && date && time);
   const fmt = (d) => {
@@ -511,6 +680,47 @@ function V1ConfirmPanel({ specialist, date, time, accent, onReset }) {
     const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
     const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     return `${days[d.getDay()]}, ${months[d.getMonth()]} ${d.getDate()}`;
+  };
+  const fmtLong = (d) => {
+    if (!d) return '';
+    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    return `${days[d.getDay()]}, ${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+  };
+
+  const openForm = () => { if (ready) { setErrorMsg(''); setPhase('form'); } };
+  const closeForm = () => { if (phase !== 'submitting') setPhase('idle'); };
+
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailAddr.trim());
+  const formValid = first.trim() && last.trim() && emailValid;
+
+  const submit = async () => {
+    if (!ready || !formValid) return;
+    setErrorMsg('');
+    setPhase('submitting');
+    try {
+      const r = await fetch('/api/book', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          firstName: first.trim(),
+          lastName: last.trim(),
+          email: emailAddr.trim(),
+          specialistName: specialist.name,
+          specialistTitle: specialist.title,
+          dateLabel: fmtLong(date),
+          time,
+        }),
+      });
+      if (!r.ok) {
+        const data = await r.json().catch(() => ({}));
+        throw new Error(data.error || `Request failed (${r.status})`);
+      }
+      setPhase('done');
+    } catch (err) {
+      setErrorMsg(err && err.message ? err.message : 'Booking failed. Please try again.');
+      setPhase('form');
+    }
   };
 
   if (phase === 'done') {
@@ -557,7 +767,11 @@ function V1ConfirmPanel({ specialist, date, time, accent, onReset }) {
             <V1BkIcon name="arrow" />
           </button>
           <button
-            onClick={() => { onReset(); setPhase('idle'); setProgress(0); }}
+            onClick={() => {
+              onReset();
+              setPhase('idle');
+              setFirst(''); setLast(''); setEmailAddr(''); setErrorMsg('');
+            }}
             style={{
               padding: '11px 18px', borderRadius: 10,
               border: `1px solid ${V1.line}`, background: V1.white,
@@ -623,31 +837,33 @@ function V1ConfirmPanel({ specialist, date, time, accent, onReset }) {
       </div>
 
       <button
-        disabled={!ready || phase === 'submitting'}
-        onClick={submit}
+        disabled={!ready}
+        onClick={openForm}
         style={{
           ...v1BkPrimaryBtn(accent),
-          opacity: ready || phase === 'submitting' ? 1 : 0.42,
+          opacity: ready ? 1 : 0.42,
           cursor: ready ? 'pointer' : 'not-allowed',
-          position: 'relative', overflow: 'hidden',
         }}
       >
-        {phase === 'submitting' ? (
-          <>
-            <span style={{ position: 'relative', zIndex: 2 }}>Securing slot… {progress}%</span>
-            <span style={{
-              position: 'absolute', top: 0, left: 0, bottom: 0,
-              width: `${progress}%`, background: 'rgba(255,255,255,0.18)',
-              transition: 'width .03s linear', zIndex: 1,
-            }}/>
-          </>
-        ) : (
-          <>
-            Book 30-minute call
-            <V1BkIcon name="arrow" />
-          </>
-        )}
+        Book 30-minute call
+        <V1BkIcon name="arrow" />
       </button>
+      {(phase === 'form' || phase === 'submitting') && (
+        <V1BookingForm
+          phase={phase}
+          first={first} setFirst={setFirst}
+          last={last} setLast={setLast}
+          emailAddr={emailAddr} setEmailAddr={setEmailAddr}
+          formValid={formValid}
+          errorMsg={errorMsg}
+          accent={accent}
+          specialist={specialist}
+          dateLabel={fmt(date)}
+          time={time}
+          onClose={closeForm}
+          onSubmit={submit}
+        />
+      )}
 
       <div style={{
         fontFamily: V1.fontMono, fontSize: 10.5,

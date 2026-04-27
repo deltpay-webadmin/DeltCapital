@@ -17,11 +17,13 @@ function V1Ticker({ accent }) {
   return (
     <div style={{ background: '#000', color: '#E9E7DF', padding: '6px 0', overflow: 'hidden', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
       <div style={{
-        display: 'flex', gap: 40, whiteSpace: 'nowrap',
+        display: 'flex', whiteSpace: 'nowrap',
         animation: 'v1ticker 40s linear infinite', fontFamily: DELT.font.mono, fontSize: 11.5,
       }}>
+        {/* marginRight on every row (incl. last) so total width = 2× one copy
+            exactly. translateX(-50%) then lines up pixel-perfect at loop. */}
         {all.map((row, i) => (
-          <span key={i} style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+          <span key={i} style={{ display: 'flex', gap: 10, alignItems: 'center', marginRight: 40 }}>
             <span style={{ color: 'rgba(233,231,223,0.5)' }}>{row[0]}</span>
             <span>{row[1]}</span>
             <span style={{ color: accent }}>{row[2]}</span>
@@ -102,6 +104,46 @@ function V1Hero({ accent, onApply }) {
     transition: `opacity 820ms cubic-bezier(0.22, 1, 0.36, 1) ${base}ms, transform 820ms cubic-bezier(0.22, 1, 0.36, 1) ${base}ms`,
   });
 
+  // Rotating verb that swaps every 1.9s. Words are stacked in a single
+  // inline-grid cell so the <em> auto-sizes to the widest child — keeps the
+  // trailing "it." anchored regardless of which word is showing.
+  const fundWords = ['fund', 'back', 'wire', 'fuel', 'grow'];
+  const [fundIdx, setFundIdx] = React.useState(0);
+  React.useEffect(() => {
+    if (!mounted) return undefined;
+    const iv = setInterval(() => setFundIdx((i) => (i + 1) % fundWords.length), 1900);
+    return () => clearInterval(iv);
+  }, [mounted]);
+
+  // Hero video — seamless loop via two stacked <video>s that crossfade.
+  // The mp4's first/last frame don't match, so native `loop` snaps. We track
+  // which video is "front" and, when it nears its end, start the back one
+  // from t=0 and swap them with a CSS opacity transition.
+  const videoA = React.useRef(null);
+  const videoB = React.useRef(null);
+  const [videoFront, setVideoFront] = React.useState(0);
+  const VIDEO_CROSSFADE_S = 0.7;
+  React.useEffect(() => {
+    const cur = videoFront === 0 ? videoA.current : videoB.current;
+    const nxt = videoFront === 0 ? videoB.current : videoA.current;
+    if (!cur || !nxt) return undefined;
+    let scheduled = false;
+    const onTime = () => {
+      if (scheduled) return;
+      const dur = cur.duration;
+      if (!dur || isNaN(dur)) return;
+      if (dur - cur.currentTime <= VIDEO_CROSSFADE_S) {
+        scheduled = true;
+        try { nxt.currentTime = 0; } catch (e) { /* not ready yet */ }
+        const p = nxt.play();
+        if (p && typeof p.catch === 'function') p.catch(() => {});
+        setVideoFront((f) => 1 - f);
+      }
+    };
+    cur.addEventListener('timeupdate', onTime);
+    return () => cur.removeEventListener('timeupdate', onTime);
+  }, [videoFront]);
+
   return (
     <section style={{
       background: '#041E42',
@@ -169,7 +211,11 @@ function V1Hero({ accent, onApply }) {
           }}>
             <V1LineMask ready={mounted} delay={120}>You built the</V1LineMask>
             <V1LineMask ready={mounted} delay={230}>business.</V1LineMask>
-            <V1LineMask ready={mounted} delay={340}>
+            <V1LineMask
+              ready={mounted}
+              delay={340}
+              style={{ paddingBottom: '0.22em', marginBottom: '-0.16em' }}
+            >
               We{' '}
               <em style={{
                 // Manrope/Codec Pro have no italic; switch to Source Serif Pro
@@ -177,11 +223,28 @@ function V1Hero({ accent, onApply }) {
                 fontFamily: '"Source Serif Pro", Georgia, serif',
                 fontStyle: 'italic',
                 fontWeight: 400,
-                color: accent,
-                background: `linear-gradient(90deg, ${accent}, #818CF8)`,
-                WebkitBackgroundClip: 'text', backgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-              }}>fund</em>{' '}it.
+                display: 'inline-grid',
+                gridTemplateAreas: '"stack"',
+                verticalAlign: 'baseline',
+                whiteSpace: 'nowrap',
+              }}>
+                {fundWords.map((w, i) => (
+                  <span key={w} style={{
+                    gridArea: 'stack',
+                    // Gradient must live on the span that holds the text —
+                    // background-clip:text on the <em> parent doesn't reach
+                    // child spans, which would render transparent.
+                    color: accent,
+                    background: `linear-gradient(90deg, ${accent}, #818CF8)`,
+                    WebkitBackgroundClip: 'text', backgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    opacity: i === fundIdx ? 1 : 0,
+                    transform: i === fundIdx ? 'translateY(0)' : 'translateY(6px)',
+                    transition: 'opacity 480ms cubic-bezier(0.22, 1, 0.36, 1), transform 480ms cubic-bezier(0.22, 1, 0.36, 1)',
+                    whiteSpace: 'nowrap',
+                  }}>{w}</span>
+                ))}
+              </em>{' '}it.
             </V1LineMask>
           </h1>
 
@@ -234,22 +297,33 @@ function V1Hero({ accent, onApply }) {
           transition: 'clip-path 1100ms cubic-bezier(0.76, 0, 0.24, 1) 160ms',
           willChange: mounted ? 'auto' : 'clip-path',
         }}>
-          <video
-            src="app/assets/hero.mp4"
-            autoPlay loop muted playsInline
-            style={{
-              width: '100%', height: '100%',
-              objectFit: 'cover',
-              display: 'block',
-              transform: `translate3d(0, ${videoShift}px, 0) scale(${videoScale})`,
-              transformOrigin: 'center center',
-              willChange: 'transform',
-              // Brand tint (step 1 of 2): rotate the baked-in violet ~25° back
-              // toward Electric Indigo, with a gentle saturation/brightness
-              // lift so the shift doesn't flatten the scene.
-              filter: 'hue-rotate(-25deg) saturate(1.08) brightness(1.02)',
-            }}
-          />
+          {/* Two stacked videos that crossfade at loop boundary — see the
+              videoFront effect above. No `loop` attribute: looping is manual
+              so we can overlap a fade between copies. */}
+          {[videoA, videoB].map((ref, idx) => (
+            <video
+              key={idx}
+              ref={ref}
+              src="app/assets/hero.mp4"
+              autoPlay={idx === 0}
+              muted playsInline
+              style={{
+                position: 'absolute', inset: 0,
+                width: '100%', height: '100%',
+                objectFit: 'cover',
+                display: 'block',
+                opacity: idx === videoFront ? 1 : 0,
+                transition: `opacity ${VIDEO_CROSSFADE_S * 1000}ms ease-in-out`,
+                transform: `translate3d(0, ${videoShift}px, 0) scale(${videoScale})`,
+                transformOrigin: 'center center',
+                willChange: 'transform, opacity',
+                // Brand tint (step 1 of 2): rotate the baked-in violet ~25° back
+                // toward Electric Indigo, with a gentle saturation/brightness
+                // lift so the shift doesn't flatten the scene.
+                filter: 'hue-rotate(-25deg) saturate(1.08) brightness(1.02)',
+              }}
+            />
+          ))}
           {/* Brand tint (step 2 of 2): Electric Indigo `mix-blend-mode: color`
               overlay at ~14% pulls any remaining chroma toward #4945FF while
               preserving luminance (motion, highlights, shadows intact). */}
