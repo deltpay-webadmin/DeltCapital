@@ -331,7 +331,7 @@ function V1Hero({ accent, onApply }) {
 // browser's Back/Forward buttons work and deep links resolve on reload. Every
 // navTo() fades the body out for ~200ms before swapping content so page
 // changes feel like a transition rather than a hard snap.
-const V1_PAGES = new Set(['home', 'about', 'how', 'reviews', 'calc', 'talk', 'support', 'faq', 'blog', 'login', 'terms', 'privacy', 'eca']);
+const V1_PAGES = new Set(['home', 'about', 'how', 'reviews', 'calc', 'talk', 'support', 'faq', 'blog', 'login', 'terms', 'privacy', 'eca', 'funding-flow']);
 function readPageFromHash() {
   if (typeof window === 'undefined') return 'home';
   const h = (window.location.hash || '').replace(/^#\/?/, '');
@@ -389,7 +389,7 @@ function Variation1() {
       <V1Hero accent={accent} onApply={() => openApp(null, null)} />
       <V1CompareSection />
       <V1UseCasesSection />
-      <V1CalcSection calcState={calcState} setCalcState={setCalcState} onApply={openApp} onNavHow={() => navTo('how')} />
+      <V1CalcSection calcState={calcState} setCalcState={setCalcState} onApply={openApp} onNavHow={() => navTo('funding-flow')} />
       <V1CTASection onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} />
     </>
   );
@@ -398,7 +398,7 @@ function Variation1() {
     page === 'about'   ? <V1AboutPage accent={accent} onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} /> :
     page === 'how'     ? <HowItWorksPage accent={accent} onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} /> :
     page === 'reviews' ? <V1ReviewsPage accent={accent} onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} /> :
-    page === 'calc'    ? <V1CalculatorPage accent={accent} onApply={(data) => openApp(null, data)} onNavHow={() => navTo('how')} /> :
+    page === 'calc'    ? <V1CalculatorPage accent={accent} onApply={(data) => openApp(null, data)} onNavHow={() => navTo('funding-flow')} /> :
     page === 'talk'    ? <V1BookingPage accent={accent} onApply={() => openApp(null, null)} /> :
     page === 'support' ? <V1SupportPage accent={accent} onTalk={() => navTo('talk')} onApply={() => openApp(null, null)} /> :
     page === 'faq'     ? <V1FAQPage accent={accent} onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} /> :
@@ -407,6 +407,7 @@ function Variation1() {
     page === 'terms'   ? <V1TermsOfUse onBack={() => navTo('home')} onNavPrivacy={() => navTo('privacy')} /> :
     page === 'privacy' ? <V1PrivacyPolicy onBack={() => navTo('home')} onNavTerms={() => navTo('terms')} /> :
     page === 'eca'     ? <V1ElectronicCommunications onBack={() => navTo('home')} /> :
+    page === 'funding-flow' ? <V1FundingFlowPage accent={accent} onApply={() => openApp(null, null)} onCalc={() => navTo('calc')} /> :
     home;
 
   return (
