@@ -275,6 +275,12 @@ function V1Hero({ accent, onApply }) {
             background: 'linear-gradient(90deg, #041E42 0%, rgba(4,30,66,0.6) 12%, rgba(4,30,66,0) 32%)',
             pointerEvents: 'none',
           }} />
+          {/* Right-edge fade so video melts into the section background */}
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: 'linear-gradient(270deg, #041E42 0%, rgba(4,30,66,0.55) 8%, rgba(4,30,66,0) 22%)',
+            pointerEvents: 'none',
+          }} />
           {/* Top/bottom subtle fades to help the band read as a hero */}
           <div style={{
             position: 'absolute', inset: 0,
