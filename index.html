@@ -1,15 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1440" />
+<title>Delt Capital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Source+Serif+Pro:ital,wght@1,400;1,600&display=swap" rel="stylesheet">
 
-  <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Delt Capital (1.1)</title>
-    </head>
+<style>
+  /* ── Brand typography — Codec Pro (primary, §4.1) ──
+     Drop licensed CodecPro-*.woff2 files at /fonts/ to activate. While
+     absent, the stack falls through to Manrope (close free stand-in),
+     then Inter Tight, then system sans. */
+  @font-face { font-family: "Codec Pro"; src: url("/fonts/CodecPro-Regular.woff2")   format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+  @font-face { font-family: "Codec Pro"; src: url("/fonts/CodecPro-Bold.woff2")      format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+  @font-face { font-family: "Codec Pro"; src: url("/fonts/CodecPro-ExtraBold.woff2") format("woff2"); font-weight: 800; font-style: normal; font-display: swap; }
+  @font-face { font-family: "Codec Pro"; src: url("/fonts/CodecPro-Heavy.woff2")     format("woff2"); font-weight: 900; font-style: normal; font-display: swap; }
+  @font-face { font-family: "Codec Pro"; src: url("/fonts/CodecPro-Ultra.woff2")     format("woff2"); font-weight: 950; font-style: normal; font-display: swap; }
 
-    <body>
-      <div id="root"></div>
-      <script type="module" src="/src/main.tsx"></script>
-    </body>
-  </html>
-  
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #FFFFFF; font-family: 'Inter', sans-serif; color: #0F0E17; }
+  body { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  button { font-family: inherit; }
+  a { text-decoration: none; color: inherit; }
+  input, select, textarea, button { font-family: inherit; }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <script type="text/babel" src="app/shared.jsx"></script>
+  <script type="text/babel" src="app/app.jsx"></script>
+  <script type="text/babel" src="app/variation-1-motion.jsx"></script>
+  <script type="text/babel" src="app/variation-1-sections.jsx"></script>
+  <script type="text/babel" src="app/variation-1-calculator.jsx"></script>
+  <script type="text/babel" src="app/variation-1-howitworks.jsx"></script>
+  <script type="text/babel" src="app/variation-1-reviews.jsx"></script>
+  <script type="text/babel" src="app/variation-1-about.jsx"></script>
+  <script type="text/babel" src="app/variation-1-booking.jsx"></script>
+  <script type="text/babel" src="app/variation-1-support.jsx"></script>
+  <script type="text/babel" src="app/variation-1-faq.jsx"></script>
+  <script type="text/babel" src="app/variation-1-blog.jsx"></script>
+  <script type="text/babel" src="app/variation-1-plaid.jsx"></script>
+  <script type="text/babel" src="app/variation-1-apply.jsx"></script>
+  <script type="text/babel" src="app/variation-1-legal.jsx"></script>
+  <script type="text/babel" src="app/variation-1-login.jsx"></script>
+  <script type="text/babel" src="app/variation-1-funding-flow.jsx"></script>
+  <script type="text/babel" src="app/variation-1.jsx"></script>
+
+  <script type="text/babel" data-presets="react">
+    function Root() { return <Variation1 />; }
+    ReactDOM.createRoot(document.getElementById('root')).render(<Root />);
+  </script>
+</body>
+</html>
