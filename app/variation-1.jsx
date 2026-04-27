@@ -163,19 +163,16 @@ function V1Hero({ accent, onApply }) {
             letterSpacing: '-0.045em', color: '#F7F5F0', lineHeight: 0.95,
             margin: 0,
           }}>
-            <V1LineMask ready={mounted} delay={120}>Capital,</V1LineMask>
-            <V1LineMask ready={mounted} delay={230}>priced the way</V1LineMask>
+            <V1LineMask ready={mounted} delay={120}>You built the</V1LineMask>
+            <V1LineMask ready={mounted} delay={230}>business.</V1LineMask>
             <V1LineMask ready={mounted} delay={340}>
-              you'd price it{' '}
-              <em style={{
-                fontStyle: 'italic',
-                fontFamily: '"Source Serif Pro", Georgia, serif',
-                fontWeight: 400,
+              We{' '}
+              <span style={{
                 color: accent,
                 background: `linear-gradient(90deg, ${accent}, #818CF8)`,
                 WebkitBackgroundClip: 'text', backgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
-              }}>yourself.</em>
+              }}>fund</span>{' '}it.
             </V1LineMask>
           </h1>
 
