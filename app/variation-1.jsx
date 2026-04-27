@@ -389,7 +389,7 @@ function Variation1() {
       <V1Hero accent={accent} onApply={() => openApp(null, null)} />
       <V1CompareSection />
       <V1UseCasesSection />
-      <V1CalcSection calcState={calcState} setCalcState={setCalcState} onApply={openApp} />
+      <V1CalcSection calcState={calcState} setCalcState={setCalcState} onApply={openApp} onNavHow={() => navTo('how')} />
       <V1CTASection onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} />
     </>
   );
@@ -398,7 +398,7 @@ function Variation1() {
     page === 'about'   ? <V1AboutPage accent={accent} onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} /> :
     page === 'how'     ? <HowItWorksPage accent={accent} onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} /> :
     page === 'reviews' ? <V1ReviewsPage accent={accent} onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} /> :
-    page === 'calc'    ? <V1CalculatorPage accent={accent} onApply={(data) => openApp(null, data)} /> :
+    page === 'calc'    ? <V1CalculatorPage accent={accent} onApply={(data) => openApp(null, data)} onNavHow={() => navTo('how')} /> :
     page === 'talk'    ? <V1BookingPage accent={accent} onApply={() => openApp(null, null)} /> :
     page === 'support' ? <V1SupportPage accent={accent} onTalk={() => navTo('talk')} onApply={() => openApp(null, null)} /> :
     page === 'faq'     ? <V1FAQPage accent={accent} onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} /> :

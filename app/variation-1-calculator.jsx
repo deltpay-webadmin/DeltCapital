@@ -100,7 +100,49 @@ function V1CalcPill({ active, onClick, children, icon }) {
 // ═══════════════════════════════════════════════════════════════
 // CALCULATOR CORE — the analyzer card itself
 // ═══════════════════════════════════════════════════════════════
-function V1CalcAnalyzer({ onApply, hideHeader }) {
+// Animated "How it works →" link — appears below the calculator results
+// only when the user toggles processing-with-Delt to true. Fades + slides
+// up on mount; unmounts cleanly when the toggle flips off.
+function V1CalcHowLink({ onClick }) {
+  const [shown, setShown] = v1cUseState(false);
+  const [hover, setHover] = v1cUseState(false);
+  v1cUseEffect(() => {
+    const r = requestAnimationFrame(() => setShown(true));
+    return () => cancelAnimationFrame(r);
+  }, []);
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        marginTop: 14, padding: 0,
+        background: 'transparent', border: 'none', cursor: 'pointer',
+        display: 'inline-flex', alignItems: 'center', gap: 6,
+        fontFamily: V1.fontBody, fontSize: 13, fontWeight: 600, color: V1.blue,
+        position: 'relative', alignSelf: 'flex-start',
+        opacity: shown ? 1 : 0,
+        transform: shown ? 'translateY(0)' : 'translateY(6px)',
+        transition: 'opacity 360ms cubic-bezier(0.22, 1, 0.36, 1), transform 360ms cubic-bezier(0.22, 1, 0.36, 1)',
+      }}
+    >
+      How it works
+      <span aria-hidden style={{
+        display: 'inline-flex',
+        transform: hover ? 'translateX(3px)' : 'translateX(0)',
+        transition: 'transform 240ms cubic-bezier(0.22, 1, 0.36, 1)',
+      }}>→</span>
+      <span aria-hidden style={{
+        position: 'absolute', left: 0, right: 18, bottom: -2, height: 1,
+        background: 'currentColor', transformOrigin: 'left center',
+        transform: hover ? 'scaleX(1)' : 'scaleX(0)',
+        transition: 'transform 380ms cubic-bezier(0.22, 1, 0.36, 1)',
+      }} />
+    </button>
+  );
+}
+
+function V1CalcAnalyzer({ onApply, onNavHow, hideHeader }) {
   const [revenue, setRevenue] = v1cUseState(0);
   const [revenueInput, setRevenueInput] = v1cUseState('');
   const [tib, setTib] = v1cUseState('');
@@ -130,7 +172,10 @@ function V1CalcAnalyzer({ onApply, hideHeader }) {
   const preLow  = Math.min(250000, Math.max(5000, Math.round(baseLow / 1000) * 1000));
   const preHigh = Math.min(250000, Math.max(preLow + 2000, Math.round(baseHigh / 1000) * 1000));
   let bLow = baseLow, bHigh = baseHigh;
-  if (boosted) { bLow *= 1.75; bHigh *= 1.75; }
+  // ~25% uplift — realistic underwriting confidence boost from a unified
+  // processor (tighter cash-flow visibility, faster verification, marginally
+  // lower risk premium). Was 1.75 — too generous to read as honest.
+  if (boosted) { bLow *= 1.25; bHigh *= 1.25; }
   bLow = Math.round(bLow / 1000) * 1000;
   bHigh = Math.round(bHigh / 1000) * 1000;
   const cap = boosted ? 500000 : 250000;
@@ -351,6 +396,12 @@ function V1CalcAnalyzer({ onApply, hideHeader }) {
             <p style={{ fontSize: 10.5, color: V1.muted, opacity: 0.75, marginTop: 14, lineHeight: 1.45, fontFamily: V1.fontBody }}>
               Estimates are approximate and not a guarantee of funding. Final offers are based on a full review of your business.
             </p>
+
+            {/* "How it works" link — only when user actively toggled Delt
+                processing on (not the no-cards cross-sell case). */}
+            {deltToggle && hasRevenue && !isRedirect && (
+              <V1CalcHowLink onClick={onNavHow} />
+            )}
           </div>
 
           {/* ── Delt Boost toggle — pinned to bottom ── */}
@@ -382,7 +433,7 @@ function V1CalcAnalyzer({ onApply, hideHeader }) {
                     fontSize: 13.5, fontWeight: 600,
                     color: deltToggle ? V1.ink : V1.muted, transition: 'color .3s',
                   }}>
-                    Switch processing to Delt for 2× more capital
+                    Switch processing to Delt for 25% more capital
                   </div>
                   {deltToggle && hasRevenue && !isRedirect && (
                     <div style={{ fontSize: 11.5, color: V1.blue, fontWeight: 500, marginTop: 2, fontVariantNumeric: 'tabular-nums' }}>
@@ -456,7 +507,7 @@ const v1CardStyle = {
 // ═══════════════════════════════════════════════════════════════
 // V1 CALCULATOR PAGE — full page wrapping the analyzer
 // ═══════════════════════════════════════════════════════════════
-function V1CalculatorPage({ accent, onApply }) {
+function V1CalculatorPage({ accent, onApply, onNavHow }) {
   return (
     <div style={{ background: V1.bg }}>
       {/* Page hero */}
@@ -489,7 +540,7 @@ function V1CalculatorPage({ accent, onApply }) {
 
       {/* The analyzer */}
       <section style={{ padding: '0 24px 64px' }}>
-        <V1CalcAnalyzer onApply={onApply} />
+        <V1CalcAnalyzer onApply={onApply} onNavHow={onNavHow} />
       </section>
 
       {/* How the numbers work */}
