@@ -102,6 +102,17 @@ function V1Hero({ accent, onApply }) {
     transition: `opacity 820ms cubic-bezier(0.22, 1, 0.36, 1) ${base}ms, transform 820ms cubic-bezier(0.22, 1, 0.36, 1) ${base}ms`,
   });
 
+  // Rotating verb that swaps every 1.9s. All 4-char synonyms so the trailing
+  // "it." holds its position. First entry stays position:relative to reserve
+  // layout width; the rest are absolutely stacked and crossfade.
+  const fundWords = ['fund', 'back', 'wire', 'fuel', 'ship', 'grow'];
+  const [fundIdx, setFundIdx] = React.useState(0);
+  React.useEffect(() => {
+    if (!mounted) return undefined;
+    const iv = setInterval(() => setFundIdx((i) => (i + 1) % fundWords.length), 1900);
+    return () => clearInterval(iv);
+  }, [mounted]);
+
   return (
     <section style={{
       background: '#041E42',
@@ -181,7 +192,22 @@ function V1Hero({ accent, onApply }) {
                 background: `linear-gradient(90deg, ${accent}, #818CF8)`,
                 WebkitBackgroundClip: 'text', backgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
-              }}>fund</em>{' '}it.
+                display: 'inline-block',
+                position: 'relative',
+                verticalAlign: 'baseline',
+                whiteSpace: 'nowrap',
+              }}>
+                {fundWords.map((w, i) => (
+                  <span key={w} style={{
+                    position: i === 0 ? 'relative' : 'absolute',
+                    left: 0, top: 0,
+                    opacity: i === fundIdx ? 1 : 0,
+                    transform: i === fundIdx ? 'translateY(0)' : 'translateY(6px)',
+                    transition: 'opacity 480ms cubic-bezier(0.22, 1, 0.36, 1), transform 480ms cubic-bezier(0.22, 1, 0.36, 1)',
+                    whiteSpace: 'nowrap',
+                  }}>{w}</span>
+                ))}
+              </em>{' '}it.
             </V1LineMask>
           </h1>
 
