@@ -109,6 +109,9 @@ function V1Hero({ accent, onApply }) {
       position: 'relative',
       overflow: 'hidden',
       borderBottom: '1px solid rgba(255,255,255,0.06)',
+      minHeight: 'calc(100vh - 82px)',
+      display: 'flex',
+      flexDirection: 'column',
     }}>
       <style>{`
         @keyframes v1heroPulse { 0% { transform: translate(-50%,-50%) scale(1); opacity: 0.55; } 70% { transform: translate(-50%,-50%) scale(2.6); opacity: 0; } 100% { transform: translate(-50%,-50%) scale(2.6); opacity: 0; } }
@@ -129,8 +132,8 @@ function V1Hero({ accent, onApply }) {
       }}>
         <span>Vol. VII · Q1 2026</span>
         <span>Direct lender · Est. 2019</span>
-        <span style={{ color: accent, display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ position: 'relative', width: 7, height: 7 }}>
+        <span style={{ color: accent, display: 'flex', alignItems: 'center', gap: 12, marginLeft: 32 }}>
+          <span style={{ position: 'relative', width: 7, height: 7, marginRight: 2 }}>
             <span style={{
               position: 'absolute', top: '50%', left: '50%',
               transform: 'translate(-50%,-50%)',
@@ -151,10 +154,11 @@ function V1Hero({ accent, onApply }) {
       </div>
 
       <div style={{
+        width: '100%',
         maxWidth: 1280, margin: '0 auto', padding: '56px 32px 0',
         display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48,
         alignItems: 'center', position: 'relative', zIndex: 2,
-        minHeight: 680,
+        minHeight: 680, flex: 1,
       }}>
         {/* Left: copy */}
         <div>
@@ -271,6 +275,24 @@ function V1Hero({ accent, onApply }) {
             background: 'linear-gradient(90deg, #041E42 0%, rgba(4,30,66,0.6) 12%, rgba(4,30,66,0) 32%)',
             pointerEvents: 'none',
           }} />
+          {/* Right-edge fade so video melts into the section background */}
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: 'linear-gradient(270deg, #041E42 0%, rgba(4,30,66,0.55) 8%, rgba(4,30,66,0) 22%)',
+            pointerEvents: 'none',
+          }} />
+          {/* Top-edge fade so video melts down from the dateline */}
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: 'linear-gradient(180deg, #041E42 0%, rgba(4,30,66,0.6) 10%, rgba(4,30,66,0) 26%)',
+            pointerEvents: 'none',
+          }} />
+          {/* Bottom-edge fade so video melts into the section bottom rule */}
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: 'linear-gradient(0deg, #041E42 0%, rgba(4,30,66,0.6) 10%, rgba(4,30,66,0) 26%)',
+            pointerEvents: 'none',
+          }} />
           {/* Top/bottom subtle fades to help the band read as a hero */}
           <div style={{
             position: 'absolute', inset: 0,
@@ -298,9 +320,10 @@ function V1Hero({ accent, onApply }) {
 
       {/* Bottom rule with scroll cue */}
       <div style={{
-        maxWidth: 1280, margin: '0 auto', padding: '48px 32px 28px',
+        width: '100%',
+        maxWidth: 1280, margin: '32px auto 0', padding: '48px 32px 28px',
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        borderTop: '1px solid rgba(247,245,240,0.08)', marginTop: 32,
+        borderTop: '1px solid rgba(247,245,240,0.08)',
         fontFamily: DELT.font.mono, fontSize: 11, color: 'rgba(247,245,240,0.45)',
         letterSpacing: '0.14em', textTransform: 'uppercase',
         position: 'relative', zIndex: 2,
