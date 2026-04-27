@@ -142,28 +142,16 @@ function V1StepBusiness({ form, setForm, accent }) {
 
 // ─── Step 2: Bank (Plaid) ───
 function V1StepBank({ form, setForm, accent }) {
-  const [connecting, setConnecting] = React.useState(false);
-  const [progress, setProgress] = React.useState(0);
-  const [selected, setSelected] = React.useState(null);
-
-  React.useEffect(() => {
-    if (!connecting) return;
-    let t = 0;
-    const id = setInterval(() => {
-      t += 1;
-      setProgress((p) => {
-        const next = Math.min(100, p + 6 + Math.random() * 10);
-        return next;
-      });
-      if (t > 22) {
-        clearInterval(id);
-        setForm({ ...form, bankConnected: true });
-        setConnecting(false);
-        setProgress(0);
-      }
-    }, 90);
-    return () => clearInterval(id);
-  }, [connecting]);
+  const [plaidOpen, setPlaidOpen] = React.useState(false);
+  const handlePlaidSuccess = (data) => {
+    setPlaidOpen(false);
+    setForm({
+      ...form,
+      bankConnected: true,
+      bankInstitution: data.institution,
+      bankAccounts: data.accounts,
+    });
+  };
 
   return (
     <div>
@@ -208,13 +196,13 @@ function V1StepBank({ form, setForm, accent }) {
             }}>✓</div>
             <div style={{ flex: 1 }}>
               <div style={{ fontFamily: V1.fontDisplay, fontSize: 16, fontWeight: 600, color: V1.ink }}>
-                Chase Business Complete · ••1842
+                {form.bankInstitution || 'Chase'}{form.bankAccounts && form.bankAccounts[0] ? ` · ${form.bankAccounts[0]}` : ' · Business Complete · ••1842'}
               </div>
               <div style={{
                 fontFamily: V1.fontMono, fontSize: 11.5, color: V1.muted,
                 letterSpacing: '0.06em', marginTop: 3,
               }}>
-                90 DAYS · $312,480 TOTAL · 1 ACCOUNT
+                90 DAYS · $312,480 TOTAL · {form.bankAccounts ? form.bankAccounts.length : 1} ACCOUNT{form.bankAccounts && form.bankAccounts.length !== 1 ? 'S' : ''}
               </div>
             </div>
             <button
@@ -253,63 +241,8 @@ function V1StepBank({ form, setForm, accent }) {
         </div>
       )}
 
-      {/* State B — connecting */}
-      {!form.bankConnected && connecting && (
-        <div style={{
-          marginTop: 26, padding: '44px 32px',
-          background: V1.ink, borderRadius: 14, color: V1.white,
-          position: 'relative', overflow: 'hidden',
-        }}>
-          <div aria-hidden style={{
-            position: 'absolute', inset: 0, pointerEvents: 'none',
-            background: `radial-gradient(ellipse 500px 300px at 50% 0%, ${accent}40, transparent 60%)`,
-          }} />
-          <div style={{ position: 'relative', textAlign: 'center' }}>
-            <div style={{
-              width: 72, height: 72, borderRadius: 18, margin: '0 auto',
-              background: selected ? `linear-gradient(135deg, ${selected.c1}, ${selected.c2})` : `linear-gradient(135deg, ${accent}, #818CF8)`,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: V1.white, fontFamily: V1.fontDisplay, fontSize: 34, fontWeight: 700,
-              boxShadow: '0 20px 50px -15px rgba(0,0,0,0.5)',
-            }}>{selected?.mark || 'P'}</div>
-            <div style={{
-              marginTop: 20, fontFamily: V1.fontDisplay,
-              fontSize: 18, fontWeight: 600, letterSpacing: '-0.015em',
-            }}>
-              Connecting to {selected?.name || 'your bank'}…
-            </div>
-            <div style={{
-              marginTop: 6, fontFamily: V1.fontMono, fontSize: 11.5,
-              letterSpacing: '0.12em', textTransform: 'uppercase',
-              color: 'rgba(255,255,255,0.55)',
-            }}>
-              Reading 90 days of deposits
-            </div>
-
-            <div style={{
-              marginTop: 24, maxWidth: 360, margin: '24px auto 0',
-              height: 6, background: 'rgba(255,255,255,0.08)', borderRadius: 99,
-              overflow: 'hidden',
-            }}>
-              <div style={{
-                height: '100%', width: `${progress}%`,
-                background: `linear-gradient(90deg, ${accent}, #818CF8)`,
-                transition: 'width .2s ease-out',
-                boxShadow: `0 0 16px ${accent}aa`,
-              }}/>
-            </div>
-            <div style={{
-              marginTop: 12, fontFamily: V1.fontMono, fontSize: 11,
-              color: 'rgba(255,255,255,0.55)', fontVariantNumeric: 'tabular-nums',
-            }}>
-              {Math.floor(progress)}% · {progress > 70 ? 'Running underwriting model' : progress > 35 ? 'Verifying transactions' : 'Authenticating with bank'}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* State C — bank picker */}
-      {!form.bankConnected && !connecting && (
+      {/* State B — pre-connect: Plaid CTA + trust strip */}
+      {!form.bankConnected && (
         <>
           <div style={{
             marginTop: 26, padding: '14px 18px',
@@ -328,46 +261,23 @@ function V1StepBank({ form, setForm, accent }) {
             </div>
           </div>
 
-          <div style={{
-            marginTop: 18,
-            display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10,
-          }}>
-            {V1APPLY_BANKS.map((b) => (
-              <button
-                key={b.name}
-                onClick={() => { setSelected(b); setConnecting(true); setProgress(0); }}
-                style={{
-                  padding: 14, borderRadius: 12,
-                  border: `1px solid ${V1.line}`, background: V1.white,
-                  cursor: 'pointer', textAlign: 'left',
-                  display: 'flex', alignItems: 'center', gap: 10,
-                  transition: 'border-color .15s, transform .1s, box-shadow .15s',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = accent;
-                  e.currentTarget.style.transform = 'translateY(-1px)';
-                  e.currentTarget.style.boxShadow = `0 6px 16px -8px ${accent}88`;
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = V1.line;
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = 'none';
-                }}
-              >
-                <div style={{
-                  width: 34, height: 34, borderRadius: 8,
-                  background: `linear-gradient(135deg, ${b.c1}, ${b.c2})`,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: V1.white, fontFamily: V1.fontDisplay, fontSize: 16, fontWeight: 700,
-                  flexShrink: 0,
-                }}>{b.mark}</div>
-                <div style={{
-                  fontFamily: V1.fontBody, fontSize: 13, color: V1.ink, fontWeight: 500,
-                  lineHeight: 1.2,
-                }}>{b.name}</div>
-              </button>
-            ))}
-          </div>
+          <button
+            onClick={() => setPlaidOpen(true)}
+            style={{
+              marginTop: 22, width: '100%', maxWidth: 420,
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 12,
+              background: '#000', color: '#fff', border: 'none',
+              padding: '14px 22px', borderRadius: 10, cursor: 'pointer',
+              fontFamily: V1.fontBody, fontSize: 14.5, fontWeight: 600,
+              boxShadow: '0 8px 22px -10px rgba(0,0,0,0.5)',
+              transition: 'transform .15s, box-shadow .15s',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 12px 28px -10px rgba(0,0,0,0.55)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 8px 22px -10px rgba(0,0,0,0.5)'; }}
+          >
+            <V1PlaidLogo size={14} color="#fff" />
+            Connect with Plaid
+          </button>
 
           <div style={{
             marginTop: 22, display: 'flex', gap: 20,
@@ -380,12 +290,20 @@ function V1StepBank({ form, setForm, accent }) {
           </div>
         </>
       )}
+
+      <V1PlaidLink open={plaidOpen} onClose={() => setPlaidOpen(false)} onSuccess={handlePlaidSuccess} />
     </div>
   );
 }
 
 // ─── Step 3: Identity ───
 function V1StepIdentity({ form, setForm, accent }) {
+  const [idvOpen, setIdvOpen] = React.useState(false);
+  const idvDone = !!form.idVerified;
+  const handleIdvComplete = (data) => {
+    setIdvOpen(false);
+    setForm({ ...form, idVerified: !!data.idVerified });
+  };
   return (
     <div>
       <div style={{
@@ -400,12 +318,59 @@ function V1StepIdentity({ form, setForm, accent }) {
         fontFamily: V1.fontBody, fontSize: 15, color: V1.muted,
         lineHeight: 1.55, margin: 0, maxWidth: 520,
       }}>
-        Last 4 of SSN — used for KYC only. Soft-pull on the guarantor. No impact
-        to your personal credit.
+        ID + selfie via Plaid IDV, plus the last 4 of SSN for KYC. Soft-pull on
+        the guarantor. No impact to your personal credit.
       </p>
 
+      {/* Plaid IDV launcher / verified state */}
       <div style={{
-        marginTop: 30,
+        marginTop: 26, padding: '18px 20px',
+        background: idvDone ? `${V1.green}0E` : V1.white,
+        border: `1px solid ${idvDone ? V1.green + '55' : V1.line}`,
+        borderRadius: 12,
+        display: 'flex', alignItems: 'center', gap: 14, maxWidth: 620,
+      }}>
+        <div style={{
+          width: 40, height: 40, borderRadius: 999,
+          background: idvDone ? V1.green : '#000', color: '#fff', flexShrink: 0,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          {idvDone ? (
+            <svg width="18" height="18" viewBox="0 0 16 16">
+              <path d="M3 8.2L6.5 11.5 13 5" stroke="currentColor" strokeWidth="2.2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          ) : (
+            <V1PlaidLogo size={14} color="#fff" />
+          )}
+        </div>
+        <div style={{ flex: 1 }}>
+          <div style={{
+            fontFamily: V1.fontDisplay, fontSize: 15, fontWeight: 600,
+            color: V1.ink, letterSpacing: '-0.015em',
+          }}>
+            {idvDone ? 'Identity verified via Plaid IDV' : 'Verify your identity with Plaid'}
+          </div>
+          <div style={{
+            marginTop: 3, fontFamily: V1.fontMono, fontSize: 10.5,
+            letterSpacing: '0.12em', textTransform: 'uppercase', color: V1.muted,
+          }}>
+            {idvDone ? 'ID match · Selfie match · No further action' : 'Government ID + selfie · ~ 60 seconds'}
+          </div>
+        </div>
+        {!idvDone && (
+          <button
+            onClick={() => setIdvOpen(true)}
+            style={{
+              padding: '10px 16px', borderRadius: 8,
+              background: '#000', color: '#fff', border: 'none', cursor: 'pointer',
+              fontFamily: V1.fontBody, fontSize: 13, fontWeight: 600,
+            }}
+          >Begin verification</button>
+        )}
+      </div>
+
+      <div style={{
+        marginTop: 22,
         display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 18, maxWidth: 480,
       }}>
         <V1ApplyField label="SSN (last 4)" hint="Masked on submit">
@@ -422,6 +387,8 @@ function V1StepIdentity({ form, setForm, accent }) {
             accent={accent} />
         </V1ApplyField>
       </div>
+
+      <V1IDVerify open={idvOpen} onClose={() => setIdvOpen(false)} onComplete={handleIdvComplete} />
 
       <div style={{
         marginTop: 32, padding: '18px 20px',
@@ -684,7 +651,8 @@ function V1ApplicationFlow({ open, onClose, prefill, accent }) {
     businessName: '', ein: '', legalForm: 'LLC',
     firstName: '', lastName: '', email: '', phone: '',
     state: 'CA', useOfFunds: 'Inventory',
-    bankConnected: false, ssn4: '',
+    bankConnected: false, bankInstitution: '', bankAccounts: null,
+    ssn4: '', idVerified: false,
     amount: prefill?.high || 75000,
   });
   const [closing, setClosing] = React.useState(false);
@@ -711,7 +679,7 @@ function V1ApplicationFlow({ open, onClose, prefill, accent }) {
   const canProceed = (() => {
     if (step === 0) return form.businessName && form.email;
     if (step === 1) return form.bankConnected;
-    if (step === 2) return form.ssn4.length === 4;
+    if (step === 2) return form.ssn4.length === 4 && form.idVerified;
     return true;
   })();
 
