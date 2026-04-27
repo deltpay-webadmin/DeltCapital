@@ -132,8 +132,8 @@ function V1Hero({ accent, onApply }) {
       }}>
         <span>Vol. VII · Q1 2026</span>
         <span>Direct lender · Est. 2019</span>
-        <span style={{ color: accent, display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ position: 'relative', width: 7, height: 7 }}>
+        <span style={{ color: accent, display: 'flex', alignItems: 'center', gap: 12, marginLeft: 32 }}>
+          <span style={{ position: 'relative', width: 7, height: 7, marginRight: 2 }}>
             <span style={{
               position: 'absolute', top: '50%', left: '50%',
               transform: 'translate(-50%,-50%)',
@@ -279,6 +279,12 @@ function V1Hero({ accent, onApply }) {
           <div style={{
             position: 'absolute', inset: 0,
             background: 'linear-gradient(270deg, #041E42 0%, rgba(4,30,66,0.55) 8%, rgba(4,30,66,0) 22%)',
+            pointerEvents: 'none',
+          }} />
+          {/* Top-edge fade so video melts down from the dateline */}
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: 'linear-gradient(180deg, #041E42 0%, rgba(4,30,66,0.6) 10%, rgba(4,30,66,0) 26%)',
             pointerEvents: 'none',
           }} />
           {/* Top/bottom subtle fades to help the band read as a hero */}
