@@ -20,7 +20,10 @@
   @font-face { font-family: "Codec Pro"; src: url("/fonts/CodecPro-Ultra.woff2")     format("woff2"); font-weight: 950; font-style: normal; font-display: swap; }
 
   * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; background: #FFFFFF; font-family: 'Inter', sans-serif; color: #0F0E17; }
+  /* Match the splash background so the first paint is Midnight Steel,
+     not white — otherwise the browser flashes white before the splash
+     overlay is composited on top. */
+  html, body { margin: 0; padding: 0; background: #041E42; font-family: 'Inter', sans-serif; color: #0F0E17; }
   body { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
   button { font-family: inherit; }
   a { text-decoration: none; color: inherit; }
