@@ -185,7 +185,12 @@ function AboutHero() {
             display: 'inline-block',
             position: 'relative',
             color: V1.blue,
+            // Manrope/Codec Pro don't ship italic glyphs; force a real
+            // italic by switching to Source Serif Pro Italic (same trick
+            // V1Hero uses for "yourself.").
+            fontFamily: '"Source Serif Pro", Georgia, serif',
             fontStyle: 'italic',
+            fontWeight: 600,
             minWidth: '3.2ch',
             verticalAlign: 'baseline',
           }}>
