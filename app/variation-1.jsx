@@ -167,12 +167,17 @@ function V1Hero({ accent, onApply }) {
             <V1LineMask ready={mounted} delay={230}>business.</V1LineMask>
             <V1LineMask ready={mounted} delay={340}>
               We{' '}
-              <span style={{
+              <em style={{
+                // Manrope/Codec Pro have no italic; switch to Source Serif Pro
+                // Italic to match the prior "yourself." treatment.
+                fontFamily: '"Source Serif Pro", Georgia, serif',
+                fontStyle: 'italic',
+                fontWeight: 400,
                 color: accent,
                 background: `linear-gradient(90deg, ${accent}, #818CF8)`,
                 WebkitBackgroundClip: 'text', backgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
-              }}>fund</span>{' '}it.
+              }}>fund</em>{' '}it.
             </V1LineMask>
           </h1>
 
