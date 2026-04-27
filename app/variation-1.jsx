@@ -188,10 +188,6 @@ function V1Hero({ accent, onApply }) {
                 fontFamily: '"Source Serif Pro", Georgia, serif',
                 fontStyle: 'italic',
                 fontWeight: 400,
-                color: accent,
-                background: `linear-gradient(90deg, ${accent}, #818CF8)`,
-                WebkitBackgroundClip: 'text', backgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
                 display: 'inline-block',
                 position: 'relative',
                 verticalAlign: 'baseline',
@@ -201,6 +197,13 @@ function V1Hero({ accent, onApply }) {
                   <span key={w} style={{
                     position: i === 0 ? 'relative' : 'absolute',
                     left: 0, top: 0,
+                    // Gradient must live on the span that holds the text —
+                    // background-clip:text on the <em> parent doesn't reach
+                    // child spans, which would render transparent.
+                    color: accent,
+                    background: `linear-gradient(90deg, ${accent}, #818CF8)`,
+                    WebkitBackgroundClip: 'text', backgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
                     opacity: i === fundIdx ? 1 : 0,
                     transform: i === fundIdx ? 'translateY(0)' : 'translateY(6px)',
                     transition: 'opacity 480ms cubic-bezier(0.22, 1, 0.36, 1), transform 480ms cubic-bezier(0.22, 1, 0.36, 1)',
