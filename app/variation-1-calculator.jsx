@@ -100,9 +100,11 @@ function V1CalcPill({ active, onClick, children, icon }) {
 // ═══════════════════════════════════════════════════════════════
 // CALCULATOR CORE — the analyzer card itself
 // ═══════════════════════════════════════════════════════════════
-// Animated "How it works →" link — appears below the calculator results
-// only when the user toggles processing-with-Delt to true. Fades + slides
-// up on mount; unmounts cleanly when the toggle flips off.
+// Animated "How it works →" button — appears below the calculator results
+// only when the user toggles processing-with-Delt to true. Renders as a
+// hairline-bordered ghost button (not a footer link) so it reads as a
+// proper CTA. Fades + slides up on mount; unmounts cleanly when the
+// toggle flips off.
 function V1CalcHowLink({ onClick }) {
   const [shown, setShown] = v1cUseState(false);
   const [hover, setHover] = v1cUseState(false);
@@ -116,28 +118,34 @@ function V1CalcHowLink({ onClick }) {
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
-        marginTop: 14, padding: 0,
-        background: 'transparent', border: 'none', cursor: 'pointer',
-        display: 'inline-flex', alignItems: 'center', gap: 6,
-        fontFamily: V1.fontBody, fontSize: 13, fontWeight: 600, color: V1.blue,
-        position: 'relative', alignSelf: 'flex-start',
+        marginTop: 18, alignSelf: 'flex-start',
+        position: 'relative', overflow: 'hidden',
+        display: 'inline-flex', alignItems: 'center', gap: 8,
+        padding: '11px 20px', borderRadius: 10, cursor: 'pointer',
+        background: hover ? V1.blue : '#fff',
+        color: hover ? '#fff' : V1.blue,
+        border: `1px solid ${V1.blue}`,
+        fontFamily: V1.fontDisplay, fontSize: 13.5, fontWeight: 700,
+        lineHeight: 1, letterSpacing: '-0.005em',
+        boxShadow: hover ? `0 10px 24px -10px ${V1.blue}88` : '0 0 0 rgba(0,0,0,0)',
+        transform: !shown ? 'translateY(6px)'
+                  : hover ? 'translateY(-1px)' : 'translateY(0)',
         opacity: shown ? 1 : 0,
-        transform: shown ? 'translateY(0)' : 'translateY(6px)',
-        transition: 'opacity 360ms cubic-bezier(0.22, 1, 0.36, 1), transform 360ms cubic-bezier(0.22, 1, 0.36, 1)',
+        transition: 'opacity 360ms cubic-bezier(0.22, 1, 0.36, 1), transform 280ms cubic-bezier(0.22, 1, 0.36, 1), background 220ms, color 220ms, box-shadow 240ms',
       }}
     >
+      <span aria-hidden style={{
+        position: 'absolute', inset: 0, pointerEvents: 'none',
+        background: 'linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.22) 50%, transparent 70%)',
+        transform: hover ? 'translateX(120%)' : 'translateX(-120%)',
+        transition: 'transform 900ms cubic-bezier(0.22, 1, 0.36, 1)',
+      }} />
       How it works
       <span aria-hidden style={{
         display: 'inline-flex',
         transform: hover ? 'translateX(3px)' : 'translateX(0)',
-        transition: 'transform 240ms cubic-bezier(0.22, 1, 0.36, 1)',
+        transition: 'transform 260ms cubic-bezier(0.22, 1, 0.36, 1)',
       }}>→</span>
-      <span aria-hidden style={{
-        position: 'absolute', left: 0, right: 18, bottom: -2, height: 1,
-        background: 'currentColor', transformOrigin: 'left center',
-        transform: hover ? 'scaleX(1)' : 'scaleX(0)',
-        transition: 'transform 380ms cubic-bezier(0.22, 1, 0.36, 1)',
-      }} />
     </button>
   );
 }
