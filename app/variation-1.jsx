@@ -109,6 +109,9 @@ function V1Hero({ accent, onApply }) {
       position: 'relative',
       overflow: 'hidden',
       borderBottom: '1px solid rgba(255,255,255,0.06)',
+      minHeight: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
     }}>
       <style>{`
         @keyframes v1heroPulse { 0% { transform: translate(-50%,-50%) scale(1); opacity: 0.55; } 70% { transform: translate(-50%,-50%) scale(2.6); opacity: 0; } 100% { transform: translate(-50%,-50%) scale(2.6); opacity: 0; } }
@@ -151,10 +154,11 @@ function V1Hero({ accent, onApply }) {
       </div>
 
       <div style={{
+        width: '100%',
         maxWidth: 1280, margin: '0 auto', padding: '56px 32px 0',
         display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48,
         alignItems: 'center', position: 'relative', zIndex: 2,
-        minHeight: 680,
+        minHeight: 680, flex: 1,
       }}>
         {/* Left: copy */}
         <div>
@@ -298,9 +302,10 @@ function V1Hero({ accent, onApply }) {
 
       {/* Bottom rule with scroll cue */}
       <div style={{
-        maxWidth: 1280, margin: '0 auto', padding: '48px 32px 28px',
+        width: '100%',
+        maxWidth: 1280, margin: '32px auto 0', padding: '48px 32px 28px',
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        borderTop: '1px solid rgba(247,245,240,0.08)', marginTop: 32,
+        borderTop: '1px solid rgba(247,245,240,0.08)',
         fontFamily: DELT.font.mono, fontSize: 11, color: 'rgba(247,245,240,0.45)',
         letterSpacing: '0.14em', textTransform: 'uppercase',
         position: 'relative', zIndex: 2,
