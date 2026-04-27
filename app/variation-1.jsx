@@ -102,10 +102,10 @@ function V1Hero({ accent, onApply }) {
     transition: `opacity 820ms cubic-bezier(0.22, 1, 0.36, 1) ${base}ms, transform 820ms cubic-bezier(0.22, 1, 0.36, 1) ${base}ms`,
   });
 
-  // Rotating verb that swaps every 1.9s. All 4-char synonyms so the trailing
-  // "it." holds its position. First entry stays position:relative to reserve
-  // layout width; the rest are absolutely stacked and crossfade.
-  const fundWords = ['fund', 'back', 'wire', 'fuel', 'ship', 'grow'];
+  // Rotating verb that swaps every 1.9s. Words are stacked in a single
+  // inline-grid cell so the <em> auto-sizes to the widest child — keeps the
+  // trailing "it." anchored regardless of which word is showing.
+  const fundWords = ['fund', 'back', 'wire', 'fuel', 'grow'];
   const [fundIdx, setFundIdx] = React.useState(0);
   React.useEffect(() => {
     if (!mounted) return undefined;
@@ -188,15 +188,14 @@ function V1Hero({ accent, onApply }) {
                 fontFamily: '"Source Serif Pro", Georgia, serif',
                 fontStyle: 'italic',
                 fontWeight: 400,
-                display: 'inline-block',
-                position: 'relative',
+                display: 'inline-grid',
+                gridTemplateAreas: '"stack"',
                 verticalAlign: 'baseline',
                 whiteSpace: 'nowrap',
               }}>
                 {fundWords.map((w, i) => (
                   <span key={w} style={{
-                    position: i === 0 ? 'relative' : 'absolute',
-                    left: 0, top: 0,
+                    gridArea: 'stack',
                     // Gradient must live on the span that holds the text —
                     // background-clip:text on the <em> parent doesn't reach
                     // child spans, which would render transparent.
