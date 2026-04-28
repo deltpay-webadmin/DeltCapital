@@ -82,7 +82,12 @@ async function sendMail(token, senderMailbox, to, subject, html, opts = {}) {
     toRecipients: [{ emailAddress: { address: to } }],
   };
   if (opts.from) {
-    message.from = { emailAddress: { address: opts.from } };
+    const fromAddr = { address: opts.from };
+    if (opts.fromName) fromAddr.name = opts.fromName;
+    message.from = { emailAddress: fromAddr };
+  }
+  if (opts.replyTo && opts.replyTo.length) {
+    message.replyTo = opts.replyTo.map((addr) => ({ emailAddress: { address: addr } }));
   }
   if (opts.bcc && opts.bcc.length) {
     message.bccRecipients = opts.bcc.map((addr) => ({ emailAddress: { address: addr } }));
@@ -289,6 +294,10 @@ function bookerEmail({ firstName, specialistName, specialistTitle, dateLabel, ti
       ${linkBlock}
       <p style="margin:18px 0 0;">You'll also get a calendar invite alongside this email — accept it to put this on your calendar. To reschedule or cancel, just reply to this email.</p>
       <p style="margin:24px 0 0;color:#5A6577;font-size:13px;">— Delt Capital</p>
+      <p style="margin:18px 0 0;color:#9aa3ad;font-size:11.5px;line-height:1.5;border-top:1px solid #e7e3da;padding-top:12px;">
+        You're receiving this because you requested a 30-minute consultation
+        at deltcapital.com. Reply to this email to reschedule or cancel.
+      </p>
     </div>
   `;
 }
@@ -450,6 +459,8 @@ module.exports = async function handler(req, res) {
     try {
       await sendMail(token, NOTIFY_TO, NOTIFY_TO, internalSubject, internalEmail(ctx), {
         from: fromMailbox,
+        fromName: 'Delt Capital',
+        replyTo: [NOTIFY_TO],
       });
     } catch (err) {
       console.error('internal sendMail failed:', err && err.stack ? err.stack : err);
@@ -457,6 +468,8 @@ module.exports = async function handler(req, res) {
     try {
       await sendMail(token, NOTIFY_TO, email, bookerSubject, bookerEmail(ctx), {
         from: fromMailbox,
+        fromName: 'Delt Capital',
+        replyTo: [NOTIFY_TO],
         bcc: [NOTIFY_TO],
       });
     } catch (err) {
