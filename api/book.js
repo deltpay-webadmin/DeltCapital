@@ -116,12 +116,32 @@ function etWallToUTCIso(dateISO, h24, min) {
   return new Date(candidate.getTime() - offsetMin * 60000).toISOString();
 }
 
+// Resolve a mailbox UPN/email to its Azure AD object ID. The /onlineMeetings
+// endpoint with application permission requires the user's GUID (not UPN);
+// the regular /users/{upn} lookup endpoint accepts either and returns id.
+async function lookupUserId(token, mailbox) {
+  const url = `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(mailbox)}?$select=id`;
+  const r = await fetch(url, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!r.ok) {
+    const text = await r.text().catch(() => '');
+    throw new Error(`lookupUserId(${mailbox}) failed (${r.status}): ${text.slice(0, 400)}`);
+  }
+  const data = await r.json();
+  if (!data.id) throw new Error(`lookupUserId(${mailbox}): no id in response`);
+  return data.id;
+}
+
 // Pre-create a Teams online meeting on a licensed user's mailbox so we can
 // embed the join URL into a calendar event hosted on a different (shared)
 // mailbox. Returns { joinUrl } or null on failure (booking still proceeds
 // without the link rather than failing the whole flow).
 async function createOnlineMeeting(token, hostMailbox, m) {
-  const url = `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(hostMailbox)}/onlineMeetings`;
+  // /onlineMeetings in app-only flow requires the host's Object ID, not UPN.
+  // Resolve once per call; cheap and keeps the surface tiny.
+  const hostId = await lookupUserId(token, hostMailbox);
+  const url = `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(hostId)}/onlineMeetings`;
   const r = await fetch(url, {
     method: 'POST',
     headers: {
@@ -343,6 +363,7 @@ module.exports = async function handler(req, res) {
     //    the meeting via isOnlineMeeting on the event itself. We embed the
     //    pre-created joinUrl into the event body and location instead.
     let joinUrl = null;
+    let onlineMeetingError = null;
     try {
       const startUTCIso = etWallToUTCIso(dateISO, parsed.h, parsed.min);
       const endUTCIso   = etWallToUTCIso(dateISO, eh, em);
@@ -356,6 +377,7 @@ module.exports = async function handler(req, res) {
       // Don't fail the booking on a Teams hiccup — the calendar invite is
       // the primary artifact; we'll just ship without an embedded link.
       console.error('createOnlineMeeting failed:', err && err.stack ? err.stack : err);
+      onlineMeetingError = err && err.message ? err.message : String(err);
     }
 
     // 2. Create the calendar event on the noreply (or configured) mailbox.
@@ -390,8 +412,10 @@ module.exports = async function handler(req, res) {
       };
     } catch (err) {
       console.error('createEvent failed:', err && err.stack ? err.stack : err);
+      const msg = err && err.message ? err.message : String(err);
       res.status(500).json({
-        error: "We couldn't put this on the calendar. Please email david@deltpay.com directly and we'll get you booked.",
+        error: `[debug] createEvent failed: ${msg}` +
+          (onlineMeetingError ? ` | createOnlineMeeting earlier: ${onlineMeetingError}` : ''),
       });
       return;
     }
