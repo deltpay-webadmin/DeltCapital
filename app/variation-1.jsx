@@ -238,6 +238,7 @@ function V1Hero({ accent, onApply }) {
                     background: `linear-gradient(90deg, ${accent}, #818CF8)`,
                     WebkitBackgroundClip: 'text', backgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
+                    paddingInlineEnd: '0.12em',
                     opacity: i === fundIdx ? 1 : 0,
                     transform: i === fundIdx ? 'translateY(0)' : 'translateY(6px)',
                     transition: 'opacity 480ms cubic-bezier(0.22, 1, 0.36, 1), transform 480ms cubic-bezier(0.22, 1, 0.36, 1)',
