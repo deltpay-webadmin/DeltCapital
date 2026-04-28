@@ -435,15 +435,19 @@ module.exports = async function handler(req, res) {
     // 2. Emails are best-effort: the booker has already received an Outlook
     //    invite (because they're an attendee on the event), so even if our
     //    branded email fails they have what they need. Log and continue.
+    let internalEmailError = null;
+    let bookerEmailError = null;
     try {
       await sendMail(token, fromMailbox, NOTIFY_TO, internalSubject, internalEmail(ctx));
     } catch (err) {
       console.error('internal sendMail failed:', err && err.stack ? err.stack : err);
+      internalEmailError = err && err.message ? err.message : String(err);
     }
     try {
       await sendMail(token, fromMailbox, email, bookerSubject, bookerEmail(ctx), { bcc: [NOTIFY_TO] });
     } catch (err) {
       console.error('booker sendMail failed:', err && err.stack ? err.stack : err);
+      bookerEmailError = err && err.message ? err.message : String(err);
     }
 
     res.status(200).json({
@@ -451,6 +455,14 @@ module.exports = async function handler(req, res) {
       eventId: eventInfo.id,
       joinUrl: eventInfo.joinUrl || null,
       webLink: eventInfo.webLink || null,
+      debug: {
+        fromMailbox,
+        notifyTo: NOTIFY_TO,
+        bookerEmail: email,
+        onlineMeetingError,
+        internalEmailError,
+        bookerEmailError,
+      },
     });
   } catch (err) {
     console.error('book api error:', err && err.stack ? err.stack : err);
