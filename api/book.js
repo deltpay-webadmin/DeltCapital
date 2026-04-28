@@ -68,13 +68,22 @@ async function getAccessToken() {
   return data.access_token;
 }
 
-async function sendMail(token, fromMailbox, to, subject, html, opts = {}) {
-  const url = `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(fromMailbox)}/sendMail`;
+// senderMailbox is the licensed mailbox whose URL we POST to (the actual
+// sender). opts.from is the display From address — must be a mailbox the
+// senderMailbox holds Send-As permission on. This pattern matches how
+// shared mailboxes work in Outlook: a real licensed user (David) sends
+// "as" the shared mailbox (noreply) without the shared mailbox needing
+// its own send capability.
+async function sendMail(token, senderMailbox, to, subject, html, opts = {}) {
+  const url = `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(senderMailbox)}/sendMail`;
   const message = {
     subject,
     body: { contentType: 'HTML', content: html },
     toRecipients: [{ emailAddress: { address: to } }],
   };
+  if (opts.from) {
+    message.from = { emailAddress: { address: opts.from } };
+  }
   if (opts.bcc && opts.bcc.length) {
     message.bccRecipients = opts.bcc.map((addr) => ({ emailAddress: { address: addr } }));
   }
@@ -435,16 +444,28 @@ module.exports = async function handler(req, res) {
     // 2. Emails are best-effort: the booker has already received an Outlook
     //    invite (because they're an attendee on the event), so even if our
     //    branded email fails they have what they need. Log and continue.
+    //
+    //    Sending strategy: route through David's licensed mailbox (NOTIFY_TO)
+    //    and use his Send-As permission on the shared mailbox to display
+    //    OUTLOOK_FROM_EMAIL (noreply) as the From address. This avoids the
+    //    "shared mailbox can't send via Mail.Send app permission" tenant
+    //    quirk while keeping the visible sender on the noreply brand.
     let internalEmailError = null;
     let bookerEmailError = null;
+    const SEND_VIA = NOTIFY_TO;
     try {
-      await sendMail(token, fromMailbox, NOTIFY_TO, internalSubject, internalEmail(ctx));
+      await sendMail(token, SEND_VIA, NOTIFY_TO, internalSubject, internalEmail(ctx), {
+        from: fromMailbox,
+      });
     } catch (err) {
       console.error('internal sendMail failed:', err && err.stack ? err.stack : err);
       internalEmailError = err && err.message ? err.message : String(err);
     }
     try {
-      await sendMail(token, fromMailbox, email, bookerSubject, bookerEmail(ctx), { bcc: [NOTIFY_TO] });
+      await sendMail(token, SEND_VIA, email, bookerSubject, bookerEmail(ctx), {
+        from: fromMailbox,
+        bcc: [NOTIFY_TO],
+      });
     } catch (err) {
       console.error('booker sendMail failed:', err && err.stack ? err.stack : err);
       bookerEmailError = err && err.message ? err.message : String(err);
