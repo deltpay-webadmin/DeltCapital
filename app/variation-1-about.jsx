@@ -138,7 +138,7 @@ function AboutStatCard({ value, suffix = '', prefix = '', label, sub, visible, d
 
 // ─── Hero — rotating keyword ───
 function AboutHero() {
-  const verbs = ['grow.', 'scale.', 'hire.', 'stock.', 'expand.', 'win.'];
+  const verbs = ['scale.', 'hire.', 'stock.', 'expand.', 'win.'];
   const [idx, setIdx] = React.useState(0);
   React.useEffect(() => {
     const iv = setInterval(() => setIdx((i) => (i + 1) % verbs.length), 1800);
