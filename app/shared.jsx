@@ -71,7 +71,7 @@ const DeltContent = {
     { q: 'Will this hurt my credit?', a: 'No. Get Funded is a soft pull. A hard pull only happens if you counter-sign an offer — and only on the guarantor, not the business.' },
     { q: 'Do I need collateral?', a: 'No UCC-1 filing, no personal guarantee beyond a standard assurance. We underwrite revenue, not assets.' },
     { q: 'What if revenue drops mid-term?', a: 'Call us. We\'ve restructured ~12% of active books without penalty. Talk to us before you miss a debit.' },
-    { q: 'Do brokers get a different rate?', a: 'Broker-sourced deals carry the broker\'s points, not ours. Direct applicants always see the lowest published rate.' },
+    { q: 'Does my rate get better on a second draw?', a: 'Yes. Repeat borrowers in good standing typically see 4–8 basis points off the factor on each renewal. 68% of our book funds with us more than once — the math is in the file.' },
   ],
 };
 

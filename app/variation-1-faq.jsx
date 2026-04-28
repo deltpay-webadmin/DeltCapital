@@ -69,20 +69,32 @@ const FAQ_CATS = [
         ),
       },
       {
-        q: 'Do brokers get a different rate?',
-        short: "Broker-sourced deals carry the broker's points, not ours.",
+        q: 'Does my rate get better on a second draw?',
+        short: 'Yes. Repeat borrowers in good standing see the factor step down each renewal.',
         a: (
           <>
             <p>
-              Direct applicants always see the lowest published rate. Brokers
-              add their own points on top of our buy rate — that's their
-              business, not ours. If you applied through a broker and want to
-              compare, ask them for the Delt buy-rate sheet (they have it).
+              Renewal pricing is the cleanest discount we offer, and it isn't a
+              promo — it's underwriting. Once we've watched a full repayment
+              cycle on your account, the file gets cheaper to underwrite, and
+              we pass that back. <b>Repeat borrowers in good standing typically
+              see 4–8 basis points off the factor</b> on each renewal, with no
+              re-application fee.
             </p>
-            <FaqCallout tone="accent">
-              <b>Rule of thumb:</b> if your broker quoted you 1.28× and up, you
-              can usually apply to us direct and land in the 1.14–1.20× range.
-            </FaqCallout>
+            <p>
+              68% of our book funds with us more than once. The first deal
+              proves the relationship; every draw after that is priced like it.
+            </p>
+            <FaqMath
+              rows={[
+                ['First draw factor',   '1.20×'],
+                ['Second draw factor',  '1.16×'],
+                ['Third draw factor',   '1.14×'],
+                ['Re-application fee',  '$0'],
+                ['Decision time',       '< 6 hours'],
+              ]}
+              note="Illustrative — your renewal pricing is set by repayment history and current revenue."
+            />
           </>
         ),
       },
