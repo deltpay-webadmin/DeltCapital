@@ -353,7 +353,7 @@ function FAQSection({ accent = DELT.colors.indigo }) {
 }
 
 function FooterBlock({ accent = DELT.colors.indigo, brand, onNav }) {
-  const linkKeyMap = { 'Blog': 'blog', 'FAQ': 'faq', 'About': 'about', 'How it works': 'how', 'Calculator': 'calc', 'Reviews': 'reviews', 'Support': 'support', 'Contact': 'support', 'Terms of Use': 'terms', 'Privacy Policy': 'privacy', 'Communications': 'eca' };
+  const linkKeyMap = { 'Blog': 'blog', 'FAQ': 'faq', 'About': 'about', 'How it works': 'how', 'Calculator': 'calc', 'Processing': 'processing', 'Reviews': 'reviews', 'Support': 'support', 'Contact': 'support', 'Terms of Use': 'terms', 'Privacy Policy': 'privacy', 'Communications': 'eca' };
   const handle = (label) => (e) => {
     const k = linkKeyMap[label];
     if (k && onNav) { e.preventDefault(); onNav(k); }
@@ -369,7 +369,7 @@ function FooterBlock({ accent = DELT.colors.indigo, brand, onNav }) {
             </p>
           </div>
           {[
-            { h: 'Product', links: ['Calculator', 'How it works'] },
+            { h: 'Product', links: ['Calculator', 'How it works', 'Processing'] },
             { h: 'Company', links: ['About', 'Reviews'] },
             { h: 'Resources', links: ['FAQ', 'Blog', 'Support'] },
           ].map(col => (
