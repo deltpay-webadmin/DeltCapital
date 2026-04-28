@@ -108,54 +108,11 @@ function V1Container({ size = 'wide', style, children, ...rest }) {
 // Both are pointer-events: none and zero-impact on layout. Repaint cost is
 // trivial because we use a static <svg> + <feTurbulence> baked once.
 
+// Disabled by default — the user found the page-wide overlay distracting.
+// Kept as a no-op so anything still importing it doesn't break. Use the
+// section-scoped <V1Grain> primitive below for opt-in texture instead.
 function V1GlobalTexture() {
-  // A stable seed keeps the noise pattern from re-rolling on each mount.
-  const noiseSvg = `<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'>
-    <filter id='n'>
-      <feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch' seed='7'/>
-      <feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.55 0'/>
-    </filter>
-    <rect width='100%' height='100%' filter='url(#n)'/>
-  </svg>`;
-  const noiseUrl = `url("data:image/svg+xml;utf8,${encodeURIComponent(noiseSvg)}")`;
-
-  return (
-    <>
-      {/* Fine film-grain noise layer */}
-      <div aria-hidden="true" style={{
-        position: 'fixed', inset: 0,
-        backgroundImage: noiseUrl,
-        backgroundSize: '220px 220px',
-        opacity: 0.045,
-        mixBlendMode: 'overlay',
-        pointerEvents: 'none',
-        zIndex: 9998,
-        // Subtle drift so the grain doesn't feel printed-on. Disabled when
-        // reduced motion is requested.
-        animation: V1P_PRM ? 'none' : 'v1grainDrift 9s steps(8) infinite',
-      }} />
-      {/* Edge vignette — only ~6% darker at the corners. */}
-      <div aria-hidden="true" style={{
-        position: 'fixed', inset: 0,
-        background: 'radial-gradient(ellipse at 50% 45%, transparent 55%, rgba(15,14,23,0.06) 100%)',
-        pointerEvents: 'none',
-        zIndex: 9997,
-      }} />
-      <style>{`
-        @keyframes v1grainDrift {
-          0%   { transform: translate(0, 0); }
-          12%  { transform: translate(-8px, 4px); }
-          25%  { transform: translate(6px, -7px); }
-          37%  { transform: translate(-3px, 9px); }
-          50%  { transform: translate(9px, 2px); }
-          62%  { transform: translate(-7px, -5px); }
-          75%  { transform: translate(4px, 8px); }
-          87%  { transform: translate(-9px, -3px); }
-          100% { transform: translate(0, 0); }
-        }
-      `}</style>
-    </>
-  );
+  return null;
 }
 
 // V1Grain — section-scoped grain overlay. Use inside any section that wants
@@ -665,7 +622,6 @@ function V1Polish() {
     <>
       <V1MicroInjectStyles />
       <V1MagneticAuto />
-      <V1GlobalTexture />
       <V1ScrollProgress />
     </>
   );
