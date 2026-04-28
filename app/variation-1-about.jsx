@@ -579,7 +579,7 @@ function AboutStoryVideo() {
               <span style={{
                 width: 6, height: 6, borderRadius: 999, background: V1.blue,
               }} />
-              $75,000 approved
+              Funding the operator
             </div>
           </div>
 
