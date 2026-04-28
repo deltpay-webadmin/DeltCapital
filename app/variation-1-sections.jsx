@@ -388,7 +388,7 @@ function V1StepsSection() {
 // ═══════════════════════════════════════════════════════════════
 // CALCULATOR — Atlassian-styled wrapper around the shared DeltCalculator
 // ═══════════════════════════════════════════════════════════════
-function V1CalcSection({ calcState, setCalcState, onApply, onNavHow }) {
+function V1CalcSection({ calcState, setCalcState, onApply, onNavHow, onNavProcessing }) {
   return (
     <section data-v1-calc style={{ background: V1.bg, padding: '96px 0' }}>
       <div style={{ maxWidth: 1080, margin: '0 auto', padding: '0 40px' }}>
@@ -407,7 +407,7 @@ function V1CalcSection({ calcState, setCalcState, onApply, onNavHow }) {
         </div>
 
         {/* Rich analyzer — progressive reveal, Delt Boost toggle, custom amount */}
-        <V1CalcAnalyzer onApply={onApply} onNavHow={onNavHow} hideHeader />
+        <V1CalcAnalyzer onApply={onApply} onNavHow={onNavHow} onNavProcessing={onNavProcessing} hideHeader />
       </div>
     </section>
   );

@@ -150,7 +150,7 @@ function V1CalcHowLink({ onClick }) {
   );
 }
 
-function V1CalcAnalyzer({ onApply, onNavHow, hideHeader }) {
+function V1CalcAnalyzer({ onApply, onNavHow, onNavProcessing, hideHeader }) {
   const [revenue, setRevenue] = v1cUseState(0);
   const [revenueInput, setRevenueInput] = v1cUseState('');
   const [tib, setTib] = v1cUseState('');
@@ -386,11 +386,21 @@ function V1CalcAnalyzer({ onApply, onNavHow, hideHeader }) {
 
             {/* Redirect case */}
             {hasRevenue && isRedirect && (
-              <div style={{
-                marginTop: 16, padding: 16, borderRadius: 14,
-                border: `1.5px solid ${V1.blue}22`,
-                background: `${V1.blue}05`,
-              }}>
+              <div
+                onClick={onNavProcessing}
+                role={onNavProcessing ? 'button' : undefined}
+                tabIndex={onNavProcessing ? 0 : undefined}
+                onKeyDown={onNavProcessing ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onNavProcessing(); } } : undefined}
+                style={{
+                  marginTop: 16, padding: 16, borderRadius: 14,
+                  border: `1.5px solid ${V1.blue}22`,
+                  background: `${V1.blue}05`,
+                  cursor: onNavProcessing ? 'pointer' : 'default',
+                  transition: 'background 220ms, border-color 220ms, transform 220ms',
+                }}
+                onMouseEnter={(e) => { if (onNavProcessing) { e.currentTarget.style.background = `${V1.blue}0D`; e.currentTarget.style.borderColor = `${V1.blue}55`; } }}
+                onMouseLeave={(e) => { if (onNavProcessing) { e.currentTarget.style.background = `${V1.blue}05`; e.currentTarget.style.borderColor = `${V1.blue}22`; } }}
+              >
                 <div style={{ color: V1.blue, marginBottom: 8 }}><V1CalcIcon kind="rocket" /></div>
                 <div style={{ fontSize: 13, fontWeight: 700, color: V1.ink, fontFamily: V1.fontDisplay, letterSpacing: '-0.01em', lineHeight: 1.35 }}>
                   Get started with Delt today.
@@ -398,6 +408,15 @@ function V1CalcAnalyzer({ onApply, onNavHow, hideHeader }) {
                 <div style={{ fontSize: 12, color: V1.muted, lineHeight: 1.5, marginTop: 4, fontFamily: V1.fontBody }}>
                   New businesses that process with Delt get a pre-approved offer and up to 2× more capital as they grow.
                 </div>
+                {onNavProcessing && (
+                  <div style={{
+                    marginTop: 10, fontSize: 11.5, fontWeight: 600,
+                    color: V1.blue, fontFamily: V1.fontDisplay, letterSpacing: '0.02em',
+                    display: 'inline-flex', alignItems: 'center', gap: 6,
+                  }}>
+                    See how it works →
+                  </div>
+                )}
               </div>
             )}
 
@@ -515,7 +534,7 @@ const v1CardStyle = {
 // ═══════════════════════════════════════════════════════════════
 // V1 CALCULATOR PAGE — full page wrapping the analyzer
 // ═══════════════════════════════════════════════════════════════
-function V1CalculatorPage({ accent, onApply, onNavHow }) {
+function V1CalculatorPage({ accent, onApply, onNavHow, onNavProcessing }) {
   return (
     <div style={{ background: V1.bg }}>
       {/* Page hero */}
@@ -548,7 +567,7 @@ function V1CalculatorPage({ accent, onApply, onNavHow }) {
 
       {/* The analyzer */}
       <section style={{ padding: '0 24px 64px' }}>
-        <V1CalcAnalyzer onApply={onApply} onNavHow={onNavHow} />
+        <V1CalcAnalyzer onApply={onApply} onNavHow={onNavHow} onNavProcessing={onNavProcessing} />
       </section>
 
       {/* How the numbers work */}
