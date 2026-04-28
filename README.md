@@ -57,3 +57,16 @@ PLAID_COUNTRY_CODES     comma list, e.g. US                  (default: US)
 ```
 
 Sandbox test creds for Plaid Link bank flow: `user_good` / `pass_good` (any institution). For IDV in sandbox, follow the prompts on the mobile-optimized URL — Plaid accepts test images.
+
+### Plaid troubleshooting
+
+When the bank or IDV modal shows `Could not reach Plaid (CODE)`, the suffix is Plaid's `error_code`. Common ones:
+
+| Code | Fix |
+|------|-----|
+| `INVALID_API_KEYS` | Re-paste `PLAID_CLIENT_ID` and `PLAID_SECRET` in Vercel — make sure no trailing whitespace landed. Confirm `PLAID_SECRET` was copied from the env (sandbox / development / production) that matches `PLAID_ENV`; Plaid issues a separate secret per env. |
+| `INVALID_PRODUCT` / `PRODUCTS_NOT_SUPPORTED` | Narrow `PLAID_PRODUCTS` to products enabled on your Plaid account (sandbox has all by default; production accounts often start with just `auth`). |
+| `INVALID_FIELD` | Your `PLAID_ENV` value doesn't match the secret's environment, or a bad value in `PLAID_COUNTRY_CODES`. |
+| `INVALID_INPUT` on `/identity_verification/create` | `PLAID_IDV_TEMPLATE_ID` doesn't match a template in dashboard.plaid.com → Identity Verification → Templates (or the template is in a different env than your secret). |
+
+Vercel function logs (Deployments → latest → Functions → `/api/plaid-*` → Logs) always have the full server-side stack with Plaid's `error_message`.

@@ -10,6 +10,17 @@
 // their phone camera, completes ID + selfie capture on the phone, and the desktop
 // polls /api/plaid-get-idv-status until status flips to "success".
 
+// Build an Error from a non-2xx /api/plaid-* response, carrying the Plaid
+// error_code + error_message forward so catch handlers can show a useful
+// hint in the modal instead of a generic "try again" message.
+function V1PlaidThrowFromResponse(data, fallbackLabel) {
+  const e = new Error(data.error || fallbackLabel);
+  e.plaidCode = data.code || null;
+  e.plaidMessage = data.error_message || null;
+  e.plaidType = data.error_type || null;
+  return e;
+}
+
 // ─── window.PlaidIntegration: real fetches against /api/plaid-* ─────
 window.PlaidIntegration = window.PlaidIntegration || {
   mintLinkToken: (productKind = 'bank') =>
@@ -22,7 +33,7 @@ window.PlaidIntegration = window.PlaidIntegration || {
       }),
     }).then(async (r) => {
       const data = await r.json().catch(() => ({}));
-      if (!r.ok) throw new Error(data.error || 'mintLinkToken failed');
+      if (!r.ok) throw V1PlaidThrowFromResponse(data, 'mintLinkToken failed');
       return data;
     }),
 
@@ -33,7 +44,7 @@ window.PlaidIntegration = window.PlaidIntegration || {
       body: JSON.stringify({ public_token: publicToken }),
     }).then(async (r) => {
       const data = await r.json().catch(() => ({}));
-      if (!r.ok) throw new Error(data.error || 'exchangePublicToken failed');
+      if (!r.ok) throw V1PlaidThrowFromResponse(data, 'exchangePublicToken failed');
       return data;
     }),
 
@@ -44,14 +55,14 @@ window.PlaidIntegration = window.PlaidIntegration || {
       body: JSON.stringify({ clientUserId: V1PlaidGetClientUserId() }),
     }).then(async (r) => {
       const data = await r.json().catch(() => ({}));
-      if (!r.ok) throw new Error(data.error || 'createIDV failed');
+      if (!r.ok) throw V1PlaidThrowFromResponse(data, 'createIDV failed');
       return data;
     }),
 
   pollIDV: (id) =>
     fetch(`/api/plaid-get-idv-status?id=${encodeURIComponent(id)}`).then(async (r) => {
       const data = await r.json().catch(() => ({}));
-      if (!r.ok) throw new Error(data.error || 'pollIDV failed');
+      if (!r.ok) throw V1PlaidThrowFromResponse(data, 'pollIDV failed');
       return data;
     }),
 };
@@ -214,7 +225,8 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
       })
       .catch((e) => {
         console.error(e);
-        setErr('Could not reach Plaid. Try again.');
+        const detail = e && e.plaidCode ? ` (${e.plaidCode})` : '';
+        setErr(`Could not reach Plaid${detail}. Try again.`);
         setStage('intro');
       });
   }, [open]);
@@ -249,7 +261,8 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
           }, 900);
         } catch (e) {
           console.error(e);
-          setErr('Could not finish linking. Try again.');
+          const detail = e && e.plaidCode ? ` (${e.plaidCode})` : '';
+          setErr(`Could not finish linking${detail}. Try again.`);
           setStage('intro');
         }
       },
@@ -498,7 +511,8 @@ function V1IDVerify({ open, onClose, onComplete }) {
       setStage('choose-device');
     } catch (e) {
       console.error(e);
-      setErr('Could not start verification. Try again.');
+      const detail = e && e.plaidCode ? ` (${e.plaidCode})` : '';
+      setErr(`Could not start verification${detail}. Try again.`);
       setStage('intro');
     }
   }
