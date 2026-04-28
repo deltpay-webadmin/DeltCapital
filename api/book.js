@@ -68,13 +68,22 @@ async function getAccessToken() {
   return data.access_token;
 }
 
-async function sendMail(token, fromMailbox, to, subject, html, opts = {}) {
-  const url = `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(fromMailbox)}/sendMail`;
+// senderMailbox is the licensed mailbox whose URL we POST to (the actual
+// sender). opts.from is the display From address — must be a mailbox the
+// senderMailbox holds Send-As permission on. This pattern matches how
+// shared mailboxes work in Outlook: a real licensed user (David) sends
+// "as" the shared mailbox (noreply) without the shared mailbox needing
+// its own send capability.
+async function sendMail(token, senderMailbox, to, subject, html, opts = {}) {
+  const url = `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(senderMailbox)}/sendMail`;
   const message = {
     subject,
     body: { contentType: 'HTML', content: html },
     toRecipients: [{ emailAddress: { address: to } }],
   };
+  if (opts.from) {
+    message.from = { emailAddress: { address: opts.from } };
+  }
   if (opts.bcc && opts.bcc.length) {
     message.bccRecipients = opts.bcc.map((addr) => ({ emailAddress: { address: addr } }));
   }
@@ -363,7 +372,6 @@ module.exports = async function handler(req, res) {
     //    the meeting via isOnlineMeeting on the event itself. We embed the
     //    pre-created joinUrl into the event body and location instead.
     let joinUrl = null;
-    let onlineMeetingError = null;
     try {
       const startUTCIso = etWallToUTCIso(dateISO, parsed.h, parsed.min);
       const endUTCIso   = etWallToUTCIso(dateISO, eh, em);
@@ -377,7 +385,6 @@ module.exports = async function handler(req, res) {
       // Don't fail the booking on a Teams hiccup — the calendar invite is
       // the primary artifact; we'll just ship without an embedded link.
       console.error('createOnlineMeeting failed:', err && err.stack ? err.stack : err);
-      onlineMeetingError = err && err.message ? err.message : String(err);
     }
 
     // 2. Create the calendar event on the noreply (or configured) mailbox.
@@ -412,10 +419,8 @@ module.exports = async function handler(req, res) {
       };
     } catch (err) {
       console.error('createEvent failed:', err && err.stack ? err.stack : err);
-      const msg = err && err.message ? err.message : String(err);
       res.status(500).json({
-        error: `[debug] createEvent failed: ${msg}` +
-          (onlineMeetingError ? ` | createOnlineMeeting earlier: ${onlineMeetingError}` : ''),
+        error: "We couldn't put this on the calendar. Please email david@deltpay.com directly and we'll get you booked.",
       });
       return;
     }
@@ -432,22 +437,30 @@ module.exports = async function handler(req, res) {
     const internalSubject = `New booking: ${fullName} → ${specialistName} on ${dateLabel} ${time}`;
     const bookerSubject   = `You're booked with ${specialistName} — ${dateLabel} at ${time} ET`;
 
-    // 2. Emails are best-effort: the booker has already received an Outlook
+    // 3. Emails are best-effort: the booker has already received an Outlook
     //    invite (because they're an attendee on the event), so even if our
-    //    branded email fails they have what they need. Log and continue.
-    let internalEmailError = null;
-    let bookerEmailError = null;
+    //    branded HTML email fails they have what they need. Log and continue.
+    //
+    //    Sending strategy: route through David's licensed mailbox (NOTIFY_TO)
+    //    and use his Send-As permission on the noreply shared mailbox to
+    //    display OUTLOOK_FROM_EMAIL as the visible From address. Sending
+    //    directly via the shared mailbox URL fails in many tenant configs
+    //    because shared mailboxes lack their own send capability, even with
+    //    Mail.Send app permission granted.
     try {
-      await sendMail(token, fromMailbox, NOTIFY_TO, internalSubject, internalEmail(ctx));
+      await sendMail(token, NOTIFY_TO, NOTIFY_TO, internalSubject, internalEmail(ctx), {
+        from: fromMailbox,
+      });
     } catch (err) {
       console.error('internal sendMail failed:', err && err.stack ? err.stack : err);
-      internalEmailError = err && err.message ? err.message : String(err);
     }
     try {
-      await sendMail(token, fromMailbox, email, bookerSubject, bookerEmail(ctx), { bcc: [NOTIFY_TO] });
+      await sendMail(token, NOTIFY_TO, email, bookerSubject, bookerEmail(ctx), {
+        from: fromMailbox,
+        bcc: [NOTIFY_TO],
+      });
     } catch (err) {
       console.error('booker sendMail failed:', err && err.stack ? err.stack : err);
-      bookerEmailError = err && err.message ? err.message : String(err);
     }
 
     res.status(200).json({
@@ -455,14 +468,6 @@ module.exports = async function handler(req, res) {
       eventId: eventInfo.id,
       joinUrl: eventInfo.joinUrl || null,
       webLink: eventInfo.webLink || null,
-      debug: {
-        fromMailbox,
-        notifyTo: NOTIFY_TO,
-        bookerEmail: email,
-        onlineMeetingError,
-        internalEmailError,
-        bookerEmailError,
-      },
     });
   } catch (err) {
     console.error('book api error:', err && err.stack ? err.stack : err);
