@@ -145,7 +145,7 @@ function joinLinkButton(joinUrl, accent = '#5B5BD6') {
   `;
 }
 
-function internalEmail({ fullName, email, specialistName, specialistTitle, dateLabel, time, joinUrl, webLink }) {
+function internalEmail({ fullName, email, specialistName, specialistTitle, dateLabel, time, joinUrl, webLink, userTimeLine }) {
   return `
     <div style="font-family:Arial,sans-serif;color:#0F0E17;line-height:1.5;">
       <h2 style="margin:0 0 8px;font-size:18px;">New 30-minute call booked</h2>
@@ -154,6 +154,7 @@ function internalEmail({ fullName, email, specialistName, specialistTitle, dateL
         <tr><td style="padding:6px 14px 6px 0;color:#5A6577;">With</td><td style="padding:6px 0;">${esc(specialistName)} · ${esc(specialistTitle)}</td></tr>
         <tr><td style="padding:6px 14px 6px 0;color:#5A6577;">Day</td><td style="padding:6px 0;">${esc(dateLabel)}</td></tr>
         <tr><td style="padding:6px 14px 6px 0;color:#5A6577;">Time</td><td style="padding:6px 0;">${esc(time)} ET · 30 min</td></tr>
+        ${userTimeLine ? `<tr><td style="padding:6px 14px 6px 0;color:#5A6577;">Booker time</td><td style="padding:6px 0;">${esc(userTimeLine)}</td></tr>` : ''}
         <tr><td style="padding:6px 14px 6px 0;color:#5A6577;">Booker</td><td style="padding:6px 0;">${esc(fullName)}</td></tr>
         <tr><td style="padding:6px 14px 6px 0;color:#5A6577;">Email</td><td style="padding:6px 0;"><a href="mailto:${esc(email)}">${esc(email)}</a></td></tr>
         ${joinUrl ? `<tr><td style="padding:6px 14px 6px 0;color:#5A6577;">Teams</td><td style="padding:6px 0;"><a href="${esc(joinUrl)}">Join meeting</a></td></tr>` : ''}
@@ -163,10 +164,13 @@ function internalEmail({ fullName, email, specialistName, specialistTitle, dateL
   `;
 }
 
-function bookerEmail({ firstName, specialistName, specialistTitle, dateLabel, time, joinUrl }) {
+function bookerEmail({ firstName, specialistName, specialistTitle, dateLabel, time, joinUrl, userTimeLine }) {
   const linkBlock = joinUrl
     ? joinLinkButton(joinUrl)
     : `<p style="margin:0 0 12px;">A Microsoft Teams link will arrive ahead of the call. If you need to reschedule or cancel, just reply to this email.</p>`;
+  const localLine = userTimeLine
+    ? `<p style="margin:0 0 12px;color:#5A6577;font-size:13.5px;">In your timezone: <strong>${esc(userTimeLine)}</strong>.</p>`
+    : '';
   return `
     <div style="font-family:Arial,sans-serif;color:#0F0E17;line-height:1.55;">
       <h2 style="margin:0 0 12px;font-size:20px;">Your call is booked.</h2>
@@ -176,11 +180,53 @@ function bookerEmail({ firstName, specialistName, specialistTitle, dateLabel, ti
         (${esc(specialistTitle)}) on <strong>${esc(dateLabel)}</strong> at
         <strong>${esc(time)} ET</strong>.
       </p>
+      ${localLine}
       ${linkBlock}
       <p style="margin:18px 0 0;">You'll also get a calendar invite from David's mailbox — accept it to put this on your calendar. To reschedule or cancel, just reply to this email.</p>
       <p style="margin:24px 0 0;color:#5A6577;font-size:13px;">— Delt Capital</p>
     </div>
   `;
+}
+
+function buildUserTimeLine(dateISO, h24, m, userTimeZone) {
+  if (!userTimeZone || userTimeZone === 'America/New_York') return null;
+  // dateISO + h24:m is the ET wall-clock. Compute the corresponding UTC instant
+  // using the same offset trick we use on the frontend.
+  const [y, mo, d] = dateISO.split('-').map(Number);
+  const candidate = new Date(Date.UTC(y, mo - 1, d, h24, m));
+  let etOffsetMin;
+  try {
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/New_York', hour12: false,
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', second: '2-digit',
+    }).formatToParts(candidate);
+    const o = {};
+    for (const p of parts) o[p.type] = p.value;
+    const hr = +o.hour === 24 ? 0 : +o.hour;
+    const asUTC = Date.UTC(+o.year, +o.month - 1, +o.day, hr, +o.minute, +o.second);
+    etOffsetMin = Math.round((asUTC - candidate.getTime()) / 60000);
+  } catch {
+    return null;
+  }
+  const utc = new Date(candidate.getTime() - etOffsetMin * 60000);
+  let timeStr, dateStr, tzShort;
+  try {
+    timeStr = new Intl.DateTimeFormat('en-US', {
+      timeZone: userTimeZone, hour: 'numeric', minute: '2-digit', hour12: true,
+    }).format(utc).toLowerCase().replace(/\s/g, '');
+    dateStr = new Intl.DateTimeFormat('en-US', {
+      timeZone: userTimeZone, weekday: 'short', month: 'short', day: 'numeric',
+    }).format(utc);
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone: userTimeZone, timeZoneName: 'short',
+    }).formatToParts(utc);
+    const tzn = parts.find((p) => p.type === 'timeZoneName');
+    tzShort = tzn ? tzn.value : userTimeZone;
+  } catch {
+    return null;
+  }
+  return `${dateStr}, ${timeStr} ${tzShort}`;
 }
 
 module.exports = async function handler(req, res) {
@@ -194,7 +240,7 @@ module.exports = async function handler(req, res) {
     const {
       firstName, lastName, email,
       specialistName, specialistTitle,
-      dateLabel, dateISO, time,
+      dateLabel, dateISO, time, userTimeZone,
     } = body;
 
     if (!firstName || !lastName || !email || !specialistName || !dateLabel || !time) {
@@ -267,10 +313,13 @@ module.exports = async function handler(req, res) {
       return;
     }
 
+    const userTimeLine = buildUserTimeLine(dateISO, parsed.h, parsed.min, userTimeZone);
+
     const ctx = {
       fullName, firstName, email, specialistName, specialistTitle, dateLabel, time,
       joinUrl: eventInfo && eventInfo.joinUrl,
       webLink: eventInfo && eventInfo.webLink,
+      userTimeLine,
     };
 
     const internalSubject = `New booking: ${fullName} → ${specialistName} on ${dateLabel} ${time}`;

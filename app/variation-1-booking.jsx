@@ -180,6 +180,81 @@ function v1BkParseTime(t) {
   return { h, min };
 }
 
+// All slot times are anchored to America/New_York. The helpers below convert
+// (et-date, et-wall-clock) ↔ UTC ↔ the user's local wall-clock so the UI can
+// label slots in the visitor's timezone while the API payload stays ET.
+const V1_USER_TZ = (() => {
+  try { return Intl.DateTimeFormat().resolvedOptions().timeZone; }
+  catch { return 'America/New_York'; }
+})();
+
+const V1_USER_TZ_SHORT = (() => {
+  try {
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone: V1_USER_TZ, timeZoneName: 'short',
+    }).formatToParts(new Date());
+    const tzn = parts.find((p) => p.type === 'timeZoneName');
+    return tzn ? tzn.value : V1_USER_TZ;
+  } catch { return V1_USER_TZ; }
+})();
+
+const V1_IS_ET_USER = V1_USER_TZ === 'America/New_York';
+
+function v1BkTzOffsetMin(date, tz) {
+  // Returns minutes such that wallClockInTZ = utc + offset.
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: tz, hour12: false,
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit',
+  }).formatToParts(date);
+  const o = {};
+  for (const p of parts) o[p.type] = p.value;
+  const hour = +o.hour === 24 ? 0 : +o.hour;
+  const asUTC = Date.UTC(+o.year, +o.month - 1, +o.day, hour, +o.minute, +o.second);
+  return Math.round((asUTC - date.getTime()) / 60000);
+}
+
+function v1BkEtWallToUTC(dateISO, etTimeStr) {
+  const t = v1BkParseTime(etTimeStr);
+  if (!t || !/^\d{4}-\d{2}-\d{2}$/.test(String(dateISO || ''))) return null;
+  const [y, m, d] = dateISO.split('-').map(Number);
+  const candidate = new Date(Date.UTC(y, m - 1, d, t.h, t.min));
+  const offset = v1BkTzOffsetMin(candidate, 'America/New_York');
+  return new Date(candidate.getTime() - offset * 60000);
+}
+
+function v1BkSlotUserLocal(dateISO, etTimeStr) {
+  const utc = v1BkEtWallToUTC(dateISO, etTimeStr);
+  if (!utc) return { time: etTimeStr, dateOffset: 0 };
+  const time = new Intl.DateTimeFormat('en-US', {
+    timeZone: V1_USER_TZ, hour: 'numeric', minute: '2-digit', hour12: true,
+  }).format(utc).toLowerCase().replace(/\s/g, '');
+  const userDateISO = new Intl.DateTimeFormat('en-CA', {
+    timeZone: V1_USER_TZ, year: 'numeric', month: '2-digit', day: '2-digit',
+  }).format(utc);
+  let dateOffset = 0;
+  if (userDateISO < dateISO) dateOffset = -1;
+  else if (userDateISO > dateISO) dateOffset = 1;
+  return { time, dateOffset };
+}
+
+function v1BkSlotIsPast(dateISO, etTimeStr, nowMs) {
+  const utc = v1BkEtWallToUTC(dateISO, etTimeStr);
+  if (!utc) return false;
+  return utc.getTime() <= (nowMs || Date.now());
+}
+
+function v1BkTodayInET() {
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit',
+  }).format(new Date());
+}
+
+function v1BkDateToISO(d) {
+  if (!d) return '';
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
 function downloadIcs({ specialistName, specialistTitle, date, time, firstName, lastName, joinUrl }) {
   if (!date || !time) return;
   const t = v1BkParseTime(time);
@@ -263,14 +338,17 @@ function V1BookingCalendar({ currentDate, setCurrentDate, selectedDate, onPickDa
   const y = currentDate.getFullYear(), m = currentDate.getMonth();
   const first = new Date(y, m, 1).getDay();
   const total = new Date(y, m + 1, 0).getDate();
-  const today = new Date(); today.setHours(0, 0, 0, 0);
+  // "Today" is anchored to David's timezone (ET) so a visitor outside ET
+  // can't pick a date that's already wrapped up on his side.
+  const todayET = v1BkTodayInET(); // 'YYYY-MM-DD'
 
   const cells = [];
   for (let i = 0; i < first; i++) cells.push(null);
   for (let d = 1; d <= total; d++) cells.push(d);
 
+  const cellISO = (d) => `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
   const isSel = (d) => selectedDate && selectedDate.getFullYear() === y && selectedDate.getMonth() === m && selectedDate.getDate() === d;
-  const isPast = (d) => new Date(y, m, d) < today;
+  const isPast = (d) => cellISO(d) < todayET;
   const isWknd = (d) => { const g = new Date(y, m, d).getDay(); return g === 0 || g === 6; };
 
   return (
@@ -412,7 +490,7 @@ const v1BkNavBtn = {
   cursor: 'pointer', transition: 'background .15s, border-color .15s',
 };
 
-function V1TimeSlots({ selectedDate, selectedTime, onPickTime, accent }) {
+function V1TimeSlots({ selectedDate, selectedTime, onPickTime, accent, busySlots, busyLoading, nowMs }) {
   const fmtDate = (d) => {
     const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
     const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -431,6 +509,18 @@ function V1TimeSlots({ selectedDate, selectedTime, onPickTime, accent }) {
     );
   }
 
+  const dateISO = v1BkDateToISO(selectedDate);
+  const busySet = new Set(busySlots || []);
+  const visibleSlots = V1_BK_TIMES.map((t) => {
+    const past = v1BkSlotIsPast(dateISO, t, nowMs);
+    const busy = busySet.has(t);
+    const local = v1BkSlotUserLocal(dateISO, t);
+    return { t, past, busy, local };
+  });
+  // Hide slots that are entirely in the past so the list collapses as the day rolls forward.
+  const slots = visibleSlots.filter((s) => !s.past);
+  const allTaken = slots.every((s) => s.busy);
+
   return (
     <div>
       <div style={{
@@ -443,57 +533,102 @@ function V1TimeSlots({ selectedDate, selectedTime, onPickTime, accent }) {
       </div>
       <div style={{
         fontFamily: V1.fontDisplay, fontSize: 18, fontWeight: 600,
-        letterSpacing: '-0.02em', color: V1.ink, marginBottom: 14,
+        letterSpacing: '-0.02em', color: V1.ink, marginBottom: 6,
       }}>
         {fmtDate(selectedDate)}
       </div>
-      <div
-        className="bk-slot-list"
-        style={{
-          display: 'flex', flexDirection: 'column', gap: 8,
-          maxHeight: 440, overflowY: 'auto', paddingRight: 6,
-        }}
-      >
-        {V1_BK_TIMES.map((t, i) => {
-          const sel = selectedTime === t;
-          return (
-            <button
-              key={t}
-              onClick={() => onPickTime(t)}
-              style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                padding: '13px 16px', borderRadius: 10,
-                border: `1px solid ${sel ? accent : V1.line}`,
-                background: sel ? accent : V1.white,
-                color: sel ? V1.white : V1.ink,
-                fontFamily: V1.fontBody, fontSize: 14.5, fontWeight: 500,
-                cursor: 'pointer',
-                transition: 'all .15s',
-                animation: `bkSlotIn 400ms cubic-bezier(.2,.7,.3,1) ${Math.min(i, 8) * 50}ms both`,
-              }}
-              onMouseEnter={(e) => {
-                if (!sel) {
-                  e.currentTarget.style.borderColor = accent;
-                  e.currentTarget.style.background = `${accent}08`;
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!sel) {
-                  e.currentTarget.style.borderColor = V1.line;
-                  e.currentTarget.style.background = V1.white;
-                }
-              }}
-            >
-              <span style={{ fontVariantNumeric: 'tabular-nums' }}>{t}</span>
-              <span style={{
-                fontFamily: V1.fontMono, fontSize: 10.5,
-                letterSpacing: '0.12em', textTransform: 'uppercase',
-                color: sel ? 'rgba(255,255,255,0.75)' : V1.muted,
-              }}>30 min</span>
-            </button>
-          );
-        })}
+      <div style={{
+        fontFamily: V1.fontMono, fontSize: 10.5, color: V1.muted,
+        letterSpacing: '0.06em', marginBottom: 14,
+      }}>
+        {V1_IS_ET_USER
+          ? 'All times in Eastern Time'
+          : `Your time (${V1_USER_TZ_SHORT}) · Meeting held in Eastern Time`}
       </div>
+      {slots.length === 0 ? (
+        <div style={{
+          padding: '20px 16px', textAlign: 'center',
+          border: `1px dashed ${V1.line}`, borderRadius: 10, background: V1.white,
+          fontFamily: V1.fontBody, fontSize: 13.5, color: V1.muted,
+        }}>
+          No more open times today — pick another day.
+        </div>
+      ) : busyLoading ? (
+        <div style={{
+          padding: '20px 16px', textAlign: 'center',
+          border: `1px dashed ${V1.line}`, borderRadius: 10, background: V1.white,
+          fontFamily: V1.fontBody, fontSize: 13.5, color: V1.muted,
+        }}>Checking David's calendar…</div>
+      ) : allTaken ? (
+        <div style={{
+          padding: '20px 16px', textAlign: 'center',
+          border: `1px dashed ${V1.line}`, borderRadius: 10, background: V1.white,
+          fontFamily: V1.fontBody, fontSize: 13.5, color: V1.muted,
+        }}>Fully booked — try another day.</div>
+      ) : (
+        <div
+          className="bk-slot-list"
+          style={{
+            display: 'flex', flexDirection: 'column', gap: 8,
+            maxHeight: 440, overflowY: 'auto', paddingRight: 6,
+          }}
+        >
+          {slots.map(({ t, busy, local }, i) => {
+            const sel = selectedTime === t;
+            const disabled = busy;
+            const primary = V1_IS_ET_USER ? t : local.time;
+            const secondary = V1_IS_ET_USER ? '30 min' : `${t} ET`;
+            const dayBadge = local.dateOffset === 1 ? ' · next day'
+              : local.dateOffset === -1 ? ' · prev day' : '';
+            return (
+              <button
+                key={t}
+                onClick={() => { if (!disabled) onPickTime(t); }}
+                disabled={disabled}
+                aria-disabled={disabled}
+                style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  padding: '13px 16px', borderRadius: 10,
+                  border: `1px solid ${sel ? accent : V1.line}`,
+                  background: disabled ? V1.bg : (sel ? accent : V1.white),
+                  color: disabled ? V1.muted : (sel ? V1.white : V1.ink),
+                  fontFamily: V1.fontBody, fontSize: 14.5, fontWeight: 500,
+                  cursor: disabled ? 'not-allowed' : 'pointer',
+                  opacity: disabled ? 0.55 : 1,
+                  textDecoration: disabled ? 'line-through' : 'none',
+                  transition: 'all .15s',
+                  animation: `bkSlotIn 400ms cubic-bezier(.2,.7,.3,1) ${Math.min(i, 8) * 50}ms both`,
+                }}
+                onMouseEnter={(e) => {
+                  if (!sel && !disabled) {
+                    e.currentTarget.style.borderColor = accent;
+                    e.currentTarget.style.background = `${accent}08`;
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!sel && !disabled) {
+                    e.currentTarget.style.borderColor = V1.line;
+                    e.currentTarget.style.background = V1.white;
+                  }
+                }}
+              >
+                <span style={{ fontVariantNumeric: 'tabular-nums' }}>
+                  {primary}{dayBadge ? <span style={{
+                    fontFamily: V1.fontMono, fontSize: 10.5, marginLeft: 8,
+                    color: sel ? 'rgba(255,255,255,0.85)' : V1.muted,
+                    textTransform: 'uppercase', letterSpacing: '0.1em',
+                  }}>{dayBadge.replace(' · ', '')}</span> : null}
+                </span>
+                <span style={{
+                  fontFamily: V1.fontMono, fontSize: 10.5,
+                  letterSpacing: '0.12em', textTransform: 'uppercase',
+                  color: sel ? 'rgba(255,255,255,0.75)' : V1.muted,
+                }}>{disabled ? 'Booked' : secondary}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
       <style>{`
         @keyframes bkSlotIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
         .bk-slot-list { scrollbar-width: thin; scrollbar-color: ${V1.line} transparent; }
@@ -602,8 +737,14 @@ function V1SpecialistCard({ person, active, onPick, accent, idx }) {
 
 function V1BookingForm({
   phase, first, setFirst, last, setLast, emailAddr, setEmailAddr,
-  formValid, errorMsg, accent, specialist, dateLabel, time, onClose, onSubmit,
+  formValid, errorMsg, accent, specialist, dateLabel, time, date, onClose, onSubmit,
 }) {
+  const dateISO = v1BkDateToISO(date);
+  const local = v1BkSlotUserLocal(dateISO, time);
+  const dayBadge = local.dateOffset === 1 ? ' (next day your time)'
+    : local.dateOffset === -1 ? ' (prev day your time)' : '';
+  const timePrimary = V1_IS_ET_USER ? `${time} ET` : `${local.time}${dayBadge}`;
+  const timeSecondary = V1_IS_ET_USER ? '30 min' : `${time} ET · 30 min`;
   const submitting = phase === 'submitting';
   const inputStyle = {
     width: '100%', padding: '11px 12px', borderRadius: 8,
@@ -674,7 +815,7 @@ function V1BookingForm({
         }}>
           <div><span style={{ color: V1.muted }}>WITH </span>{specialist.name} · {specialist.title}</div>
           <div><span style={{ color: V1.muted }}>DATE </span>{dateLabel}</div>
-          <div><span style={{ color: V1.muted }}>TIME </span>{time} ET · 30 min</div>
+          <div><span style={{ color: V1.muted }}>TIME </span>{timePrimary} · {timeSecondary}</div>
         </div>
 
         <form
@@ -800,6 +941,7 @@ function V1ConfirmPanel({ specialist, date, time, accent, onReset }) {
           dateLabel: fmtLong(date),
           dateISO,
           time,
+          userTimeZone: V1_USER_TZ,
         }),
       });
       const data = await r.json().catch(() => ({}));
@@ -849,6 +991,13 @@ function V1ConfirmPanel({ specialist, date, time, accent, onReset }) {
         }}>
           <div><span style={{ color: V1.muted }}>DATE </span>{fmt(date)}</div>
           <div><span style={{ color: V1.muted }}>TIME </span>{time} ET · 30 min</div>
+          {(() => {
+            if (V1_IS_ET_USER) return null;
+            const local = v1BkSlotUserLocal(v1BkDateToISO(date), time);
+            const dayBadge = local.dateOffset === 1 ? ' (next day)'
+              : local.dateOffset === -1 ? ' (prev day)' : '';
+            return <div><span style={{ color: V1.muted }}>YOURS </span>{local.time}{dayBadge} {V1_USER_TZ_SHORT}</div>;
+          })()}
           <div><span style={{ color: V1.muted }}>WITH </span>{specialist.name} · {specialist.title}</div>
           <div>
             <span style={{ color: V1.muted }}>LINK </span>
@@ -977,6 +1126,7 @@ function V1ConfirmPanel({ specialist, date, time, accent, onReset }) {
           specialist={specialist}
           dateLabel={fmt(date)}
           time={time}
+          date={date}
           onClose={closeForm}
           onSubmit={submit}
         />
@@ -1011,8 +1161,39 @@ function V1BookingPage({ accent, onApply }) {
   const [selectedDate, setSelectedDate] = React.useState(null);
   const [selectedTime, setSelectedTime] = React.useState(null);
   const [selectedSpecialistId, setSelectedSpecialistId] = React.useState(1);
+  const [busySlots, setBusySlots] = React.useState([]);
+  const [busyLoading, setBusyLoading] = React.useState(false);
+  const [nowMs, setNowMs] = React.useState(() => Date.now());
 
   const specialist = V1_SPECIALISTS.find(s => s.id === selectedSpecialistId);
+
+  // Tick once a minute so already-passed slots disappear without a refresh.
+  React.useEffect(() => {
+    const id = setInterval(() => setNowMs(Date.now()), 60000);
+    return () => clearInterval(id);
+  }, []);
+
+  // Fetch David's busy slots whenever the picked date changes.
+  React.useEffect(() => {
+    if (!selectedDate) { setBusySlots([]); return; }
+    const dateISO = v1BkDateToISO(selectedDate);
+    let cancelled = false;
+    setBusyLoading(true);
+    fetch(`/api/availability?dateISO=${encodeURIComponent(dateISO)}`)
+      .then((r) => r.ok ? r.json() : { busy: [] })
+      .then((data) => { if (!cancelled) setBusySlots(Array.isArray(data.busy) ? data.busy : []); })
+      .catch(() => { if (!cancelled) setBusySlots([]); })
+      .finally(() => { if (!cancelled) setBusyLoading(false); });
+    return () => { cancelled = true; };
+  }, [selectedDate && v1BkDateToISO(selectedDate)]);
+
+  // If the currently-selected slot becomes busy or passes (live tick), unselect it.
+  React.useEffect(() => {
+    if (!selectedTime || !selectedDate) return;
+    const dateISO = v1BkDateToISO(selectedDate);
+    const conflict = busySlots.includes(selectedTime) || v1BkSlotIsPast(dateISO, selectedTime, nowMs);
+    if (conflict) setSelectedTime(null);
+  }, [busySlots, nowMs, selectedTime, selectedDate]);
 
   const reset = () => { setSelectedDate(null); setSelectedTime(null); setSelectedSpecialistId(1); };
 
@@ -1092,6 +1273,9 @@ function V1BookingPage({ accent, onApply }) {
               selectedTime={selectedTime}
               onPickTime={setSelectedTime}
               accent={accent}
+              busySlots={busySlots}
+              busyLoading={busyLoading}
+              nowMs={nowMs}
             />
             <V1ConfirmPanel
               specialist={specialist}
