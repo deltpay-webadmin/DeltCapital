@@ -535,109 +535,83 @@ function AboutPrinciples() {
   );
 }
 
-// ─── Timeline ───
-function AboutTimeline() {
-  const [ref, inView] = useInView(0.1);
+// ─── Story video ───
+// Replaces the prior "Six years. One book." timeline section. The video
+// runs muted, autoplays, and loops — same pattern as the home hero.
+function AboutStoryVideo() {
+  const [ref, inView] = useInView(0.15);
   return (
     <section ref={ref} style={{ background: V1.bg, padding: '140px 0' }}>
-      <div style={{ maxWidth: 1080, margin: '0 auto', padding: '0 40px' }}>
-        <div style={{ marginBottom: 72, maxWidth: 720 }}>
-          <V1Eyebrow>Our story</V1Eyebrow>
-          <h2 style={{ ...v1H2, marginTop: 18 }}>Six years. One book.</h2>
-          <p style={{
-            marginTop: 20,
-            fontFamily: V1.fontBody, fontSize: 17, lineHeight: 1.6, color: V1.text,
-            maxWidth: 580,
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px' }}>
+        <div style={{
+          display: 'grid', gridTemplateColumns: '1fr 1fr',
+          gap: 64, alignItems: 'center',
+        }}>
+          {/* Copy */}
+          <div style={{
+            opacity: inView ? 1 : 0,
+            transform: inView ? 'translateY(0)' : 'translateY(16px)',
+            transition: 'all 700ms cubic-bezier(0.22,1,0.36,1) 100ms',
           }}>
-            We don't white-label, resell, or repackage. Every dollar deployed
-            under the Delt name is underwritten by our team and held on our
-            balance sheet.
-          </p>
-        </div>
+            <V1Eyebrow>Our story</V1Eyebrow>
+            <h2 style={{ ...v1H2, marginTop: 18 }}>
+              The moment funding<br/>actually lands.
+            </h2>
+            <p style={{
+              marginTop: 20,
+              fontFamily: V1.fontBody, fontSize: 17, lineHeight: 1.6, color: V1.text,
+              maxWidth: 520,
+            }}>
+              Behind every approval is a small business with payroll on Friday,
+              inventory on the way, and a team waiting on a yes. We don't
+              white-label, resell, or repackage — every dollar deployed under
+              the Delt name is underwritten by our team and held on our balance
+              sheet.
+            </p>
+            <div style={{
+              marginTop: 28,
+              display: 'inline-flex', alignItems: 'center', gap: 10,
+              padding: '6px 14px', borderRadius: 999,
+              background: `${V1.blue}14`, color: V1.blue,
+              fontFamily: V1.fontMono, fontSize: 11, fontWeight: 600,
+              letterSpacing: '0.12em', textTransform: 'uppercase',
+            }}>
+              <span style={{
+                width: 6, height: 6, borderRadius: 999, background: V1.blue,
+              }} />
+              $75,000 approved
+            </div>
+          </div>
 
-        {/* Timeline */}
-        <div style={{ position: 'relative', paddingLeft: 80 }}>
-          {/* Vertical line */}
-          <div aria-hidden style={{
-            position: 'absolute', left: 38, top: 0, bottom: 0,
-            width: 2, background: V1.line, borderRadius: 1,
-          }} />
-          <div aria-hidden style={{
-            position: 'absolute', left: 38, top: 0,
-            width: 2,
-            height: inView ? '100%' : '0%',
-            background: `linear-gradient(180deg, ${V1.blue}, #818CF8, transparent)`,
-            borderRadius: 1,
-            transition: 'height 2400ms cubic-bezier(0.22,1,0.36,1) 200ms',
-          }} />
-
-          {ABOUT_TIMELINE.map((m, i) => {
-            const latest = i === ABOUT_TIMELINE.length - 1;
-            return (
-              <div key={m.y} style={{
-                position: 'relative', paddingBottom: latest ? 0 : 48,
-                opacity: inView ? 1 : 0,
-                transform: inView ? 'translateX(0)' : 'translateX(-12px)',
-                transition: `all 700ms cubic-bezier(0.22,1,0.36,1) ${300 + i * 140}ms`,
-              }}>
-                {/* Node */}
-                <div aria-hidden style={{
-                  position: 'absolute', left: -51, top: 4,
-                  width: 26, height: 26, borderRadius: 999,
-                  background: V1.white,
-                  border: `2px solid ${latest ? V1.blue : V1.line}`,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}>
-                  <span style={{
-                    width: 10, height: 10, borderRadius: 999,
-                    background: latest ? `linear-gradient(135deg, ${V1.blue}, #818CF8)` : V1.muted,
-                    boxShadow: latest ? `0 0 0 4px ${V1.blue}22` : 'none',
-                  }} />
-                </div>
-
-                <div style={{
-                  display: 'grid', gridTemplateColumns: '140px 1fr',
-                  gap: 32, alignItems: 'start',
-                }}>
-                  <div style={{
-                    fontFamily: V1.fontDisplay, fontSize: 32, fontWeight: 700,
-                    color: latest ? V1.blue : V1.ink,
-                    letterSpacing: '-0.03em', lineHeight: 1,
-                    fontVariantNumeric: 'tabular-nums',
-                  }}>
-                    {m.y}
-                  </div>
-                  <div>
-                    <h3 style={{
-                      margin: 0,
-                      fontFamily: V1.fontDisplay, fontSize: 22, fontWeight: 600,
-                      color: V1.ink, letterSpacing: '-0.02em', lineHeight: 1.2,
-                    }}>
-                      {m.title}
-                    </h3>
-                    <p style={{
-                      marginTop: 10, marginBottom: 0,
-                      fontFamily: V1.fontBody, fontSize: 15.5, lineHeight: 1.6,
-                      color: V1.text, maxWidth: 620,
-                    }}>
-                      {m.body}
-                    </p>
-                    {latest && (
-                      <span style={{
-                        display: 'inline-block', marginTop: 12,
-                        padding: '4px 12px', borderRadius: 999,
-                        background: `${V1.blue}14`, color: V1.blue,
-                        fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 600,
-                        letterSpacing: '0.12em', textTransform: 'uppercase',
-                      }}>
-                        Current chapter
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+          {/* Video */}
+          <div style={{
+            position: 'relative',
+            borderRadius: 16,
+            overflow: 'hidden',
+            aspectRatio: '16 / 9',
+            background: '#000',
+            boxShadow: '0 30px 60px -30px rgba(10,37,64,0.35)',
+            border: `1px solid ${V1.line}`,
+            opacity: inView ? 1 : 0,
+            transform: inView ? 'scale(1)' : 'scale(0.98)',
+            transition: 'all 900ms cubic-bezier(0.22,1,0.36,1) 200ms',
+          }}>
+            <video
+              src="app/assets/story.mp4"
+              autoPlay muted playsInline loop
+              style={{
+                position: 'absolute', inset: 0,
+                width: '100%', height: '100%',
+                objectFit: 'cover', display: 'block',
+              }}
+            />
+            {/* Subtle vignette to match brand depth */}
+            <div aria-hidden style={{
+              position: 'absolute', inset: 0,
+              background: 'radial-gradient(120% 80% at 50% 50%, transparent 60%, rgba(4,30,66,0.35) 100%)',
+              pointerEvents: 'none',
+            }} />
+          </div>
         </div>
       </div>
     </section>
@@ -743,7 +717,7 @@ function V1AboutPage({ accent, onApply, onTalk }) {
       <AboutHero />
       <AboutThesis />
       <AboutPrinciples />
-      <AboutTimeline />
+      <AboutStoryVideo />
       <AboutLeadership />
       <V1CTASection onApply={onApply} onTalk={onTalk} />
     </>
