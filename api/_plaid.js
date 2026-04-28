@@ -37,8 +37,11 @@ function plaidProducts() {
 // Throws an Error with Plaid's error_code/error_message when present, so
 // handlers can surface a useful message rather than a generic 500.
 async function plaidFetch(path, body) {
-  const clientId = process.env.PLAID_CLIENT_ID;
-  const secret = process.env.PLAID_SECRET;
+  // Defensive .trim() — pasting a secret into the Vercel UI sometimes brings
+  // along a trailing newline, which Plaid then rejects as INVALID_API_KEYS
+  // with no UI feedback indicating the cause.
+  const clientId = (process.env.PLAID_CLIENT_ID || '').trim();
+  const secret = (process.env.PLAID_SECRET || '').trim();
   if (!clientId || !secret) {
     throw new Error('Missing PLAID_CLIENT_ID / PLAID_SECRET');
   }

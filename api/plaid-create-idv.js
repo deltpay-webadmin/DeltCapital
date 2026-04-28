@@ -19,7 +19,7 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  const templateId = process.env.PLAID_IDV_TEMPLATE_ID;
+  const templateId = (process.env.PLAID_IDV_TEMPLATE_ID || '').trim();
   if (!templateId) {
     res.status(500).json({ error: 'PLAID_IDV_TEMPLATE_ID is not set' });
     return;
@@ -42,6 +42,8 @@ module.exports = async function handler(req, res) {
     res.status(err.status || 500).json({
       error: 'Could not create identity verification',
       code: err.plaidErrorCode || null,
+      error_message: err.message || null,
+      error_type: err.plaidErrorType || null,
     });
   }
 };
