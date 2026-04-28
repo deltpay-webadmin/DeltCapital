@@ -343,6 +343,7 @@ module.exports = async function handler(req, res) {
     //    the meeting via isOnlineMeeting on the event itself. We embed the
     //    pre-created joinUrl into the event body and location instead.
     let joinUrl = null;
+    let onlineMeetingError = null;
     try {
       const startUTCIso = etWallToUTCIso(dateISO, parsed.h, parsed.min);
       const endUTCIso   = etWallToUTCIso(dateISO, eh, em);
@@ -356,6 +357,7 @@ module.exports = async function handler(req, res) {
       // Don't fail the booking on a Teams hiccup — the calendar invite is
       // the primary artifact; we'll just ship without an embedded link.
       console.error('createOnlineMeeting failed:', err && err.stack ? err.stack : err);
+      onlineMeetingError = err && err.message ? err.message : String(err);
     }
 
     // 2. Create the calendar event on the noreply (or configured) mailbox.
@@ -390,8 +392,10 @@ module.exports = async function handler(req, res) {
       };
     } catch (err) {
       console.error('createEvent failed:', err && err.stack ? err.stack : err);
+      const msg = err && err.message ? err.message : String(err);
       res.status(500).json({
-        error: "We couldn't put this on the calendar. Please email david@deltpay.com directly and we'll get you booked.",
+        error: `[debug] createEvent failed: ${msg}` +
+          (onlineMeetingError ? ` | createOnlineMeeting earlier: ${onlineMeetingError}` : ''),
       });
       return;
     }
