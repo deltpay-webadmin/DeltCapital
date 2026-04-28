@@ -929,7 +929,7 @@ function BlogNewsletter({ accent, onTalk }) {
               }}>Rather talk than read?</div>
               <div style={{
                 fontFamily: V1.fontBody, fontSize: 13, color: V1.muted, marginTop: 2,
-              }}>30 min with an underwriter, on Zoom.</div>
+              }}>30 min with an underwriter, on Teams.</div>
             </div>
             <button
               onClick={onTalk}
