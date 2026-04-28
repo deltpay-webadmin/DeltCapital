@@ -893,7 +893,7 @@ function V1FAQPage({ accent, onApply, onTalk }) {
               fontFamily: V1.fontBody, fontSize: 16, color: V1.text,
               lineHeight: 1.55, margin: '20px 0 0', maxWidth: 540,
             }}>
-              30 minutes on Zoom with one of three underwriters. They own their
+              30 minutes on Teams with one of three underwriters. They own their
               book — no handoffs, no call center. Bring any question; if we
               can't answer it on the call, we'll come back within 24 hours.
             </p>
@@ -936,7 +936,7 @@ function V1FAQPage({ accent, onApply, onTalk }) {
               letterSpacing: '0.14em', textTransform: 'uppercase',
               color: V1.muted, textAlign: 'center',
             }}>
-              30 min · Zoom · No credit pull
+              30 min · Teams · No credit pull
             </div>
           </div>
         </div>

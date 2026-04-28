@@ -10,7 +10,7 @@
 // the confirm button runs a real progress bar → ✓ success → calendar-ICS
 // download affordance.
 //
-// Keep: 30-min, Zoom, soft-pull language; underwriter-first framing matches
+// Keep: 30-min, Teams, soft-pull language; underwriter-first framing matches
 // the rest of V1.
 
 function V1UnderwriterDonut({ person, accent, active }) {
@@ -83,7 +83,7 @@ function V1BookingHero({ accent }) {
           color: 'rgba(255,255,255,0.72)', margin: '28px 0 0', maxWidth: 620,
           animation: 'bkFadeUp 700ms cubic-bezier(.2,.7,.3,1) 140ms both',
         }}>
-          30 minutes on Zoom. Bring your P&amp;L or don't — we'll walk you through
+          30 minutes on Microsoft Teams. Bring your P&amp;L or don't — we'll walk you through
           a factor rate, repayment options, and what a pay-early rebate would look
           like on your numbers. No soft-pull required.
         </p>
@@ -95,7 +95,7 @@ function V1BookingHero({ accent }) {
         }}>
           {[
             ['clock',    '30 min'],
-            ['video',    'Zoom'],
+            ['video',    'Microsoft Teams'],
             ['shield',   'No credit pull'],
             ['user',     'Real underwriter'],
           ].map(([icon, label]) => (
@@ -168,6 +168,93 @@ const V1_BK_TIMES = (() => {
   }
   return out;
 })();
+
+function v1BkParseTime(t) {
+  const m = /^(\d{1,2}):(\d{2})(am|pm)$/i.exec(String(t || '').trim());
+  if (!m) return null;
+  let h = parseInt(m[1], 10);
+  const min = parseInt(m[2], 10);
+  const mer = m[3].toLowerCase();
+  if (mer === 'pm' && h !== 12) h += 12;
+  if (mer === 'am' && h === 12) h = 0;
+  return { h, min };
+}
+
+function downloadIcs({ specialistName, specialistTitle, date, time, firstName, lastName, joinUrl }) {
+  if (!date || !time) return;
+  const t = v1BkParseTime(time);
+  if (!t) return;
+  const yyyy = date.getFullYear();
+  const mm = String(date.getMonth() + 1).padStart(2, '0');
+  const dd = String(date.getDate()).padStart(2, '0');
+  const sh = String(t.h).padStart(2, '0');
+  const sm = String(t.min).padStart(2, '0');
+  const endMinTotal = t.h * 60 + t.min + 30;
+  const eh = String(Math.floor(endMinTotal / 60) % 24).padStart(2, '0');
+  const em = String(endMinTotal % 60).padStart(2, '0');
+  const dtStart = `${yyyy}${mm}${dd}T${sh}${sm}00`;
+  const dtEnd   = `${yyyy}${mm}${dd}T${eh}${em}00`;
+  const now = new Date();
+  const pad = (n) => String(n).padStart(2, '0');
+  const dtStamp =
+    `${now.getUTCFullYear()}${pad(now.getUTCMonth()+1)}${pad(now.getUTCDate())}` +
+    `T${pad(now.getUTCHours())}${pad(now.getUTCMinutes())}${pad(now.getUTCSeconds())}Z`;
+  const uid = `${dtStamp}-${Math.random().toString(36).slice(2, 10)}@deltcapital.com`;
+  const fullName = `${firstName || ''} ${lastName || ''}`.trim();
+  const summary = `Delt Capital — 30-min call with ${specialistName}`;
+  const desc = [
+    `30-minute call with ${specialistName}${specialistTitle ? ` (${specialistTitle})` : ''}.`,
+    fullName && `Booked by ${fullName}.`,
+    joinUrl && `Join: ${joinUrl}`,
+  ].filter(Boolean).join('\\n');
+  const location = joinUrl || 'Microsoft Teams';
+  // RFC 5545: lines should be folded at 75 octets, but most calendar apps tolerate longer.
+  const ics = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Delt Capital//Booking//EN',
+    'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH',
+    'BEGIN:VTIMEZONE',
+    'TZID:America/New_York',
+    'BEGIN:DAYLIGHT',
+    'TZOFFSETFROM:-0500',
+    'TZOFFSETTO:-0400',
+    'TZNAME:EDT',
+    'DTSTART:19700308T020000',
+    'RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=2SU',
+    'END:DAYLIGHT',
+    'BEGIN:STANDARD',
+    'TZOFFSETFROM:-0400',
+    'TZOFFSETTO:-0500',
+    'TZNAME:EST',
+    'DTSTART:19701101T020000',
+    'RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU',
+    'END:STANDARD',
+    'END:VTIMEZONE',
+    'BEGIN:VEVENT',
+    `UID:${uid}`,
+    `DTSTAMP:${dtStamp}`,
+    `DTSTART;TZID=America/New_York:${dtStart}`,
+    `DTEND;TZID=America/New_York:${dtEnd}`,
+    `SUMMARY:${summary}`,
+    `DESCRIPTION:${desc}`,
+    `LOCATION:${location}`,
+    'STATUS:CONFIRMED',
+    'END:VEVENT',
+    'END:VCALENDAR',
+    '',
+  ].join('\r\n');
+  const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `delt-capital-${yyyy}${mm}${dd}-${sh}${sm}.ics`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
 
 function V1BookingCalendar({ currentDate, setCurrentDate, selectedDate, onPickDate, accent }) {
   const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -654,7 +741,7 @@ function V1BookingForm({
             letterSpacing: '0.12em', textTransform: 'uppercase',
             color: V1.muted, textAlign: 'center',
           }}>
-            We'll email you a Zoom link · No credit pull
+            We'll email you a Teams link · No credit pull
           </div>
         </form>
       </div>
@@ -673,6 +760,7 @@ function V1ConfirmPanel({ specialist, date, time, accent, onReset }) {
   const [last, setLast] = React.useState('');
   const [emailAddr, setEmailAddr] = React.useState('');
   const [errorMsg, setErrorMsg] = React.useState('');
+  const [bookingResult, setBookingResult] = React.useState(null);
 
   const ready = !!(specialist && date && time);
   const fmt = (d) => {
@@ -699,6 +787,7 @@ function V1ConfirmPanel({ specialist, date, time, accent, onReset }) {
     setErrorMsg('');
     setPhase('submitting');
     try {
+      const dateISO = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
       const r = await fetch('/api/book', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -709,13 +798,15 @@ function V1ConfirmPanel({ specialist, date, time, accent, onReset }) {
           specialistName: specialist.name,
           specialistTitle: specialist.title,
           dateLabel: fmtLong(date),
+          dateISO,
           time,
         }),
       });
+      const data = await r.json().catch(() => ({}));
       if (!r.ok) {
-        const data = await r.json().catch(() => ({}));
         throw new Error(data.error || `Request failed (${r.status})`);
       }
+      setBookingResult(data);
       setPhase('done');
     } catch (err) {
       setErrorMsg(err && err.message ? err.message : 'Booking failed. Please try again.');
@@ -759,10 +850,35 @@ function V1ConfirmPanel({ specialist, date, time, accent, onReset }) {
           <div><span style={{ color: V1.muted }}>DATE </span>{fmt(date)}</div>
           <div><span style={{ color: V1.muted }}>TIME </span>{time} ET · 30 min</div>
           <div><span style={{ color: V1.muted }}>WITH </span>{specialist.name} · {specialist.title}</div>
-          <div><span style={{ color: V1.muted }}>LINK </span>Zoom — sent to your inbox</div>
+          <div>
+            <span style={{ color: V1.muted }}>LINK </span>
+            {bookingResult && bookingResult.joinUrl ? (
+              <a
+                href={bookingResult.joinUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: accent, textDecoration: 'none', borderBottom: `1px solid ${accent}66` }}
+              >
+                Microsoft Teams meeting
+              </a>
+            ) : (
+              'Teams — sent to your inbox'
+            )}
+          </div>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          <button style={v1BkPrimaryBtn(accent)}>
+          <button
+            onClick={() => downloadIcs({
+              specialistName: specialist.name,
+              specialistTitle: specialist.title,
+              date,
+              time,
+              firstName: first,
+              lastName: last,
+              joinUrl: bookingResult && bookingResult.joinUrl,
+            })}
+            style={v1BkPrimaryBtn(accent)}
+          >
             Add to calendar
             <V1BkIcon name="arrow" />
           </button>
@@ -771,6 +887,7 @@ function V1ConfirmPanel({ specialist, date, time, accent, onReset }) {
               onReset();
               setPhase('idle');
               setFirst(''); setLast(''); setEmailAddr(''); setErrorMsg('');
+              setBookingResult(null);
             }}
             style={{
               padding: '11px 18px', borderRadius: 10,
@@ -813,7 +930,7 @@ function V1ConfirmPanel({ specialist, date, time, accent, onReset }) {
         {[
           { k: 'With',   v: specialist ? specialist.name : 'Pick a specialist', filled: !!specialist, sub: specialist && specialist.title },
           { k: 'Day',    v: date ? fmt(date) : 'Pick a day',                    filled: !!date },
-          { k: 'Time',   v: time || 'Pick a time',                              filled: !!time,  sub: time && '30 min · Zoom' },
+          { k: 'Time',   v: time || 'Pick a time',                              filled: !!time,  sub: time && '30 min · Teams' },
         ].map((r, i) => (
           <div key={r.k} style={{
             display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
