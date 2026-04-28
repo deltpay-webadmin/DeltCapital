@@ -214,7 +214,7 @@ function V1Hero({ accent, onApply }) {
             <V1LineMask
               ready={mounted}
               delay={340}
-              style={{ paddingBottom: '0.22em', marginBottom: '-0.16em' }}
+              style={{ paddingBottom: '0.36em', marginBottom: '-0.30em' }}
             >
               We{' '}
               <em style={{
