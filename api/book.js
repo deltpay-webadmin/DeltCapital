@@ -116,12 +116,32 @@ function etWallToUTCIso(dateISO, h24, min) {
   return new Date(candidate.getTime() - offsetMin * 60000).toISOString();
 }
 
+// Resolve a mailbox UPN/email to its Azure AD object ID. The /onlineMeetings
+// endpoint with application permission requires the user's GUID (not UPN);
+// the regular /users/{upn} lookup endpoint accepts either and returns id.
+async function lookupUserId(token, mailbox) {
+  const url = `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(mailbox)}?$select=id`;
+  const r = await fetch(url, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!r.ok) {
+    const text = await r.text().catch(() => '');
+    throw new Error(`lookupUserId(${mailbox}) failed (${r.status}): ${text.slice(0, 400)}`);
+  }
+  const data = await r.json();
+  if (!data.id) throw new Error(`lookupUserId(${mailbox}): no id in response`);
+  return data.id;
+}
+
 // Pre-create a Teams online meeting on a licensed user's mailbox so we can
 // embed the join URL into a calendar event hosted on a different (shared)
 // mailbox. Returns { joinUrl } or null on failure (booking still proceeds
 // without the link rather than failing the whole flow).
 async function createOnlineMeeting(token, hostMailbox, m) {
-  const url = `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(hostMailbox)}/onlineMeetings`;
+  // /onlineMeetings in app-only flow requires the host's Object ID, not UPN.
+  // Resolve once per call; cheap and keeps the surface tiny.
+  const hostId = await lookupUserId(token, hostMailbox);
+  const url = `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(hostId)}/onlineMeetings`;
   const r = await fetch(url, {
     method: 'POST',
     headers: {
