@@ -70,10 +70,10 @@ function V1CompareSection() {
   const rows = [
     { k: 'Speed to funds',     delt: '24 hours',       bank: '2–6 weeks',          win: '20× faster',    strength: 0.98 },
     { k: 'Factor rate',        delt: '1.18×',          bank: '1.35–1.49×',         win: '19% cheaper',   strength: 0.75 },
-    { k: 'Paperwork',          delt: 'Plaid link',     bank: '3 mo statements + returns', win: 'Zero files', strength: 0.92 },
-    { k: 'Credit pull',        delt: 'Soft inquiry',   bank: 'Hard pull',          win: 'No FICO hit',   strength: 0.88 },
-    { k: 'Collateral',         delt: 'None',           bank: 'PG + UCC',           win: 'Unencumbered',  strength: 0.95 },
-    { k: 'Prepayment penalty', delt: 'None',           bank: 'Full factor owed',   win: 'Early pays save', strength: 1.00 },
+    { k: 'Paperwork',          delt: 'Secure bank link',     bank: '3 mo statements + tax returns', win: 'No paperwork', strength: 0.92 },
+    { k: 'Credit check',        delt: 'Soft check',   bank: 'Full credit check',          win: 'No score impact',   strength: 0.88 },
+    { k: 'Collateral',         delt: 'None',           bank: 'Personal guarantee + lien on assets',           win: 'Your assets stay free',  strength: 0.95 },
+    { k: 'Penalty for early payoff', delt: 'None',           bank: 'Full fee owed',   win: 'Pay early, save', strength: 1.00 },
   ];
 
   return (
@@ -91,8 +91,8 @@ function V1CompareSection() {
             fontFamily: V1.fontBody, fontSize: 16.5, lineHeight: 1.6, color: V1.text,
             margin: 0, maxWidth: 460, justifySelf: 'end',
           }}>
-            Every row is a median across the last 12 months of our book, measured
-            against publicly-reported bank SBA 7(a) averages. Updated quarterly.
+            Every row is the typical number across our last 12 months of customers, compared
+            against publicly-reported SBA 7(a) bank averages. Updated quarterly.
           </p>
         </div>
 
@@ -157,7 +157,7 @@ function V1CompareSection() {
                   Delt<span style={{ color: V1.blue }}>.</span>
                 </div>
                 <div style={{ fontFamily: V1.fontMono, fontSize: 10.5, color: V1.blue, opacity: 0.85, marginTop: 2, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-                  Live book · Q4 trailing
+                  Live customers · Q4 trailing
                 </div>
               </div>
             </div>
@@ -172,9 +172,9 @@ function V1CompareSection() {
         {/* Result strip below */}
         <div style={{ marginTop: 24, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
           {[
-            { label: 'Median time to funds',     value: '24 h',   sub: 'vs 2–6 weeks at a bank' },
-            { label: 'Avg savings vs SBA',       value: '19%',    sub: 'on total cost of capital' },
-            { label: 'Paperwork required',       value: '0',      sub: 'Plaid replaces the file box' },
+            { label: 'Typical time to funds',     value: '24 h',   sub: 'vs 2–6 weeks at a bank' },
+            { label: 'Avg savings vs SBA',       value: '19%',    sub: 'on total cost of borrowing' },
+            { label: 'Paperwork required',       value: '0',      sub: 'A secure bank link replaces the file box' },
           ].map((s, i) => (
             <div key={i} style={{
               background: V1.white, border: `1px solid ${V1.line}`, borderRadius: 16,
@@ -337,8 +337,8 @@ function V1StepsSection() {
             fontFamily: V1.fontBody, fontSize: 17, lineHeight: 1.6, color: V1.text,
             margin: 0, maxWidth: 520, justifySelf: 'end',
           }}>
-            No sales advisor, no discovery call, no underwriter asking for "just one more statement."
-            We read your deposits, price the deal, send an offer.
+            No sales pitch, no discovery call, no one asking for "just one more bank statement."
+            We look at your deposits, set your rate, and send you an offer.
           </p>
         </div>
 
@@ -401,7 +401,7 @@ function V1CalcSection({ calcState, setCalcState, onApply, onNavHow }) {
             fontFamily: V1.fontBody, fontSize: 17, lineHeight: 1.6, color: V1.text,
             margin: 0, maxWidth: 460, justifySelf: 'end',
           }}>
-            Same underwriting logic that runs on every Delt application. Numbers
+            Same review process we use on every application. Numbers
             update as you type.
           </p>
         </div>
@@ -423,15 +423,15 @@ function V1ReviewsSection() {
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'end', marginBottom: 56 }}>
           <div>
-            <V1Eyebrow>Operators</V1Eyebrow>
-            <h2 style={{ ...v1H2, marginTop: 18 }}>Verified on the renewal call.</h2>
+            <V1Eyebrow>Business owners</V1Eyebrow>
+            <h2 style={{ ...v1H2, marginTop: 18 }}>Real customers, real results.</h2>
           </div>
           <p style={{
             fontFamily: V1.fontBody, fontSize: 17, lineHeight: 1.6, color: V1.text,
             margin: 0, maxWidth: 480, justifySelf: 'end',
           }}>
-            Every quote is from a borrower who has closed at least once. Business
-            names are real, on request.
+            Every quote is from a real customer who has been funded at least once. Business
+            names available on request.
           </p>
         </div>
 
@@ -479,7 +479,7 @@ function V1FAQSection() {
       <div style={{ maxWidth: 960, margin: '0 auto', padding: '0 40px' }}>
         <div style={{ marginBottom: 48 }}>
           <V1Eyebrow>Questions</V1Eyebrow>
-          <h2 style={{ ...v1H2, marginTop: 18 }}>What operators actually ask.</h2>
+          <h2 style={{ ...v1H2, marginTop: 18 }}>What business owners ask us.</h2>
         </div>
         <div style={{ borderTop: `1px solid ${V1.line}` }}>
           {DeltContent.faq.map((f, i) => {
@@ -527,10 +527,10 @@ function V1CTASection({ onApply, onTalk }) {
   const [hoverPrimary, setHoverPrimary] = React.useState(false);
   const [hoverGhost, setHoverGhost]     = React.useState(false);
   const steps = [
-    { n: '01', t: 'NOW',       d: 'Soft pull · 3 questions'  },
+    { n: '01', t: 'NOW',       d: 'Soft credit check · 3 questions'  },
     { n: '02', t: '60s',       d: 'A real funding range'      },
     { n: '03', t: 'SAME DAY',  d: 'Single-page offer'         },
-    { n: '04', t: '+24h',      d: 'Money wired'               },
+    { n: '04', t: '+24h',      d: 'Money in your account'               },
   ];
 
   return (
@@ -565,7 +565,7 @@ function V1CTASection({ onApply, onTalk }) {
         transform: inView ? 'translateX(0)' : 'translateX(12px)',
         transition: 'opacity 700ms cubic-bezier(0.22,1,0.36,1) 80ms, transform 700ms cubic-bezier(0.22,1,0.36,1) 80ms',
       }}>
-        Vol. VII · Closing
+        How it ends
         <span style={{ width: 18, height: 1, background: 'rgba(255,255,255,0.32)' }} />
       </div>
 
@@ -606,8 +606,8 @@ function V1CTASection({ onApply, onTalk }) {
               transform: inView ? 'translateY(0)' : 'translateY(10px)',
               transition: 'opacity 700ms cubic-bezier(0.22,1,0.36,1) 520ms, transform 700ms cubic-bezier(0.22,1,0.36,1) 520ms',
             }}>
-              Three questions, a soft pull, and a real funding range.
-              No obligation. No impact to your credit.
+              Three questions, a soft credit check, and a real funding range.
+              No obligation. No impact to your credit score.
             </p>
           </div>
 
@@ -688,7 +688,7 @@ function V1CTASection({ onApply, onTalk }) {
               transform: hoverPrimary ? 'translateX(120%)' : 'translateX(-120%)',
               transition: 'transform 900ms cubic-bezier(0.22, 1, 0.36, 1)',
             }} />
-            Get Funded
+            Get funded
             <svg width="15" height="15" viewBox="0 0 14 14" style={{
               transform: hoverPrimary ? 'translateX(3px)' : 'translateX(0)',
               transition: 'transform 260ms cubic-bezier(0.22, 1, 0.36, 1)',
@@ -716,7 +716,7 @@ function V1CTASection({ onApply, onTalk }) {
                 <rect x="1.5" y="2.5" width="11" height="9" rx="1.5"/>
                 <path d="M4 1v2M10 1v2M1.5 5.5h11"/>
               </svg>
-              Talk to an underwriter
+              Talk to a real person
               <span style={{
                 opacity: hoverGhost ? 1 : 0,
                 transform: hoverGhost ? 'translateX(0)' : 'translateX(-4px)',
@@ -730,7 +730,7 @@ function V1CTASection({ onApply, onTalk }) {
             color: 'rgba(255,255,255,0.45)', textTransform: 'uppercase',
             marginLeft: 8,
           }}>
-            Soft-pull · No obligation
+            Soft credit check · No obligation
           </span>
         </div>
 
@@ -746,7 +746,7 @@ function V1CTASection({ onApply, onTalk }) {
             fontFamily: V1.fontMono, fontSize: 11, fontWeight: 600,
             letterSpacing: '0.2em', textTransform: 'uppercase', color: V1.blueSoft,
           }}>
-            The arc — click to wire
+            From click to money in the bank
           </span>
         </div>
 
@@ -836,7 +836,7 @@ const USE_CASES = [
     blurb: 'Upgrade machinery, purchase new equipment, or invest in technology that improves efficiency.',
     metric: { funding: '$45K', approval: '24 hrs', roi: '+38%' },
     stat: { label: 'Avg. equipment investment', value: '$45K' },
-    insight: 'Businesses that invest in equipment upgrades see an average 38% productivity increase within the first 6 months of deployment.',
+    insight: 'Businesses that upgrade their equipment see about 38% more productivity in the first 6 months.',
     breakdown: [
       { name: 'Machinery',   pct: 35 },
       { name: 'Software',    pct: 25 },
@@ -852,7 +852,7 @@ const USE_CASES = [
     blurb: 'Pay suppliers on time, negotiate early-pay discounts, and keep your supply chain running smoothly.',
     metric: { funding: '$62K', approval: '24 hrs', roi: '+12%' },
     stat: { label: 'Avg. early-pay discount captured', value: '2.1%' },
-    insight: 'Operators who take 2/10 net 30 discounts with Delt capital effectively earn 36% APY on their float.',
+    insight: 'Owners who use Delt funding to pay suppliers early often save 2% on every invoice — that adds up fast across a year.',
     breakdown: [
       { name: 'Raw materials',   pct: 42 },
       { name: 'Logistics',       pct: 22 },
@@ -868,7 +868,7 @@ const USE_CASES = [
     blurb: 'Meet payroll during slow weeks, onboard new hires, and cover recruiting costs without stress.',
     metric: { funding: '$38K', approval: '24 hrs', roi: '+22%' },
     stat: { label: 'Avg. per-hire ramp cost', value: '$8.4K' },
-    insight: 'Teams that fund hiring through Delt close roles 2.3 weeks faster than those waiting on retained cash flow.',
+    insight: 'Businesses that use Delt to fund hiring fill open roles about 2.3 weeks faster than those waiting on cash flow.',
     breakdown: [
       { name: 'Salaries',    pct: 54 },
       { name: 'Benefits',    pct: 18 },
@@ -884,7 +884,7 @@ const USE_CASES = [
     blurb: 'Open a new location, expand capacity, or enter a new market with capital that moves at your pace.',
     metric: { funding: '$120K', approval: '48 hrs', roi: '+54%' },
     stat: { label: 'Avg. new-location payback', value: '11 mo' },
-    insight: 'Multi-unit operators funded through Delt hit break-even on new locations 4 months faster than industry average.',
+    insight: 'Owners with multiple locations who use Delt break even on new locations about 4 months faster than the industry average.',
     breakdown: [
       { name: 'Build-out',   pct: 38 },
       { name: 'Lease & CAM', pct: 22 },
@@ -900,7 +900,7 @@ const USE_CASES = [
     blurb: 'Stock up for peak season, negotiate bulk pricing, and keep shelves full when demand spikes.',
     metric: { funding: '$85K', approval: '24 hrs', roi: '+28%' },
     stat: { label: 'Avg. bulk-buy savings', value: '14%' },
-    insight: 'Retailers who pre-stock with Delt capture 2.8× more peak-season revenue than those ordering reactively.',
+    insight: 'Retailers who stock up early with Delt funding earn 2.8× more during peak season than those who order as they go.',
     breakdown: [
       { name: 'Core SKUs',      pct: 48 },
       { name: 'Seasonal',       pct: 22 },
@@ -916,7 +916,7 @@ const USE_CASES = [
     blurb: 'Fund ad spend, creative production, and launches that have a clear revenue payback.',
     metric: { funding: '$28K', approval: '24 hrs', roi: '+3.2× ROAS' },
     stat: { label: 'Median campaign ROAS', value: '3.2×' },
-    insight: 'Brands that scale winning campaigns with Delt grow 47% faster than those constrained by retained earnings.',
+    insight: 'Brands that use Delt to grow winning ad campaigns grow about 47% faster than those waiting on saved-up profits.',
     breakdown: [
       { name: 'Paid social',  pct: 38 },
       { name: 'Search',       pct: 24 },

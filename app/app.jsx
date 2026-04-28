@@ -150,7 +150,7 @@ function DeltCalculator({ compact = false, onApply, themeAccent = DELT.colors.in
               </>
             ) : est.early ? (
               <div style={{ color: DELT.colors.inkMute, fontSize: 13.5, lineHeight: 1.5, marginTop: 4 }}>
-                Under 6 months in business — we can still help via our launch program. Talk to a specialist.
+                Under 6 months in business — we can still help through our launch program. Talk to a real person on our team.
               </div>
             ) : (
               <div>
@@ -253,7 +253,7 @@ function StepsSection({ accent = DELT.colors.indigo }) {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, alignItems: 'start', marginBottom: 48 }}>
           <h2 style={h2Style}>Four steps. One business day.</h2>
           <p style={{ fontFamily: DELT.font.body, fontSize: 15, lineHeight: 1.6, color: DELT.colors.inkSoft, marginTop: 8 }}>
-            No sales advisor, no discovery call, no underwriter asking for "just one more statement". We read your deposits, price the deal, send an offer.
+            No sales pitch, no "discovery call," no one asking for "just one more bank statement." We look at your deposits, price the offer, and send it over.
           </p>
         </div>
 
@@ -324,7 +324,7 @@ function FAQSection({ accent = DELT.colors.indigo }) {
     <section style={{ background: DELT.colors.paperWarm }}>
       <div style={{ maxWidth: 920, margin: '0 auto', padding: '80px 32px' }}>
         <SectionLabel accent={accent}>Questions</SectionLabel>
-        <h2 style={{ ...h2Style, marginBottom: 40 }}>What operators actually ask.</h2>
+        <h2 style={{ ...h2Style, marginBottom: 40 }}>What business owners actually ask.</h2>
         <div style={{ borderTop: `1px solid ${DELT.colors.line}` }}>
           {DeltContent.faq.map((f, i) => (
             <div key={i} style={{ borderBottom: `1px solid ${DELT.colors.line}` }}>
@@ -429,10 +429,10 @@ function AboutPage({ accent }) {
       <div style={{ maxWidth: 880, margin: '0 auto', padding: '88px 32px 48px' }}>
         <SectionLabel accent={accent}>About</SectionLabel>
         <h1 style={{ fontFamily: DELT.font.display, fontSize: 56, fontWeight: 600, letterSpacing: '-0.035em', color: DELT.colors.ink, lineHeight: 1.05, margin: 0 }}>
-          We under­write businesses the way your CFO would — by reading deposits, not pulling credit reports.
+          We look at your business the way a smart financial advisor would — by reading your deposits, not just your credit report.
         </h1>
         <p style={{ fontFamily: DELT.font.body, fontSize: 18, lineHeight: 1.6, color: DELT.colors.inkSoft, marginTop: 28, maxWidth: 680 }}>
-          Delt was founded in 2019 by two operators who got quoted 1.48× on an inventory-buy advance and decided the MCA market needed a direct lender that didn't hide behind broker layers.
+          Delt was founded in 2019 by two business owners who were quoted a 1.48× factor rate on an advance to buy inventory. They decided the small-business funding world needed a direct lender that didn't hide behind layers of brokers.
         </p>
       </div>
 
@@ -440,11 +440,11 @@ function AboutPage({ accent }) {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 1, background: DELT.colors.line, border: `1px solid ${DELT.colors.line}`, borderRadius: 10, overflow: 'hidden' }}>
           {[
             { h: 'Direct capital', t: 'We lend off our own balance sheet. No broker points, no middleman markup, no "we\'ll shop you around."' },
-            { h: 'Revenue-based', t: 'We underwrite 90 days of deposits via Plaid. Your FICO is a check, not the decision.' },
+            { h: 'Revenue-based', t: 'We review 90 days of your deposits through a secure bank link. Your credit score is a check, not the deciding factor.' },
             { h: 'Flat pricing', t: 'One factor rate. No origination fee, no "processing fee," no ACH fees. The number you see is the number you pay.' },
             { h: 'Early-pay rebates', t: 'Pay off early and we return the unearned factor pro-rata. The industry standard — owe the full factor — is a tax on success.' },
             { h: 'No prepayment penalties', t: 'Ever. On any product. Written into every contract on page one.' },
-            { h: 'In-house underwriting', t: 'Two-person underwriting desk. Your file is read by a human who has authority to price it.' },
+            { h: 'Real people review your file', t: 'A two-person team handles approvals. A real person reads your file and has the authority to price your offer.' },
           ].map(v => (
             <div key={v.h} style={{ background: DELT.colors.card, padding: 28 }}>
               <div style={{ fontFamily: DELT.font.display, fontSize: 18, fontWeight: 600, color: DELT.colors.ink, letterSpacing: '-0.01em' }}>{v.h}</div>
@@ -641,7 +641,7 @@ function StepBusiness({ form, setForm, accent }) {
   return (
     <div>
       <h3 style={stepTitle}>About your business</h3>
-      <p style={stepSub}>Used to verify entity formation. We don't hard-pull business credit.</p>
+      <p style={stepSub}>Used to confirm your business is properly registered. We don't run a full credit check on your business.</p>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginTop: 24 }}>
         <FieldRow label="Legal business name"><Input value={form.businessName} onChange={(v) => setForm({ ...form, businessName: v })} placeholder="La Rosa Restaurant LLC" accent={accent} /></FieldRow>
         <FieldRow label="EIN"><Input value={form.ein} onChange={(v) => setForm({ ...form, ein: v })} placeholder="12-3456789" accent={accent} /></FieldRow>
@@ -718,7 +718,7 @@ function StepIdentity({ form, setForm, accent }) {
   return (
     <div>
       <h3 style={stepTitle}>Verify identity</h3>
-      <p style={stepSub}>Last 4 of SSN — used for KYC only. Soft-pull, no impact to personal credit.</p>
+      <p style={stepSub}>Last 4 of your SSN — used for the standard identity check only. Soft credit check, no impact on your personal credit.</p>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginTop: 24, maxWidth: 420 }}>
         <FieldRow label="SSN (last 4)"><Input value={form.ssn4} onChange={(v) => setForm({ ...form, ssn4: v.replace(/[^0-9]/g, '').slice(0, 4) })} placeholder="1234" accent={accent} /></FieldRow>
         <FieldRow label="Use of funds"><Select value={form.useOfFunds} onChange={(v) => setForm({ ...form, useOfFunds: v })} opts={['Inventory', 'Equipment', 'Hiring', 'Renovation', 'Marketing', 'Bridge A/R', 'Other']} accent={accent} /></FieldRow>
@@ -726,7 +726,7 @@ function StepIdentity({ form, setForm, accent }) {
       <div style={{ marginTop: 32, padding: 16, background: DELT.colors.paperWarm, border: `1px solid ${DELT.colors.line}`, borderRadius: 8, display: 'flex', gap: 12, alignItems: 'flex-start' }}>
         <div style={{ width: 6, height: 6, borderRadius: 999, background: accent, marginTop: 8, flexShrink: 0 }} />
         <div style={{ fontFamily: DELT.font.body, fontSize: 13, color: DELT.colors.inkSoft, lineHeight: 1.55 }}>
-          Soft inquiry on personal credit only. We never hard-pull at this stage. A hard pull happens only if you countersign an offer — and only on the guarantor.
+          Soft credit check on your personal credit only. We never do a full credit check at this stage. A full credit check only happens if you sign an offer — and only on the person guaranteeing the loan.
         </div>
       </div>
     </div>
@@ -743,7 +743,7 @@ function StepOffer({ form, prefill, accent }) {
   return (
     <div>
       <h3 style={stepTitle}>Your offer</h3>
-      <p style={stepSub}>One page. No addenda. Counter-sign to move to funding.</p>
+      <p style={stepSub}>One page. No fine-print add-ons. Sign to move to funding.</p>
 
       <div style={{ marginTop: 28, border: `1px solid ${DELT.colors.line}`, borderRadius: 10, overflow: 'hidden' }}>
         <div style={{ background: DELT.colors.ink, color: '#F7F5F0', padding: '20px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
@@ -786,9 +786,9 @@ function StepDone({ form, accent }) {
       </div>
       <h3 style={{ ...stepTitle, textAlign: 'center' }}>You're funded.</h3>
       <p style={{ ...stepSub, textAlign: 'center', maxWidth: 460, margin: '8px auto 24px' }}>
-        Funds will arrive in your connected account by 2 pm ET tomorrow. A copy of your contract and amortization schedule is on its way to {form.email || 'your email'}.
+        Funds will arrive in your connected account by 2 pm ET tomorrow. A copy of your contract and payment schedule is on its way to {form.email || 'your email'}.
       </p>
-      <div style={{ fontFamily: DELT.font.mono, fontSize: 12, color: DELT.colors.inkMute }}>Wire reference · DLT-2026-{Math.floor(Math.random() * 900000 + 100000)}</div>
+      <div style={{ fontFamily: DELT.font.mono, fontSize: 12, color: DELT.colors.inkMute }}>Reference number · DLT-2026-{Math.floor(Math.random() * 900000 + 100000)}</div>
     </div>
   );
 }
@@ -839,7 +839,7 @@ function DeltApp({ chrome, accent = DELT.colors.indigo, hero }) {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, alignItems: 'start', marginBottom: 32 }}>
                 <h2 style={h2Style}>Price the deal before you apply.</h2>
                 <p style={{ fontFamily: DELT.font.body, fontSize: 15, lineHeight: 1.6, color: DELT.colors.inkSoft, marginTop: 8 }}>
-                  Live estimates based on the same underwriting logic that runs on every Delt application.
+                  Live estimates based on the same logic our team uses on every Delt application.
                 </p>
               </div>
               <DeltCalculator calcState={calcState} setCalcState={setCalcState} onApply={openApp} themeAccent={accent} />

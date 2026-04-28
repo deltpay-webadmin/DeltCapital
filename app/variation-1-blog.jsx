@@ -2,20 +2,20 @@
 // Structure:
 //   Masthead   — Vol / Issue dateline strip, oversized display lockup
 //   Featured   — one lead editorial (full-bleed photo placeholder + deck)
-//   Categories — sticky filter pills: Underwriting, Operators, Policy, etc
+//   Categories — sticky filter pills: How we lend, Business owners, Policy, etc
 //   Grid       — 6 recent posts in a 3-col editorial grid
-//   Series     — a horizontal rail for "The Floor Rate" (underwriter letters)
+//   Series     — a horizontal rail for "The Floor Rate" (letters from the lending team)
 //   Archive    — compact list of older pieces with issue/vol numbers
 //   Newsletter — trailing band; monospaced input, purple accent
 //
-// Tone: operator-first, direct, no marketing platitudes. Every post has a
+// Tone: business-owner-first, direct, no marketing platitudes. Every post has a
 // short deck (standfirst), reading time, author, issue label, and a short
 // "tl;dr" that a busy founder can scan in 3 seconds.
 
 const BLOG_CATS = [
   { k: 'all',        label: 'All dispatches' },
-  { k: 'underwrite', label: 'Underwriting' },
-  { k: 'operators',  label: 'Operators' },
+  { k: 'underwrite', label: 'How we lend' },
+  { k: 'operators',  label: 'Business owners' },
   { k: 'pricing',    label: 'Pricing & rates' },
   { k: 'policy',     label: 'Policy' },
   { k: 'field',      label: 'Field notes' },
@@ -30,7 +30,7 @@ const BLOG_POSTS = [
     read: '11 min',
     kicker: 'The case against credit scores',
     title: 'Why we stopped pulling FICO for the first 90% of a file.',
-    deck: 'Three years of declined-but-funded data, a stubborn correlation nobody wanted to publish, and the day our chief underwriter tore up the scorecard.',
+    deck: 'Three years of data on people we declined who got funded anyway, a stubborn pattern nobody wanted to publish, and the day our head of lending tore up the scorecard.',
     tldr: 'Deposit variance predicts repayment 3.4× better than FICO. We stopped leading with credit in 2023 and default rates actually dropped.',
     author: { n: 'Elena Morgan', r: 'Lead Underwriter' },
     tags: ['data', 'policy', 'underwriting'],
@@ -45,7 +45,7 @@ const BLOG_POSTS = [
     kicker: 'Pricing, unpacked',
     title: 'The factor-rate math your CFO wishes you\'d send them.',
     deck: 'A one-page spreadsheet, a signed NDA, and the reason we publish buy rates when every other lender hides them.',
-    tldr: '1.18× over 10 months ≈ 36% APR simple. Published, once, so operators stop doing this on the back of a napkin.',
+    tldr: '1.18× over 10 months ≈ 36% APR simple. Published, once, so business owners stop doing this math on the back of a napkin.',
     author: { n: 'Kevin Cheng', r: 'Head of Pricing' },
     tags: ['pricing', 'apr', 'transparency'],
   },
@@ -55,12 +55,12 @@ const BLOG_POSTS = [
     issue: 'Vol. VII · No. 13',
     date: 'Mar 06, 2026',
     read: '9 min',
-    kicker: 'Operator notebook',
+    kicker: 'Owner notebook',
     title: 'Bridging the 47-day gap between invoice and deposit.',
     deck: 'Three restaurants, one logistics company, and the cash-flow pattern nobody talks about at the franchise convention.',
-    tldr: 'Average B2B deposit lag for SMB operators: 47 days. It\'s getting worse. Here\'s the rolling-advance pattern that fixes it.',
+    tldr: 'Average wait time between sending an invoice and getting paid for small businesses: 47 days. It\'s getting worse. Here\'s a funding pattern that fixes it.',
     author: { n: 'Marcus Rivera', r: 'Ops Research' },
-    tags: ['operators', 'cash-flow', 'restaurants'],
+    tags: ['business owners', 'cash-flow', 'restaurants'],
   },
   {
     id: 'mca-vs-delt',
@@ -69,9 +69,9 @@ const BLOG_POSTS = [
     date: 'Feb 27, 2026',
     read: '6 min',
     kicker: 'Competitive',
-    title: 'The MCA receipt we keep pinned above the underwriting desk.',
-    deck: 'A screenshot of a 1.42× "daily" offer, a margin-note from the CEO, and the reason we turned down a $40M warehouse line.',
-    tldr: 'A brokered MCA at 1.42× with 5% origination = 61% APR. We priced the same file at 1.16× with no origination. Receipt on file.',
+    title: 'The competitor offer we keep pinned to the wall.',
+    deck: 'A screenshot of a 1.42× "daily" offer, a margin-note from the CEO, and the reason we turned down a $40M loan facility.',
+    tldr: 'A broker offer at 1.42× with 5% upfront fee = 61% APR. We priced the same file at 1.16× with no upfront fee. Receipt on file.',
     author: { n: 'Elena Morgan', r: 'Lead Underwriter' },
     tags: ['mca', 'pricing', 'comparison'],
   },
@@ -83,10 +83,10 @@ const BLOG_POSTS = [
     read: '5 min',
     kicker: 'From the field',
     title: 'How to call us before you miss a debit.',
-    deck: 'The 90-second phone script we give every underwriter — and what to say on your side so the restructure is boring.',
-    tldr: 'A 48-hour heads-up is always cheaper than a missed debit. Here\'s the exact three-question script our underwriters use.',
+    deck: 'The 90-second phone script we give everyone on our team — and what to say on your side so adjusting your terms is boring.',
+    tldr: 'A 48-hour heads-up is always cheaper than a missed payment. Here\'s the exact three-question script our team uses.',
     author: { n: 'Priya Shah', r: 'Servicing' },
-    tags: ['servicing', 'restructure', 'operators'],
+    tags: ['support', 'adjusting terms', 'business owners'],
   },
   {
     id: 'cfpb-1071',
@@ -107,12 +107,12 @@ const BLOG_POSTS = [
     issue: 'Vol. VII · No. 11',
     date: 'Feb 09, 2026',
     read: '8 min',
-    kicker: 'Underwriting',
-    title: 'Five cases where Plaid isn\'t enough (and what we do instead).',
-    deck: 'Cash-heavy businesses, deposit-splitting across accounts, and the kind of operator file where we ask for statements the old-fashioned way.',
-    tldr: 'Plaid covers ~88% of files. The other 12% — laundromats, some beauty salons, split-account ops — we underwrite on 3mo statements.',
+    kicker: 'How we lend',
+    title: 'Five cases where the bank link isn\'t enough (and what we do instead).',
+    deck: 'Cash-heavy businesses, businesses that split deposits across accounts, and the kind of file where we ask for statements the old-fashioned way.',
+    tldr: 'Our secure bank link covers about 88% of files. The other 12% — laundromats, some beauty salons, split-account businesses — we review using 3 months of statements.',
     author: { n: 'Elena Morgan', r: 'Lead Underwriter' },
-    tags: ['plaid', 'underwriting', 'edge-cases'],
+    tags: ['bank link', 'how we lend', 'edge cases'],
   },
   {
     id: 'rate-sheet-oct',
@@ -136,8 +136,8 @@ const BLOG_POSTS = [
     read: '6 min',
     kicker: 'The Floor Rate',
     title: 'On the files I say no to first.',
-    deck: 'A monthly letter from the desk. This month: the three patterns that put a file in the decline pile before I\'ve read page two.',
-    tldr: 'Stacking without disclosure, negative-days clustering, and mid-term re-applies. Three patterns, one rule: be honest up front.',
+    deck: 'A monthly letter from our lending team. This month: the three patterns that put a file in the decline pile before I\'ve read page two.',
+    tldr: 'Hiding other open loans, lots of overdraft days clustered together, and re-applying mid-term. Three patterns, one rule: be honest up front.',
     author: { n: 'Elena Morgan', r: 'Lead Underwriter' },
     tags: ['series', 'underwriting'],
   },
@@ -150,8 +150,8 @@ const BLOG_POSTS = [
     read: '5 min',
     kicker: 'The Floor Rate',
     title: 'The honest conversation about stacking.',
-    deck: 'When a second position makes sense, when it doesn\'t, and what we actually see on books with three or more active advances.',
-    tldr: 'One position: normal. Two: situational. Three+: call us before you sign anything else. The math stops working at about 11% DSO.',
+    deck: 'When a second loan makes sense, when it doesn\'t, and what we actually see on businesses with three or more active loans.',
+    tldr: 'One loan: normal. Two: depends on the situation. Three or more: call us before you sign anything else. The math stops working at about 11% of daily sales.',
     author: { n: 'Elena Morgan', r: 'Lead Underwriter' },
     tags: ['series', 'stacking'],
   },
@@ -174,12 +174,12 @@ const BLOG_POSTS = [
 // Archive (shown as compact list)
 const BLOG_ARCHIVE = [
   { issue: 'Vol. VII · No. 09', date: 'Jan 19, 2026', title: 'Twelve questions we now ask every first-time applicant.', read: '6 min' },
-  { issue: 'Vol. VII · No. 08', date: 'Jan 12, 2026', title: 'What a "soft pull" actually is, in language a bureau doesn\'t use.', read: '4 min' },
+  { issue: 'Vol. VII · No. 08', date: 'Jan 12, 2026', title: 'What a "soft credit check" actually is, in plain English.', read: '4 min' },
   { issue: 'Vol. VII · No. 07', date: 'Jan 05, 2026', title: 'The holiday cash-flow gap: three charts, one recommendation.', read: '5 min' },
   { issue: 'Vol. VII · No. 06', date: 'Dec 22, 2025', title: 'We funded $47M in December. Here\'s where it went.', read: '4 min' },
   { issue: 'Vol. VII · No. 05', date: 'Dec 15, 2025', title: 'Why our origination fee is a flat $395, forever.', read: '3 min' },
-  { issue: 'Vol. VII · No. 04', date: 'Dec 08, 2025', title: 'A receipt-per-customer dashboard for small-batch operators.', read: '8 min' },
-  { issue: 'Vol. VII · No. 03', date: 'Dec 01, 2025', title: 'The renewal conversation: a checklist for the operator side.', read: '6 min' },
+  { issue: 'Vol. VII · No. 04', date: 'Dec 08, 2025', title: 'A receipt-per-customer dashboard for small-batch businesses.', read: '8 min' },
+  { issue: 'Vol. VII · No. 03', date: 'Dec 01, 2025', title: 'The conversation about more funding: a checklist for the business owner side.', read: '6 min' },
   { issue: 'Vol. VII · No. 02', date: 'Nov 24, 2025', title: 'Q4 2025 portfolio snapshot.', read: '9 min' },
 ];
 
@@ -332,9 +332,9 @@ function BlogMasthead({ accent }) {
             fontFamily: V1.fontBody, fontSize: 17, lineHeight: 1.55,
             color: 'rgba(255,255,255,0.72)', maxWidth: 440,
           }}>
-            Underwriting dispatches, pricing letters, and operator field notes
-            from the people who actually size your offer. One long read and a
-            few short ones, most Wednesdays.
+            Lending notes, pricing letters, and field notes from business
+            owners — written by the people who actually price your offer.
+            One long read and a few short ones, most Wednesdays.
             <div style={{
               marginTop: 22, display: 'flex', alignItems: 'center', gap: 18,
               fontFamily: V1.fontMono, fontSize: 11, fontWeight: 500,
@@ -620,7 +620,7 @@ function BlogSeriesRail({ posts, accent }) {
               <em style={{
                 fontFamily: '"Source Serif Pro", Georgia, serif',
                 fontStyle: 'italic', fontWeight: 400, color: accent,
-              }}>Monthly letters</em> from our lead underwriter.
+              }}>Monthly letters</em> from the head of our lending team.
             </h2>
           </div>
           <p style={{
@@ -845,7 +845,7 @@ function BlogNewsletter({ accent, onTalk }) {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="operator@yourcompany.com"
+                    placeholder="you@yourcompany.com"
                     style={{
                       flex: 1, padding: '14px 16px',
                       background: V1.white,
@@ -929,7 +929,7 @@ function BlogNewsletter({ accent, onTalk }) {
               }}>Rather talk than read?</div>
               <div style={{
                 fontFamily: V1.fontBody, fontSize: 13, color: V1.muted, marginTop: 2,
-              }}>30 min with an underwriter, on Zoom.</div>
+              }}>30 min with a real person on our team, on Zoom.</div>
             </div>
             <button
               onClick={onTalk}

@@ -540,8 +540,8 @@ function V1CalculatorPage({ accent, onApply, onNavHow }) {
             fontFamily: V1.fontBody, fontSize: 18, lineHeight: 1.55,
             color: V1.text, margin: '28px auto 0', maxWidth: 640,
           }}>
-            Three questions. Soft pull only. Real numbers from the same underwriting
-            logic that runs on every Delt application.
+            Three questions. Soft credit check only. Real numbers from the same
+            logic our team uses on every Delt application.
           </p>
         </div>
       </section>
@@ -569,9 +569,9 @@ function V1CalculatorPage({ accent, onApply, onNavHow }) {
             {[
               { e: 'Formula',        t: 'Monthly revenue × 50–67%', d: 'That range is the standard. Your factor multiplies it — we publish both.' },
               { e: 'Factor rate',    t: '1.12× – 1.22×',            d: 'Longer time in business and larger advances pull the factor down. Median is 1.18×.' },
-              { e: 'Delt Boost',     t: 'Up to 1.75×',              d: 'Switch your card processing to Delt and we underwrite against projected deposits, not just historical ones.' },
+              { e: 'Delt Boost',     t: 'Up to 1.75×',              d: 'Switch your card processing to Delt and we can lend against your expected future sales, not just past sales.' },
               { e: 'Repayment',      t: '4–10 months',              d: 'Fixed daily or weekly debit sized to your revenue. Schedule in your offer before you sign.' },
-              { e: 'Early-pay',      t: 'Rebated pro-rata',         d: 'Pay the advance off early and we return the unearned factor. Not standard in MCA — we wrote it into every contract.' },
+              { e: 'Early payoff',   t: 'Refunded fairly',          d: 'Pay off early and we refund the unused part of the fee. Not standard in this industry — we wrote it into every contract.' },
               { e: 'Prepayment',     t: '$0 penalty',               d: 'There is no prepayment penalty on any Delt product. Full stop.' },
             ].map((b, i) => (
               <div key={i} style={{
@@ -609,13 +609,13 @@ function V1CalcFAQ() {
   const [open, setOpen] = v1cUseState(0);
   const items = [
     { q: "Is this a hard credit check?",
-      a: "No. Generating an estimate does not touch your credit at all. A soft pull only happens if you choose to continue to the full application. A hard pull happens only if you counter-sign an offer." },
+      a: "No. Generating an estimate does not touch your credit at all. A soft credit check only happens if you choose to continue to the full application. A full credit check only happens if you sign an offer." },
     { q: "How accurate is the estimate?",
-      a: "It uses the same deposit-to-advance ratios our underwriters apply on live files. Final offers can vary ±15% after we read 90 days of deposits via Plaid, and they almost always land inside the range you see." },
+      a: "It uses the same deposit-to-funding ratios our team applies on real files. Final offers can vary by about 15% after we review 90 days of your deposits through a secure bank link, and they almost always land inside the range you see." },
     { q: "What does Delt Boost actually do?",
-      a: "Switching your card processing to Delt gives us a real-time view of deposits — so we can price against projected, not just historical, revenue. That lets us responsibly extend 1.75× the standard advance." },
+      a: "Switching your card processing to Delt gives us a real-time view of your deposits — so we can price against your expected future sales, not just past sales. That lets us responsibly offer up to 1.75× the standard amount." },
     { q: "Why does time in business matter?",
-      a: "Longer operating history widens the range we're willing to advance. Under 6 months, we can't offer a revenue-based advance — but we have a launch program for new businesses." },
+      a: "The longer you've been in business, the more we're willing to fund. Under 6 months, we can't offer revenue-based funding — but we have a launch program for newer businesses." },
     { q: "Can I request a custom amount?",
       a: "Yes. The Custom Amount input lets you ask for a specific figure up to $500K. If it's within reach of your estimate, the application will prefill with that number." },
   ];

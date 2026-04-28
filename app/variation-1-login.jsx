@@ -82,7 +82,7 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     setSent(true);
-    onSignIn && onSignIn(email || 'operator@delt.capital');
+    onSignIn && onSignIn(email || 'owner@delt.capital');
   };
 
   const enter = (delay) => ({
@@ -163,7 +163,7 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
             color: '#fff',
           }}>
             <V1LineMask ready={mounted} delay={140} duration={900}>Welcome back,</V1LineMask>
-            <V1LineMask ready={mounted} delay={250} duration={900}>operator.</V1LineMask>
+            <V1LineMask ready={mounted} delay={250} duration={900}>business owner.</V1LineMask>
           </h1>
 
           <p style={{
@@ -172,8 +172,8 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
             margin: '28px 0 0', maxWidth: 460,
             ...enter(540),
           }}>
-            Your session is secured, soft-pulled, and auto-expires. We never
-            store card data or factor terms in the browser.
+            Your session is secured and automatically times out. We never
+            store card data or your offer details in the browser.
           </p>
 
           <div style={{
@@ -663,7 +663,7 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
                   maxWidth: 460,
                 }}>
                   We emailed a sign-in link to{' '}
-                  <span style={{ color: V1.ink, fontWeight: 500 }}>{email || 'operator@delt.capital'}</span>.
+                  <span style={{ color: V1.ink, fontWeight: 500 }}>{email || 'owner@delt.capital'}</span>.
                   Open it on this device to finish signing in.
                 </p>
 

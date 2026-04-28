@@ -10,7 +10,7 @@
 // the confirm button runs a real progress bar → ✓ success → calendar-ICS
 // download affordance.
 //
-// Keep: 30-min, Zoom, soft-pull language; underwriter-first framing matches
+// Keep: 30-min, Zoom, soft credit check language; advisor-first framing matches
 // the rest of V1.
 
 function V1UnderwriterDonut({ person, accent, active }) {
@@ -71,8 +71,8 @@ function V1BookingHero({ accent }) {
           color: '#fff', margin: '22px 0 0', maxWidth: 840,
           animation: 'bkFadeUp 700ms cubic-bezier(.2,.7,.3,1) 60ms both',
         }}>
-          Talk to the underwriter<br/>
-          who'd price your deal.{' '}
+          Talk to the real person<br/>
+          who'd price your offer.{' '}
           <em style={{
             fontFamily: '"Source Serif Pro", Georgia, serif',
             fontStyle: 'italic', fontWeight: 400, color: accent,
@@ -83,9 +83,9 @@ function V1BookingHero({ accent }) {
           color: 'rgba(255,255,255,0.72)', margin: '28px 0 0', maxWidth: 620,
           animation: 'bkFadeUp 700ms cubic-bezier(.2,.7,.3,1) 140ms both',
         }}>
-          30 minutes on Zoom. Bring your P&amp;L or don't — we'll walk you through
-          a factor rate, repayment options, and what a pay-early rebate would look
-          like on your numbers. No soft-pull required.
+          30 minutes on Zoom. Bring your profit and loss statement or don't —
+          we'll walk you through a factor rate, repayment options, and what an
+          early-payoff refund would look like on your numbers. No credit check needed.
         </p>
 
         {/* Inline meeting chips */}
@@ -97,7 +97,7 @@ function V1BookingHero({ accent }) {
             ['clock',    '30 min'],
             ['video',    'Zoom'],
             ['shield',   'No credit pull'],
-            ['user',     'Real underwriter'],
+            ['user',     'Real person on our team'],
           ].map(([icon, label]) => (
             <span key={label} style={{
               display: 'inline-flex', alignItems: 'center', gap: 8,
@@ -137,14 +137,14 @@ const V1_SPECIALISTS = [
   {
     id: 1, name: 'Daniel Martinez', title: 'Funding Advisor',
     tenure: '4y at Delt', deals: '340+ deals', focus: 'Restaurants · Retail · Services',
-    blurb: 'Guides operators through the approval and funding process, start to finish.',
+    blurb: 'Guides business owners through the approval and funding process, start to finish.',
     quote: "I'll show you what the price actually is. If another lender is cheaper, I'll say so.",
   },
   {
     id: 2, name: 'Elena Morgan', title: 'Funding Advisor',
     tenure: '3y at Delt', deals: '220+ deals', focus: 'Logistics · Trucking · Construction',
-    blurb: 'Specializes in deposit-based underwriting for seasonal and cyclical books.',
-    quote: 'Bring me your messy Q4 — I underwrite the trend, not the snapshot.',
+    blurb: 'Specializes in deposit-based reviews for businesses with seasonal or up-and-down sales.',
+    quote: 'Bring me your messy Q4 — I look at the trend, not just the snapshot.',
   },
   {
     id: 3, name: 'Robert Klein', title: 'Director, Underwriting & Risk',
@@ -597,7 +597,7 @@ function V1ConfirmPanel({ specialist, date, time, accent, onReset }) {
       {/* Rows */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
         {[
-          { k: 'With',   v: specialist ? specialist.name : 'Pick a specialist', filled: !!specialist, sub: specialist && specialist.title },
+          { k: 'With',   v: specialist ? specialist.name : 'Pick an advisor', filled: !!specialist, sub: specialist && specialist.title },
           { k: 'Day',    v: date ? fmt(date) : 'Pick a day',                    filled: !!date },
           { k: 'Time',   v: time || 'Pick a time',                              filled: !!time,  sub: time && '30 min · Zoom' },
         ].map((r, i) => (
@@ -702,14 +702,14 @@ function V1BookingPage({ accent, onApply }) {
                   fontFamily: V1.fontDisplay, fontSize: 'clamp(1.5rem, 3vw, 2rem)',
                   fontWeight: 600, letterSpacing: '-0.025em', color: V1.ink,
                   margin: '12px 0 0',
-                }}>Pick your underwriter.</h2>
+                }}>Pick your advisor.</h2>
               </div>
               <p style={{
                 fontFamily: V1.fontBody, fontSize: 14, color: V1.muted,
                 maxWidth: 380, margin: 0,
               }}>
-                Any of our three will give you a straight answer. They each own their
-                own book — you'll stay with whoever you pick.
+                Any of our three will give you a straight answer. They each
+                handle their own customers — you'll stay with whoever you pick.
               </p>
             </div>
 
@@ -777,7 +777,7 @@ function V1BookingPage({ accent, onApply }) {
           }}>
             {[
               ['No credit pull', 'This is a conversation, not a quote request.'],
-              ['Real underwriter', 'Not a BDR reading a script. The person who prices your file.'],
+              ['Real person on our team', 'Not a salesperson reading a script. The person who actually prices your file.'],
               ['30 minutes, capped', "We'll respect your time. Early exits are fine."],
               ['Zero obligation', "If we're not the right fit, we'll tell you who is."],
             ].map(([t, d]) => (

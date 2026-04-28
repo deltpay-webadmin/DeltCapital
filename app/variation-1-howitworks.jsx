@@ -59,14 +59,14 @@ function HwHero({ accent, onApply }) {
               background: `linear-gradient(90deg, ${V1.blue}, #818CF8)`,
               WebkitBackgroundClip: 'text', backgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
-            }}>wire</em> in 24 hours.
+            }}>funded</em> in 24 hours.
           </h1>
           <p style={{
             fontFamily: V1.fontBody, fontSize: 19, lineHeight: 1.55,
             color: V1.text, margin: '32px auto 0', maxWidth: 620,
           }}>
-            Four steps. No paperwork. No phone tag. A direct-lender model that
-            cuts three weeks off the way banks do this.
+            Four steps. No paperwork. No phone tag. We lend our own money,
+            so there's no middleman — saving you three weeks compared to a bank.
           </p>
         </div>
 
@@ -94,10 +94,10 @@ function HwTimelinePreview({ accent }) {
   }, []);
 
   const steps = [
-    { t: 'Apply',   m: '2 min',  sub: 'Soft pull only' },
-    { t: 'Connect', m: '60 sec', sub: 'Plaid → bank' },
-    { t: 'Offer',   m: '< 4 hr', sub: 'Human underwriter' },
-    { t: 'Funded',  m: '24 hr',  sub: 'ACH to your account' },
+    { t: 'Apply',   m: '2 min',  sub: 'Soft credit check only' },
+    { t: 'Connect', m: '60 sec', sub: 'Secure bank link' },
+    { t: 'Offer',   m: '< 4 hr', sub: 'Reviewed by a real person' },
+    { t: 'Funded',  m: '24 hr',  sub: 'Direct deposit (ACH)' },
   ];
 
   return (
@@ -697,8 +697,8 @@ function HwSpeedStrip() {
             fontFamily: V1.fontBody, fontSize: 16, color: V1.text,
             lineHeight: 1.6, maxWidth: 480, justifySelf: 'end', margin: 0,
           }}>
-            No broker hand-off. No second-look committee. Your application goes
-            straight to a Delt underwriter — every step below happens on a single desk.
+            No broker handoff. No extra committee review. Your application goes
+            straight to our team — every step below happens with one person.
           </p>
         </div>
 
@@ -764,10 +764,10 @@ function HwSpeedStrip() {
 // ═══════════════════════════════════════════════════════════════
 function HwUnderTheHood() {
   const items = [
-    { k: '01', t: 'Deposit analysis',  d: 'We read 90 days of your business deposits via Plaid. Volume, consistency, and seasonality set the base advance range.' },
-    { k: '02', t: 'Identity + KYB',    d: 'Entity resolution against Sec of State, EIN verification, UCC lien check, principal KYC — all on one screen.' },
-    { k: '03', t: 'Capital stack',     d: 'We check open positions with other lenders so the payment schedule we size actually fits your cash flow.' },
-    { k: '04', t: 'Human review',      d: 'Every file crosses an underwriter\'s desk. Not a model. The same person signs your offer that answers your questions.' },
+    { k: '01', t: 'Deposit review',  d: 'We look at 90 days of your business deposits through a secure bank link. How much you take in, how steady it is, and your busy seasons set your funding range.' },
+    { k: '02', t: 'Business and ID check',    d: 'We verify your business with the state, confirm your EIN, check for any liens on your assets, and confirm the owner\'s identity — all on one screen.' },
+    { k: '03', t: 'Other loans',     d: 'We check what other loans you have so the payment plan we offer actually fits your cash flow.' },
+    { k: '04', t: 'Real-person review',      d: 'Every application goes to a real person on our team. Not a computer model. The same person who approves your offer is the one who answers your questions.' },
   ];
   return (
     <section style={{ padding: '120px 40px', background: V1.bg, borderBottom: `1px solid ${V1.line}` }}>
@@ -843,8 +843,8 @@ function HwCTA({ onApply, onTalk }) {
             fontFamily: V1.fontBody, fontSize: 17, color: 'rgba(255,255,255,0.7)',
             lineHeight: 1.55, margin: '24px 0 0', maxWidth: 500,
           }}>
-            Soft pull only. No obligation. A real offer in your inbox before the
-            end of the business day.
+            Soft credit check only. No obligation. A real offer in your inbox before
+            the end of the business day.
           </p>
           <div style={{ display: 'flex', gap: 12, marginTop: 32 }}>
             <button onClick={onApply} style={{
@@ -866,7 +866,7 @@ function HwCTA({ onApply, onTalk }) {
             }}
             onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.45)'; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)'; }}>
-              Talk to an underwriter
+              Talk to a real person
             </button>
           </div>
         </div>
@@ -880,7 +880,7 @@ function HwCTA({ onApply, onTalk }) {
           <div style={{
             fontFamily: V1.fontMono, fontSize: 10.5, letterSpacing: '0.18em',
             textTransform: 'uppercase', color: V1.blueSoft, fontWeight: 600,
-          }}>Last 10 wires</div>
+          }}>Recent funding</div>
           <div style={{ marginTop: 14, display: 'flex', flexDirection: 'column', gap: 8 }}>
             {[
               ['Austin, TX',     '$85K',  '1.16×', '12:41 PM'],
@@ -927,10 +927,10 @@ function HowItWorksPage({ accent, onApply, onTalk }) {
       <HwStep
         num="01" label="Apply" mockKind="apply" accent={accent}
         title="Five fields. No paperwork."
-        body="A two-minute application replaces the 40-page bank package. You'll tell us who you are, what you do, and how much you need. That's it."
+        body="A two-minute application replaces the giant bank paperwork stack. You'll tell us who you are, what you do, and how much you need. That's it."
         bullets={[
-          'Soft credit pull only — no FICO impact',
-          'Autofill from your EIN cuts inputs in half',
+          'Soft credit check only — no impact on your score',
+          'Auto-fill from your EIN cuts inputs in half',
           'Save and resume from any device',
         ]}
       />
@@ -938,32 +938,32 @@ function HowItWorksPage({ accent, onApply, onTalk }) {
       <HwStep
         num="02" label="Connect" mockKind="connect" accent={accent}
         title="Link your deposits. Read-only."
-        body="We use Plaid to read 90 days of your business deposits. It's the same secure layer Venmo, Robinhood, and Chime sit on. We see balances — never credentials — and you can revoke access anytime."
+        body="We use Plaid — a secure bank link — to read 90 days of your business deposits. It's the same trusted system Venmo, Robinhood, and Chime use. We see balances only, never your password, and you can disconnect anytime."
         bullets={[
           'Bank-grade 256-bit encryption',
           'Read-only — we cannot move money',
-          'Data discarded 30 days after decline',
+          'Your data is deleted 30 days after a denial',
         ]}
       />
 
       <HwStep
         num="03" label="Offer" mockKind="offer" accent={accent}
         title="A real offer, priced by a human."
-        body="Every file crosses a Delt underwriter's desk. No black-box scoring. You get the actual numbers — factor rate, term, payment schedule — and the name of the analyst who signed it. Offers are live in under four hours on most files."
+        body="Every application is reviewed by a real person on our team. No black-box computer scoring. You get the actual numbers — factor rate, term, payment schedule — and the name of the person who approved it. Most offers come back in under four hours."
         bullets={[
-          'Factor rate published, not hidden',
+          'Factor rate shown clearly, not hidden',
           'Payment schedule shown before you sign',
-          '72-hour lock so you can compare',
+          '72-hour rate hold so you can compare offers',
         ]}
       />
 
       <HwStep
         num="04" label="Funded" mockKind="funded" accent={accent}
         title="Wire lands the next morning."
-        body="E-sign the offer and the ACH goes out on the next banking window. Most of our funds clear by 9am the following business day. You get a live timeline from initiation to posting — no more calling your bank."
+        body="Sign the offer online and we send the money on the next banking window. Most funds arrive by 9am the next business day. You get live updates the whole way — no more calling your bank."
         bullets={[
-          'ACH on the next business window',
-          'Live status from initiation to posting',
+          'Direct deposit (ACH) on the next business window',
+          'Live status updates from start to finish',
           'Same-day wire available on $250K+',
         ]}
       />
