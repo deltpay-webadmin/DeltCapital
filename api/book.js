@@ -12,18 +12,22 @@
 //   OUTLOOK_TENANT_ID     — Azure AD tenant id
 //   OUTLOOK_CLIENT_ID     — App registration (client) id
 //   OUTLOOK_CLIENT_SECRET — App registration client secret
-//   OUTLOOK_FROM_EMAIL    — Mailbox the event/email is sent from (David's)
+//   OUTLOOK_FROM_EMAIL    — Mailbox the emails are sent from (e.g. noreply@deltpay.com)
 //
 // Required application permissions on the app registration (admin consent):
-//   Mail.Send
-//   Calendars.ReadWrite
-//   OnlineMeetings.ReadWrite.All
+//   Mail.Send                    — on OUTLOOK_FROM_EMAIL
+//   Calendars.ReadWrite          — on OUTLOOK_CALENDAR_USER (defaults to BOOKING_NOTIFY_EMAIL)
+//   OnlineMeetings.ReadWrite.All — on OUTLOOK_CALENDAR_USER
+// (If you have an Application Access Policy, make sure it covers both
+//  mailboxes: noreply for Mail.Send and David for Calendars.ReadWrite.)
 //
 // Optional:
-//   BOOKING_NOTIFY_EMAIL  — overrides the default david@deltpay.com recipient
+//   OUTLOOK_CALENDAR_USER — Mailbox the event lands on; defaults to BOOKING_NOTIFY_EMAIL
+//   BOOKING_NOTIFY_EMAIL  — Internal recipient + BCC on booker email; defaults to david@deltpay.com
 //   BOOKING_TIMEZONE      — Windows timezone name; defaults to "Eastern Standard Time"
 
 const NOTIFY_TO = process.env.BOOKING_NOTIFY_EMAIL || 'david@deltpay.com';
+const CALENDAR_USER = process.env.OUTLOOK_CALENDAR_USER || NOTIFY_TO;
 const EVENT_TIMEZONE = process.env.BOOKING_TIMEZONE || 'Eastern Standard Time';
 
 async function getAccessToken() {
@@ -53,22 +57,23 @@ async function getAccessToken() {
   return data.access_token;
 }
 
-async function sendMail(token, fromMailbox, to, subject, html) {
+async function sendMail(token, fromMailbox, to, subject, html, opts = {}) {
   const url = `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(fromMailbox)}/sendMail`;
+  const message = {
+    subject,
+    body: { contentType: 'HTML', content: html },
+    toRecipients: [{ emailAddress: { address: to } }],
+  };
+  if (opts.bcc && opts.bcc.length) {
+    message.bccRecipients = opts.bcc.map((addr) => ({ emailAddress: { address: addr } }));
+  }
   const r = await fetch(url, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      message: {
-        subject,
-        body: { contentType: 'HTML', content: html },
-        toRecipients: [{ emailAddress: { address: to } }],
-      },
-      saveToSentItems: true,
-    }),
+    body: JSON.stringify({ message, saveToSentItems: true }),
   });
   if (r.status !== 202) {
     const text = await r.text().catch(() => '');
@@ -226,13 +231,14 @@ module.exports = async function handler(req, res) {
     const em = endTotal % 60;
     const endLocal = `${dateISO}T${pad2(eh)}:${pad2(em)}:00`;
 
-    // 1. Create the calendar event first. If this fails, the whole booking
-    //    fails — David needs to know about the meeting on his calendar, and
-    //    falsely confirming a booking we couldn't schedule is worse than an
-    //    explicit error.
+    // 1. Create the calendar event first on the calendar-user's mailbox
+    //    (David's), even though emails are sent from the noreply mailbox.
+    //    If this fails, the whole booking fails — David needs to know about
+    //    the meeting on his calendar, and falsely confirming a booking we
+    //    couldn't schedule is worse than an explicit error.
     let eventInfo = null;
     try {
-      const ev = await createEvent(token, fromMailbox, {
+      const ev = await createEvent(token, CALENDAR_USER, {
         subject: `Delt Capital — 30-min call with ${fullName}`,
         bodyHtml: `
           <div style="font-family:Arial,sans-serif;color:#0F0E17;line-height:1.55;">
@@ -279,7 +285,7 @@ module.exports = async function handler(req, res) {
       console.error('internal sendMail failed:', err && err.stack ? err.stack : err);
     }
     try {
-      await sendMail(token, fromMailbox, email, bookerSubject, bookerEmail(ctx));
+      await sendMail(token, fromMailbox, email, bookerSubject, bookerEmail(ctx), { bcc: [NOTIFY_TO] });
     } catch (err) {
       console.error('booker sendMail failed:', err && err.stack ? err.stack : err);
     }
