@@ -12,22 +12,33 @@
 //   OUTLOOK_TENANT_ID     — Azure AD tenant id
 //   OUTLOOK_CLIENT_ID     — App registration (client) id
 //   OUTLOOK_CLIENT_SECRET — App registration client secret
-//   OUTLOOK_FROM_EMAIL    — Mailbox the emails are sent from (e.g. noreply@deltpay.com)
+//   OUTLOOK_FROM_EMAIL    — Mailbox the emails AND calendar invites are sent from
+//                            (e.g. noreply@deltpay.com — a shared mailbox is fine)
 //
 // Required application permissions on the app registration (admin consent):
-//   Mail.Send                    — on OUTLOOK_FROM_EMAIL
-//   Calendars.ReadWrite          — on OUTLOOK_CALENDAR_USER (defaults to BOOKING_NOTIFY_EMAIL)
-//   OnlineMeetings.ReadWrite.All — on OUTLOOK_CALENDAR_USER
-// (If you have an Application Access Policy, make sure it covers both
-//  mailboxes: noreply for Mail.Send and David for Calendars.ReadWrite.)
+//   Mail.Send                    — on OUTLOOK_FROM_EMAIL  (the noreply mailbox)
+//   Calendars.ReadWrite          — on OUTLOOK_FROM_EMAIL  (so noreply can host events)
+//                                 + BOOKING_NOTIFY_EMAIL (so we can read David's calendar
+//                                   for availability and add him as an attendee)
+//   OnlineMeetings.ReadWrite.All — on OUTLOOK_TEAMS_HOST  (defaults to BOOKING_NOTIFY_EMAIL —
+//                                   David's licensed mailbox creates the Teams meeting)
+// (If you have an Application Access Policy, it must cover BOTH mailboxes.)
 //
 // Optional:
-//   OUTLOOK_CALENDAR_USER — Mailbox the event lands on; defaults to BOOKING_NOTIFY_EMAIL
+//   OUTLOOK_CALENDAR_USER — Mailbox the event lands on. Defaults to OUTLOOK_FROM_EMAIL,
+//                           then BOOKING_NOTIFY_EMAIL. Set explicitly only if you want
+//                           the calendar invite to come from a different mailbox than
+//                           the one sending the HTML emails.
+//   OUTLOOK_TEAMS_HOST    — Mailbox whose Teams license backs the online meeting.
+//                           Defaults to BOOKING_NOTIFY_EMAIL (David). Shared mailboxes
+//                           don't typically have Teams licenses, so this should be a
+//                           regular licensed user.
 //   BOOKING_NOTIFY_EMAIL  — Internal recipient + BCC on booker email; defaults to david@deltpay.com
 //   BOOKING_TIMEZONE      — Windows timezone name; defaults to "Eastern Standard Time"
 
 const NOTIFY_TO = process.env.BOOKING_NOTIFY_EMAIL || 'david@deltpay.com';
-const CALENDAR_USER = process.env.OUTLOOK_CALENDAR_USER || NOTIFY_TO;
+const CALENDAR_USER = process.env.OUTLOOK_CALENDAR_USER || process.env.OUTLOOK_FROM_EMAIL || NOTIFY_TO;
+const TEAMS_HOST = process.env.OUTLOOK_TEAMS_HOST || NOTIFY_TO;
 const EVENT_TIMEZONE = process.env.BOOKING_TIMEZONE || 'Eastern Standard Time';
 
 async function getAccessToken() {
@@ -81,8 +92,36 @@ async function sendMail(token, fromMailbox, to, subject, html, opts = {}) {
   }
 }
 
-async function createEvent(token, organizerMailbox, ev) {
-  const url = `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(organizerMailbox)}/events`;
+// Convert an ET wall-clock (YYYY-MM-DD + 24h hour/min) to a UTC ISO 8601
+// string with a 'Z' suffix. DST-aware via Intl.
+function etWallToUTCIso(dateISO, h24, min) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(dateISO || ''))) return null;
+  const [y, mo, d] = dateISO.split('-').map(Number);
+  const candidate = new Date(Date.UTC(y, mo - 1, d, h24, min));
+  let offsetMin;
+  try {
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/New_York', hour12: false,
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', second: '2-digit',
+    }).formatToParts(candidate);
+    const o = {};
+    for (const p of parts) o[p.type] = p.value;
+    const hr = +o.hour === 24 ? 0 : +o.hour;
+    const asUTC = Date.UTC(+o.year, +o.month - 1, +o.day, hr, +o.minute, +o.second);
+    offsetMin = Math.round((asUTC - candidate.getTime()) / 60000);
+  } catch {
+    return null;
+  }
+  return new Date(candidate.getTime() - offsetMin * 60000).toISOString();
+}
+
+// Pre-create a Teams online meeting on a licensed user's mailbox so we can
+// embed the join URL into a calendar event hosted on a different (shared)
+// mailbox. Returns { joinUrl } or null on failure (booking still proceeds
+// without the link rather than failing the whole flow).
+async function createOnlineMeeting(token, hostMailbox, m) {
+  const url = `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(hostMailbox)}/onlineMeetings`;
   const r = await fetch(url, {
     method: 'POST',
     headers: {
@@ -90,18 +129,55 @@ async function createEvent(token, organizerMailbox, ev) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      subject: ev.subject,
-      body: { contentType: 'HTML', content: ev.bodyHtml },
-      start: { dateTime: ev.startLocal, timeZone: ev.timeZone },
-      end:   { dateTime: ev.endLocal,   timeZone: ev.timeZone },
-      attendees: [
-        { emailAddress: { address: ev.attendeeEmail, name: ev.attendeeName }, type: 'required' },
-      ],
-      isOnlineMeeting: true,
-      onlineMeetingProvider: 'teamsForBusiness',
-      allowNewTimeProposals: true,
-      reminderMinutesBeforeStart: 15,
+      startDateTime: m.startUTCIso,
+      endDateTime: m.endUTCIso,
+      subject: m.subject,
     }),
+  });
+  if (r.status !== 201 && r.status !== 200) {
+    const text = await r.text().catch(() => '');
+    throw new Error(`createOnlineMeeting failed (${r.status}): ${text.slice(0, 400)}`);
+  }
+  const data = await r.json();
+  return {
+    joinUrl: data.joinWebUrl || data.joinUrl || null,
+    id: data.id || null,
+  };
+}
+
+async function createEvent(token, organizerMailbox, ev) {
+  const url = `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(organizerMailbox)}/events`;
+  const teamsBlock = ev.joinUrl ? `
+    <p style="margin:12px 0 6px;font-family:Arial,sans-serif;">
+      <strong>Microsoft Teams meeting</strong>
+    </p>
+    <p style="margin:0 0 12px;font-family:Arial,sans-serif;">
+      <a href="${ev.joinUrl}">Join the meeting</a>
+    </p>
+  ` : '';
+  const eventBody = {
+    subject: ev.subject,
+    body: { contentType: 'HTML', content: (ev.bodyHtml || '') + teamsBlock },
+    start: { dateTime: ev.startLocal, timeZone: ev.timeZone },
+    end:   { dateTime: ev.endLocal,   timeZone: ev.timeZone },
+    attendees: (ev.attendees || []).map((a) => {
+      const emailAddress = { address: a.email };
+      if (a.name) emailAddress.name = a.name;
+      return { emailAddress, type: a.type || 'required' };
+    }),
+    allowNewTimeProposals: true,
+    reminderMinutesBeforeStart: 15,
+  };
+  if (ev.joinUrl) {
+    eventBody.location = { displayName: 'Microsoft Teams Meeting', locationUri: ev.joinUrl };
+  }
+  const r = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(eventBody),
   });
   if (r.status !== 201) {
     const text = await r.text().catch(() => '');
@@ -182,7 +258,7 @@ function bookerEmail({ firstName, specialistName, specialistTitle, dateLabel, ti
       </p>
       ${localLine}
       ${linkBlock}
-      <p style="margin:18px 0 0;">You'll also get a calendar invite from David's mailbox — accept it to put this on your calendar. To reschedule or cancel, just reply to this email.</p>
+      <p style="margin:18px 0 0;">You'll also get a calendar invite alongside this email — accept it to put this on your calendar. To reschedule or cancel, just reply to this email.</p>
       <p style="margin:24px 0 0;color:#5A6577;font-size:13px;">— Delt Capital</p>
     </div>
   `;
@@ -190,26 +266,9 @@ function bookerEmail({ firstName, specialistName, specialistTitle, dateLabel, ti
 
 function buildUserTimeLine(dateISO, h24, m, userTimeZone) {
   if (!userTimeZone || userTimeZone === 'America/New_York') return null;
-  // dateISO + h24:m is the ET wall-clock. Compute the corresponding UTC instant
-  // using the same offset trick we use on the frontend.
-  const [y, mo, d] = dateISO.split('-').map(Number);
-  const candidate = new Date(Date.UTC(y, mo - 1, d, h24, m));
-  let etOffsetMin;
-  try {
-    const parts = new Intl.DateTimeFormat('en-US', {
-      timeZone: 'America/New_York', hour12: false,
-      year: 'numeric', month: '2-digit', day: '2-digit',
-      hour: '2-digit', minute: '2-digit', second: '2-digit',
-    }).formatToParts(candidate);
-    const o = {};
-    for (const p of parts) o[p.type] = p.value;
-    const hr = +o.hour === 24 ? 0 : +o.hour;
-    const asUTC = Date.UTC(+o.year, +o.month - 1, +o.day, hr, +o.minute, +o.second);
-    etOffsetMin = Math.round((asUTC - candidate.getTime()) / 60000);
-  } catch {
-    return null;
-  }
-  const utc = new Date(candidate.getTime() - etOffsetMin * 60000);
+  const utcIso = etWallToUTCIso(dateISO, h24, m);
+  if (!utcIso) return null;
+  const utc = new Date(utcIso);
   let timeStr, dateStr, tzShort;
   try {
     timeStr = new Intl.DateTimeFormat('en-US', {
@@ -276,34 +335,58 @@ module.exports = async function handler(req, res) {
     const eh = Math.floor(endTotal / 60) % 24;
     const em = endTotal % 60;
     const endLocal = `${dateISO}T${pad2(eh)}:${pad2(em)}:00`;
+    const subject = `Delt Capital — 30-min call: ${specialistName} & ${fullName}`;
 
-    // 1. Create the calendar event first on the calendar-user's mailbox
-    //    (David's), even though emails are sent from the noreply mailbox.
-    //    If this fails, the whole booking fails — David needs to know about
-    //    the meeting on his calendar, and falsely confirming a booking we
-    //    couldn't schedule is worse than an explicit error.
+    // 1. Pre-create a Teams online meeting on David's licensed mailbox.
+    //    The shared mailbox we're about to host the calendar event on
+    //    typically has no Teams license, so we can't ask Graph to auto-create
+    //    the meeting via isOnlineMeeting on the event itself. We embed the
+    //    pre-created joinUrl into the event body and location instead.
+    let joinUrl = null;
+    try {
+      const startUTCIso = etWallToUTCIso(dateISO, parsed.h, parsed.min);
+      const endUTCIso   = etWallToUTCIso(dateISO, eh, em);
+      if (startUTCIso && endUTCIso) {
+        const m = await createOnlineMeeting(token, TEAMS_HOST, {
+          startUTCIso, endUTCIso, subject,
+        });
+        joinUrl = m && m.joinUrl;
+      }
+    } catch (err) {
+      // Don't fail the booking on a Teams hiccup — the calendar invite is
+      // the primary artifact; we'll just ship without an embedded link.
+      console.error('createOnlineMeeting failed:', err && err.stack ? err.stack : err);
+    }
+
+    // 2. Create the calendar event on the noreply (or configured) mailbox.
+    //    Add David and the customer as required attendees so Outlook auto-
+    //    sends both an .ics meeting invite. If this fails, the whole booking
+    //    fails — David needs to know about the meeting on his calendar.
     let eventInfo = null;
     try {
       const ev = await createEvent(token, CALENDAR_USER, {
-        subject: `Delt Capital — 30-min call with ${fullName}`,
+        subject,
         bodyHtml: `
           <div style="font-family:Arial,sans-serif;color:#0F0E17;line-height:1.55;">
-            <p>30-minute intro call with <strong>${esc(fullName)}</strong>
-            (${esc(email)}) booked via deltcapital.com.</p>
-            <p>With: ${esc(specialistName)} · ${esc(specialistTitle)}<br/>
-            When: ${esc(dateLabel)} at ${esc(time)} ET</p>
+            <p>30-minute call between <strong>${esc(fullName)}</strong>
+            (${esc(email)}) and <strong>${esc(specialistName)}</strong> · ${esc(specialistTitle)}.</p>
+            <p>Booked via deltcapital.com on ${esc(dateLabel)} at ${esc(time)} ET.</p>
           </div>
         `,
         startLocal,
         endLocal,
         timeZone: EVENT_TIMEZONE,
-        attendeeEmail: email,
-        attendeeName: fullName,
+        attendees: [
+          // David — name omitted so Outlook resolves the directory display name.
+          { email: NOTIFY_TO,                       type: 'required' },
+          { email,            name: fullName,        type: 'required' },
+        ],
+        joinUrl,
       });
       eventInfo = {
         id: ev && ev.id,
         webLink: ev && ev.webLink,
-        joinUrl: ev && ev.onlineMeeting && ev.onlineMeeting.joinUrl,
+        joinUrl,
       };
     } catch (err) {
       console.error('createEvent failed:', err && err.stack ? err.stack : err);

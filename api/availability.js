@@ -11,7 +11,10 @@
 // Reuses the same env vars as api/book.js — see that file for setup.
 
 const NOTIFY_TO = process.env.BOOKING_NOTIFY_EMAIL || 'david@deltpay.com';
-const CALENDAR_USER = process.env.OUTLOOK_CALENDAR_USER || NOTIFY_TO;
+// Availability is always evaluated against the specialist's mailbox (David),
+// not the mailbox that hosts the calendar event. They diverge once events are
+// hosted on a shared mailbox like noreply.
+const BUSY_USER = process.env.OUTLOOK_AVAILABILITY_USER || NOTIFY_TO;
 const EVENT_TIMEZONE = process.env.BOOKING_TIMEZONE || 'Eastern Standard Time';
 
 async function getAccessToken() {
@@ -65,7 +68,7 @@ module.exports = async function handler(req, res) {
 
   try {
     const token = await getAccessToken();
-    const url = `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(CALENDAR_USER)}/calendar/getSchedule`;
+    const url = `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(BUSY_USER)}/calendar/getSchedule`;
     const r = await fetch(url, {
       method: 'POST',
       headers: {
@@ -73,7 +76,7 @@ module.exports = async function handler(req, res) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        schedules: [CALENDAR_USER],
+        schedules: [BUSY_USER],
         startTime: { dateTime: `${dateISO}T08:00:00`, timeZone: EVENT_TIMEZONE },
         endTime:   { dateTime: `${dateISO}T18:00:00`, timeZone: EVENT_TIMEZONE },
         availabilityViewInterval: 30,
