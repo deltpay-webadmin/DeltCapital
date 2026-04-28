@@ -516,6 +516,9 @@ function Variation1() {
       </div>
       <FooterBlock accent={accent} brand={V1Chrome.brand} onNav={navTo} />
       <V1ApplicationFlow open={appOpen} onClose={() => setAppOpen(false)} prefill={appPrefill} accent={accent} />
+      {/* Design polish layer — additive overlays, micro-interactions, magnetic
+          CTAs, and grain. Mounts once; zero impact on layout. */}
+      {typeof V1Polish === 'function' ? <V1Polish /> : null}
     </>
   );
 }
