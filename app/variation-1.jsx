@@ -165,7 +165,7 @@ function V1Hero({ accent, onApply }) {
 
       {/* Dateline */}
       <div style={{
-        maxWidth: 1280, margin: '0 auto', padding: '80px 32px 0',
+        maxWidth: 1280, margin: '0 auto', padding: '20px 32px 0',
         display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
         fontFamily: DELT.font.mono, fontSize: 11.5, color: 'rgba(247,245,240,0.5)',
         letterSpacing: '0.08em', textTransform: 'uppercase',
