@@ -107,7 +107,7 @@ function V1Hero({ accent, onApply }) {
   // Rotating verb that swaps every 1.9s. Words are stacked in a single
   // inline-grid cell so the <em> auto-sizes to the widest child — keeps the
   // trailing "it." anchored regardless of which word is showing.
-  const fundWords = ['fund', 'back', 'wire', 'fuel', 'grow'];
+  const fundWords = ['fund', 'back', 'wire', 'fuel'];
   const [fundIdx, setFundIdx] = React.useState(0);
   React.useEffect(() => {
     if (!mounted) return undefined;
@@ -211,11 +211,7 @@ function V1Hero({ accent, onApply }) {
           }}>
             <V1LineMask ready={mounted} delay={120}>You built the</V1LineMask>
             <V1LineMask ready={mounted} delay={230}>business.</V1LineMask>
-            <V1LineMask
-              ready={mounted}
-              delay={340}
-              style={{ paddingBottom: '0.22em', marginBottom: '-0.16em' }}
-            >
+            <V1LineMask ready={mounted} delay={340}>
               We{' '}
               <em style={{
                 // Manrope/Codec Pro have no italic; switch to Source Serif Pro
@@ -238,6 +234,7 @@ function V1Hero({ accent, onApply }) {
                     background: `linear-gradient(90deg, ${accent}, #818CF8)`,
                     WebkitBackgroundClip: 'text', backgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
+                    paddingInlineEnd: '0.12em',
                     opacity: i === fundIdx ? 1 : 0,
                     transform: i === fundIdx ? 'translateY(0)' : 'translateY(6px)',
                     transition: 'opacity 480ms cubic-bezier(0.22, 1, 0.36, 1), transform 480ms cubic-bezier(0.22, 1, 0.36, 1)',
