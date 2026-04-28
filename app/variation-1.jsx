@@ -211,11 +211,7 @@ function V1Hero({ accent, onApply }) {
           }}>
             <V1LineMask ready={mounted} delay={120}>You built the</V1LineMask>
             <V1LineMask ready={mounted} delay={230}>business.</V1LineMask>
-            <V1LineMask
-              ready={mounted}
-              delay={340}
-              style={{ paddingBottom: '0.9em', marginBottom: '-0.84em' }}
-            >
+            <V1LineMask ready={mounted} delay={340}>
               We{' '}
               <em style={{
                 // Manrope/Codec Pro have no italic; switch to Source Serif Pro

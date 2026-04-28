@@ -137,8 +137,25 @@ function useV1ScrollY() {
 // overflow-hidden edge. `ready` is the trigger (use with useV1Mounted for hero
 // or useV1InView for scroll-entering headlines).
 function V1LineMask({ children, delay = 0, duration = 900, ready = true, style, ...rest }) {
+  // overflow:hidden exists only to mask the pre-animation translate(0,108%)
+  // state. Once the slide-up settles, drop it so italic descenders (g/p/q/y/j)
+  // and any future glyph overhang aren't clipped.
+  const [revealed, setRevealed] = React.useState(V1_PRM);
+  React.useEffect(() => {
+    if (revealed) return;
+    if (V1_PRM) { setRevealed(true); return; }
+    if (!ready) return;
+    const t = setTimeout(() => setRevealed(true), delay + duration + 40);
+    return () => clearTimeout(t);
+  }, [ready, delay, duration, revealed]);
+
   return (
-    <span style={{ display: 'block', overflow: 'hidden', paddingBottom: '0.06em', ...style }} {...rest}>
+    <span style={{
+      display: 'block',
+      overflow: revealed ? 'visible' : 'hidden',
+      paddingBottom: '0.06em',
+      ...style,
+    }} {...rest}>
       <span style={{
         display: 'inline-block',
         transform: ready ? 'translate3d(0,0,0)' : 'translate3d(0, 108%, 0)',
