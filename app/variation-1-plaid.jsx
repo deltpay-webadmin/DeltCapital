@@ -168,22 +168,60 @@ function V1HandoffLogos() {
 }
 
 // ─── QR rendering helper ────────────────────────────────────────
-// Uses qrcode.min.js loaded via CDN in index.html. Falls back to a plain
-// link if the library hasn't loaded yet (rare — the script is blocking).
+// Uses qrcode.min.js loaded via CDN in index.html. Renders into an <img>
+// (toDataURL) instead of a <canvas> so we don't depend on a ref being live
+// at the same tick the effect runs, and we can surface a useful fallback
+// when the CDN script hasn't loaded yet or QR generation fails.
 function V1PlaidQR({ url, size = 196 }) {
-  const ref = React.useRef(null);
+  const [src, setSrc] = React.useState(null);
+  const [failed, setFailed] = React.useState(false);
   React.useEffect(() => {
-    if (!ref.current || !url) return;
-    if (window.QRCode && window.QRCode.toCanvas) {
-      window.QRCode.toCanvas(ref.current, url, { width: size, margin: 1 }, () => {});
-    }
+    if (!url) return;
+    setSrc(null); setFailed(false);
+    let cancelled = false;
+    let attempts = 0;
+    const render = () => {
+      if (cancelled) return;
+      const QR = window.QRCode;
+      if (!QR || !QR.toDataURL) {
+        // CDN may still be loading — poll briefly before giving up.
+        if (++attempts > 30) {
+          console.error('V1PlaidQR: window.QRCode never loaded (qrcode CDN failed?)');
+          setFailed(true);
+          return;
+        }
+        setTimeout(render, 100);
+        return;
+      }
+      QR.toDataURL(url, { width: size, margin: 1 }, (err, dataUrl) => {
+        if (cancelled) return;
+        if (err) {
+          console.error('V1PlaidQR: toDataURL failed:', err);
+          setFailed(true);
+          return;
+        }
+        setSrc(dataUrl);
+      });
+    };
+    render();
+    return () => { cancelled = true; };
   }, [url, size]);
   return (
     <div style={{
       padding: 12, background: '#fff', borderRadius: 12,
       border: '1px solid #E2E8F0', display: 'inline-flex',
+      width: size + 24, height: size + 24,
+      alignItems: 'center', justifyContent: 'center',
     }}>
-      <canvas ref={ref} width={size} height={size} style={{ width: size, height: size, display: 'block' }} />
+      {src && !failed && (
+        <img src={src} width={size} height={size} alt="QR code" style={{ display: 'block' }} />
+      )}
+      {failed && (
+        <div style={{
+          fontFamily: V1.fontBody, fontSize: 11.5, color: '#64748b',
+          textAlign: 'center', padding: '0 8px', lineHeight: 1.4,
+        }}>Couldn't render QR — use the link below.</div>
+      )}
     </div>
   );
 }
