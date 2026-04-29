@@ -25,10 +25,74 @@
   button { font-family: inherit; }
   a { text-decoration: none; color: inherit; }
   input, select, textarea, button { font-family: inherit; }
+
+  /* ── Cookie consent banner ── */
+  #dc-cookie-banner {
+    position: fixed; left: 16px; right: 16px; bottom: 16px;
+    max-width: 720px; margin: 0 auto;
+    background: rgba(15, 14, 23, 0.96);
+    color: #F7F5F0;
+    border: 1px solid rgba(247,245,240,0.12);
+    border-radius: 12px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+    padding: 14px 18px;
+    display: flex; align-items: center; gap: 14px;
+    font-family: 'Inter', sans-serif; font-size: 13px; line-height: 1.5;
+    z-index: 9999;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  #dc-cookie-banner .dc-cookie-text { flex: 1; color: rgba(247,245,240,0.85); }
+  #dc-cookie-banner .dc-cookie-text a { color: #B8B1FF; text-decoration: underline; }
+  #dc-cookie-banner .dc-cookie-actions { display: flex; gap: 8px; flex-shrink: 0; }
+  #dc-cookie-banner button {
+    font-family: inherit; font-size: 12.5px; font-weight: 500;
+    border-radius: 8px; padding: 8px 14px; cursor: pointer;
+    border: 1px solid rgba(247,245,240,0.18);
+    background: transparent; color: rgba(247,245,240,0.85);
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  #dc-cookie-banner button:hover { background: rgba(247,245,240,0.08); color: #F7F5F0; }
+  #dc-cookie-banner button.dc-cookie-accept {
+    background: #6C63FF; border-color: #6C63FF; color: #FFFFFF;
+  }
+  #dc-cookie-banner button.dc-cookie-accept:hover { background: #5b53e8; border-color: #5b53e8; }
+  @media (max-width: 560px) {
+    #dc-cookie-banner { flex-direction: column; align-items: stretch; gap: 10px; }
+    #dc-cookie-banner .dc-cookie-actions { justify-content: flex-end; }
+  }
 </style>
 </head>
 <body>
   <div id="root"></div>
+
+  <div id="dc-cookie-banner" role="region" aria-label="Cookie consent" hidden>
+    <div class="dc-cookie-text">
+      We use cookies to operate this site, analyze traffic, and improve your experience. See our <a href="#privacy" id="dc-cookie-learn">privacy policy</a>.
+    </div>
+    <div class="dc-cookie-actions">
+      <button type="button" class="dc-cookie-decline" id="dc-cookie-decline">Decline</button>
+      <button type="button" class="dc-cookie-accept" id="dc-cookie-accept">Accept</button>
+    </div>
+  </div>
+  <script>
+    (function() {
+      try {
+        var KEY = 'dc_cookie_consent_v1';
+        var banner = document.getElementById('dc-cookie-banner');
+        if (!banner) return;
+        var stored = null;
+        try { stored = localStorage.getItem(KEY); } catch (e) {}
+        if (!stored) { banner.hidden = false; }
+        function setChoice(value) {
+          try { localStorage.setItem(KEY, JSON.stringify({ choice: value, ts: Date.now() })); } catch (e) {}
+          banner.hidden = true;
+        }
+        document.getElementById('dc-cookie-accept').addEventListener('click', function() { setChoice('accepted'); });
+        document.getElementById('dc-cookie-decline').addEventListener('click', function() { setChoice('declined'); });
+      } catch (e) { /* fail silently */ }
+    })();
+  </script>
 
   <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
