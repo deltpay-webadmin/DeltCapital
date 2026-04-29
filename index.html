@@ -27,6 +27,7 @@
   input, select, textarea, button { font-family: inherit; }
 
   /* ── Cookie consent banner ── */
+  #dc-cookie-banner[hidden] { display: none !important; }
   #dc-cookie-banner {
     position: fixed; left: 16px; right: 16px; bottom: 16px;
     max-width: 720px; margin: 0 auto;
@@ -84,29 +85,42 @@
   </div>
   <script>
     (function() {
-      try {
-        var KEY = 'dc_cookie_consent_v1';
-        var banner = document.getElementById('dc-cookie-banner');
-        if (!banner) return;
-        var stored = null;
-        try { stored = localStorage.getItem(KEY); } catch (e) {}
-        if (!stored) { banner.hidden = false; }
-        function setChoice(value) {
-          try { localStorage.setItem(KEY, JSON.stringify({ choice: value, ts: Date.now() })); } catch (e) {}
-          banner.classList.add('dc-cookie-collapsing');
-          var done = false;
-          var finish = function() {
-            if (done) return;
-            done = true;
-            banner.hidden = true;
-            banner.classList.remove('dc-cookie-collapsing');
-          };
-          banner.addEventListener('transitionend', finish, { once: true });
-          setTimeout(finish, 400);
-        }
-        document.getElementById('dc-cookie-accept').addEventListener('click', function() { setChoice('accepted'); });
-        document.getElementById('dc-cookie-decline').addEventListener('click', function() { setChoice('declined'); });
-      } catch (e) { /* fail silently */ }
+      function init() {
+        try {
+          var KEY = 'dc_cookie_consent_v1';
+          var banner = document.getElementById('dc-cookie-banner');
+          if (!banner) return;
+          var stored = null;
+          try { stored = localStorage.getItem(KEY); } catch (e) {}
+          if (!stored) {
+            banner.hidden = false;
+            banner.removeAttribute('hidden');
+          }
+          function setChoice(value) {
+            try { localStorage.setItem(KEY, JSON.stringify({ choice: value, ts: Date.now() })); } catch (e) {}
+            banner.classList.add('dc-cookie-collapsing');
+            var done = false;
+            var finish = function() {
+              if (done) return;
+              done = true;
+              banner.setAttribute('hidden', '');
+              banner.style.display = 'none';
+              banner.classList.remove('dc-cookie-collapsing');
+            };
+            banner.addEventListener('transitionend', finish, { once: true });
+            setTimeout(finish, 400);
+          }
+          var acceptBtn = document.getElementById('dc-cookie-accept');
+          var declineBtn = document.getElementById('dc-cookie-decline');
+          if (acceptBtn) acceptBtn.addEventListener('click', function(e) { e.preventDefault(); setChoice('accepted'); });
+          if (declineBtn) declineBtn.addEventListener('click', function(e) { e.preventDefault(); setChoice('declined'); });
+        } catch (e) { /* fail silently */ }
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
     })();
   </script>
 
