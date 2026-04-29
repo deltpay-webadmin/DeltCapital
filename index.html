@@ -41,6 +41,13 @@
     z-index: 9999;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
+    transform-origin: bottom center;
+    transition: opacity 0.28s ease, transform 0.28s ease;
+  }
+  #dc-cookie-banner.dc-cookie-collapsing {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+    pointer-events: none;
   }
   #dc-cookie-banner .dc-cookie-text { flex: 1; color: rgba(247,245,240,0.85); }
   #dc-cookie-banner .dc-cookie-text a { color: #B8B1FF; text-decoration: underline; }
@@ -86,7 +93,16 @@
         if (!stored) { banner.hidden = false; }
         function setChoice(value) {
           try { localStorage.setItem(KEY, JSON.stringify({ choice: value, ts: Date.now() })); } catch (e) {}
-          banner.hidden = true;
+          banner.classList.add('dc-cookie-collapsing');
+          var done = false;
+          var finish = function() {
+            if (done) return;
+            done = true;
+            banner.hidden = true;
+            banner.classList.remove('dc-cookie-collapsing');
+          };
+          banner.addEventListener('transitionend', finish, { once: true });
+          setTimeout(finish, 400);
         }
         document.getElementById('dc-cookie-accept').addEventListener('click', function() { setChoice('accepted'); });
         document.getElementById('dc-cookie-decline').addEventListener('click', function() { setChoice('declined'); });
