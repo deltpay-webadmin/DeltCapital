@@ -20,8 +20,18 @@ const PLAID_HOSTS = {
   production: 'https://production.plaid.com',
 };
 
-const PLAID_ENV = (process.env.PLAID_ENV || 'sandbox').toLowerCase();
-const PLAID_BASE = PLAID_HOSTS[PLAID_ENV] || PLAID_HOSTS.sandbox;
+const PLAID_ENV = (process.env.PLAID_ENV || 'sandbox').trim().toLowerCase();
+// Fail loudly on a misconfigured PLAID_ENV. Falling back to sandbox silently
+// hides a real configuration bug — and pasting a secret here (a real,
+// observed mistake) used to silently route a production secret to the
+// sandbox host, which Plaid rejects as INVALID_API_KEYS with no clue why.
+if (!Object.prototype.hasOwnProperty.call(PLAID_HOSTS, PLAID_ENV)) {
+  throw new Error(
+    `PLAID_ENV must be one of: sandbox | development | production. ` +
+    `Got ${PLAID_ENV.length} chars; expected the literal env name, not a secret.`
+  );
+}
+const PLAID_BASE = PLAID_HOSTS[PLAID_ENV];
 
 function plaidCountryCodes() {
   return (process.env.PLAID_COUNTRY_CODES || 'US')
@@ -58,6 +68,16 @@ async function plaidFetch(path, body) {
   if (!r.ok || data.error_code) {
     const code = data.error_code || `HTTP_${r.status}`;
     const msg = data.error_message || data.display_message || text.slice(0, 300);
+    // INVALID_API_KEYS almost always means PLAID_ENV doesn't match the
+    // secret. Surface the env + credential lengths (not values) in the log
+    // so the operator can spot the mismatch in Vercel logs.
+    if (code === 'INVALID_API_KEYS') {
+      console.error(
+        `Plaid INVALID_API_KEYS at ${path} — env=${PLAID_ENV}, ` +
+        `clientId.length=${clientId.length}, secret.length=${secret.length}. ` +
+        `Verify PLAID_SECRET is the ${PLAID_ENV} secret (Plaid issues one per env).`
+      );
+    }
     const err = new Error(`Plaid ${path} failed: ${code} — ${msg}`);
     err.plaidErrorCode = code;
     err.plaidErrorType = data.error_type;
