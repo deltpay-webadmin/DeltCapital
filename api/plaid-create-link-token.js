@@ -7,6 +7,7 @@
 // embedded Link SDK on desktop OR in Plaid's mobile-optimized hosted page
 // (used for the QR-code phone handoff).
 
+const QRCode = require('qrcode');
 const { plaidFetch, plaidCountryCodes, plaidProducts, requireMethod, readJsonBody } = require('./_plaid');
 
 module.exports = async function handler(req, res) {
@@ -39,9 +40,23 @@ module.exports = async function handler(req, res) {
 
   try {
     const data = await plaidFetch('/link/token/create', body);
+    // Render the QR server-side as a base64 PNG so the Plaid hosted_link
+    // URL never leaves our infrastructure (the in-browser qrcode UMD
+    // bundle was unreliable, and routing through a third-party QR service
+    // would leak the URL). Failures here are non-fatal — the frontend
+    // falls back to the "Or open the link here" anchor.
+    let hostedLinkQr = null;
+    if (data.hosted_link_url) {
+      try {
+        hostedLinkQr = await QRCode.toDataURL(data.hosted_link_url, { width: 392, margin: 0 });
+      } catch (qrErr) {
+        console.warn('plaid-create-link-token QR render failed:', qrErr && qrErr.message);
+      }
+    }
     res.status(200).json({
       link_token: data.link_token,
       hosted_link_url: data.hosted_link_url,
+      hosted_link_qr: hostedLinkQr,
       expiration: data.expiration,
     });
   } catch (err) {

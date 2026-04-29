@@ -8,6 +8,7 @@
 // capture there. Desktop polls /api/plaid-get-idv-status until status flips
 // to "success".
 
+const QRCode = require('qrcode');
 const { plaidFetch, requireMethod, readJsonBody } = require('./_plaid');
 
 module.exports = async function handler(req, res) {
@@ -32,9 +33,21 @@ module.exports = async function handler(req, res) {
       is_shareable: true,
       gave_consent: true,
     });
+    // Render the QR server-side so the IDV shareable_url stays inside our
+    // infrastructure (mirrors api/plaid-create-link-token.js — see the
+    // matching comment there for rationale). Non-fatal on failure.
+    let shareableUrlQr = null;
+    if (data.shareable_url) {
+      try {
+        shareableUrlQr = await QRCode.toDataURL(data.shareable_url, { width: 392, margin: 0 });
+      } catch (qrErr) {
+        console.warn('plaid-create-idv QR render failed:', qrErr && qrErr.message);
+      }
+    }
     res.status(200).json({
       identity_verification_id: data.id,
       shareable_url: data.shareable_url,
+      shareable_url_qr: shareableUrlQr,
       status: data.status,
     });
   } catch (err) {

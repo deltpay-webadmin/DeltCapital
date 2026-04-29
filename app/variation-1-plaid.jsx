@@ -168,22 +168,15 @@ function V1HandoffLogos() {
 }
 
 // ─── QR rendering helper ────────────────────────────────────────
-// Renders the QR via api.qrserver.com (goqr.me) into an <img>. We used to
-// pull qrcode.min.js from a CDN and call toCanvas/toDataURL, but the UMD
-// build silently failed to expose window.QRCode in some browsers, leaving
-// a blank canvas with no diagnostics. The hosted-PNG approach has no JS
-// dependency and degrades gracefully via <img onError>.
-//
-// Privacy note: the Plaid hosted_link URL is sent to api.qrserver.com to
-// render the PNG. These URLs are short-lived (1h TTL — see
-// api/plaid-create-link-token.js) and only useful within the user's own
-// session, so the leak is low-impact, but it is a third-party hop.
-function V1PlaidQR({ url, size = 196 }) {
-  const [failed, setFailed] = React.useState(false);
-  React.useEffect(() => { setFailed(false); }, [url]);
-  const src = url
-    ? `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&margin=0&data=${encodeURIComponent(url)}`
-    : null;
+// `dataUrl` is a base64 PNG generated server-side by the qrcode npm
+// package in api/plaid-create-link-token.js / api/plaid-create-idv.js.
+// Server-side rendering keeps the Plaid hosted_link / shareable_url
+// inside our own infrastructure — earlier iterations either depended on
+// a flaky in-browser qrcode UMD build (window.QRCode never loaded) or
+// routed the URL through api.qrserver.com (third-party leak). When the
+// data URL is missing (server-side QR render failed), show a graceful
+// fallback that points at the "Or open the link here" anchor.
+function V1PlaidQR({ dataUrl, size = 196 }) {
   return (
     <div style={{
       padding: 12, background: '#fff', borderRadius: 12,
@@ -191,17 +184,9 @@ function V1PlaidQR({ url, size = 196 }) {
       width: size + 24, height: size + 24,
       alignItems: 'center', justifyContent: 'center',
     }}>
-      {src && !failed && (
-        <img
-          src={src}
-          width={size}
-          height={size}
-          alt="QR code"
-          onError={() => { console.error('V1PlaidQR: QR image failed to load'); setFailed(true); }}
-          style={{ display: 'block' }}
-        />
-      )}
-      {failed && (
+      {dataUrl ? (
+        <img src={dataUrl} width={size} height={size} alt="QR code" style={{ display: 'block' }} />
+      ) : (
         <div style={{
           fontFamily: V1.fontBody, fontSize: 11.5, color: '#64748b',
           textAlign: 'center', padding: '0 8px', lineHeight: 1.4,
@@ -393,7 +378,7 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
             Scan with your phone camera to connect your bank on mobile.
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
-            <V1PlaidQR url={tokenData.hosted_link_url} size={196} />
+            <V1PlaidQR dataUrl={tokenData.hosted_link_qr} size={196} />
           </div>
           <a
             href={tokenData.hosted_link_url}
@@ -695,7 +680,7 @@ function V1IDVerify({ open, onClose, onComplete }) {
             you through ID + selfie capture there.
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
-            <V1PlaidQR url={idv.shareable_url} size={196} />
+            <V1PlaidQR dataUrl={idv.shareable_url_qr} size={196} />
           </div>
           <a
             href={idv.shareable_url}
