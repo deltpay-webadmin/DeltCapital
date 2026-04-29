@@ -168,44 +168,22 @@ function V1HandoffLogos() {
 }
 
 // ─── QR rendering helper ────────────────────────────────────────
-// Uses qrcode.min.js loaded via CDN in index.html. Renders into an <img>
-// (toDataURL) instead of a <canvas> so we don't depend on a ref being live
-// at the same tick the effect runs, and we can surface a useful fallback
-// when the CDN script hasn't loaded yet or QR generation fails.
+// Renders the QR via api.qrserver.com (goqr.me) into an <img>. We used to
+// pull qrcode.min.js from a CDN and call toCanvas/toDataURL, but the UMD
+// build silently failed to expose window.QRCode in some browsers, leaving
+// a blank canvas with no diagnostics. The hosted-PNG approach has no JS
+// dependency and degrades gracefully via <img onError>.
+//
+// Privacy note: the Plaid hosted_link URL is sent to api.qrserver.com to
+// render the PNG. These URLs are short-lived (1h TTL — see
+// api/plaid-create-link-token.js) and only useful within the user's own
+// session, so the leak is low-impact, but it is a third-party hop.
 function V1PlaidQR({ url, size = 196 }) {
-  const [src, setSrc] = React.useState(null);
   const [failed, setFailed] = React.useState(false);
-  React.useEffect(() => {
-    if (!url) return;
-    setSrc(null); setFailed(false);
-    let cancelled = false;
-    let attempts = 0;
-    const render = () => {
-      if (cancelled) return;
-      const QR = window.QRCode;
-      if (!QR || !QR.toDataURL) {
-        // CDN may still be loading — poll briefly before giving up.
-        if (++attempts > 30) {
-          console.error('V1PlaidQR: window.QRCode never loaded (qrcode CDN failed?)');
-          setFailed(true);
-          return;
-        }
-        setTimeout(render, 100);
-        return;
-      }
-      QR.toDataURL(url, { width: size, margin: 1 }, (err, dataUrl) => {
-        if (cancelled) return;
-        if (err) {
-          console.error('V1PlaidQR: toDataURL failed:', err);
-          setFailed(true);
-          return;
-        }
-        setSrc(dataUrl);
-      });
-    };
-    render();
-    return () => { cancelled = true; };
-  }, [url, size]);
+  React.useEffect(() => { setFailed(false); }, [url]);
+  const src = url
+    ? `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&margin=0&data=${encodeURIComponent(url)}`
+    : null;
   return (
     <div style={{
       padding: 12, background: '#fff', borderRadius: 12,
@@ -214,7 +192,14 @@ function V1PlaidQR({ url, size = 196 }) {
       alignItems: 'center', justifyContent: 'center',
     }}>
       {src && !failed && (
-        <img src={src} width={size} height={size} alt="QR code" style={{ display: 'block' }} />
+        <img
+          src={src}
+          width={size}
+          height={size}
+          alt="QR code"
+          onError={() => { console.error('V1PlaidQR: QR image failed to load'); setFailed(true); }}
+          style={{ display: 'block' }}
+        />
       )}
       {failed && (
         <div style={{

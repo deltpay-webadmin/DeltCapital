@@ -76,9 +76,9 @@
   <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 
-  <!-- Plaid Link SDK (bank connect) and qrcode.js (mobile IDV handoff QR). -->
+  <!-- Plaid Link SDK (bank connect). The mobile-handoff QR is rendered
+       via api.qrserver.com directly in <img>, so no QR JS lib is loaded. -->
   <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 
   <script type="text/babel" src="app/shared.jsx"></script>
   <script type="text/babel" src="app/app.jsx"></script>
