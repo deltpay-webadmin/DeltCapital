@@ -168,22 +168,30 @@ function V1HandoffLogos() {
 }
 
 // ─── QR rendering helper ────────────────────────────────────────
-// Uses qrcode.min.js loaded via CDN in index.html. Falls back to a plain
-// link if the library hasn't loaded yet (rare — the script is blocking).
-function V1PlaidQR({ url, size = 196 }) {
-  const ref = React.useRef(null);
-  React.useEffect(() => {
-    if (!ref.current || !url) return;
-    if (window.QRCode && window.QRCode.toCanvas) {
-      window.QRCode.toCanvas(ref.current, url, { width: size, margin: 1 }, () => {});
-    }
-  }, [url, size]);
+// `dataUrl` is a base64 PNG generated server-side by the qrcode npm
+// package in api/plaid-create-link-token.js / api/plaid-create-idv.js.
+// Server-side rendering keeps the Plaid hosted_link / shareable_url
+// inside our own infrastructure — earlier iterations either depended on
+// a flaky in-browser qrcode UMD build (window.QRCode never loaded) or
+// routed the URL through api.qrserver.com (third-party leak). When the
+// data URL is missing (server-side QR render failed), show a graceful
+// fallback that points at the "Or open the link here" anchor.
+function V1PlaidQR({ dataUrl, size = 196 }) {
   return (
     <div style={{
       padding: 12, background: '#fff', borderRadius: 12,
       border: '1px solid #E2E8F0', display: 'inline-flex',
+      width: size + 24, height: size + 24,
+      alignItems: 'center', justifyContent: 'center',
     }}>
-      <canvas ref={ref} width={size} height={size} style={{ width: size, height: size, display: 'block' }} />
+      {dataUrl ? (
+        <img src={dataUrl} width={size} height={size} alt="QR code" style={{ display: 'block' }} />
+      ) : (
+        <div style={{
+          fontFamily: V1.fontBody, fontSize: 11.5, color: '#64748b',
+          textAlign: 'center', padding: '0 8px', lineHeight: 1.4,
+        }}>Couldn't render QR — use the link below.</div>
+      )}
     </div>
   );
 }
@@ -370,7 +378,7 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
             Scan with your phone camera to connect your bank on mobile.
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
-            <V1PlaidQR url={tokenData.hosted_link_url} size={196} />
+            <V1PlaidQR dataUrl={tokenData.hosted_link_qr} size={196} />
           </div>
           <a
             href={tokenData.hosted_link_url}
@@ -672,7 +680,7 @@ function V1IDVerify({ open, onClose, onComplete }) {
             you through ID + selfie capture there.
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
-            <V1PlaidQR url={idv.shareable_url} size={196} />
+            <V1PlaidQR dataUrl={idv.shareable_url_qr} size={196} />
           </div>
           <a
             href={idv.shareable_url}
