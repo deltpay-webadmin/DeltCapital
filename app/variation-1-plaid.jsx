@@ -21,6 +21,18 @@ function V1PlaidThrowFromResponse(data, fallbackLabel) {
   return e;
 }
 
+// Pick the most useful detail for the modal banner: prefer the short
+// machine-readable Plaid error_code, fall back to the longer error_message
+// when no code is present (e.g., non-JSON Plaid response, network error,
+// or module-side validation throw — all of which set plaidMessage but not
+// plaidCode), and render nothing if neither is available.
+function V1PlaidErrDetail(e) {
+  const v = (e && e.plaidCode) ? e.plaidCode
+          : (e && e.plaidMessage) ? e.plaidMessage.slice(0, 80)
+          : '';
+  return v ? ` (${v})` : '';
+}
+
 // ─── window.PlaidIntegration: real fetches against /api/plaid-* ─────
 window.PlaidIntegration = window.PlaidIntegration || {
   mintLinkToken: (productKind = 'bank') =>
@@ -233,8 +245,7 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
       })
       .catch((e) => {
         console.error(e);
-        const detail = e && e.plaidCode ? ` (${e.plaidCode})` : '';
-        setErr(`Could not reach Plaid${detail}. Try again.`);
+        setErr(`Could not reach Plaid${V1PlaidErrDetail(e)}. Try again.`);
         setStage('intro');
       });
   }, [open]);
@@ -269,8 +280,7 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
           }, 900);
         } catch (e) {
           console.error(e);
-          const detail = e && e.plaidCode ? ` (${e.plaidCode})` : '';
-          setErr(`Could not finish linking${detail}. Try again.`);
+          setErr(`Could not finish linking${V1PlaidErrDetail(e)}. Try again.`);
           setStage('intro');
         }
       },
@@ -519,8 +529,7 @@ function V1IDVerify({ open, onClose, onComplete }) {
       setStage('choose-device');
     } catch (e) {
       console.error(e);
-      const detail = e && e.plaidCode ? ` (${e.plaidCode})` : '';
-      setErr(`Could not start verification${detail}. Try again.`);
+      setErr(`Could not start verification${V1PlaidErrDetail(e)}. Try again.`);
       setStage('intro');
     }
   }
