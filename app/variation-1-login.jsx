@@ -73,16 +73,50 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
   const [focused, setFocused]             = React.useState(null);
   const [hoverSubmit, setHoverSubmit]     = React.useState(false);
   const [hoverForgot, setHoverForgot]     = React.useState(false);
-  const [hoverGoogle, setHoverGoogle]     = React.useState(false);
-  const [hoverFacebook, setHoverFacebook] = React.useState(false);
-  const [hoverApply, setHoverApply]       = React.useState(false);
-  const [hoverBack, setHoverBack]         = React.useState(false);
-  const [sent, setSent]                   = React.useState(false);
+  const [hoverGoogle, setHoverGoogle]       = React.useState(false);
+  const [hoverFacebook, setHoverFacebook]   = React.useState(false);
+  const [hoverApple, setHoverApple]         = React.useState(false);
+  const [hoverMicrosoft, setHoverMicrosoft] = React.useState(false);
+  const [hoverApply, setHoverApply]         = React.useState(false);
+  const [hoverBack, setHoverBack]           = React.useState(false);
+  const [sent, setSent]                     = React.useState(false);
+  const [submitting, setSubmitting]         = React.useState(false);
+  const [authError, setAuthError]           = React.useState(null);
+
+  // Subscribe to auth state — when Auth0 flips to authenticated (popup
+  // closes successfully) we hand off to the parent so it can navigate
+  // away from /login.
+  const auth = (window.DELT_AUTH && window.DELT_AUTH.useAuth)
+    ? window.DELT_AUTH.useAuth()
+    : { isAuthenticated: false, user: null };
+  React.useEffect(() => {
+    if (auth.isAuthenticated && auth.user) {
+      onSignIn && onSignIn(auth.user.email || email || '');
+    }
+  }, [auth.isAuthenticated]);
+
+  const runLogin = async (connection, opts = {}) => {
+    if (submitting) return;
+    setAuthError(null);
+    setSubmitting(true);
+    try {
+      const result = window.DELT_AUTH
+        ? await window.DELT_AUTH.login(connection, { loginHint: email || undefined, ...opts })
+        : { ok: false, error: new Error('Auth not configured') };
+      if (!result.ok && result.error) setAuthError(result.error);
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    runLogin('Username-Password-Authentication');
+  };
+
+  const handleMagicLink = () => {
     setSent(true);
-    onSignIn && onSignIn(email || 'operator@delt.capital');
+    runLogin('email');
   };
 
   const enter = (delay) => ({
@@ -443,6 +477,7 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
               <div style={{ marginTop: 32, ...enter(760) }}>
                 <button
                   type="submit"
+                  disabled={submitting}
                   onMouseEnter={() => setHoverSubmit(true)}
                   onMouseLeave={() => setHoverSubmit(false)}
                   style={{
@@ -450,7 +485,9 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
                     width: '100%',
                     display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 12,
                     background: V1.blue, color: '#fff', border: 'none',
-                    padding: '16px 26px', borderRadius: 10, cursor: 'pointer',
+                    padding: '16px 26px', borderRadius: 10,
+                    cursor: submitting ? 'wait' : 'pointer',
+                    opacity: submitting ? 0.75 : 1,
                     // Brand §4.3 — CTA: Codec Pro Bold, 15px, line-height 1
                     fontFamily: V1.fontDisplay, fontSize: 15, fontWeight: 700,
                     lineHeight: 1, letterSpacing: '-0.005em',
@@ -458,7 +495,7 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
                       ? `0 12px 28px -10px ${V1.blue}cc, 0 2px 6px ${V1.blue}44`
                       : `0 6px 18px -8px ${V1.blue}aa`,
                     transform: hoverSubmit ? 'translateY(-1px)' : 'translateY(0)',
-                    transition: 'box-shadow 240ms, transform 240ms',
+                    transition: 'box-shadow 240ms, transform 240ms, opacity 240ms',
                   }}
                 >
                   <span aria-hidden style={{
@@ -467,14 +504,48 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
                     transform: hoverSubmit ? 'translateX(120%)' : 'translateX(-120%)',
                     transition: 'transform 900ms cubic-bezier(0.22, 1, 0.36, 1)',
                   }} />
-                  Sign in
-                  <svg width="15" height="15" viewBox="0 0 14 14" style={{
-                    transform: hoverSubmit ? 'translateX(3px)' : 'translateX(0)',
-                    transition: 'transform 260ms cubic-bezier(0.22, 1, 0.36, 1)',
-                  }}>
-                    <path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
+                  {submitting ? 'Opening secure window…' : 'Sign in'}
+                  {!submitting && (
+                    <svg width="15" height="15" viewBox="0 0 14 14" style={{
+                      transform: hoverSubmit ? 'translateX(3px)' : 'translateX(0)',
+                      transition: 'transform 260ms cubic-bezier(0.22, 1, 0.36, 1)',
+                    }}>
+                      <path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  )}
                 </button>
+
+                {/* Magic-link alternative — same data, no password needed */}
+                <button
+                  type="button"
+                  disabled={submitting}
+                  onClick={handleMagicLink}
+                  style={{
+                    marginTop: 14,
+                    width: '100%',
+                    background: 'transparent', border: 'none',
+                    padding: '6px 0', cursor: submitting ? 'wait' : 'pointer',
+                    fontFamily: V1.fontBody, fontSize: 13.5, fontWeight: 500,
+                    color: V1.muted,
+                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                  }}
+                >
+                  <svg width="13" height="13" viewBox="0 0 14 14">
+                    <path d="M2 4h10v6H2z M2 4l5 4 5-4" stroke="currentColor" strokeWidth="1.4" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  Email me a sign-in link instead
+                </button>
+
+                {authError && (
+                  <div role="alert" style={{
+                    marginTop: 14, padding: '10px 14px',
+                    border: `1px solid ${V1.line}`, borderRadius: 8,
+                    fontFamily: V1.fontBody, fontSize: 13, color: V1.ink,
+                    background: '#FFF7F5',
+                  }}>
+                    {authError.message || 'Sign in could not complete. Please try again.'}
+                  </div>
+                )}
               </div>
             </form>
 
@@ -503,7 +574,8 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
             }}>
               {[
                 {
-                  k: 'google', label: 'Google', hover: hoverGoogle, set: setHoverGoogle,
+                  k: 'google', conn: 'google-oauth2', label: 'Google',
+                  hover: hoverGoogle, set: setHoverGoogle,
                   icon: (
                     <svg width="16" height="16" viewBox="0 0 24 24">
                       <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
@@ -514,7 +586,29 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
                   ),
                 },
                 {
-                  k: 'facebook', label: 'Facebook', hover: hoverFacebook, set: setHoverFacebook,
+                  k: 'microsoft', conn: 'windowslive', label: 'Microsoft',
+                  hover: hoverMicrosoft, set: setHoverMicrosoft,
+                  icon: (
+                    <svg width="16" height="16" viewBox="0 0 24 24">
+                      <path d="M11.4 11.4H1V1h10.4v10.4z" fill="#F25022"/>
+                      <path d="M23 11.4H12.6V1H23v10.4z" fill="#7FBA00"/>
+                      <path d="M11.4 23H1V12.6h10.4V23z" fill="#00A4EF"/>
+                      <path d="M23 23H12.6V12.6H23V23z" fill="#FFB900"/>
+                    </svg>
+                  ),
+                },
+                {
+                  k: 'apple', conn: 'apple', label: 'Apple',
+                  hover: hoverApple, set: setHoverApple,
+                  icon: (
+                    <svg width="16" height="16" viewBox="0 0 24 24">
+                      <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" fill="#0F0E17"/>
+                    </svg>
+                  ),
+                },
+                {
+                  k: 'facebook', conn: 'facebook', label: 'Facebook',
+                  hover: hoverFacebook, set: setHoverFacebook,
                   icon: (
                     <svg width="16" height="16" viewBox="0 0 24 24">
                       <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" fill="#1877F2"/>
@@ -525,6 +619,8 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
                 <button
                   key={sso.k}
                   type="button"
+                  disabled={submitting}
+                  onClick={() => runLogin(sso.conn)}
                   onMouseEnter={() => sso.set(true)}
                   onMouseLeave={() => sso.set(false)}
                   style={{
@@ -532,12 +628,13 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
                     background: '#fff',
                     border: `1px solid ${sso.hover ? V1.ink : V1.line}`,
                     borderRadius: 10,
-                    padding: '12px 18px', cursor: 'pointer',
+                    padding: '12px 18px', cursor: submitting ? 'wait' : 'pointer',
                     fontFamily: V1.fontMono, fontSize: 11.5, fontWeight: 600,
                     letterSpacing: '0.16em', textTransform: 'uppercase', color: V1.ink,
+                    opacity: submitting ? 0.7 : 1,
                     boxShadow: sso.hover ? '0 8px 20px -12px rgba(4,30,66,0.35)' : '0 0 0 rgba(0,0,0,0)',
                     transform: sso.hover ? 'translateY(-1px)' : 'translateY(0)',
-                    transition: 'border-color 220ms, box-shadow 240ms, transform 240ms',
+                    transition: 'border-color 220ms, box-shadow 240ms, transform 240ms, opacity 220ms',
                   }}
                 >
                   {sso.icon}

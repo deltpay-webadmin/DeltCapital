@@ -36,7 +36,7 @@ function V1Ticker({ accent }) {
   );
 }
 
-function V1Chrome({ page, navTo, accent, openApp }) {
+function V1Chrome({ page, navTo, accent, openApp, auth }) {
   const links = [
     { k: 'how',     l: 'How It Works' },
     { k: 'calc',    l: 'Calculator' },
@@ -46,6 +46,8 @@ function V1Chrome({ page, navTo, accent, openApp }) {
     { k: 'talk',    l: 'Talk' },
   ];
   const handleNav = (k) => { navTo(k); };
+  const isAuthed = auth && auth.isAuthenticated;
+  const userLabel = (auth && auth.user && (auth.user.email || auth.user.name)) || '';
   return (
     <>
     <V1Ticker accent={accent} />
@@ -73,7 +75,21 @@ function V1Chrome({ page, navTo, accent, openApp }) {
           ))}
         </nav>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-          <a onClick={() => navTo('login')} style={{ fontFamily: DELT.font.body, fontSize: 13.5, color: page === 'login' ? '#F7F5F0' : 'rgba(247,245,240,0.75)', cursor: 'pointer' }}>Login</a>
+          {isAuthed ? (
+            <>
+              <span style={{
+                fontFamily: DELT.font.body, fontSize: 13.5,
+                color: 'rgba(247,245,240,0.75)',
+                maxWidth: 220, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+              }}>{userLabel}</span>
+              <a onClick={() => auth.logout()} style={{
+                fontFamily: DELT.font.body, fontSize: 13.5,
+                color: 'rgba(247,245,240,0.55)', cursor: 'pointer',
+              }}>Sign out</a>
+            </>
+          ) : (
+            <a onClick={() => navTo('login')} style={{ fontFamily: DELT.font.body, fontSize: 13.5, color: page === 'login' ? '#F7F5F0' : 'rgba(247,245,240,0.75)', cursor: 'pointer' }}>Login</a>
+          )}
           <Btn variant="indigo" size="sm" onClick={openApp} style={{ background: accent, borderColor: accent }}>Get Funded</Btn>
         </div>
       </div>
@@ -440,6 +456,13 @@ function Variation1() {
   const [calcState, setCalcState] = React.useState({ revenue: 0, tib: '', cards: null, cardSales: 0 });
   const [appPrefill, setAppPrefill] = React.useState(null);
 
+  // Auth state for chrome (Login → Sign out swap) and for navigating away
+  // from /login on successful sign-in. The hook tolerates the case where
+  // auth.jsx hasn't loaded yet (e.g. CDN blocked) by returning a stub.
+  const auth = (window.DELT_AUTH && window.DELT_AUTH.useAuth)
+    ? window.DELT_AUTH.useAuth()
+    : { isAuthenticated: false, user: null, isLoading: false, logout: () => {} };
+
   // Core page swap: fade the body, swap page, scroll to top, fade back in.
   // `pushUrl` is false when we're responding to a popstate so we don't
   // re-push the URL the browser just navigated to.
@@ -497,7 +520,7 @@ function Variation1() {
     page === 'support' ? <V1SupportPage accent={accent} onTalk={() => navTo('talk')} onApply={() => openApp(null, null)} /> :
     page === 'faq'     ? <V1FAQPage accent={accent} onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} /> :
     page === 'blog'    ? <V1BlogPage accent={accent} onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} /> :
-    page === 'login'   ? <V1LoginPage onClose={() => navTo('home')} onApply={() => openApp(null, null)} onSignIn={() => {}} onNavLegal={navTo} /> :
+    page === 'login'   ? <V1LoginPage onClose={() => navTo('home')} onApply={() => openApp(null, null)} onSignIn={() => navTo('home')} onNavLegal={navTo} /> :
     page === 'terms'   ? <V1TermsOfUse onBack={() => navTo('home')} onNavPrivacy={() => navTo('privacy')} /> :
     page === 'privacy' ? <V1PrivacyPolicy onBack={() => navTo('home')} onNavTerms={() => navTo('terms')} /> :
     page === 'eca'     ? <V1ElectronicCommunications onBack={() => navTo('home')} /> :
@@ -506,7 +529,7 @@ function Variation1() {
 
   return (
     <>
-      {V1Chrome({ page, navTo, accent, openApp: () => openApp(null, null) })}
+      {V1Chrome({ page, navTo, accent, openApp: () => openApp(null, null), auth })}
       <div style={{
         opacity: transitioning ? 0 : 1,
         transform: transitioning ? 'translateY(6px)' : 'translateY(0)',

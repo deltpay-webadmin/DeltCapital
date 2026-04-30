@@ -1,22 +1,37 @@
 // POST /api/plaid-create-link-token
-//   body: { clientUserId: string, productKind: 'bank' | 'idv' }
+//   Authorization: Bearer <Auth0 access token>
+//   body: { productKind: 'bank' | 'idv' }
 //   → { link_token, hosted_link_url, expiration }
 //
 // Mints a Plaid link_token tuned to the requested product. `hosted_link`
 // is enabled on every token so the same token can be opened in either the
 // embedded Link SDK on desktop OR in Plaid's mobile-optimized hosted page
 // (used for the QR-code phone handoff).
+//
+// The Plaid `client_user_id` is the verified `sub` from the bearer token —
+// not a value the client supplies. This keeps Plaid records keyed off the
+// same identity as Auth0, and prevents one customer from impersonating
+// another by passing a different clientUserId.
 
 const { plaidFetch, plaidCountryCodes, plaidProducts, requireMethod, readJsonBody } = require('./_plaid');
+const { verifyAuth0Token, AuthError } = require('./_auth');
 
 module.exports = async function handler(req, res) {
   if (!requireMethod(req, res, 'POST')) return;
 
-  const { clientUserId, productKind } = readJsonBody(req);
-  if (!clientUserId || typeof clientUserId !== 'string') {
-    res.status(400).json({ error: 'clientUserId is required' });
-    return;
+  let sub;
+  try {
+    ({ sub } = await verifyAuth0Token(req));
+  } catch (err) {
+    if (err instanceof AuthError) {
+      res.status(401).json({ error: err.message });
+      return;
+    }
+    throw err;
   }
+
+  const { productKind } = readJsonBody(req);
+  const clientUserId = sub;
   const kind = productKind === 'idv' ? 'idv' : 'bank';
 
   const body = {

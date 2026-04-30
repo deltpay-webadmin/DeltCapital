@@ -6,12 +6,23 @@
 // progress), "success", "failed", "expired", "canceled".
 
 const { plaidFetch, readJsonBody } = require('./_plaid');
+const { verifyAuth0Token, AuthError } = require('./_auth');
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET');
     res.status(405).json({ error: 'Method not allowed' });
     return;
+  }
+
+  try {
+    await verifyAuth0Token(req);
+  } catch (err) {
+    if (err instanceof AuthError) {
+      res.status(401).json({ error: err.message });
+      return;
+    }
+    throw err;
   }
 
   const id = (req.query && req.query.id) || readJsonBody(req).id;

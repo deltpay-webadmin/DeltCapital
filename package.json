@@ -1,0 +1,9 @@
+{
+  "name": "delt-capital",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Delt Capital — static React frontend with Vercel serverless API. The frontend is no-build (Babel-standalone in the browser); only /api/* uses Node deps.",
+  "dependencies": {
+    "jose": "^4.15.0"
+  }
+}

@@ -21,16 +21,23 @@ function V1PlaidThrowFromResponse(data, fallbackLabel) {
   return e;
 }
 
+// All /api/plaid-* endpoints require an Auth0 bearer token (api/_auth.js).
+// The backend pulls Plaid `client_user_id` from the verified token's `sub`,
+// so we no longer pass clientUserId in the request body — that's a security
+// improvement (prevents one signed-in user from minting a Plaid session
+// against another user's id).
+function V1PlaidFetch(input, init = {}) {
+  const f = (window.DELT_AUTH && window.DELT_AUTH.authedFetch) || fetch;
+  return f(input, init);
+}
+
 // ─── window.PlaidIntegration: real fetches against /api/plaid-* ─────
 window.PlaidIntegration = window.PlaidIntegration || {
   mintLinkToken: (productKind = 'bank') =>
-    fetch('/api/plaid-create-link-token', {
+    V1PlaidFetch('/api/plaid-create-link-token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        clientUserId: V1PlaidGetClientUserId(),
-        productKind,
-      }),
+      body: JSON.stringify({ productKind }),
     }).then(async (r) => {
       const data = await r.json().catch(() => ({}));
       if (!r.ok) throw V1PlaidThrowFromResponse(data, 'mintLinkToken failed');
@@ -38,7 +45,7 @@ window.PlaidIntegration = window.PlaidIntegration || {
     }),
 
   exchangePublicToken: (publicToken) =>
-    fetch('/api/plaid-exchange-token', {
+    V1PlaidFetch('/api/plaid-exchange-token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ public_token: publicToken }),
@@ -49,10 +56,10 @@ window.PlaidIntegration = window.PlaidIntegration || {
     }),
 
   createIDV: () =>
-    fetch('/api/plaid-create-idv', {
+    V1PlaidFetch('/api/plaid-create-idv', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ clientUserId: V1PlaidGetClientUserId() }),
+      body: JSON.stringify({}),
     }).then(async (r) => {
       const data = await r.json().catch(() => ({}));
       if (!r.ok) throw V1PlaidThrowFromResponse(data, 'createIDV failed');
@@ -60,34 +67,12 @@ window.PlaidIntegration = window.PlaidIntegration || {
     }),
 
   pollIDV: (id) =>
-    fetch(`/api/plaid-get-idv-status?id=${encodeURIComponent(id)}`).then(async (r) => {
+    V1PlaidFetch(`/api/plaid-get-idv-status?id=${encodeURIComponent(id)}`).then(async (r) => {
       const data = await r.json().catch(() => ({}));
       if (!r.ok) throw V1PlaidThrowFromResponse(data, 'pollIDV failed');
       return data;
     }),
 };
-
-// Stable client_user_id per browser so repeat IDV/Link sessions tie back to
-// the same Plaid record. localStorage-backed; falls back to memory if storage
-// is unavailable (private mode in some browsers).
-function V1PlaidGetClientUserId() {
-  const KEY = 'delt.plaid.clientUserId';
-  try {
-    let v = localStorage.getItem(KEY);
-    if (!v) {
-      v = 'delt-' + (crypto && crypto.randomUUID
-        ? crypto.randomUUID()
-        : Math.random().toString(36).slice(2) + Date.now().toString(36));
-      localStorage.setItem(KEY, v);
-    }
-    return v;
-  } catch (_) {
-    if (!window.__deltPlaidUid) {
-      window.__deltPlaidUid = 'delt-mem-' + Math.random().toString(36).slice(2);
-    }
-    return window.__deltPlaidUid;
-  }
-}
 
 // ─── Plaid logo (4-square grid mark) ─────────────────────────────
 function V1PlaidLogo({ size = 16, color = 'currentColor' }) {

@@ -9,9 +9,20 @@
 // the bank/account names that V1StepBank renders.
 
 const { plaidFetch, requireMethod, readJsonBody } = require('./_plaid');
+const { verifyAuth0Token, AuthError } = require('./_auth');
 
 module.exports = async function handler(req, res) {
   if (!requireMethod(req, res, 'POST')) return;
+
+  try {
+    await verifyAuth0Token(req);
+  } catch (err) {
+    if (err instanceof AuthError) {
+      res.status(401).json({ error: err.message });
+      return;
+    }
+    throw err;
+  }
 
   const { public_token } = readJsonBody(req);
   if (!public_token || typeof public_token !== 'string') {

@@ -80,7 +80,21 @@
   <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 
+  <!-- Auth0 SPA SDK (PKCE + popup login). The Client ID and domain are
+       public values — they identify the SPA application, they are not
+       secrets. The audience must match the API audience registered in the
+       Auth0 dashboard, and is what /api/_auth.js validates against. -->
+  <script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
+  <script>
+    window.DELT_AUTH_CONFIG = {
+      domain: "REPLACE_WITH_login.deltcapital.com",
+      clientId: "REPLACE_WITH_AUTH0_SPA_CLIENT_ID",
+      audience: "https://api.deltcapital.com",
+    };
+  </script>
+
   <script type="text/babel" src="app/shared.jsx"></script>
+  <script type="text/babel" src="app/auth.jsx"></script>
   <script type="text/babel" src="app/app.jsx"></script>
   <script type="text/babel" src="app/variation-1-motion.jsx"></script>
   <script type="text/babel" src="app/variation-1-sections.jsx"></script>
