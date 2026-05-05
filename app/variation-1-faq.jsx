@@ -69,20 +69,32 @@ const FAQ_CATS = [
         ),
       },
       {
-        q: 'Do brokers get a different rate?',
-        short: "Brokers add their own fee on top of ours.",
+        q: 'Does my rate get better on a second draw?',
+        short: 'Yes. Repeat borrowers in good standing see the factor step down each renewal.',
         a: (
           <>
             <p>
-              If you apply directly with us, you always see our lowest rate. Brokers
-              add their own fee on top of our base rate — that's their business, not
-              ours. If you applied through a broker and want to compare, ask them
-              for the Delt base rate sheet (they have it).
+              Renewal pricing is the cleanest discount we offer, and it isn't a
+              promo — it's underwriting. Once we've watched a full repayment
+              cycle on your account, the file gets cheaper to underwrite, and
+              we pass that back. <b>Repeat borrowers in good standing typically
+              see 4–8 basis points off the factor</b> on each renewal, with no
+              re-application fee.
             </p>
-            <FaqCallout tone="accent">
-              <b>Rule of thumb:</b> if your broker quoted you 1.28× or higher, you
-              can usually apply directly with us and get a rate in the 1.14–1.20× range.
-            </FaqCallout>
+            <p>
+              68% of our book funds with us more than once. The first deal
+              proves the relationship; every draw after that is priced like it.
+            </p>
+            <FaqMath
+              rows={[
+                ['First draw factor',   '1.20×'],
+                ['Second draw factor',  '1.16×'],
+                ['Third draw factor',   '1.14×'],
+                ['Re-application fee',  '$0'],
+                ['Decision time',       '< 6 hours'],
+              ]}
+              note="Illustrative — your renewal pricing is set by repayment history and current revenue."
+            />
           </>
         ),
       },
@@ -894,10 +906,9 @@ function V1FAQPage({ accent, onApply, onTalk }) {
               fontFamily: V1.fontBody, fontSize: 16, color: V1.text,
               lineHeight: 1.55, margin: '20px 0 0', maxWidth: 540,
             }}>
-              30 minutes on Zoom with one of three real people on our team.
-              They handle your account from start to finish — no handoffs,
-              no call center. Bring any question; if we can't answer it on
-              the call, we'll get back to you within 24 hours.
+              30 minutes on Teams with one of three underwriters. They own their
+              book — no handoffs, no call center. Bring any question; if we
+              can't answer it on the call, we'll come back within 24 hours.
             </p>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -938,7 +949,7 @@ function V1FAQPage({ accent, onApply, onTalk }) {
               letterSpacing: '0.14em', textTransform: 'uppercase',
               color: V1.muted, textAlign: 'center',
             }}>
-              30 min · Zoom · No credit pull
+              30 min · Teams · No credit pull
             </div>
           </div>
         </div>

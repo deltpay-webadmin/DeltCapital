@@ -17,11 +17,13 @@ function V1Ticker({ accent }) {
   return (
     <div style={{ background: '#000', color: '#E9E7DF', padding: '6px 0', overflow: 'hidden', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
       <div style={{
-        display: 'flex', gap: 40, whiteSpace: 'nowrap',
+        display: 'flex', whiteSpace: 'nowrap',
         animation: 'v1ticker 40s linear infinite', fontFamily: DELT.font.mono, fontSize: 11.5,
       }}>
+        {/* marginRight on every row (incl. last) so total width = 2× one copy
+            exactly. translateX(-50%) then lines up pixel-perfect at loop. */}
         {all.map((row, i) => (
-          <span key={i} style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+          <span key={i} style={{ display: 'flex', gap: 10, alignItems: 'center', marginRight: 40 }}>
             <span style={{ color: 'rgba(233,231,223,0.5)' }}>{row[0]}</span>
             <span>{row[1]}</span>
             <span style={{ color: accent }}>{row[2]}</span>
@@ -102,6 +104,46 @@ function V1Hero({ accent, onApply }) {
     transition: `opacity 820ms cubic-bezier(0.22, 1, 0.36, 1) ${base}ms, transform 820ms cubic-bezier(0.22, 1, 0.36, 1) ${base}ms`,
   });
 
+  // Rotating verb that swaps every 1.9s. Words are stacked in a single
+  // inline-grid cell so the <em> auto-sizes to the widest child — keeps the
+  // trailing "it." anchored regardless of which word is showing.
+  const fundWords = ['fund', 'back', 'wire', 'fuel'];
+  const [fundIdx, setFundIdx] = React.useState(0);
+  React.useEffect(() => {
+    if (!mounted) return undefined;
+    const iv = setInterval(() => setFundIdx((i) => (i + 1) % fundWords.length), 1900);
+    return () => clearInterval(iv);
+  }, [mounted]);
+
+  // Hero video — seamless loop via two stacked <video>s that crossfade.
+  // The mp4's first/last frame don't match, so native `loop` snaps. We track
+  // which video is "front" and, when it nears its end, start the back one
+  // from t=0 and swap them with a CSS opacity transition.
+  const videoA = React.useRef(null);
+  const videoB = React.useRef(null);
+  const [videoFront, setVideoFront] = React.useState(0);
+  const VIDEO_CROSSFADE_S = 0.7;
+  React.useEffect(() => {
+    const cur = videoFront === 0 ? videoA.current : videoB.current;
+    const nxt = videoFront === 0 ? videoB.current : videoA.current;
+    if (!cur || !nxt) return undefined;
+    let scheduled = false;
+    const onTime = () => {
+      if (scheduled) return;
+      const dur = cur.duration;
+      if (!dur || isNaN(dur)) return;
+      if (dur - cur.currentTime <= VIDEO_CROSSFADE_S) {
+        scheduled = true;
+        try { nxt.currentTime = 0; } catch (e) { /* not ready yet */ }
+        const p = nxt.play();
+        if (p && typeof p.catch === 'function') p.catch(() => {});
+        setVideoFront((f) => 1 - f);
+      }
+    };
+    cur.addEventListener('timeupdate', onTime);
+    return () => cur.removeEventListener('timeupdate', onTime);
+  }, [videoFront]);
+
   return (
     <section style={{
       background: '#041E42',
@@ -109,6 +151,9 @@ function V1Hero({ accent, onApply }) {
       position: 'relative',
       overflow: 'hidden',
       borderBottom: '1px solid rgba(255,255,255,0.06)',
+      minHeight: 'calc(100vh - 82px)',
+      display: 'flex',
+      flexDirection: 'column',
     }}>
       <style>{`
         @keyframes v1heroPulse { 0% { transform: translate(-50%,-50%) scale(1); opacity: 0.55; } 70% { transform: translate(-50%,-50%) scale(2.6); opacity: 0; } 100% { transform: translate(-50%,-50%) scale(2.6); opacity: 0; } }
@@ -129,8 +174,8 @@ function V1Hero({ accent, onApply }) {
       }}>
         <span>Q1 2026</span>
         <span>Direct lender · Est. 2019</span>
-        <span style={{ color: accent, display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ position: 'relative', width: 7, height: 7 }}>
+        <span style={{ color: accent, display: 'flex', alignItems: 'center', gap: 12, marginLeft: 32 }}>
+          <span style={{ position: 'relative', width: 7, height: 7, marginRight: 2 }}>
             <span style={{
               position: 'absolute', top: '50%', left: '50%',
               transform: 'translate(-50%,-50%)',
@@ -151,10 +196,11 @@ function V1Hero({ accent, onApply }) {
       </div>
 
       <div style={{
+        width: '100%',
         maxWidth: 1280, margin: '0 auto', padding: '56px 32px 0',
         display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48,
         alignItems: 'center', position: 'relative', zIndex: 2,
-        minHeight: 680,
+        minHeight: 680, flex: 1,
       }}>
         {/* Left: copy */}
         <div>
@@ -173,11 +219,29 @@ function V1Hero({ accent, onApply }) {
                 fontFamily: '"Source Serif Pro", Georgia, serif',
                 fontStyle: 'italic',
                 fontWeight: 400,
-                color: accent,
-                background: `linear-gradient(90deg, ${accent}, #818CF8)`,
-                WebkitBackgroundClip: 'text', backgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-              }}>fund</em>{' '}it.
+                display: 'inline-grid',
+                gridTemplateAreas: '"stack"',
+                verticalAlign: 'baseline',
+                whiteSpace: 'nowrap',
+              }}>
+                {fundWords.map((w, i) => (
+                  <span key={w} style={{
+                    gridArea: 'stack',
+                    // Gradient must live on the span that holds the text —
+                    // background-clip:text on the <em> parent doesn't reach
+                    // child spans, which would render transparent.
+                    color: accent,
+                    background: `linear-gradient(90deg, ${accent}, #818CF8)`,
+                    WebkitBackgroundClip: 'text', backgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    paddingInlineEnd: '0.12em',
+                    opacity: i === fundIdx ? 1 : 0,
+                    transform: i === fundIdx ? 'translateY(0)' : 'translateY(6px)',
+                    transition: 'opacity 480ms cubic-bezier(0.22, 1, 0.36, 1), transform 480ms cubic-bezier(0.22, 1, 0.36, 1)',
+                    whiteSpace: 'nowrap',
+                  }}>{w}</span>
+                ))}
+              </em>{' '}it.
             </V1LineMask>
           </h1>
 
@@ -230,22 +294,33 @@ function V1Hero({ accent, onApply }) {
           transition: 'clip-path 1100ms cubic-bezier(0.76, 0, 0.24, 1) 160ms',
           willChange: mounted ? 'auto' : 'clip-path',
         }}>
-          <video
-            src="app/assets/hero.mp4"
-            autoPlay loop muted playsInline
-            style={{
-              width: '100%', height: '100%',
-              objectFit: 'cover',
-              display: 'block',
-              transform: `translate3d(0, ${videoShift}px, 0) scale(${videoScale})`,
-              transformOrigin: 'center center',
-              willChange: 'transform',
-              // Brand tint (step 1 of 2): rotate the baked-in violet ~25° back
-              // toward Electric Indigo, with a gentle saturation/brightness
-              // lift so the shift doesn't flatten the scene.
-              filter: 'hue-rotate(-25deg) saturate(1.08) brightness(1.02)',
-            }}
-          />
+          {/* Two stacked videos that crossfade at loop boundary — see the
+              videoFront effect above. No `loop` attribute: looping is manual
+              so we can overlap a fade between copies. */}
+          {[videoA, videoB].map((ref, idx) => (
+            <video
+              key={idx}
+              ref={ref}
+              src="app/assets/hero.mp4"
+              autoPlay={idx === 0}
+              muted playsInline
+              style={{
+                position: 'absolute', inset: 0,
+                width: '100%', height: '100%',
+                objectFit: 'cover',
+                display: 'block',
+                opacity: idx === videoFront ? 1 : 0,
+                transition: `opacity ${VIDEO_CROSSFADE_S * 1000}ms ease-in-out`,
+                transform: `translate3d(0, ${videoShift}px, 0) scale(${videoScale})`,
+                transformOrigin: 'center center',
+                willChange: 'transform, opacity',
+                // Brand tint (step 1 of 2): rotate the baked-in violet ~25° back
+                // toward Electric Indigo, with a gentle saturation/brightness
+                // lift so the shift doesn't flatten the scene.
+                filter: 'hue-rotate(-25deg) saturate(1.08) brightness(1.02)',
+              }}
+            />
+          ))}
           {/* Brand tint (step 2 of 2): Electric Indigo `mix-blend-mode: color`
               overlay at ~14% pulls any remaining chroma toward #4945FF while
               preserving luminance (motion, highlights, shadows intact). */}
@@ -269,6 +344,24 @@ function V1Hero({ accent, onApply }) {
           <div style={{
             position: 'absolute', inset: 0,
             background: 'linear-gradient(90deg, #041E42 0%, rgba(4,30,66,0.6) 12%, rgba(4,30,66,0) 32%)',
+            pointerEvents: 'none',
+          }} />
+          {/* Right-edge fade so video melts into the section background */}
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: 'linear-gradient(270deg, #041E42 0%, rgba(4,30,66,0.55) 8%, rgba(4,30,66,0) 22%)',
+            pointerEvents: 'none',
+          }} />
+          {/* Top-edge fade so video melts down from the dateline */}
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: 'linear-gradient(180deg, #041E42 0%, rgba(4,30,66,0.6) 10%, rgba(4,30,66,0) 26%)',
+            pointerEvents: 'none',
+          }} />
+          {/* Bottom-edge fade so video melts into the section bottom rule */}
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: 'linear-gradient(0deg, #041E42 0%, rgba(4,30,66,0.6) 10%, rgba(4,30,66,0) 26%)',
             pointerEvents: 'none',
           }} />
           {/* Top/bottom subtle fades to help the band read as a hero */}
@@ -298,9 +391,10 @@ function V1Hero({ accent, onApply }) {
 
       {/* Bottom rule with scroll cue */}
       <div style={{
-        maxWidth: 1280, margin: '0 auto', padding: '48px 32px 28px',
+        width: '100%',
+        maxWidth: 1280, margin: '32px auto 0', padding: '48px 32px 28px',
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        borderTop: '1px solid rgba(247,245,240,0.08)', marginTop: 32,
+        borderTop: '1px solid rgba(247,245,240,0.08)',
         fontFamily: DELT.font.mono, fontSize: 11, color: 'rgba(247,245,240,0.45)',
         letterSpacing: '0.14em', textTransform: 'uppercase',
         position: 'relative', zIndex: 2,

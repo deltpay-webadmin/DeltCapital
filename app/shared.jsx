@@ -66,12 +66,12 @@ const DeltContent = {
     { q: 'A real person called me by name and knew my business. Not a call center.', n: 'David Roberts', b: 'Roberts Auto', f: '$95K', r: '1.15×' },
   ],
   faq: [
-    { q: 'What is a factor rate, in plain English?', a: 'A factor rate is a simple multiplier — the total cost of your funding. Borrow $100K at 1.18× and you pay back $118K, total. No compounding, no hidden interest math. Pay early and we refund the unused part of the fee.' },
-    { q: 'How do I pay it back?', a: 'A small fixed amount comes out of your bank account each business day or week, based on your revenue. Most loans are paid off in 4 to 10 months. You see the full schedule in your offer before you sign anything.' },
-    { q: 'Will this hurt my credit?', a: 'No. The first step is a soft credit check that does not affect your score. A full credit check only happens after you sign an offer — and only on the owner, not the business.' },
-    { q: 'Do I need to put up collateral?', a: 'No lien on your business assets, no personal guarantee beyond a standard signature. We base our decision on your revenue, not your property.' },
-    { q: 'What if my revenue drops while I\'m paying it back?', a: 'Call us. We have adjusted payment terms for about 12% of active customers without any penalty. Talk to us before you miss a payment.' },
-    { q: 'Do brokers get a different rate?', a: 'Brokers add their own fee on top. If you apply directly, you always see our lowest rate.' },
+    { q: 'What\'s a factor rate, really?', a: 'One multiplier. $100K at 1.18× = $118K repaid, total. No compounding, no APR gymnastics. Pay early, pay less — we rebate unearned factor.' },
+    { q: 'How is repayment structured?', a: 'A fixed daily or weekly debit sized to your revenue. Typically 4–10 months. You see the schedule in your offer before you sign anything.' },
+    { q: 'Will this hurt my credit?', a: 'No. Get Funded is a soft pull. A hard pull only happens if you counter-sign an offer — and only on the guarantor, not the business.' },
+    { q: 'Do I need collateral?', a: 'No UCC-1 filing, no personal guarantee beyond a standard assurance. We underwrite revenue, not assets.' },
+    { q: 'What if revenue drops mid-term?', a: 'Call us. We\'ve restructured ~12% of active books without penalty. Talk to us before you miss a debit.' },
+    { q: 'Does my rate get better on a second draw?', a: 'Yes. Repeat borrowers in good standing typically see 4–8 basis points off the factor on each renewal. 68% of our book funds with us more than once — the math is in the file.' },
   ],
 };
 

@@ -301,7 +301,7 @@ function V1SupportPage({ accent, onTalk, onApply }) {
                     fontFamily: V1.fontBody, fontSize: 14, lineHeight: 1.55,
                     color: 'rgba(255,255,255,0.72)', margin: '0 0 20px',
                   }}>
-                    Faster than email for anything pricing-related. Zoom, no credit
+                    Faster than email for anything pricing-related. Teams, no credit
                     pull, pick your own time.
                   </p>
 
@@ -500,7 +500,7 @@ function V1SupportConfirm({ form, topic, accent, onReset, onTalk }) {
           }}>Want to talk while you wait?</div>
           <div style={{
             fontFamily: V1.fontBody, fontSize: 13, color: V1.muted, marginTop: 2,
-          }}>30-min Zoom, next slot in ~2 hours.</div>
+          }}>30-min Teams, next slot in ~2 hours.</div>
         </div>
         <button
           onClick={onTalk}
