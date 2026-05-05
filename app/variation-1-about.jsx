@@ -8,7 +8,7 @@ const ABOUT_PRINCIPLES = [
     n: '01',
     title: "We're one team",
     blurb: 'Lead with empathy, treat others with respect. Our success depends on all of us working together — helping, pushing, picking each other up when we fall.',
-    pull: 'One P&L. One standard. One Delt.',
+    pull: 'One team. One standard. One Delt.',
   },
   {
     n: '02',
@@ -24,20 +24,20 @@ const ABOUT_PRINCIPLES = [
   },
   {
     n: '04',
-    title: 'All-in on the operator',
-    blurb: "Every interaction matters. We understand our customers' diverse needs and goals, deliver exceptional products and services, and work hard to earn and keep their trust.",
-    pull: 'The operator always eats first.',
+    title: 'All-in on the business owner',
+    blurb: "Every interaction matters. We understand our customers' different needs and goals, deliver great products and service, and work hard to earn and keep their trust.",
+    pull: 'The business owner always comes first.',
   },
 ];
 
 const ABOUT_TIMELINE = [
-  { y: '2019', title: 'Delt founded',       body: 'Two underwriters and an engineer set out to rebuild small-business lending from scratch. Seed round closes in 42 days.' },
-  { y: '2020', title: 'First $1M month',    body: 'Delt crosses $1M deployed in a single month. First repeat borrower signs a third draw before month-end.' },
-  { y: '2021', title: 'Plaid partnership',  body: 'Live bank-data underwriting goes into production. Decision-to-fund time drops from 72 to 19 hours.' },
-  { y: '2022', title: 'Series A',           body: 'Backed by operators, not just venture. Book expands to construction, logistics, and multi-unit F&B.' },
-  { y: '2023', title: 'SOC 2 Type II',      body: 'Achieved SOC 2 Type II compliance with zero findings. First AI-assisted underwriting model rolls out.' },
-  { y: '2024', title: '$100M deployed',     body: 'Delt crosses $100M deployed lifetime, with an average fund time of 24 hours and a 94% refinance rate.' },
-  { y: '2025', title: '$200M milestone',    body: 'Book crosses $200M. Team grows to 48. Launch same-day wire for qualified operators.' },
+  { y: '2019', title: 'Delt founded',       body: 'Two lending experts and an engineer set out to rebuild small-business lending from scratch. Seed funding closes in 42 days.' },
+  { y: '2020', title: 'First $1M month',    body: 'Delt funds $1M in a single month. First repeat customer comes back for a third loan before month-end.' },
+  { y: '2021', title: 'Plaid partnership',  body: 'Direct bank-data review goes live. Time from approval to funding drops from 72 to 19 hours.' },
+  { y: '2022', title: 'Series A',           body: 'Backed by business owners, not just venture firms. Customer base expands to construction, logistics, and restaurant groups.' },
+  { y: '2023', title: 'SOC 2 Type II',      body: 'Achieved SOC 2 Type II security certification with zero findings. First AI-assisted review model goes live.' },
+  { y: '2024', title: '$100M funded',     body: 'Delt crosses $100M funded lifetime, with an average funding time of 24 hours and 94% of customers coming back for more.' },
+  { y: '2025', title: '$200M milestone',    body: 'Total funded crosses $200M. Team grows to 48. Same-day wire transfers launch for qualified customers.' },
 ];
 
 const ABOUT_LEADERSHIP = [
@@ -45,14 +45,14 @@ const ABOUT_LEADERSHIP = [
   { n: 'David Okonkwo',   r: 'Co-founder, CTO',      bio: 'Ex-Plaid staff eng · MIT CS',              color: '#4945FF' },
   { n: 'Priya Singh',     r: 'Head of Underwriting', bio: '8 yrs at Kabbage · Fraud & risk',          color: '#818CF8' },
   { n: 'Marcus Chen',     r: 'Head of Capital',      bio: 'Ex-Goldman SMB lending · 2 Fed funds',     color: '#4338CA' },
-  { n: 'Nora Hassan',     r: 'Head of Operator Desk', bio: 'Scaled support at Brex to 20K accounts',  color: '#6366F1' },
+  { n: 'Nora Hassan',     r: 'Head of Customer Support', bio: 'Scaled support at Brex to 20K accounts',  color: '#6366F1' },
 ];
 
 const ABOUT_VALUES = [
   { label: 'Years operating',      value: 6,       suffix: '',  sub: 'Founded 2019' },
-  { label: 'Capital deployed',     value: 200,     suffix: 'M', prefix: '$', sub: 'Lifetime, through Q4' },
-  { label: 'Operators funded',     value: 4200,    suffix: '+', sub: 'Across 47 US states' },
-  { label: 'Avg. time to fund',    value: 24,      suffix: ' h', sub: 'From Plaid connect' },
+  { label: 'Funded to date',     value: 200,     suffix: 'M', prefix: '$', sub: 'Lifetime, through Q4' },
+  { label: 'Businesses funded',     value: 4200,    suffix: '+', sub: 'Across 47 US states' },
+  { label: 'Avg. time to fund',    value: 24,      suffix: ' h', sub: 'From bank link' },
 ];
 
 // ─── CountUp hook ───
@@ -180,7 +180,7 @@ function AboutHero() {
           textWrap: 'balance',
           maxWidth: 1100,
         }}>
-          Capital built to{' '}
+          Funding built to{' '}
           <span style={{
             display: 'inline-block',
             position: 'relative',
@@ -211,9 +211,9 @@ function AboutHero() {
             ))}
           </span>
           <br/>
-          Priced in one number.
+          One simple price.
           <br/>
-          Wired in one day.
+          Money in your account in one day.
         </h1>
 
         <div style={{
@@ -228,7 +228,7 @@ function AboutHero() {
           }}>
             We built Delt because the banks we started our own businesses with
             wouldn't lend us a dime when we needed it most. So we rebuilt lending
-            from scratch — with data, not committee minutes.
+            from scratch — with real data, not committee meetings.
           </p>
           <div style={{
             fontFamily: V1.fontMono, fontSize: 11, fontWeight: 600,
@@ -280,7 +280,7 @@ function AboutThesis() {
                 opacity: inView ? 1 : 0,
                 transition: 'all 700ms cubic-bezier(0.22,1,0.36,1) 200ms',
               }}>
-                underwrite the <em style={{ color: V1.blue, fontStyle: 'italic' }}>past</em>.
+                review your <em style={{ color: V1.blue, fontStyle: 'italic' }}>past</em>.
               </span>
               <br/>
               <span style={{
@@ -289,7 +289,7 @@ function AboutThesis() {
                 opacity: inView ? 1 : 0,
                 transition: 'all 700ms cubic-bezier(0.22,1,0.36,1) 400ms',
               }}>
-                Delt underwrites the <em style={{ color: V1.blue, fontStyle: 'italic' }}>next 90 days</em>.
+                Delt looks at your <em style={{ color: V1.blue, fontStyle: 'italic' }}>next 90 days</em>.
               </span>
             </h2>
           </div>
@@ -298,19 +298,19 @@ function AboutThesis() {
               fontFamily: V1.fontBody, fontSize: 18, lineHeight: 1.6,
               color: V1.text, margin: 0,
             }}>
-              Credit bureaus and tax returns tell a lender what a business did
-              two years ago. That's fine for a 30-year mortgage. It's useless
-              for a restaurant that needs to stock up for March Madness.
+              Credit bureaus and tax returns only show what a business did
+              two years ago. That works for a 30-year mortgage. It's useless
+              for a restaurant that needs to stock up before a busy weekend.
             </p>
             <p style={{
               marginTop: 24,
               fontFamily: V1.fontBody, fontSize: 18, lineHeight: 1.6,
               color: V1.text,
             }}>
-              We underwrite the pattern of deposits over the last 90 days — the
-              actual signal of whether a business can service capital. It's
+              We look at your deposits over the last 90 days — the
+              real signal of whether your business can handle a loan. It's
               faster, fairer, and it's why we can fund same-day without
-              collateral, without a hard pull, without a PG.
+              collateral, without a credit score hit, and without putting your personal assets on the line.
             </p>
 
             {/* Signature callout */}
@@ -378,7 +378,7 @@ function AboutPrinciples() {
           <div>
             <V1Eyebrow>How we operate</V1Eyebrow>
             <h2 style={{ ...v1H2, marginTop: 18 }}>
-              Four principles.<br/>Taped to every wall.
+              Four principles.<br/>That guide every decision.
             </h2>
           </div>
           <p style={{
@@ -386,7 +386,7 @@ function AboutPrinciples() {
             color: V1.text, margin: 0, maxWidth: 460, justifySelf: 'end',
           }}>
             These aren't aspirations — they're how the team actually runs. We
-            interview for them, promote against them, and fire for them.
+            hire for them, promote based on them, and let people go when they don't live up to them.
           </p>
         </div>
       </div>
@@ -543,15 +543,15 @@ function AboutTimeline() {
       <div style={{ maxWidth: 1080, margin: '0 auto', padding: '0 40px' }}>
         <div style={{ marginBottom: 72, maxWidth: 720 }}>
           <V1Eyebrow>Our story</V1Eyebrow>
-          <h2 style={{ ...v1H2, marginTop: 18 }}>Six years. One book.</h2>
+          <h2 style={{ ...v1H2, marginTop: 18 }}>Six years. One mission.</h2>
           <p style={{
             marginTop: 20,
             fontFamily: V1.fontBody, fontSize: 17, lineHeight: 1.6, color: V1.text,
             maxWidth: 580,
           }}>
-            We don't white-label, resell, or repackage. Every dollar deployed
-            under the Delt name is underwritten by our team and held on our
-            balance sheet.
+            We don't repackage other lenders' loans. Every dollar lent
+            under the Delt name is reviewed by our own team and funded with
+            our own money.
           </p>
         </div>
 
@@ -665,8 +665,8 @@ function AboutLeadership() {
             fontFamily: V1.fontBody, fontSize: 16.5, lineHeight: 1.6,
             color: V1.text, margin: 0, maxWidth: 460, justifySelf: 'end',
           }}>
-            Every senior operator at Delt has either built a small business, or
-            underwritten thousands of them. We don't hire from consulting.
+            Every senior leader at Delt has either built a small business, or
+            funded thousands of them. We don't hire from consulting firms.
           </p>
         </div>
 

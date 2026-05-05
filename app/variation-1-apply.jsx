@@ -103,8 +103,9 @@ function V1StepBusiness({ form, setForm, accent }) {
         fontFamily: V1.fontBody, fontSize: 15, color: V1.muted,
         lineHeight: 1.55, margin: 0, maxWidth: 520,
       }}>
-        Used to verify entity formation and file a KYB check. We don't hard-pull
-        business credit and we don't surface this to bureaus.
+        Used to confirm your business is properly registered and run a standard
+        business identity check. We don't do a full credit check on your business
+        and we don't report this to credit bureaus.
       </p>
 
       <div style={{
@@ -318,8 +319,9 @@ function V1StepIdentity({ form, setForm, accent }) {
         fontFamily: V1.fontBody, fontSize: 15, color: V1.muted,
         lineHeight: 1.55, margin: 0, maxWidth: 520,
       }}>
-        ID + selfie via Plaid IDV, plus the last 4 of SSN for KYC. Soft-pull on
-        the guarantor. No impact to your personal credit.
+        ID and a quick selfie through our secure verification partner, plus the
+        last 4 of your SSN for the standard identity check. Soft credit check
+        only — no impact on your personal credit.
       </p>
 
       {/* Plaid IDV launcher / verified state */}
@@ -413,8 +415,8 @@ function V1StepIdentity({ form, setForm, accent }) {
             marginTop: 4, fontFamily: V1.fontBody, fontSize: 13.5, color: V1.muted,
             lineHeight: 1.55, maxWidth: 500,
           }}>
-            A hard pull happens only if you counter-sign the offer on the next
-            screen — and only on the personal guarantor, not the business.
+            A full credit check only happens if you sign the offer on the next
+            screen — and only on the person guaranteeing the loan, not the business.
           </div>
         </div>
       </div>
@@ -558,9 +560,9 @@ function V1StepOffer({ form, prefill, accent }) {
         marginTop: 16, fontFamily: V1.fontBody, fontSize: 12.5,
         color: V1.muted, lineHeight: 1.5, maxWidth: 620,
       }}>
-        By accepting, you agree to Delt's standard advance agreement. You'll
+        By accepting, you agree to Delt's standard funding agreement. You'll
         receive a signed PDF and a payment schedule by email within 60 seconds
-        of counter-signing.
+        of signing.
       </p>
     </div>
   );
@@ -809,9 +811,9 @@ function V1ApplicationFlow({ open, onClose, prefill, accent }) {
               marginTop: 10, display: 'flex', flexDirection: 'column', gap: 6,
               fontFamily: V1.fontBody, fontSize: 12, color: 'rgba(255,255,255,0.72)',
             }}>
-              <div>▸ Soft-pull only (until countersign)</div>
-              <div>▸ Plaid read-only — no ACH yet</div>
-              <div>▸ Data purged 30d if declined</div>
+              <div>▸ Soft credit check only (until you sign)</div>
+              <div>▸ Read-only bank link — no payments yet</div>
+              <div>▸ Data deleted after 30 days if declined</div>
             </div>
           </div>
         </aside>

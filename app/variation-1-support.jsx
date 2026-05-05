@@ -63,9 +63,9 @@ function V1SupportHero({ accent }) {
           color: 'rgba(255,255,255,0.72)', margin: '28px 0 0', maxWidth: 640,
           animation: 'supFadeUp 700ms cubic-bezier(.2,.7,.3,1) 140ms both',
         }}>
-          Drop us a note below and a real person on our operator desk picks it up —
-          typically under an hour during business hours. Want to talk it through?{' '}
-          Book a 30-minute call with the underwriter who'd price your deal.
+          Drop us a note below and a real person on our team picks it up —
+          typically in under an hour during business hours. Want to talk it
+          through? Book a 30-minute call with the person who'd price your offer.
         </p>
 
         <div style={{
@@ -74,7 +74,7 @@ function V1SupportHero({ accent }) {
         }}>
           {[
             ['clock',  '< 1hr median reply'],
-            ['user',   'Operator desk, not BPO'],
+            ['user',   'Real people, not a call center'],
             ['shield', 'No credit pull'],
             ['calendar','Mon–Fri · 8a–7p ET'],
           ].map(([icon, label]) => (
@@ -163,8 +163,9 @@ function V1SupportPage({ accent, onTalk, onApply }) {
                     fontFamily: V1.fontBody, fontSize: 14.5, color: V1.muted,
                     lineHeight: 1.55, margin: 0, maxWidth: 520,
                   }}>
-                    Routed to the right person by topic — existing files go to your
-                    underwriter; general inquiries go to the operator desk.
+                    Routed to the right person by topic — questions about an
+                    existing file go to your account contact; general questions
+                    go to our customer team.
                   </p>
 
                   {/* Topic picker */}
@@ -294,7 +295,7 @@ function V1SupportPage({ accent, onTalk, onApply }) {
                     <em style={{
                       fontFamily: '"Source Serif Pro", Georgia, serif',
                       fontStyle: 'italic', fontWeight: 400, color: V1.blueSoft,
-                    }}>with an underwriter.</em>
+                    }}>with a real person on our team.</em>
                   </h3>
                   <p style={{
                     fontFamily: V1.fontBody, fontSize: 14, lineHeight: 1.55,
@@ -394,8 +395,8 @@ function V1SupportPage({ accent, onTalk, onApply }) {
                     fontFamily: V1.fontBody, fontSize: 13, color: V1.muted,
                     lineHeight: 1.55, margin: '4px 0 0',
                   }}>
-                    Our FAQ covers rates, renewals, funding timing, and what we
-                    underwrite on.
+                    Our FAQ covers rates, more funding, how long funding takes,
+                    and what we look at when deciding.
                   </p>
                 </div>
               </div>
@@ -411,8 +412,8 @@ function V1SupportPage({ accent, onTalk, onApply }) {
             {[
               ['Median first reply', '47 min', 'Business hours, Mon–Fri'],
               ['Urgent funding issues', '< 15 min', 'Call the funding line'],
-              ['No scripts', 'Real humans', 'Operator desk — not a BPO'],
-              ['Escalation path', 'Direct', 'Same underwriter through renewal'],
+              ['No scripts', 'Real humans', 'Real people on our team — not a call center'],
+              ['Escalation path', 'Direct', 'Same person on your account from start to finish'],
             ].map(([k, v, sub]) => (
               <div key={k}>
                 <div style={{

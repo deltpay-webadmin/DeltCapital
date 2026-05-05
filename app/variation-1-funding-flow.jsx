@@ -76,7 +76,7 @@ function FfHero({ onApply }) {
 
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 40px', position: 'relative', zIndex: 1 }}>
         <div style={enter(80)}>
-          <V1Eyebrow color={V1.blueSoft}>From estimate to wire</V1Eyebrow>
+          <V1Eyebrow color={V1.blueSoft}>From estimate to funded</V1Eyebrow>
         </div>
         <h1 style={{
           margin: '24px 0 0',
@@ -117,7 +117,7 @@ function FfHero({ onApply }) {
           {[
             ['Application', '5', 'min'],
             ['Approval',    '24', 'hrs'],
-            ['To wire',     '24', 'h'],
+            ['To funded',   '24', 'h'],
             ['Hidden fees', '0',  '$'],
           ].map(([label, value, unit], i) => (
             <div key={i} style={{
@@ -661,8 +661,9 @@ function FfCta({ onApply, onCalc }) {
           transform: inView ? 'translateY(0)' : 'translateY(8px)',
           transition: 'opacity 700ms cubic-bezier(0.22,1,0.36,1) 380ms, transform 700ms cubic-bezier(0.22,1,0.36,1) 380ms',
         }}>
-          A real range, a real underwriter, and a wire that actually clears
-          the same day. No call centers, no broker layers, no junk fees.
+          A real funding range, a real person reviewing your file, and money
+          that actually lands in your account the same day. No call centers,
+          no layers of brokers, no junk fees.
         </p>
         <div style={{
           display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap',
@@ -736,7 +737,7 @@ function V1FundingFlowPage({ accent, onApply, onCalc }) {
         eyebrow="Quick application"
         title="Quick application."
         tagline="Simple. Fast. No credit impact."
-        body="Start with a streamlined application that takes just minutes to complete. Basic business details, secure bank link via Plaid — no hard pulls, no paperwork, no waiting."
+        body="Start with a short application that takes just a few minutes. A few business details and a secure bank link — no full credit check, no paperwork, no waiting."
         bullets={[
           { icon: 'doc',     text: 'Online application in under 5 minutes' },
           { icon: 'bank',    text: 'Secure Plaid bank connection — no statements to upload' },
@@ -752,10 +753,10 @@ function V1FundingFlowPage({ accent, onApply, onCalc }) {
         eyebrow="Review & approval"
         title="Reviewed by humans."
         tagline="Revenue-based. Transparent. Same-day."
-        body="Our underwriting desk reads your revenue patterns — not just your credit score. We look at real deposit flow, balance stability, and trailing cash position to size the offer. One factor rate, one page, no hidden fees."
+        body="A real person on our team looks at how money flows through your business — not just your credit score. We look at your real deposits, account stability, and recent cash position to size the offer. One factor rate, one page, no hidden fees."
         bullets={[
-          { icon: 'chart',  text: 'Revenue-based underwriting — we focus on cash flow' },
-          { icon: 'users',  text: 'Dedicated funding specialist assigned to your file' },
+          { icon: 'chart',  text: 'We focus on your cash flow, not just your credit score' },
+          { icon: 'users',  text: 'A dedicated person on our team handles your file from start to finish' },
           { icon: 'pie',    text: 'Transparent pricing — one factor rate, no compounding' },
           { icon: 'zap',    text: 'Most files approved within hours, not weeks' },
         ]}
@@ -768,12 +769,12 @@ function V1FundingFlowPage({ accent, onApply, onCalc }) {
         eyebrow="Get funded & grow"
         title="Funds in your account."
         tagline="Wired same-day. Repayment that flexes with you."
-        body="Once you counter-sign, funds wire directly to your operating account — often the same business day. Repayment is revenue-based and adjusts with your sales cycle. No collateral, no guarantees beyond the standard, no prepayment penalty."
+        body="Once you sign, funds go directly to your business bank account — often the same business day. Repayment adjusts with your sales: when business is slower, you pay less. No collateral, no extra personal guarantees beyond a standard signature, no penalty for paying off early."
         bullets={[
-          { icon: 'wire',    text: 'Wire or ACH to your operating account — your choice' },
-          { icon: 'refresh', text: 'Revenue-based repayment that adjusts with your sales' },
-          { icon: 'card',    text: 'No collateral, no personal guarantees beyond standard' },
-          { icon: 'trend',   text: 'Renew for additional capital as your business grows' },
+          { icon: 'wire',    text: 'Wire or ACH bank transfer to your business account — your choice' },
+          { icon: 'refresh', text: 'Repayment that adjusts with your daily sales' },
+          { icon: 'card',    text: 'No collateral, no extra personal guarantees beyond standard' },
+          { icon: 'trend',   text: 'Get more funding later as your business grows' },
         ]}
         statLabel="Hidden fees or surprises · $0"
         mock={(active) => <FfMock3 active={active} />}

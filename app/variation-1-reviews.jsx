@@ -288,7 +288,7 @@ function V1ReviewsPage({ accent, onApply, onTalk }) {
               { label: 'Reviews collected',      value: '1,847',   sub: 'Post-funding, every deal' },
               { label: 'Net Promoter Score',     value: '72',      sub: 'Industry avg: 44' },
               { label: 'Would refinance again',  value: '94%',     sub: 'Of closed borrowers' },
-              { label: 'Return customers',       value: '2.4×',    sub: 'Avg. draws per operator' },
+              { label: 'Return customers',       value: '2.4×',    sub: 'Avg. funding rounds per business' },
             ].map((s, i) => (
               <div key={i} style={{
                 padding: '28px 24px',
@@ -386,7 +386,7 @@ function V1ReviewsPage({ accent, onApply, onTalk }) {
               background: V1.white, border: `1px solid ${V1.line}`, borderRadius: 20,
               fontFamily: V1.fontBody, fontSize: 15, color: V1.muted,
             }}>
-              No operators in this category yet. <button onClick={() => setFilter('All')} style={{
+              No businesses in this category yet. <button onClick={() => setFilter('All')} style={{
                 background: 'transparent', border: 'none', color: V1.blue,
                 fontFamily: 'inherit', fontSize: 'inherit', cursor: 'pointer',
                 textDecoration: 'underline', padding: 0,

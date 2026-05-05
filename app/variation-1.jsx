@@ -43,7 +43,7 @@ function V1Chrome({ page, navTo, accent, openApp }) {
     { k: 'about',   l: 'About' },
     { k: 'reviews', l: 'Operators' },
     { k: 'faq',     l: 'FAQ' },
-    { k: 'talk',    l: 'Talk' },
+    { k: 'talk',    l: 'Contact' },
   ];
   const handleNav = (k) => { navTo(k); };
   return (
@@ -172,7 +172,7 @@ function V1Hero({ accent, onApply }) {
         position: 'relative', zIndex: 3,
         ...enter(0),
       }}>
-        <span>Vol. VII · Q1 2026</span>
+        <span>Q1 2026</span>
         <span>Direct lender · Est. 2019</span>
         <span style={{ color: accent, display: 'flex', alignItems: 'center', gap: 12, marginLeft: 32 }}>
           <span style={{ position: 'relative', width: 7, height: 7, marginRight: 2 }}>
@@ -250,14 +250,14 @@ function V1Hero({ accent, onApply }) {
             color: 'rgba(247,245,240,0.75)', margin: '32px 0 0', maxWidth: 520,
             ...enter(560),
           }}>
-            Revenue-based funding from <span style={{ color: '#F7F5F0', fontWeight: 500 }}>$5,000 to $500,000</span>, underwritten off deposits — not your FICO, not your collateral, not a call center's script. Median factor <span style={{ color: '#F7F5F0', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>1.18×</span>. Median time to funds, <span style={{ color: '#F7F5F0', fontWeight: 500 }}>24 hours</span>.
+            Funding from <span style={{ color: '#F7F5F0', fontWeight: 500 }}>$5,000 to $500,000</span>, based on your sales — not your credit score, not your property, not a call center script. Typical fee <span style={{ color: '#F7F5F0', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>1.18×</span>. Funds arrive in <span style={{ color: '#F7F5F0', fontWeight: 500 }}>24 hours</span>.
           </p>
 
           <div style={{
             display: 'flex', gap: 12, marginTop: 36, alignItems: 'center', flexWrap: 'wrap',
             ...enter(700),
           }}>
-            <Btn variant="indigo" size="lg" onClick={onApply} style={{ background: accent, borderColor: accent }}>Get Funded <Arr /></Btn>
+            <Btn variant="indigo" size="lg" onClick={onApply} style={{ background: accent, borderColor: accent }}>Get funded <Arr /></Btn>
             <Btn variant="ghost" size="lg" style={{ background: 'transparent', color: '#F7F5F0', borderColor: 'rgba(247,245,240,0.2)' }}>See how pricing works</Btn>
           </div>
 
@@ -267,9 +267,9 @@ function V1Hero({ accent, onApply }) {
             display: 'flex', gap: 36, flexWrap: 'wrap',
           }}>
             {[
-              ['Today\'s median', '1.18×', 'factor'],
-              ['Time to funds', '24h', 'median'],
-              ['Soft-pull', 'Yes', 'only'],
+              ['Typical fee today', '1.18×', 'factor'],
+              ['Time to funds', '24h', 'typical'],
+              ['Soft credit check', 'Yes', 'only'],
             ].map(([l, v, s], i) => (
               <div key={l} style={enter(820 + i * 90)}>
                 <div style={{ fontFamily: DELT.font.body, fontSize: 10.5, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(247,245,240,0.45)' }}>{l}</div>
@@ -381,7 +381,7 @@ function V1Hero({ accent, onApply }) {
             <div style={{
               fontFamily: DELT.font.mono, fontSize: 10.5, color: 'rgba(247,245,240,0.55)',
               letterSpacing: '0.14em', textTransform: 'uppercase',
-            }}>Fig. 01 — The offer, in motion</div>
+            }}>How your offer comes together</div>
             <div style={{
               width: 40, height: 1, background: 'rgba(247,245,240,0.25)',
             }} />
@@ -412,7 +412,7 @@ function V1Hero({ accent, onApply }) {
             </svg>
           </span>
         </span>
-        <span>$200M+ deployed · 2,850+ funded · since 2019</span>
+        <span>$200M+ funded · 2,850+ businesses · since 2019</span>
       </div>
     </section>
   );
