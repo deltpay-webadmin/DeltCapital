@@ -68,12 +68,11 @@ function V1CompareSection() {
   // Rich per-row data — each row has a numeric delta we can visualize
   // deltStrength = 0..1 (how much Delt wins on this metric)
   const rows = [
-    { k: 'Speed to funds',     delt: '24 hours',       bank: '2–6 weeks',          win: '20× faster',    strength: 0.98 },
-    { k: 'Factor rate',        delt: '1.18×',          bank: '1.35–1.49×',         win: '19% cheaper',   strength: 0.75 },
-    { k: 'Paperwork',          delt: 'Plaid link',     bank: '3 mo statements + returns', win: 'Zero files', strength: 0.92 },
-    { k: 'Credit pull',        delt: 'Soft inquiry',   bank: 'Hard pull',          win: 'No FICO hit',   strength: 0.88 },
-    { k: 'Collateral',         delt: 'None',           bank: 'PG + UCC',           win: 'Unencumbered',  strength: 0.95 },
-    { k: 'Prepayment penalty', delt: 'None',           bank: 'Full factor owed',   win: 'Early pays save', strength: 1.00 },
+    { k: 'Speed to funds', delt: '24–48 hours',     bank: '4–8 weeks',                                                          win: 'weeks faster',       tone: 'pos',     strength: 0.98 },
+    { k: 'Total cost',     delt: '1.18× factor rate', bank: '11–15% APR + guarantee fee + origination',                          win: 'flat, no APR',       tone: 'neutral', strength: 0.75 },
+    { k: 'Paperwork',      delt: 'Plaid link + 1-page app', bank: '3 mo statements + P&L + tax returns + business plan + PFS',  win: 'minutes, not days',  tone: 'pos',     strength: 0.92 },
+    { k: 'Repayment',      delt: '% of daily sales', bank: 'Fixed monthly payment regardless of revenue',                        win: 'slows when you do',  tone: 'pos',     strength: 0.95 },
+    { k: 'Qualification',  delt: 'Revenue-based',   bank: '700+ credit score + 2 yrs financials + collateral appraisal + real estate lien', win: 'cash flow, not credit', tone: 'pos', strength: 1.00 },
   ];
 
   return (
@@ -133,7 +132,7 @@ function V1CompareSection() {
                   Traditional bank
                 </div>
                 <div style={{ fontFamily: V1.fontMono, fontSize: 10.5, color: V1.muted, opacity: 0.7, marginTop: 2, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-                  SBA 7(a) median
+                  SBA 7(a) worst-case
                 </div>
               </div>
             </div>
@@ -157,7 +156,7 @@ function V1CompareSection() {
                   Delt<span style={{ color: V1.blue }}>.</span>
                 </div>
                 <div style={{ fontFamily: V1.fontMono, fontSize: 10.5, color: V1.blue, opacity: 0.85, marginTop: 2, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-                  Live book · Q4 trailing
+                  MCA · direct funder
                 </div>
               </div>
             </div>
@@ -299,7 +298,8 @@ function V1CompareRow({ r, i, visible, last }) {
           <span style={{
             flexShrink: 0,
             padding: '4px 10px', borderRadius: 999,
-            background: `${V1.blue}14`, color: V1.blue,
+            background: r.tone === 'neutral' ? `${V1.muted}1A` : `${V1.blue}14`,
+            color: r.tone === 'neutral' ? V1.muted : V1.blue,
             fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 600,
             letterSpacing: '0.08em', textTransform: 'uppercase',
             whiteSpace: 'nowrap',
