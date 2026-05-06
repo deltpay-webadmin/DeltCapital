@@ -48,11 +48,14 @@ window.PlaidIntegration = window.PlaidIntegration || {
       return data;
     }),
 
-  createIDV: () =>
+  createIDV: (userInfo) =>
     fetch('/api/plaid-create-idv', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ clientUserId: V1PlaidGetClientUserId() }),
+      body: JSON.stringify({
+        clientUserId: V1PlaidGetClientUserId(),
+        user: userInfo || null,
+      }),
     }).then(async (r) => {
       const data = await r.json().catch(() => ({}));
       if (!r.ok) throw V1PlaidThrowFromResponse(data, 'createIDV failed');
@@ -439,7 +442,7 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
 // Stages:
 //   intro → creating → choose-device → mobile-handoff (polling) → done
 //   any-stage → failed (with retry)
-function V1IDVerify({ open, onClose, onComplete }) {
+function V1IDVerify({ open, onClose, onComplete, userInfo }) {
   const [stage, setStage] = React.useState('intro');
   const [idv, setIdv] = React.useState(null);     // { identity_verification_id, shareable_url, status }
   const [err, setErr] = React.useState(null);
@@ -514,7 +517,7 @@ function V1IDVerify({ open, onClose, onComplete }) {
     setErr(null);
     setStage('creating');
     try {
-      const res = await window.PlaidIntegration.createIDV();
+      const res = await window.PlaidIntegration.createIDV(userInfo);
       if (!res.shareable_url || !res.identity_verification_id) {
         throw new Error('Missing shareable_url or id');
       }
