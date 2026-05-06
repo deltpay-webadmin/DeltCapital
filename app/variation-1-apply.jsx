@@ -868,6 +868,29 @@ function V1ApplicationFlow({ open, onClose, prefill, accent }) {
               {step < 4 ? '🔒 Secured · Plaid · Soft-pull only' : 'Application received'}
             </div>
             <div style={{ display: 'flex', gap: 10 }}>
+              {/* TEMP: dev-only skip — remove once IDV is green */}
+              {step < 2 && (
+                <button
+                  onClick={() => {
+                    setForm((f) => ({
+                      ...f,
+                      businessName: f.businessName || 'Test Co',
+                      email: f.email || 'test@example.com',
+                      bankConnected: true,
+                      bankInstitution: f.bankInstitution || 'Test Bank',
+                    }));
+                    setStep(2);
+                  }}
+                  style={{
+                    padding: '7px 10px', borderRadius: 6,
+                    background: 'transparent', border: `1px dashed ${V1.muted}`,
+                    color: V1.muted, cursor: 'pointer',
+                    fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 600,
+                    letterSpacing: '0.12em', textTransform: 'uppercase',
+                  }}
+                >Skip → Identity</button>
+              )}
+              {/* /TEMP */}
               {step > 0 && step < 4 && (
                 <button
                   onClick={() => setStep(step - 1)}
