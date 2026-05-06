@@ -141,7 +141,7 @@ function V1StepBusiness({ form, setForm, accent }) {
 }
 
 // ─── Step 2: Bank (Plaid) ───
-function V1StepBank({ form, setForm, accent }) {
+function V1StepBank({ form, setForm, accent, onAdvance }) {
   const [plaidOpen, setPlaidOpen] = React.useState(false);
   const handlePlaidSuccess = (data) => {
     setPlaidOpen(false);
@@ -151,6 +151,7 @@ function V1StepBank({ form, setForm, accent }) {
       bankInstitution: data.institution,
       bankAccounts: data.accounts,
     });
+    setTimeout(() => { onAdvance && onAdvance(); }, 700);
   };
 
   return (
@@ -833,7 +834,7 @@ function V1ApplicationFlow({ open, onClose, prefill, accent }) {
             padding: '38px 40px',
           }}>
             {step === 0 && <V1StepBusiness form={form} setForm={setForm} accent={accent} />}
-            {step === 1 && <V1StepBank form={form} setForm={setForm} accent={accent} />}
+            {step === 1 && <V1StepBank form={form} setForm={setForm} accent={accent} onAdvance={() => setStep(2)} />}
             {step === 2 && <V1StepIdentity form={form} setForm={setForm} accent={accent} />}
             {step === 3 && <V1StepOffer form={form} prefill={prefill} accent={accent} />}
             {step === 4 && <V1StepDone form={form} accent={accent} />}
