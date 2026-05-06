@@ -141,7 +141,7 @@ function V1StepBusiness({ form, setForm, accent }) {
 }
 
 // ─── Step 2: Bank (Plaid) ───
-function V1StepBank({ form, setForm, accent }) {
+function V1StepBank({ form, setForm, accent, onAdvance }) {
   const [plaidOpen, setPlaidOpen] = React.useState(false);
   const handlePlaidSuccess = (data) => {
     setPlaidOpen(false);
@@ -151,6 +151,7 @@ function V1StepBank({ form, setForm, accent }) {
       bankInstitution: data.institution,
       bankAccounts: data.accounts,
     });
+    setTimeout(() => { onAdvance && onAdvance(); }, 700);
   };
 
   return (
@@ -184,7 +185,6 @@ function V1StepBank({ form, setForm, accent }) {
         }}>
           <div style={{
             padding: '20px 22px', display: 'flex', alignItems: 'center', gap: 14,
-            borderBottom: `1px solid ${V1.line}`,
             background: `linear-gradient(180deg, ${accent}0A, transparent)`,
           }}>
             <div style={{
@@ -202,7 +202,7 @@ function V1StepBank({ form, setForm, accent }) {
                 fontFamily: V1.fontMono, fontSize: 11.5, color: V1.muted,
                 letterSpacing: '0.06em', marginTop: 3,
               }}>
-                90 DAYS · $312,480 TOTAL · {form.bankAccounts ? form.bankAccounts.length : 1} ACCOUNT{form.bankAccounts && form.bankAccounts.length !== 1 ? 'S' : ''}
+                90 DAYS · {form.bankAccounts ? form.bankAccounts.length : 1} ACCOUNT{form.bankAccounts && form.bankAccounts.length !== 1 ? 'S' : ''}
               </div>
             </div>
             <button
@@ -213,30 +213,6 @@ function V1StepBank({ form, setForm, accent }) {
                 fontFamily: V1.fontBody, fontSize: 12.5,
               }}
             >Re-link</button>
-          </div>
-          <div style={{
-            display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
-          }}>
-            {[
-              ['Avg. daily balance', '$28,410'],
-              ['Neg. days (90d)',    '0'],
-              ['Avg. mo. deposits',  '$104,160'],
-            ].map(([k, v], i) => (
-              <div key={k} style={{
-                padding: 18,
-                borderRight: i < 2 ? `1px solid ${V1.line}` : 'none',
-              }}>
-                <div style={{
-                  fontFamily: V1.fontMono, fontSize: 10, fontWeight: 600,
-                  letterSpacing: '0.12em', textTransform: 'uppercase', color: V1.muted,
-                }}>{k}</div>
-                <div style={{
-                  fontFamily: V1.fontDisplay, fontSize: 22, fontWeight: 600,
-                  color: V1.ink, marginTop: 5, letterSpacing: '-0.02em',
-                  fontVariantNumeric: 'tabular-nums',
-                }}>{v}</div>
-              </div>
-            ))}
           </div>
         </div>
       )}
@@ -297,13 +273,28 @@ function V1StepBank({ form, setForm, accent }) {
 }
 
 // ─── Step 3: Identity ───
-function V1StepIdentity({ form, setForm, accent }) {
+function V1StepIdentity({ form, setForm, accent, onAdvance }) {
   const [idvOpen, setIdvOpen] = React.useState(false);
   const idvDone = !!form.idVerified;
   const handleIdvComplete = (data) => {
     setIdvOpen(false);
     setForm({ ...form, idVerified: !!data.idVerified });
   };
+
+  // Auto-advance once IDV + SSN are both satisfied. Critically this also
+  // fires when the *phone* finishes IDV — V1IDVerify polls the IDV status
+  // and calls handleIdvComplete, which flips idVerified true here.
+  // Skip the auto-advance if the user landed back on this step with both
+  // already filled (e.g. via Back from Offer).
+  const [armed] = React.useState(() =>
+    !(form.idVerified && form.ssn4.length === 4)
+  );
+  React.useEffect(() => {
+    if (armed && form.idVerified && form.ssn4.length === 4) {
+      const t = setTimeout(() => { onAdvance && onAdvance(); }, 700);
+      return () => clearTimeout(t);
+    }
+  }, [armed, form.idVerified, form.ssn4.length, onAdvance]);
   return (
     <div>
       <div style={{
@@ -858,8 +849,8 @@ function V1ApplicationFlow({ open, onClose, prefill, accent }) {
             padding: '38px 40px',
           }}>
             {step === 0 && <V1StepBusiness form={form} setForm={setForm} accent={accent} />}
-            {step === 1 && <V1StepBank form={form} setForm={setForm} accent={accent} />}
-            {step === 2 && <V1StepIdentity form={form} setForm={setForm} accent={accent} />}
+            {step === 1 && <V1StepBank form={form} setForm={setForm} accent={accent} onAdvance={() => setStep(2)} />}
+            {step === 2 && <V1StepIdentity form={form} setForm={setForm} accent={accent} onAdvance={() => setStep(3)} />}
             {step === 3 && <V1StepOffer form={form} prefill={prefill} accent={accent} />}
             {step === 4 && <V1StepDone form={form} accent={accent} />}
           </div>

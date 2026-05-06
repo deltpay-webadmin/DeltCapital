@@ -207,15 +207,16 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
   const [linkedSummary, setLinkedSummary] = React.useState(null); // { institution_name, accounts }
   const handlerRef = React.useRef(null);
 
-  // Reset on close.
+  // Reset on close. Tear down the Plaid SDK handler synchronously so its
+  // document-level listeners can't swallow clicks on the page behind.
   React.useEffect(() => {
     if (!open) {
+      if (handlerRef.current && handlerRef.current.destroy) {
+        try { handlerRef.current.destroy(); } catch (_) {}
+      }
+      handlerRef.current = null;
       const t = setTimeout(() => {
         setStage('loading'); setTokenData(null); setErr(null); setLinkedSummary(null);
-        if (handlerRef.current && handlerRef.current.destroy) {
-          try { handlerRef.current.destroy(); } catch (_) {}
-        }
-        handlerRef.current = null;
       }, 260);
       return () => clearTimeout(t);
     }
