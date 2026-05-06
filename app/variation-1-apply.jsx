@@ -184,7 +184,6 @@ function V1StepBank({ form, setForm, accent }) {
         }}>
           <div style={{
             padding: '20px 22px', display: 'flex', alignItems: 'center', gap: 14,
-            borderBottom: `1px solid ${V1.line}`,
             background: `linear-gradient(180deg, ${accent}0A, transparent)`,
           }}>
             <div style={{
@@ -202,7 +201,7 @@ function V1StepBank({ form, setForm, accent }) {
                 fontFamily: V1.fontMono, fontSize: 11.5, color: V1.muted,
                 letterSpacing: '0.06em', marginTop: 3,
               }}>
-                90 DAYS · $312,480 TOTAL · {form.bankAccounts ? form.bankAccounts.length : 1} ACCOUNT{form.bankAccounts && form.bankAccounts.length !== 1 ? 'S' : ''}
+                90 DAYS · {form.bankAccounts ? form.bankAccounts.length : 1} ACCOUNT{form.bankAccounts && form.bankAccounts.length !== 1 ? 'S' : ''}
               </div>
             </div>
             <button
@@ -213,30 +212,6 @@ function V1StepBank({ form, setForm, accent }) {
                 fontFamily: V1.fontBody, fontSize: 12.5,
               }}
             >Re-link</button>
-          </div>
-          <div style={{
-            display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
-          }}>
-            {[
-              ['Avg. daily balance', '$28,410'],
-              ['Neg. days (90d)',    '0'],
-              ['Avg. mo. deposits',  '$104,160'],
-            ].map(([k, v], i) => (
-              <div key={k} style={{
-                padding: 18,
-                borderRight: i < 2 ? `1px solid ${V1.line}` : 'none',
-              }}>
-                <div style={{
-                  fontFamily: V1.fontMono, fontSize: 10, fontWeight: 600,
-                  letterSpacing: '0.12em', textTransform: 'uppercase', color: V1.muted,
-                }}>{k}</div>
-                <div style={{
-                  fontFamily: V1.fontDisplay, fontSize: 22, fontWeight: 600,
-                  color: V1.ink, marginTop: 5, letterSpacing: '-0.02em',
-                  fontVariantNumeric: 'tabular-nums',
-                }}>{v}</div>
-              </div>
-            ))}
           </div>
         </div>
       )}
