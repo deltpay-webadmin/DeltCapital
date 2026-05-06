@@ -273,13 +273,28 @@ function V1StepBank({ form, setForm, accent, onAdvance }) {
 }
 
 // ─── Step 3: Identity ───
-function V1StepIdentity({ form, setForm, accent }) {
+function V1StepIdentity({ form, setForm, accent, onAdvance }) {
   const [idvOpen, setIdvOpen] = React.useState(false);
   const idvDone = !!form.idVerified;
   const handleIdvComplete = (data) => {
     setIdvOpen(false);
     setForm({ ...form, idVerified: !!data.idVerified });
   };
+
+  // Auto-advance once IDV + SSN are both satisfied. Critically this also
+  // fires when the *phone* finishes IDV — V1IDVerify polls the IDV status
+  // and calls handleIdvComplete, which flips idVerified true here.
+  // Skip the auto-advance if the user landed back on this step with both
+  // already filled (e.g. via Back from Offer).
+  const [armed] = React.useState(() =>
+    !(form.idVerified && form.ssn4.length === 4)
+  );
+  React.useEffect(() => {
+    if (armed && form.idVerified && form.ssn4.length === 4) {
+      const t = setTimeout(() => { onAdvance && onAdvance(); }, 700);
+      return () => clearTimeout(t);
+    }
+  }, [armed, form.idVerified, form.ssn4.length, onAdvance]);
   return (
     <div>
       <div style={{
@@ -835,7 +850,7 @@ function V1ApplicationFlow({ open, onClose, prefill, accent }) {
           }}>
             {step === 0 && <V1StepBusiness form={form} setForm={setForm} accent={accent} />}
             {step === 1 && <V1StepBank form={form} setForm={setForm} accent={accent} onAdvance={() => setStep(2)} />}
-            {step === 2 && <V1StepIdentity form={form} setForm={setForm} accent={accent} />}
+            {step === 2 && <V1StepIdentity form={form} setForm={setForm} accent={accent} onAdvance={() => setStep(3)} />}
             {step === 3 && <V1StepOffer form={form} prefill={prefill} accent={accent} />}
             {step === 4 && <V1StepDone form={form} accent={accent} />}
           </div>
