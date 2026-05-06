@@ -28,10 +28,10 @@ module.exports = async function handler(req, res) {
 
   try {
     const data = await plaidFetch('/identity_verification/create', {
-      client_user_id: clientUserId,
-      template_id: templateId,
       is_shareable: true,
+      template_id: templateId,
       gave_consent: true,
+      user: { client_user_id: clientUserId },
     });
     // Render the QR server-side so the IDV shareable_url stays inside our
     // infrastructure (mirrors api/plaid-create-link-token.js — see the
