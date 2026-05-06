@@ -234,8 +234,9 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
       })
       .catch((e) => {
         console.error(e);
-        const detail = e && e.plaidCode ? ` (${e.plaidCode})` : '';
-        setErr(`Could not reach Plaid${detail}. Try again.`);
+        const code = e && e.plaidCode ? ` (${e.plaidCode})` : '';
+        const msg = e && e.plaidMessage ? ` — ${e.plaidMessage}` : '';
+        setErr(`Could not reach Plaid${code}${msg}. Try again.`);
         setStage('intro');
       });
   }, [open]);
@@ -270,8 +271,9 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
           }, 900);
         } catch (e) {
           console.error(e);
-          const detail = e && e.plaidCode ? ` (${e.plaidCode})` : '';
-          setErr(`Could not finish linking${detail}. Try again.`);
+          const code = e && e.plaidCode ? ` (${e.plaidCode})` : '';
+          const msg = e && e.plaidMessage ? ` — ${e.plaidMessage}` : '';
+          setErr(`Could not finish linking${code}${msg}. Try again.`);
           setStage('intro');
         }
       },
@@ -520,8 +522,9 @@ function V1IDVerify({ open, onClose, onComplete }) {
       setStage('choose-device');
     } catch (e) {
       console.error(e);
-      const detail = e && e.plaidCode ? ` (${e.plaidCode})` : '';
-      setErr(`Could not start verification${detail}. Try again.`);
+      const code = e && e.plaidCode ? ` (${e.plaidCode})` : '';
+      const msg = e && e.plaidMessage ? ` — ${e.plaidMessage}` : '';
+      setErr(`Could not start verification${code}${msg}. Try again.`);
       setStage('intro');
     }
   }
