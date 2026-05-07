@@ -54,11 +54,13 @@ function HwHero({ accent, onApply }) {
           }}>
             From application<br/>to{' '}
             <em style={{
+              display: 'inline-block',
               fontStyle: 'italic', fontFamily: '"Source Serif Pro", Georgia, serif',
               fontWeight: 400, letterSpacing: '-0.02em',
               background: `linear-gradient(90deg, ${V1.blue}, #818CF8)`,
               WebkitBackgroundClip: 'text', backgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
+              paddingRight: '0.18em', marginRight: '-0.04em',
             }}>wire</em> in 24 hours.
           </h1>
           <p style={{
