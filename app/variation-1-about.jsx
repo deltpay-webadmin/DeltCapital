@@ -522,35 +522,175 @@ function AboutPrinciples() {
 }
 
 // ─── Why business lending ───
+const ABOUT_PILLARS = [
+  {
+    k: '01',
+    t: 'Capital is the operator\u2019s oxygen',
+    d: 'Small businesses run on timing. The right capital at the right week is the difference between hiring, opening a second location, or stalling out. Speed isn\u2019t a luxury — it\u2019s the product.',
+    img: 'app/assets/about/pillar-01_oxygen.jpg',
+    tags: ['Speed', 'Cash flow', 'Growth'],
+  },
+  {
+    k: '02',
+    t: 'Main Street is the engine of the economy',
+    d: 'Small businesses generate roughly half of US private-sector GDP and create the majority of net new jobs. Every dollar that lands in an operator\u2019s account multiplies through payroll, suppliers, and local communities.',
+    img: 'app/assets/about/pillar-02_mainstreet.jpg',
+    tags: ['SMB', 'Jobs', 'GDP'],
+  },
+  {
+    k: '03',
+    t: 'Banks were never built for this',
+    d: 'Legacy underwriting was designed for collateral and decade-long relationships, not for a roofer who needs a truck by Friday. A modern lender has to read live cash flow, not a paper file.',
+    img: 'app/assets/about/pillar-03_banks.jpg',
+    tags: ['Legacy', 'Friction', 'Collateral'],
+  },
+  {
+    k: '04',
+    t: 'Closing the access gap is the work',
+    d: 'Most credit-worthy operators in this country still get a \u201cno\u201d from the bank — usually for reasons that have nothing to do with their actual business. Our job is to give those operators a real, fairly-priced answer in hours.',
+    img: 'app/assets/about/pillar-04_access.jpg',
+    tags: ['Access', 'Fair pricing', 'Operators'],
+  },
+];
+
+function AboutPillarGallery() {
+  const [active, setActive] = React.useState(0);
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        gap: 10,
+        height: 460,
+        width: '100%',
+      }}
+    >
+      {ABOUT_PILLARS.map((p, i) => {
+        const isActive = i === active;
+        return (
+          <div
+            key={p.k}
+            role="button"
+            tabIndex={0}
+            aria-pressed={isActive}
+            onMouseEnter={() => setActive(i)}
+            onFocus={() => setActive(i)}
+            onClick={() => setActive(i)}
+            style={{
+              position: 'relative',
+              flex: isActive ? '1 1 0' : '0 0 88px',
+              minWidth: 88,
+              borderRadius: 18,
+              overflow: 'hidden',
+              cursor: 'pointer',
+              outline: 'none',
+              transition: 'flex 520ms cubic-bezier(0.22,1,0.36,1)',
+              boxShadow: isActive
+                ? '0 18px 40px rgba(4,30,66,0.22)'
+                : '0 6px 14px rgba(4,30,66,0.10)',
+            }}
+          >
+            <img
+              src={p.img}
+              alt=""
+              style={{
+                position: 'absolute', inset: 0, width: '100%', height: '100%',
+                objectFit: 'cover',
+                filter: isActive ? 'none' : 'saturate(0.85) brightness(0.9)',
+                transition: 'filter 520ms ease',
+              }}
+            />
+            {/* Gradient overlay */}
+            <div style={{
+              position: 'absolute', inset: 0,
+              background: isActive
+                ? 'linear-gradient(180deg, rgba(4,30,66,0.08) 0%, rgba(4,30,66,0.18) 45%, rgba(4,30,66,0.82) 100%)'
+                : 'linear-gradient(180deg, rgba(4,30,66,0.45) 0%, rgba(4,30,66,0.78) 100%)',
+              transition: 'background 520ms ease',
+            }} />
+
+            {/* Collapsed state — vertical text rail */}
+            {!isActive && (
+              <div style={{
+                position: 'absolute', inset: 0,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <div style={{
+                  writingMode: 'vertical-rl',
+                  transform: 'rotate(180deg)',
+                  fontFamily: V1.fontDisplay,
+                  fontSize: 15, fontWeight: 600,
+                  color: '#ffffff',
+                  letterSpacing: '-0.01em',
+                  textShadow: '0 1px 2px rgba(0,0,0,0.35)',
+                  display: 'flex', alignItems: 'center', gap: 14,
+                }}>
+                  <span style={{
+                    fontFamily: V1.fontMono, fontSize: 11, fontWeight: 600,
+                    letterSpacing: '0.18em', color: V1.blueSoft,
+                  }}>{p.k}</span>
+                  <span style={{
+                    overflow: 'hidden', textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap', maxHeight: 320,
+                  }}>{p.t}</span>
+                </div>
+              </div>
+            )}
+
+            {/* Active state — bottom overlay */}
+            <div style={{
+              position: 'absolute', left: 0, right: 0, bottom: 0,
+              padding: '24px 28px 28px',
+              opacity: isActive ? 1 : 0,
+              transform: isActive ? 'translateY(0)' : 'translateY(8px)',
+              transition: 'opacity 360ms ease 120ms, transform 360ms ease 120ms',
+              pointerEvents: isActive ? 'auto' : 'none',
+            }}>
+              <div style={{
+                fontFamily: V1.fontMono, fontSize: 11, fontWeight: 600,
+                letterSpacing: '0.18em', textTransform: 'uppercase',
+                color: V1.blueSoft, marginBottom: 8,
+              }}>{p.k} · Pillar</div>
+              <h3 style={{
+                margin: '0 0 10px',
+                fontFamily: V1.fontDisplay, fontSize: 26, fontWeight: 600,
+                color: '#ffffff', letterSpacing: '-0.02em', lineHeight: 1.2,
+                maxWidth: 540,
+              }}>{p.t}</h3>
+              <p style={{
+                margin: '0 0 14px',
+                fontFamily: V1.fontBody, fontSize: 15, lineHeight: 1.55,
+                color: 'rgba(255,255,255,0.88)',
+                maxWidth: 560,
+              }}>{p.d}</p>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                {p.tags.map((tag) => (
+                  <span key={tag} style={{
+                    fontFamily: V1.fontMono, fontSize: 11, fontWeight: 500,
+                    letterSpacing: '0.08em', textTransform: 'uppercase',
+                    color: '#ffffff',
+                    padding: '6px 10px',
+                    borderRadius: 999,
+                    background: 'rgba(255,255,255,0.14)',
+                    border: '1px solid rgba(255,255,255,0.22)',
+                    backdropFilter: 'blur(4px)',
+                  }}>{tag}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function AboutTimeline() {
   const [ref, inView] = useInView(0.1);
-  const pillars = [
-    {
-      k: '01',
-      t: 'Capital is the operator\u2019s oxygen',
-      d: 'Small businesses run on timing. The right capital at the right week is the difference between hiring, opening a second location, or stalling out. Speed isn\u2019t a luxury — it\u2019s the product.',
-    },
-    {
-      k: '02',
-      t: 'Main Street is the engine of the economy',
-      d: 'Small businesses generate roughly half of US private-sector GDP and create the majority of net new jobs. Every dollar that lands in an operator\u2019s account multiplies through payroll, suppliers, and local communities.',
-    },
-    {
-      k: '03',
-      t: 'Banks were never built for this',
-      d: 'Legacy underwriting was designed for collateral and decade-long relationships, not for a roofer who needs a truck by Friday. A modern lender has to read live cash flow, not a paper file.',
-    },
-    {
-      k: '04',
-      t: 'Closing the access gap is the work',
-      d: 'Most credit-worthy operators in this country still get a \u201cno\u201d from the bank — usually for reasons that have nothing to do with their actual business. Our job is to give those operators a real, fairly-priced answer in hours.',
-    },
-  ];
-
   return (
     <section data-v1-section ref={ref} style={{ background: V1.bg, padding: '140px 0' }}>
-      <div style={{ maxWidth: 1080, margin: '0 auto', padding: '0 40px' }}>
-        <div style={{ marginBottom: 64, maxWidth: 760 }}>
+      <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 40px' }}>
+        <div style={{ marginBottom: 56, maxWidth: 760 }}>
           <V1Eyebrow>Why business lending</V1Eyebrow>
           <h2 data-v1-section-title style={{ ...v1H2, marginTop: 18 }}>
             Capital is what<br/>turns small businesses<br/>into big ones.
@@ -568,41 +708,12 @@ function AboutTimeline() {
           </p>
         </div>
 
-        {/* Pillars grid */}
         <div style={{
-          display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16,
+          opacity: inView ? 1 : 0,
+          transform: inView ? 'translateY(0)' : 'translateY(16px)',
+          transition: 'all 700ms cubic-bezier(0.22,1,0.36,1) 150ms',
         }}>
-          {pillars.map((p, i) => (
-            <div key={p.k} style={{
-              background: V1.white,
-              border: `1px solid ${V1.line}`,
-              borderRadius: 18,
-              padding: '28px 28px 30px',
-              opacity: inView ? 1 : 0,
-              transform: inView ? 'translateY(0)' : 'translateY(16px)',
-              transition: `all 700ms cubic-bezier(0.22,1,0.36,1) ${200 + i * 110}ms`,
-            }}>
-              <div style={{
-                fontFamily: V1.fontMono, fontSize: 11, fontWeight: 600,
-                letterSpacing: '0.18em', textTransform: 'uppercase',
-                color: V1.blue,
-              }}>{p.k}</div>
-              <h3 style={{
-                margin: '10px 0 10px',
-                fontFamily: V1.fontDisplay, fontSize: 22, fontWeight: 600,
-                color: V1.ink, letterSpacing: '-0.02em', lineHeight: 1.2,
-              }}>
-                {p.t}
-              </h3>
-              <p style={{
-                margin: 0,
-                fontFamily: V1.fontBody, fontSize: 15, lineHeight: 1.6,
-                color: V1.text,
-              }}>
-                {p.d}
-              </p>
-            </div>
-          ))}
+          <AboutPillarGallery />
         </div>
       </div>
     </section>
