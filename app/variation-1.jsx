@@ -163,41 +163,9 @@ function V1Hero({ accent, onApply }) {
         }
       `}</style>
 
-      {/* Dateline */}
-      <div style={{
-        maxWidth: 1280, margin: '0 auto', padding: '20px 32px 0',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
-        fontFamily: DELT.font.mono, fontSize: 11.5, color: 'rgba(247,245,240,0.5)',
-        letterSpacing: '0.08em', textTransform: 'uppercase',
-        position: 'relative', zIndex: 3,
-        ...enter(0),
-      }}>
-        <span>Vol. VII · Q1 2026</span>
-        <span>Direct lender · Est. 2019</span>
-        <span style={{ color: accent, display: 'flex', alignItems: 'center', gap: 12, marginLeft: 32 }}>
-          <span style={{ position: 'relative', width: 7, height: 7, marginRight: 2 }}>
-            <span style={{
-              position: 'absolute', top: '50%', left: '50%',
-              transform: 'translate(-50%,-50%)',
-              width: 7, height: 7, borderRadius: 999,
-              background: accent, boxShadow: `0 0 10px ${accent}`,
-              zIndex: 1,
-            }} />
-            <span className="v1hero-pulse" style={{
-              position: 'absolute', top: '50%', left: '50%',
-              width: 7, height: 7, borderRadius: 999,
-              background: accent,
-              animation: 'v1heroPulse 2.2s cubic-bezier(0.22, 1, 0.36, 1) infinite',
-              willChange: 'transform, opacity',
-            }} />
-          </span>
-          Quoting now
-        </span>
-      </div>
-
       <div style={{
         width: '100%',
-        maxWidth: 1280, margin: '0 auto', padding: '56px 32px 0',
+        maxWidth: 1280, margin: '0 auto', padding: '76px 32px 0',
         display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48,
         alignItems: 'center', position: 'relative', zIndex: 2,
         minHeight: 680, flex: 1,
