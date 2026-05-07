@@ -113,6 +113,7 @@ function HwTimelinePreview({ accent }) {
         <div style={{
           position: 'absolute', top: 18, left: 28 + 16, right: 28 + 16, height: 2,
           background: V1.line,
+          zIndex: 0,
         }} />
         {/* Fill */}
         <div style={{
@@ -120,14 +121,16 @@ function HwTimelinePreview({ accent }) {
           width: `calc((100% - ${(28 + 16) * 2}px) * ${progress})`,
           background: `linear-gradient(90deg, ${V1.blue}, #818CF8)`,
           transition: 'width .1s linear',
+          zIndex: 0,
         }} />
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', position: 'relative', zIndex: 1 }}>
           {steps.map((s, i) => {
             const reached = progress >= i / (steps.length - 1);
             return (
               <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
                 <div style={{
+                  position: 'relative', zIndex: 2,
                   width: 36, height: 36, borderRadius: 999,
                   background: reached ? V1.blue : V1.white,
                   border: `2px solid ${reached ? V1.blue : V1.line}`,
@@ -725,27 +728,29 @@ function HwSpeedStrip() {
                 background: r.emphasis ? 'transparent' : '#EEF1F6',
                 border: r.emphasis ? 'none' : `1px solid ${V1.line}`,
                 borderRadius: 6,
+                overflow: 'visible',
               }}>
                 <div style={{
-                  position: 'absolute', inset: 0,
+                  position: 'absolute', top: 0, bottom: 0, left: 0,
                   width: `${(r.days / maxDays) * 100}%`,
                   background: r.emphasis
                     ? `linear-gradient(90deg, ${V1.blue}, #818CF8)`
                     : '#B8C0CC',
                   borderRadius: 6,
                   boxShadow: r.emphasis ? `0 4px 16px ${V1.blue}55` : 'none',
-                  display: 'flex', alignItems: 'center', justifyContent: 'flex-end',
-                  paddingRight: r.emphasis ? 12 : 0,
-                }}>
-                  {r.emphasis && (
-                    <span style={{
-                      fontFamily: V1.fontMono, fontSize: 11, fontWeight: 600,
-                      color: '#fff', letterSpacing: '0.08em', textTransform: 'uppercase',
-                    }}>
-                      We're here
-                    </span>
-                  )}
-                </div>
+                }} />
+                {r.emphasis && (
+                  <span style={{
+                    position: 'absolute',
+                    left: `calc(${(r.days / maxDays) * 100}% + 12px)`,
+                    top: '50%', transform: 'translateY(-50%)',
+                    fontFamily: V1.fontMono, fontSize: 11, fontWeight: 700,
+                    color: V1.blue, letterSpacing: '0.08em', textTransform: 'uppercase',
+                    whiteSpace: 'nowrap',
+                  }}>
+                    We're here
+                  </span>
+                )}
               </div>
               <div style={{
                 fontFamily: V1.fontMono, fontSize: 13, fontWeight: 600,

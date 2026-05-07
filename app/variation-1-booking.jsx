@@ -134,9 +134,9 @@ function V1BkIcon({ name, size = 14 }) {
 }
 
 const V1_SPECIALISTS = [
-  { id: 1, name: 'Specialist A', title: 'Funding Specialist' },
-  { id: 2, name: 'Specialist B', title: 'Funding Specialist' },
-  { id: 3, name: 'Specialist C', title: 'Funding Specialist' },
+  { id: 1, name: 'Marcus Reeves',  title: 'Funding Specialist' },
+  { id: 2, name: 'Jordan Bellamy', title: 'Funding Specialist' },
+  { id: 3, name: 'Sasha Whitfield', title: 'Funding Specialist' },
 ];
 
 // 8:00am → 5:30pm in 30-minute increments. Last slot starts at 5:30pm so
