@@ -688,11 +688,13 @@ function HwSpeedStrip() {
             <V1Eyebrow>Time to funds</V1Eyebrow>
             <h2 data-v1-section-title style={{ ...v1H2, marginTop: 18 }}>
               Faster because<br/>we <em style={{
+                display: 'inline-block',
                 fontStyle: 'italic', fontFamily: '"Source Serif Pro", Georgia, serif',
                 fontWeight: 400, letterSpacing: '-0.015em',
                 background: `linear-gradient(90deg, ${V1.blue}, #818CF8)`,
                 WebkitBackgroundClip: 'text', backgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
+                paddingRight: '0.18em', marginRight: '-0.04em',
               }}>are</em> the lender.
             </h2>
           </div>
@@ -723,7 +725,8 @@ function HwSpeedStrip() {
               </div>
               <div style={{
                 position: 'relative', height: r.emphasis ? 32 : 22,
-                background: r.emphasis ? 'transparent' : V1.bg,
+                background: r.emphasis ? 'transparent' : '#EEF1F6',
+                border: r.emphasis ? 'none' : `1px solid ${V1.line}`,
                 borderRadius: 6,
                 overflow: 'visible',
               }}>
@@ -732,7 +735,7 @@ function HwSpeedStrip() {
                   width: `${(r.days / maxDays) * 100}%`,
                   background: r.emphasis
                     ? `linear-gradient(90deg, ${V1.blue}, #818CF8)`
-                    : V1.line,
+                    : '#B8C0CC',
                   borderRadius: 6,
                   boxShadow: r.emphasis ? `0 4px 16px ${V1.blue}55` : 'none',
                 }} />
