@@ -43,6 +43,12 @@ module.exports = async function handler(req, res) {
       is_shareable: true,
       template_id: templateId,
       gave_consent: true,
+      // Return the existing session for this (client_user_id, template_id)
+      // instead of throwing INVALID_FIELD when one already exists. The
+      // client_user_id is stable per browser (localStorage), so a retried
+      // verification — common after a closed mobile handoff or a reload —
+      // would otherwise wedge the user.
+      is_idempotent: true,
       user: { client_user_id: clientUserId },
     });
     // Render the QR server-side so the IDV shareable_url stays inside our
