@@ -107,7 +107,7 @@ function V1Hero({ accent, onApply }) {
   // Rotating verb that swaps every 1.9s. Words are stacked in a single
   // inline-grid cell so the <em> auto-sizes to the widest child — keeps the
   // trailing "it." anchored regardless of which word is showing.
-  const fundWords = ['fund', 'scale', 'power', 'grow'];
+  const fundWords = ['fund', 'back', 'wire', 'fuel'];
   const [fundIdx, setFundIdx] = React.useState(0);
   React.useEffect(() => {
     if (!mounted) return undefined;
