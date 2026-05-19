@@ -15,7 +15,7 @@ function V1Ticker({ accent }) {
   ];
   const all = [...rows, ...rows];
   return (
-    <div data-v1-ticker style={{ background: '#000', color: '#E9E7DF', padding: '6px 0', overflow: 'hidden', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+    <div data-v1-ticker data-v1-ticker-bar style={{ background: '#000', color: '#E9E7DF', padding: '6px 0', overflow: 'hidden', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
       <div style={{
         display: 'flex', whiteSpace: 'nowrap',
         animation: 'v1ticker 40s linear infinite', fontFamily: DELT.font.mono, fontSize: 11.5,
@@ -242,7 +242,7 @@ function V1Hero({ accent, onApply }) {
       `}</style>
 
       {/* Dateline */}
-      <div style={{
+      <div data-v1-hero-meta style={{
         maxWidth: 1280, margin: '0 auto', padding: '20px 32px 0',
         display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
         fontFamily: DELT.font.mono, fontSize: 11.5, color: 'rgba(247,245,240,0.5)',
@@ -339,7 +339,7 @@ function V1Hero({ accent, onApply }) {
             <Btn variant="ghost" size="lg" style={{ background: 'transparent', color: '#F7F5F0', borderColor: 'rgba(247,245,240,0.2)' }}>See how pricing works</Btn>
           </div>
 
-          <div style={{
+          <div data-v1-hero-substats style={{
             marginTop: 32, paddingTop: 24,
             borderTop: '1px solid rgba(247,245,240,0.1)',
             display: 'flex', gap: 36, flexWrap: 'wrap',
@@ -450,7 +450,7 @@ function V1Hero({ accent, onApply }) {
           }} />
 
           {/* Floating card caption — subtle, editorial */}
-          <div style={{
+          <div data-v1-decorative style={{
             position: 'absolute', bottom: 28, right: 28,
             display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6,
             pointerEvents: 'none',
@@ -468,7 +468,7 @@ function V1Hero({ accent, onApply }) {
       </div>
 
       {/* Bottom rule with scroll cue */}
-      <div style={{
+      <div data-v1-decorative style={{
         width: '100%',
         maxWidth: 1280, margin: '32px auto 0', padding: '48px 32px 28px',
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',

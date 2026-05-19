@@ -76,7 +76,7 @@ function V1CompareSection() {
   ];
 
   return (
-    <section data-v1-section ref={sectionRef} style={{ background: V1.bg, padding: '120px 0', borderTop: `1px solid ${V1.line}`, borderBottom: `1px solid ${V1.line}` }}>
+    <section data-v1-section data-v1-comparison-section ref={sectionRef} style={{ background: V1.bg, padding: '120px 0', borderTop: `1px solid ${V1.line}`, borderBottom: `1px solid ${V1.line}` }}>
       <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 40px' }}>
         {/* Heading */}
         <div data-v1-grid-2col style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'end', marginBottom: 56 }}>
@@ -95,8 +95,22 @@ function V1CompareSection() {
           </p>
         </div>
 
-        {/* ─── Unified comparison frame ─── */}
-        <div data-v1-comparison data-v1-table-wrap style={{
+        {/* ─── Mobile-simplified comparison cards ─── */}
+        <div data-v1-comparison-mobile>
+          {rows.map((r, i) => (
+            <div key={r.k} className="row">
+              <div className="label">{r.k}</div>
+              <div className="compare">
+                <span className="bank">{r.bank}</span>
+                <span className="delt">{r.delt}</span>
+              </div>
+              {r.tone === 'pos' && (<span className="pill">{r.win}</span>)}
+            </div>
+          ))}
+        </div>
+
+        {/* ─── Unified comparison frame (desktop) ─── */}
+        <div data-v1-comparison-desktop data-v1-comparison data-v1-table-wrap style={{
           background: V1.white,
           border: `1px solid ${V1.line}`,
           borderRadius: 24,
@@ -169,7 +183,7 @@ function V1CompareSection() {
         </div>
 
         {/* Result strip below */}
-        <div data-v1-grid-3col style={{ marginTop: 24, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+        <div data-v1-grid-3col data-v1-weeks-faster style={{ marginTop: 24, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
           {[
             { label: 'Median time to funds',     value: '24 h',   sub: 'vs 2–6 weeks at a bank' },
             { label: 'Avg savings vs SBA',       value: '19%',    sub: 'on total cost of capital' },
@@ -1158,8 +1172,21 @@ function V1UseCasesSection() {
           </p>
         </div>
 
-        {/* Editorial two-column frame — no card shell */}
-        <div data-v1-grid-2col style={{
+        {/* Mobile-simplified bullet list */}
+        <div data-v1-capital-picker-mobile>
+          <h3>Use it for what moves the needle.</h3>
+          <ul>
+            {USE_CASES.map((u) => (
+              <li key={u.k}>
+                <strong>{u.label}</strong>
+                {u.blurb}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Editorial two-column frame — no card shell (desktop) */}
+        <div data-v1-capital-picker-desktop data-v1-grid-2col style={{
           display: 'grid',
           gridTemplateColumns: '360px 1fr',
           gap: 0,

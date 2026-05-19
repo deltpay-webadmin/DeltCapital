@@ -18,6 +18,10 @@
   /* ── Prevent horizontal scroll site-wide ── */
   html, body { overflow-x: hidden; max-width: 100vw; }
 
+  /* ── Base: mobile-only alternates are hidden on desktop ── */
+  [data-v1-comparison-mobile],
+  [data-v1-capital-picker-mobile] { display: none; }
+
   /* ── Mobile responsive layer (<= 768px) ──
      Site uses inline styles, so !important is used selectively
      to override the desktop inline styles at the mobile breakpoint. */
@@ -109,6 +113,118 @@
 
     /* Logo in chrome header / mobile nav — keep at the inline height. */
     header img, [role="dialog"] img { height: 28px !important; width: auto !important; max-width: none !important; }
+
+    /* ── Heavy mobile simplification ──
+       Hide decorative / over-complex elements that overwhelm a phone screen. */
+    [data-v1-ticker-bar],
+    [data-v1-hero-meta],
+    [data-v1-hero-substats],
+    [data-v1-weeks-faster],
+    [data-v1-comparison-desktop],
+    [data-v1-capital-picker-desktop],
+    [data-v1-decorative] { display: none !important; }
+
+    /* Show mobile-simplified alternates */
+    [data-v1-comparison-mobile],
+    [data-v1-capital-picker-mobile] { display: block !important; }
+
+    /* Disable decorative animations on mobile (reduce visual noise + save battery) */
+    .v1hero-pulse, .v1hero-bob { animation: none !important; }
+
+    /* Mobile-simplified comparison cards */
+    [data-v1-comparison-mobile] { padding: 0; margin: 0; }
+    [data-v1-comparison-mobile] .row {
+      background: #0e1733;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 12px;
+    }
+    [data-v1-comparison-mobile] .row .label {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+    }
+    [data-v1-comparison-mobile] .row .compare {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: baseline;
+      flex-wrap: wrap;
+    }
+    [data-v1-comparison-mobile] .row .compare .bank {
+      color: rgba(255,255,255,0.45);
+      text-decoration: line-through;
+      font-size: 14px;
+      flex: 1 1 45%;
+      min-width: 0;
+    }
+    [data-v1-comparison-mobile] .row .compare .delt {
+      color: #fff;
+      font-weight: 700;
+      font-size: 16px;
+      flex: 1 1 45%;
+      min-width: 0;
+      text-align: right;
+    }
+    [data-v1-comparison-mobile] .row .pill {
+      display: inline-block;
+      margin-top: 10px;
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #a5f3c9;
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(34, 197, 94, 0.25);
+      padding: 4px 10px;
+      border-radius: 999px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* Mobile-simplified capital picker as bullet list */
+    [data-v1-capital-picker-mobile] {
+      padding: 0;
+      margin: 16px 0 0;
+    }
+    [data-v1-capital-picker-mobile] h3 {
+      font-size: clamp(20px, 5.5vw, 26px);
+      color: #0A2540;
+      margin: 0 0 18px;
+      line-height: 1.2;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+    [data-v1-capital-picker-mobile] ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      border-top: 1px solid rgba(10,37,64,0.08);
+    }
+    [data-v1-capital-picker-mobile] li {
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(10,37,64,0.08);
+      color: rgba(10,37,64,0.7);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    [data-v1-capital-picker-mobile] li strong {
+      display: block;
+      color: #0A2540;
+      font-size: 15.5px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      letter-spacing: -0.01em;
+    }
+
+    /* Tighten section padding everywhere on mobile */
+    section, [data-v1-section] {
+      padding-top: 56px !important;
+      padding-bottom: 56px !important;
+    }
   }
   /* Match the splash background so the first paint is Midnight Steel,
      not white — otherwise the browser flashes white before the splash
