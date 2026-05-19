@@ -19,51 +19,43 @@ const FAQ_CATS = [
     intro: 'How the factor rate works, why it\'s a single number, and what you actually pay.',
     items: [
       {
-        q: "What's a factor rate, really?",
-        short: 'One multiplier. $100K at 1.18× = $118K repaid, total.',
+        q: 'Is there interest for a loan from Delt?',
+        short: 'No ongoing interest. One flat loan fee, locked in upfront.',
         a: (
           <>
             <p>
-              A factor rate is a single multiplier applied to the advance, once.
-              Sign for $100,000 at 1.18× and you owe $118,000 — no matter how
-              fast or slow you pay it back. No compounding, no APR reset, no
-              late-payment fee that cascades into interest on interest.
-            </p>
-            <p>
-              Pay early and we <b>rebate the unearned factor</b>. If you
-              retire the balance at month 4 of a 10-month schedule, you get
-              roughly 60% of the factor returned to your account. Most lenders
-              will quietly collect the full factor. We won't.
+              No, loans from Delt have no ongoing interest charges. The total
+              cost of the loan is simply the loan fee, which is the difference
+              between the total owed amount and the initial loan amount you
+              apply for on your Dashboard. The total cost of the loan never
+              changes.
             </p>
             <FaqMath
               rows={[
-                ['Advance',            '$100,000'],
-                ['Factor rate',        '1.18×'],
-                ['Total repaid',       '$118,000'],
-                ['Term',               '10 months'],
-                ['Fixed weekly debit', '$2,724'],
+                ['Loan amount',     '$100,000'],
+                ['Total owed',      '$118,000'],
+                ['Loan fee',        '$18,000'],
+                ['Ongoing interest', '$0'],
               ]}
-              note="Pay early? Retire at month 5 and get ~$5,900 rebated."
+              note="What you see at signing is what you pay — nothing accrues, nothing compounds."
             />
           </>
         ),
       },
       {
-        q: 'How is repayment structured?',
-        short: 'Fixed daily or weekly debit sized to your revenue. 4–10 months.',
+        q: 'How do I repay a loan from Delt?',
+        short: 'A fixed percentage of your daily card sales, deducted automatically.',
         a: (
           <>
             <p>
-              A fixed ACH pulled on the schedule you pick — daily (Mon–Fri) or
-              weekly. Typical term is 4–10 months. You see the debit amount and
-              exact schedule in the offer, before you sign. No variable
-              repayment, no "holdback" of card sales, no surprise adjustments.
+              A fixed percentage of your daily card sales is deducted
+              automatically until your loan is repaid. If sales are up one
+              day, you pay more; if you have a slow day, you pay less.
             </p>
             <p>
-              Want to pause? <b>We've restructured ~12% of active books</b>
-              {' '}mid-term without penalty. Call us before you miss a debit
-              and we'll work it out. Miss three in a row without calling and
-              it becomes a collections problem — fair warning.
+              <a href="#" style={{ color: V1.blue, textDecoration: 'underline' }}>
+                Learn more about Delt loan repayment.
+              </a>
             </p>
           </>
         ),
@@ -98,25 +90,6 @@ const FAQ_CATS = [
           </>
         ),
       },
-      {
-        q: 'What fees are you not showing me?',
-        short: 'One origination fee. That\'s it. No junk fees, no closing costs.',
-        a: (
-          <>
-            <p>
-              There's a <b>flat $395 origination fee</b> that's already baked
-              into the factor rate you see — it's not added on top. No wire
-              fees, no ACH fees, no "documentation" fees, no UCC filing fees,
-              no closing costs. The number on your offer is the number.
-            </p>
-            <p>
-              If you ever see a line item you don't recognize on a funding
-              statement, email <code>compliance@delt.capital</code>. We owe you
-              an explanation within 24 hours.
-            </p>
-          </>
-        ),
-      },
     ],
   },
   {
@@ -126,14 +99,14 @@ const FAQ_CATS = [
     intro: 'What we look at, what we don\'t, and what disqualifies a file fast.',
     items: [
       {
-        q: 'What do you actually underwrite on?',
-        short: 'Deposit stability over the last 90 days. Not FICO, not collateral.',
+        q: "How do you determine my business's loan offer?",
+        short: 'Processing volume, account history, and payment frequency — not FICO.',
         a: (
           <>
             <p>
-              We read 90 days of business-deposit flow through Plaid and model
-              three things: <b>average daily balance, deposit consistency,</b>
-              and <b>negative-day frequency.</b> That's ~80% of the decision.
+              Loan eligibility is based on a variety of factors related to
+              your business, including its payment processing volume, account
+              history, and payment frequency.
             </p>
             <ul style={faqUlStyle}>
               <li><b>Minimum monthly revenue:</b> $15,000 (trailing 3 mo avg)</li>
@@ -142,9 +115,9 @@ const FAQ_CATS = [
               <li><b>Max negative days:</b> 5 in trailing 90 days</li>
             </ul>
             <p>
-              FICO is a tiebreaker on edge cases. We've funded operators with
-              580 scores and declined operators with 780s. The book tells
-              us what the score can't.
+              <a href="#" style={{ color: V1.blue, textDecoration: 'underline' }}>
+                Learn more about eligibility for Delt business loans.
+              </a>
             </p>
           </>
         ),
@@ -183,25 +156,6 @@ const FAQ_CATS = [
               (ex-pharma), construction, trades, e-commerce, services,
               manufacturing, auto, beauty, fitness, and about 80 other NAICS
               codes. If you're not sure, apply — Get Funded tells you in 60s.
-            </p>
-          </>
-        ),
-      },
-      {
-        q: 'I have an open MCA — can I still get funded?',
-        short: 'Yes, if the ratios work. We consolidate often.',
-        a: (
-          <>
-            <p>
-              About 40% of our book has an existing advance at the time of
-              application. We'll often consolidate it into a single Delt
-              position at a better rate — especially if you're stacking
-              across 3+ lenders. One debit is easier than five.
-            </p>
-            <p>
-              What kills a file: total daily debits &gt;8% of average daily
-              deposits. If you're there already, we'll say so and tell you what
-              needs to clear first.
             </p>
           </>
         ),
@@ -275,16 +229,19 @@ const FAQ_CATS = [
         ),
       },
       {
-        q: 'Can I apply if my bookkeeping is a mess?',
-        short: 'Yes. We read deposits, not QuickBooks.',
+        q: 'How do I request a loan from Delt?',
+        short: 'Eligible offers appear automatically in your Dashboard — no request needed.',
         a: (
           <>
             <p>
-              We don't need clean books to underwrite. If the cash is moving
-              through your operating account, we can see it. Cash-based
-              businesses (laundromats, barbershops, some restaurants) are
-              harder — we need to see deposits landing, not just revenue
-              reported. But "behind on reconciliation" doesn't kill a file.
+              If a loan offer is not available in your Delt Dashboard, your
+              business is not eligible at this time. Rest assured, we
+              automatically review Delt accounts on a daily basis to evaluate
+              the many factors about your business that we already have to
+              assess your loan eligibility. We will notify you if you become
+              eligible for Delt Loans at a later time. You do not need to
+              contact us or provide any additional information to become
+              eligible for a loan offer.
             </p>
           </>
         ),
@@ -390,26 +347,6 @@ const FAQ_CATS = [
               see their factor drop by <b>2–4 basis points</b> on average per
               renewal, up to three renewals. After that you've earned the
               floor rate we publish.
-            </p>
-          </>
-        ),
-      },
-      {
-        q: "What's Delt Boost?",
-        short: 'Card-processing switch that unlocks a higher advance ceiling.',
-        a: (
-          <>
-            <p>
-              Switching your card processing to Delt gives us a real-time view
-              of deposits — not just historical. That lets us responsibly
-              extend <b>1.75× the standard advance ceiling</b> and shave 1–3
-              basis points off your factor. It's optional; nothing about your
-              primary offer depends on it.
-            </p>
-            <p>
-              Fees are standard (interchange + 0.15%). We don't make
-              processing a condition of funding, and we don't lock you in —
-              cancel anytime without affecting your advance.
             </p>
           </>
         ),

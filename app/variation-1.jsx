@@ -172,9 +172,7 @@ function V1Hero({ accent, onApply }) {
         position: 'relative', zIndex: 3,
         ...enter(0),
       }}>
-        <span>Vol. VII · Q1 2026</span>
-        <span>Direct lender · Est. 2019</span>
-        <span style={{ color: accent, display: 'flex', alignItems: 'center', gap: 12, marginLeft: 32 }}>
+        <span style={{ color: accent, display: 'flex', alignItems: 'center', gap: 12 }}>
           <span style={{ position: 'relative', width: 7, height: 7, marginRight: 2 }}>
             <span style={{
               position: 'absolute', top: '50%', left: '50%',
@@ -371,21 +369,6 @@ function V1Hero({ accent, onApply }) {
             pointerEvents: 'none',
           }} />
 
-          {/* Floating card caption — subtle, editorial */}
-          <div style={{
-            position: 'absolute', bottom: 28, right: 28,
-            display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6,
-            pointerEvents: 'none',
-            ...enter(1100),
-          }}>
-            <div style={{
-              fontFamily: DELT.font.mono, fontSize: 10.5, color: 'rgba(247,245,240,0.55)',
-              letterSpacing: '0.14em', textTransform: 'uppercase',
-            }}>Fig. 01 — The offer, in motion</div>
-            <div style={{
-              width: 40, height: 1, background: 'rgba(247,245,240,0.25)',
-            }} />
-          </div>
         </div>
       </div>
 
