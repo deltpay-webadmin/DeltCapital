@@ -16,25 +16,25 @@ const FAQ_CATS = [
     k: 'pricing',
     label: 'Pricing & cost',
     eyebrow: '01 · Pricing',
-    intro: 'How a Delt loan is priced. One flat fee, no APR, no compounding.',
+    intro: 'How Delt funding is priced. One flat fee, no APR, no compounding, no surprises.',
     items: [
       {
-        q: 'Is there interest for a loan from Delt?',
-        short: 'No ongoing interest. One flat loan fee, locked in upfront.',
+        q: 'Is there interest on Delt funding?',
+        short: 'No interest. No compounding. One flat fee, locked in upfront.',
         a: (
           <>
             <p>
-              No, loans from Delt have no ongoing interest charges. The total
-              cost of the loan is simply the loan fee, which is the difference
-              between the total owed amount and the initial loan amount you
-              apply for on your Dashboard. The total cost of the loan never
-              changes and your balance never grows.
+              No. Delt funding has no ongoing interest charges. The total cost
+              is simply the funding fee — the difference between the total
+              owed amount and the initial advance amount you see in your
+              Dashboard. <b>The total cost never changes and your balance
+              never grows.</b>
             </p>
             <FaqMath
               rows={[
-                ['Loan amount',     '$100,000'],
+                ['Advance amount',  '$100,000'],
                 ['Total owed',      '$118,000'],
-                ['Loan fee',        '$18,000'],
+                ['Funding fee',     '$18,000'],
                 ['Ongoing interest', '$0'],
               ]}
               note="What you see at signing is what you pay — nothing accrues, nothing compounds."
@@ -43,38 +43,39 @@ const FAQ_CATS = [
         ),
       },
       {
-        q: "What's the cost of a Delt loan?",
-        short: 'One flat fee — the difference between the total owed and the loan amount.',
+        q: "What's the cost of Delt funding?",
+        short: 'One flat fee — the difference between the total owed and the advance amount.',
         a: (
           <>
             <p>
-              There is no interest, just one flat fee. The total cost of the
-              loan is the loan fee, which is the difference between the total
-              owed amount and the initial loan amount you apply for on your
-              Dashboard. The total cost of the loan never changes and your
-              balance never grows.
+              There's no interest, just one flat fee. The total cost is the
+              funding fee, which is the difference between the total owed
+              amount and the initial advance amount you see in your Dashboard.
+              The total cost never changes and your balance never grows.
             </p>
             <p>
-              Actual fees depend on your payment-processing history, loan
-              amount, and other eligibility factors. You see the exact fee and
-              total owed in the offer, before you sign.
+              Your exact fee is tailored to your business — based on
+              processing history, advance amount, and account performance.
+              You see the full number, in dollars, in the offer before you
+              accept.
             </p>
           </>
         ),
       },
       {
         q: 'Are there late fees or prepayment penalties?',
-        short: 'No late fees. No prepayment penalty. Pay early at no extra cost.',
+        short: 'No late fees. No prepayment penalty. Pay early and you finish sooner — same cost.',
         a: (
           <>
             <p>
-              <b>No late fees.</b> There are no additional late fees added to
-              your total amount owed.
+              <b>No late fees.</b> Nothing is ever added to your total amount
+              owed. The number on your offer is the number — full stop.
             </p>
             <p>
-              <b>No prepayment penalty.</b> You can make prepayments at any
-              time at no additional cost. The total amount you owe does not
-              change due to prepayments — you simply finish the loan sooner.
+              <b>No prepayment penalty.</b> Pay ahead any time at no extra
+              cost. The total amount you owe doesn't change due to
+              prepayments; you simply finish the advance sooner and free up
+              your card sales.
             </p>
           </>
         ),
@@ -85,69 +86,72 @@ const FAQ_CATS = [
     k: 'eligibility',
     label: 'Eligibility',
     eyebrow: '02 · Who qualifies',
-    intro: 'What we look at, what offers look like, and whether applying touches your credit.',
+    intro: "What we look at, what offers look like, and why applying won't touch your credit.",
     items: [
       {
-        q: "How do you determine my business's loan offer?",
+        q: "How do you determine my business's offer?",
         short: 'Processing volume, account history, and payment frequency — not FICO.',
         a: (
           <>
             <p>
-              Loan eligibility is based on a variety of factors related to
-              your business, including its payment processing volume, account
-              history, and payment frequency.
+              Offers are based on a variety of factors related to your
+              business, including its payment processing volume, account
+              history, and payment frequency. We underwrite the cash flow
+              that actually runs your business — not a credit score from
+              three years ago.
             </p>
             <ul style={faqUlStyle}>
-              <li><b>Card processing volume</b> on your operating account</li>
-              <li><b>Time on Delt</b> and overall account history</li>
-              <li><b>Sales history and deposit consistency</b></li>
-              <li><b>Status of any bankruptcy filings</b></li>
+              <li><b>Card processing volume</b> through your operating account</li>
+              <li><b>Time in business</b> and account history with Delt</li>
+              <li><b>Sales consistency</b> and deposit patterns</li>
+              <li><b>Customer mix</b> and revenue stability</li>
             </ul>
             <p>
               <a href="#" style={{ color: V1.blue, textDecoration: 'underline' }}>
-                Learn more about eligibility for Delt business loans.
+                Learn more about eligibility for Delt funding.
               </a>
             </p>
           </>
         ),
       },
       {
-        q: 'What loan amounts are available through Delt?',
-        short: 'Loan offers range from $1,000 to $350,000, based on business performance.',
+        q: 'How much funding can I receive through Delt?',
+        short: 'Offers are customized to your business performance — up to $350K.',
         a: (
           <>
             <p>
-              Loan offers range from <b>$1,000 to $350,000</b>, depending on
-              your business performance. We take into account:
+              Offers are <b>customized to your business</b> and can range up
+              to <b>$350,000</b>, depending on performance. We take into
+              account:
             </p>
             <ul style={faqUlStyle}>
-              <li>Your time using Delt</li>
               <li>Your processing volume and frequency</li>
-              <li>Your customer mix</li>
-              <li>Your account history and sales consistency</li>
+              <li>Your time using Delt and account history</li>
+              <li>Your customer mix and sales consistency</li>
             </ul>
             <FaqMath
               rows={[
-                ['Minimum offer', '$1,000'],
-                ['Maximum offer', '$350,000'],
-                ['Decision time', '< 6 hours'],
-                ['Funding time',  'Next business day'],
+                ['Maximum offer',  '$350,000'],
+                ['Decision time',  '< 6 hours'],
+                ['Funding time',   'Next business day'],
+                ['Renewal pricing','Steps down each cycle'],
               ]}
-              note="Your exact offer range is set by underwriting and shown in your Dashboard."
+              note="Your exact offer is set by underwriting and shown in your Dashboard."
             />
           </>
         ),
       },
       {
-        q: 'Does applying for a Delt loan affect my credit score?',
-        short: 'No. Applying does not affect your personal or business credit score.',
+        q: 'Does applying for Delt funding affect my credit score?',
+        short: 'No. Applying does not affect your personal or business credit.',
         a: (
           <>
             <p>
-              No, applying for a Delt loan does not affect your personal or
-              business credit score, and there is no credit score requirement
-              to apply. We don't require a personal guarantee for your business
-              to take a loan.
+              No — applying for Delt funding doesn't affect your personal or
+              business credit score, and <b>there is no credit score
+              requirement to apply</b>. We don't require a personal guarantee
+              for your business to take an advance, and we don't report to
+              third-party credit bureaus.
             </p>
           </>
         ),
@@ -161,53 +165,52 @@ const FAQ_CATS = [
     intro: 'How offers appear, how fast funds land, and what the money can be used for.',
     items: [
       {
-        q: 'How do I request a loan from Delt?',
-        short: 'Eligible offers appear automatically in your Dashboard — no request needed.',
+        q: 'How do I request funding from Delt?',
+        short: 'Eligible offers appear automatically in your Dashboard — no application required.',
         a: (
           <>
             <p>
-              If a loan offer is not available in your Delt Dashboard, your
-              business is not eligible at this time. Rest assured, we
-              automatically review Delt accounts on a daily basis to evaluate
-              the many factors about your business that we already have to
-              assess your loan eligibility.
+              If a funding offer is available in your Delt Dashboard, you can
+              accept it in a few clicks — no long application, no paperwork
+              pile. If you don't see an offer yet, <b>we review your account
+              daily</b> against the same data we already have, so you don't
+              need to contact us or submit anything extra.
             </p>
             <p>
-              We will notify you if you become eligible for Delt Loans at a
-              later time. You do not need to contact us or provide any
-              additional information to become eligible for a loan offer.
+              The moment you're eligible, we'll surface the offer in your
+              Dashboard and notify you. It's that simple — funding finds you.
             </p>
           </>
         ),
       },
       {
         q: 'How quickly are funds deposited?',
-        short: 'Next business day after approval. Sometimes same-day.',
+        short: 'As soon as the next business day after approval.',
         a: (
           <>
             <p>
-              Once approved, money is deposited in your account the
-              <b> next business day</b>, subject to processing time and
-              completion of the loan agreement. To reduce processing time,
-              business ownership information on file with Delt should be up to
-              date.
+              Once approved, funds are deposited in your account <b>as soon
+              as the next business day</b>, subject to processing time and
+              completion of your funding agreement. Keeping your business
+              ownership info on file with Delt up to date keeps things
+              moving fast.
             </p>
           </>
         ),
       },
       {
-        q: 'What can a Delt loan be used for?',
-        short: 'Any legitimate business need — inventory, payroll, expansion, debt refi.',
+        q: 'What can Delt funding be used for?',
+        short: 'Any legitimate business need — inventory, payroll, marketing, expansion, debt refi.',
         a: (
           <>
-            <p>Loans can be used for any business need, including:</p>
+            <p>Use it for anything that grows the business:</p>
             <ul style={faqUlStyle}>
               <li>Covering short-term cash flow</li>
               <li>Hiring employees and meeting payroll</li>
               <li>Purchasing inventory and equipment</li>
-              <li>Refinancing and paying off existing debt</li>
-              <li>Renovating an existing location</li>
-              <li>Opening a new location</li>
+              <li>Investing in marketing and ad spend</li>
+              <li>Refinancing higher-cost debt</li>
+              <li>Renovating or opening a new location</li>
             </ul>
           </>
         ),
@@ -218,96 +221,74 @@ const FAQ_CATS = [
     k: 'repayment',
     label: 'Repayment',
     eyebrow: '04 · Repayment',
-    intro: 'How repayment works day-to-day, the terms available, and what happens on slow days.',
+    intro: 'How repayment works day-to-day — and why it always moves with your business.',
     items: [
       {
-        q: 'How do I repay a loan from Delt?',
-        short: 'A fixed percentage of your daily card sales, deducted automatically.',
+        q: 'How do I pay back Delt funding?',
+        short: 'A fixed percentage of your daily card sales — automatically, no invoice to chase.',
         a: (
           <>
             <p>
-              A fixed percentage of your daily card sales is deducted
-              automatically until your loan is repaid. The percentage stays
-              the same, but the amount adjusts to match your cash flow — if
-              sales are up one day, you pay more; if you have a slow day, you
-              pay less.
+              You don't pay it back — your card sales do. A <b>fixed
+              percentage of your daily card sales is deducted
+              automatically</b> until the advance is complete. The percentage
+              stays the same; the dollar amount moves with your business.
             </p>
+            <ul style={faqUlStyle}>
+              <li><b>Slow day?</b> You pay less. Repayment flexes down with you.</li>
+              <li><b>Busy day?</b> You pay more — and finish the advance sooner.</li>
+              <li><b>Zero-sale day?</b> Nothing comes out. We only pull from what you actually earn.</li>
+            </ul>
             <FaqMath
               rows={[
-                ['Daily sales · $3,850', 'Payment · $385'],
                 ['Daily sales · $3,550', 'Payment · $355'],
+                ['Daily sales · $3,850', 'Payment · $385'],
                 ['Daily sales · $4,280', 'Payment · $428'],
                 ['Daily sales · $5,220', 'Payment · $522'],
                 ['Daily sales · $5,890', 'Payment · $589'],
               ]}
-              note="Illustrative — repayment flexes with your real sales volume."
+              note="Illustrative at a 10% rate — repayment scales with your real sales volume."
             />
           </>
         ),
       },
       {
-        q: 'What are the available repayment terms?',
-        short: 'Target terms from 90 to 360 days, depending on eligibility.',
+        q: 'How long does repayment take?',
+        short: 'It depends on your sales. Busier months finish faster — and that\u2019s the point.',
         a: (
           <>
             <p>
-              Delt Loans offer different target repayment terms ranging from
-              <b> 90 days to 360 days</b>, depending on eligibility. The
-              maximum repayment term is 60 days following the end of the
-              target repayment term. Any outstanding balance due at the end of
-              the maximum term will be collected automatically via ACH.
+              Because repayment is a percentage of card sales, the timeline
+              is driven by your volume. Most advances complete in <b>roughly
+              4 to 12 months</b>, with stronger sales months pulling the
+              finish line forward. There's no monthly minimum that punishes a
+              slow week.
             </p>
             <p>
-              A minimum of <b>1/18 of the initial balance</b> must be repaid
-              every 60 days to keep the loan in good standing.
+              When you're ready for more, eligible businesses see <b>renewal
+              offers with better pricing</b> as the relationship deepens — the
+              first advance proves the fit; every advance after that is
+              priced like it.
             </p>
           </>
         ),
       },
       {
-        q: 'What happens if I miss a payment?',
-        short: 'We pull the 60-day minimum from your Delt balance or linked bank account.',
+        q: 'What if my sales drop mid-term?',
+        short: 'Payments drop with them. That\u2019s the whole point of the model.',
         a: (
           <>
             <p>
-              If your daily card sales cannot cover the 60-day minimum
-              payment, Delt may debit the remaining minimum payment amount due
-              from your Delt balance or your Delt-linked bank account.
+              <b>Your payment moves with your sales — that's the point.</b>
+              If revenue dips, the daily debit dips with it. You don't get
+              stuck with a fixed monthly bill when the business is having a
+              quiet week.
             </p>
             <p>
-              There are no late fees added to the total amount owed. If you
-              expect a sustained drop in revenue, call us before a minimum
-              comes due — we've restructured ~12% of active books mid-term
-              without penalty.
-            </p>
-          </>
-        ),
-      },
-    ],
-  },
-  {
-    k: 'finep',
-    label: 'The fine print',
-    eyebrow: '05 · The fine print',
-    intro: 'Who issues the loan, what governs it, and where to read the legal terms.',
-    items: [
-      {
-        q: 'Who issues Delt loans?',
-        short: 'Delt Capital, a direct lender. Loans subject to credit approval.',
-        a: (
-          <>
-            <p>
-              Delt Loans are issued by Delt Capital as a direct lender. Loan
-              eligibility is not guaranteed and all loans are subject to
-              credit approval. A minimum payment is required and you must
-              repay your loan as specified in the loan terms.
-            </p>
-            <p>
-              Loans may not be available to borrowers in certain
-              jurisdictions. Delt reserves the right to change or discontinue
-              the program without notice. Terms and availability may change
-              based on the business's ability to meet applicable credit and
-              eligibility criteria.
+              If you're navigating a sustained change in revenue, just call
+              us. We've worked with operators through seasonality, build-outs,
+              and slow stretches — and we'd rather have the conversation
+              early than not at all.
             </p>
           </>
         ),
@@ -590,7 +571,7 @@ function FaqHero({ accent, query, setQuery, totalCount, filteredCount }) {
             letterSpacing: '0.12em', textTransform: 'uppercase',
             color: 'rgba(255,255,255,0.45)', padding: '7px 0',
           }}>Try —</span>
-          {['interest', 'repayment', 'eligibility', 'credit score', 'funds', 'late fees'].map((t) => (
+          {['cost', 'card sales', 'credit score', 'funding speed', 'slow days', 'renewals'].map((t) => (
             <button
               key={t}
               onClick={() => setQuery(t)}
