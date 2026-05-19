@@ -15,7 +15,7 @@ function V1Ticker({ accent }) {
   ];
   const all = [...rows, ...rows];
   return (
-    <div style={{ background: '#000', color: '#E9E7DF', padding: '6px 0', overflow: 'hidden', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+    <div data-v1-ticker style={{ background: '#000', color: '#E9E7DF', padding: '6px 0', overflow: 'hidden', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
       <div style={{
         display: 'flex', whiteSpace: 'nowrap',
         animation: 'v1ticker 40s linear infinite', fontFamily: DELT.font.mono, fontSize: 11.5,
@@ -45,7 +45,15 @@ function V1Chrome({ page, navTo, accent, openApp }) {
     { k: 'faq',     l: 'FAQ' },
     { k: 'talk',    l: 'Talk' },
   ];
-  const handleNav = (k) => { navTo(k); };
+  const [menuOpen, setMenuOpen] = React.useState(false);
+  const handleNav = (k) => { setMenuOpen(false); navTo(k); };
+  // Lock body scroll while mobile menu is open.
+  React.useEffect(() => {
+    if (typeof document === 'undefined') return undefined;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = menuOpen ? 'hidden' : prev || '';
+    return () => { document.body.style.overflow = prev || ''; };
+  }, [menuOpen]);
   return (
     <>
     <V1Ticker accent={accent} />
@@ -62,7 +70,7 @@ function V1Chrome({ page, navTo, accent, openApp }) {
             style={{ height: 28, width: 'auto', display: 'block' }}
           />
         </div>
-        <nav style={{ display: 'flex', gap: 28 }}>
+        <nav data-v1-desktop-nav style={{ display: 'flex', gap: 28 }}>
           {links.map(ln => (
             <a key={ln.k} onClick={() => handleNav(ln.k)} style={{
               fontFamily: DELT.font.body, fontSize: 13.5,
@@ -73,11 +81,81 @@ function V1Chrome({ page, navTo, accent, openApp }) {
           ))}
         </nav>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-          <a onClick={() => navTo('login')} style={{ fontFamily: DELT.font.body, fontSize: 13.5, color: page === 'login' ? '#F7F5F0' : 'rgba(247,245,240,0.75)', cursor: 'pointer' }}>Login</a>
+          <a data-v1-desktop-nav onClick={() => navTo('login')} style={{ fontFamily: DELT.font.body, fontSize: 13.5, color: page === 'login' ? '#F7F5F0' : 'rgba(247,245,240,0.75)', cursor: 'pointer' }}>Login</a>
           <Btn variant="indigo" size="sm" onClick={openApp} style={{ background: accent, borderColor: accent }}>Get Funded</Btn>
+          {/* Mobile hamburger — hidden on desktop via CSS, shown <= 768px */}
+          <button
+            data-v1-mobile-nav-toggle
+            aria-label="Open menu"
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen(true)}
+            style={{
+              display: 'none',
+              alignItems: 'center', justifyContent: 'center',
+              width: 44, height: 44,
+              background: 'transparent', border: '1px solid rgba(247,245,240,0.2)',
+              borderRadius: 8, cursor: 'pointer', padding: 0,
+              color: '#F7F5F0',
+            }}
+          >
+            <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
+              <path d="M3 6h16M3 11h16M3 16h16" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+            </svg>
+          </button>
         </div>
       </div>
     </header>
+    {/* Mobile full-screen overlay menu */}
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-hidden={!menuOpen}
+      style={{
+        position: 'fixed', inset: 0, zIndex: 50,
+        background: DELT.colors.ink,
+        opacity: menuOpen ? 1 : 0,
+        pointerEvents: menuOpen ? 'auto' : 'none',
+        transition: 'opacity 220ms cubic-bezier(0.22, 1, 0.36, 1)',
+        display: 'flex', flexDirection: 'column',
+        padding: '20px 20px 32px',
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <img src="app/assets/logo-white.png" alt="Delt Capital" style={{ height: 28, width: 'auto' }} />
+        <button
+          aria-label="Close menu"
+          onClick={() => setMenuOpen(false)}
+          style={{
+            width: 44, height: 44, display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+            background: 'transparent', border: '1px solid rgba(247,245,240,0.2)', borderRadius: 8,
+            cursor: 'pointer', padding: 0, color: '#F7F5F0',
+          }}
+        >
+          <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
+            <path d="M4 4l12 12M16 4L4 16" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+          </svg>
+        </button>
+      </div>
+      <nav style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 32 }}>
+        {links.map(ln => (
+          <a key={ln.k} onClick={() => handleNav(ln.k)} style={{
+            fontFamily: DELT.font.display, fontSize: 28, fontWeight: 600,
+            color: page === ln.k ? '#F7F5F0' : 'rgba(247,245,240,0.78)',
+            cursor: 'pointer', padding: '12px 4px',
+            borderBottom: '1px solid rgba(247,245,240,0.08)',
+          }}>{ln.l}</a>
+        ))}
+        <a onClick={() => handleNav('login')} style={{
+          fontFamily: DELT.font.display, fontSize: 28, fontWeight: 600,
+          color: page === 'login' ? '#F7F5F0' : 'rgba(247,245,240,0.78)',
+          cursor: 'pointer', padding: '12px 4px',
+          borderBottom: '1px solid rgba(247,245,240,0.08)',
+        }}>Login</a>
+      </nav>
+      <div style={{ marginTop: 'auto', paddingTop: 24 }}>
+        <Btn variant="indigo" size="lg" onClick={() => { setMenuOpen(false); openApp(); }} style={{ background: accent, borderColor: accent, width: '100%' }}>Get Funded</Btn>
+      </div>
+    </div>
     </>
   );
 }
@@ -195,7 +273,7 @@ function V1Hero({ accent, onApply }) {
         </span>
       </div>
 
-      <div style={{
+      <div data-v1-grid-2col style={{
         width: '100%',
         maxWidth: 1280, margin: '0 auto', padding: '56px 32px 0',
         display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48,
@@ -204,7 +282,7 @@ function V1Hero({ accent, onApply }) {
       }}>
         {/* Left: copy */}
         <div>
-          <h1 style={{
+          <h1 data-v1-hero-title style={{
             fontFamily: DELT.font.display, fontSize: 92, fontWeight: 600,
             letterSpacing: '-0.045em', color: '#F7F5F0', lineHeight: 0.95,
             margin: 0,
@@ -283,7 +361,7 @@ function V1Hero({ accent, onApply }) {
         </div>
 
         {/* Right: video, bleeding to the right edge */}
-        <div style={{
+        <div data-v1-hero-media style={{
           position: 'relative',
           alignSelf: 'stretch',
           marginRight: -32,
@@ -506,7 +584,7 @@ function Variation1() {
 
   return (
     <>
-      {V1Chrome({ page, navTo, accent, openApp: () => openApp(null, null) })}
+      <V1Chrome page={page} navTo={navTo} accent={accent} openApp={() => openApp(null, null)} />
       <div style={{
         opacity: transitioning ? 0 : 1,
         transform: transitioning ? 'translateY(6px)' : 'translateY(0)',

@@ -26,7 +26,7 @@ function V1SupIcon({ name, size = 16, color }) {
 // ═══ Dark hero ═══════════════════════════════════════════════════
 function V1SupportHero({ accent }) {
   return (
-    <section style={{
+    <section data-v1-section style={{
       background: V1.ink, padding: '80px 0 72px', color: '#fff',
       position: 'relative', overflow: 'hidden',
       borderBottom: `1px solid rgba(255,255,255,0.06)`,
@@ -46,7 +46,7 @@ function V1SupportHero({ accent }) {
         <div style={{ animation: 'supFadeUp 600ms cubic-bezier(.2,.7,.3,1) both' }}>
           <V1Eyebrow color={V1.blueSoft}>Support · Real humans, fast</V1Eyebrow>
         </div>
-        <h1 style={{
+        <h1 data-v1-section-title style={{
           fontFamily: V1.fontDisplay, fontSize: 'clamp(2.4rem, 5.4vw, 4.5rem)',
           fontWeight: 600, letterSpacing: '-0.04em', lineHeight: 1.02,
           color: '#fff', margin: '22px 0 0', maxWidth: 900,
@@ -136,10 +136,10 @@ function V1SupportPage({ accent, onTalk, onApply }) {
       <V1SupportHero accent={accent} />
 
       {/* Main body */}
-      <section style={{ background: V1.bg, padding: '72px 0 96px' }}>
+      <section data-v1-section style={{ background: V1.bg, padding: '72px 0 96px' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 40px' }}>
 
-          <div style={{
+          <div data-v1-grid-2col style={{
             display: 'grid', gridTemplateColumns: '1.4fr 0.9fr', gap: 40,
             alignItems: 'flex-start',
           }}>
@@ -155,7 +155,7 @@ function V1SupportPage({ accent, onTalk, onApply }) {
               ) : (
                 <form onSubmit={submit}>
                   <V1Eyebrow>Send us a note</V1Eyebrow>
-                  <h2 style={{
+                  <h2 data-v1-section-title style={{
                     fontFamily: V1.fontDisplay, fontSize: 30, fontWeight: 600,
                     letterSpacing: '-0.03em', color: V1.ink, margin: '12px 0 8px', lineHeight: 1.1,
                   }}>Write us. We read every one.</h2>
@@ -170,7 +170,7 @@ function V1SupportPage({ accent, onTalk, onApply }) {
                   {/* Topic picker */}
                   <div style={{ marginTop: 28 }}>
                     <V1SupLabel>What's this about?</V1SupLabel>
-                    <div style={{
+                    <div data-v1-grid-4col style={{
                       display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 8, marginTop: 10,
                     }}>
                       {V1_SUP_TOPICS.map((t) => {
@@ -209,7 +209,7 @@ function V1SupportPage({ accent, onTalk, onApply }) {
                   </div>
 
                   {/* Fields */}
-                  <div style={{
+                  <div data-v1-grid-2col style={{
                     marginTop: 28,
                     display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16,
                   }}>
@@ -403,7 +403,7 @@ function V1SupportPage({ accent, onTalk, onApply }) {
           </div>
 
           {/* Bottom SLA strip */}
-          <div style={{
+          <div data-v1-grid-4col style={{
             marginTop: 64, padding: '28px 32px',
             background: V1.white, border: `1px solid ${V1.line}`, borderRadius: 14,
             display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 28,
@@ -460,7 +460,7 @@ function V1SupportConfirm({ form, topic, accent, onReset, onTalk }) {
           letterSpacing: '0.14em', textTransform: 'uppercase', color: V1.green,
           marginBottom: 8,
         }}>Message sent</div>
-        <h2 style={{
+        <h2 data-v1-section-title style={{
           fontFamily: V1.fontDisplay, fontSize: 28, fontWeight: 600,
           letterSpacing: '-0.025em', color: V1.ink, margin: 0, lineHeight: 1.15,
         }}>

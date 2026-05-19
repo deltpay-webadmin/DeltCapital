@@ -31,7 +31,7 @@ function HwIcon({ kind, size = 14 }) {
 // ═══════════════════════════════════════════════════════════════
 function HwHero({ accent, onApply }) {
   return (
-    <section style={{
+    <section data-v1-section style={{
       position: 'relative', overflow: 'hidden',
       background: V1.bg, padding: '120px 40px 100px',
       borderBottom: `1px solid ${V1.line}`,
@@ -45,7 +45,7 @@ function HwHero({ accent, onApply }) {
       <div style={{ maxWidth: 1240, margin: '0 auto', position: 'relative' }}>
         <div style={{ textAlign: 'center', maxWidth: 920, margin: '0 auto' }}>
           <V1Eyebrow>How it works</V1Eyebrow>
-          <h1 style={{
+          <h1 data-v1-section-title style={{
             fontFamily: V1.fontDisplay,
             fontSize: 'clamp(3rem, 7.5vw, 5.75rem)',
             fontWeight: 600, letterSpacing: '-0.045em',
@@ -122,7 +122,7 @@ function HwTimelinePreview({ accent }) {
           transition: 'width .1s linear',
         }} />
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)' }}>
+        <div data-v1-grid-4col style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)' }}>
           {steps.map((s, i) => {
             const reached = progress >= i / (steps.length - 1);
             return (
@@ -187,12 +187,12 @@ function HwStep({ num, label, title, body, bullets, mockKind, accent }) {
   }, []);
 
   return (
-    <section ref={sectionRef} style={{
+    <section data-v1-section ref={sectionRef} style={{
       padding: '120px 40px',
       borderBottom: `1px solid ${V1.line}`,
       background: V1.bg,
     }}>
-      <div style={{
+      <div data-v1-grid-2col style={{
         maxWidth: 1240, margin: '0 auto',
         display: 'grid', gridTemplateColumns: '1fr 1.1fr', gap: 80,
         alignItems: 'center',
@@ -214,7 +214,7 @@ function HwStep({ num, label, title, body, bullets, mockKind, accent }) {
             <V1Eyebrow>{label}</V1Eyebrow>
           </div>
 
-          <h2 style={{
+          <h2 data-v1-section-title style={{
             ...v1H2,
             fontSize: 'clamp(1.75rem, 3.5vw, 2.75rem)',
             lineHeight: 1.08, marginBottom: 20,
@@ -469,7 +469,7 @@ function HwMockOffer({ progress, active }) {
             {fmt$(amount)}
           </div>
 
-          <div style={{
+          <div data-v1-grid-2col style={{
             marginTop: 28, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0,
             border: `1px solid ${V1.line}`, borderRadius: 14, overflow: 'hidden',
           }}>
@@ -675,15 +675,15 @@ function HwSpeedStrip() {
   const maxDays = 35;
 
   return (
-    <section style={{ padding: '120px 40px', background: V1.white, borderBottom: `1px solid ${V1.line}` }}>
+    <section data-v1-section style={{ padding: '120px 40px', background: V1.white, borderBottom: `1px solid ${V1.line}` }}>
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-        <div style={{
+        <div data-v1-grid-2col style={{
           display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64,
           alignItems: 'end', marginBottom: 56,
         }}>
           <div>
             <V1Eyebrow>Time to funds</V1Eyebrow>
-            <h2 style={{ ...v1H2, marginTop: 18 }}>
+            <h2 data-v1-section-title style={{ ...v1H2, marginTop: 18 }}>
               Faster because<br/>we <em style={{
                 fontStyle: 'italic', fontFamily: '"Source Serif Pro", Georgia, serif',
                 fontWeight: 400, letterSpacing: '-0.015em',
@@ -704,7 +704,7 @@ function HwSpeedStrip() {
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
           {rows.map((r, i) => (
-            <div key={i} style={{
+            <div data-v1-grid-3col key={i} style={{
               display: 'grid',
               gridTemplateColumns: '140px 1fr 110px',
               alignItems: 'center', gap: 24,
@@ -770,14 +770,14 @@ function HwUnderTheHood() {
     { k: '04', t: 'Human review',      d: 'Every file crosses an underwriter\'s desk. Not a model. The same person signs your offer that answers your questions.' },
   ];
   return (
-    <section style={{ padding: '120px 40px', background: V1.bg, borderBottom: `1px solid ${V1.line}` }}>
+    <section data-v1-section style={{ padding: '120px 40px', background: V1.bg, borderBottom: `1px solid ${V1.line}` }}>
       <div style={{ maxWidth: 1240, margin: '0 auto' }}>
         <div style={{ marginBottom: 56, textAlign: 'center', maxWidth: 720, marginInline: 'auto' }}>
           <V1Eyebrow>Under the hood</V1Eyebrow>
-          <h2 style={{ ...v1H2, marginTop: 18 }}>What we're doing<br/>while you wait.</h2>
+          <h2 data-v1-section-title style={{ ...v1H2, marginTop: 18 }}>What we're doing<br/>while you wait.</h2>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16 }}>
+        <div data-v1-grid-2col style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16 }}>
           {items.map(i => (
             <div key={i.k} style={{
               background: V1.white, border: `1px solid ${V1.line}`,
@@ -813,7 +813,7 @@ function HwUnderTheHood() {
 // ═══════════════════════════════════════════════════════════════
 function HwCTA({ onApply, onTalk }) {
   return (
-    <section style={{
+    <section data-v1-section style={{
       position: 'relative', overflow: 'hidden',
       background: V1.ink, padding: '120px 40px',
     }}>
@@ -823,10 +823,10 @@ function HwCTA({ onApply, onTalk }) {
                      radial-gradient(ellipse 500px 250px at 80% 80%, #818CF833 0%, transparent 60%)`,
       }} />
 
-      <div style={{ maxWidth: 1100, margin: '0 auto', position: 'relative', display: 'grid', gridTemplateColumns: '1.1fr 1fr', gap: 80, alignItems: 'center' }}>
+      <div data-v1-grid-2col style={{ maxWidth: 1100, margin: '0 auto', position: 'relative', display: 'grid', gridTemplateColumns: '1.1fr 1fr', gap: 80, alignItems: 'center' }}>
         <div>
           <V1Eyebrow color={V1.blueSoft}>Get started</V1Eyebrow>
-          <h2 style={{
+          <h2 data-v1-section-title style={{
             ...v1H2, color: '#fff', marginTop: 18,
             fontSize: 'clamp(2.5rem, 5vw, 4rem)',
           }}>
@@ -890,7 +890,7 @@ function HwCTA({ onApply, onTalk }) {
               ['Brooklyn, NY',   '$220K', '1.12×', '08:47 AM'],
               ['Portland, OR',   '$48K',  '1.20×', '08:02 AM'],
             ].map((r, i) => (
-              <div key={i} style={{
+              <div data-v1-grid-4col key={i} style={{
                 display: 'grid', gridTemplateColumns: '1.5fr 0.8fr 0.7fr 0.8fr',
                 fontFamily: V1.fontMono, fontSize: 12.5,
                 color: 'rgba(255,255,255,0.85)',

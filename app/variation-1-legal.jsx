@@ -99,7 +99,7 @@ function V1LegalLayout({ title, eyebrow, effective, toc, onBack, otherLink, chil
   }, []);
 
   return (
-    <section style={{ background: V1.bg, paddingBottom: 96 }}>
+    <section data-v1-section style={{ background: V1.bg, paddingBottom: 96 }}>
       {/* Corner dateline */}
       <div style={{
         maxWidth: 1280, margin: '0 auto', padding: '32px 40px 0',
@@ -118,7 +118,7 @@ function V1LegalLayout({ title, eyebrow, effective, toc, onBack, otherLink, chil
         </span>
       </div>
 
-      <div style={{
+      <div data-v1-grid-2col style={{
         maxWidth: 1280, margin: '0 auto', padding: '40px 40px 0',
         display: 'grid', gridTemplateColumns: '260px 1fr',
         gap: 72, alignItems: 'start',
@@ -169,7 +169,7 @@ function V1LegalLayout({ title, eyebrow, effective, toc, onBack, otherLink, chil
               <V1Eyebrow>{eyebrow}</V1Eyebrow>
             </div>
           )}
-          <h1 style={{
+          <h1 data-v1-section-title style={{
             margin: 0,
             fontFamily: V1.fontDisplay,
             // Brand §4.3 H2: Codec Pro Heavy 900 / 48px / LH 1.05
@@ -239,7 +239,7 @@ function V1LegalLayout({ title, eyebrow, effective, toc, onBack, otherLink, chil
 function LegalSection({ id, eyebrow, title, children }) {
   const [ref, inView] = useV1InView(0.05, '0px 0px -10% 0px');
   return (
-    <section ref={ref} id={id} style={{
+    <section data-v1-section ref={ref} id={id} style={{
       scrollMarginTop: 96,
       paddingTop: 8, paddingBottom: 40,
       opacity: inView ? 1 : 0,

@@ -76,13 +76,13 @@ function V1CompareSection() {
   ];
 
   return (
-    <section ref={sectionRef} style={{ background: V1.bg, padding: '120px 0', borderTop: `1px solid ${V1.line}`, borderBottom: `1px solid ${V1.line}` }}>
+    <section data-v1-section ref={sectionRef} style={{ background: V1.bg, padding: '120px 0', borderTop: `1px solid ${V1.line}`, borderBottom: `1px solid ${V1.line}` }}>
       <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 40px' }}>
         {/* Heading */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'end', marginBottom: 56 }}>
+        <div data-v1-grid-2col style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'end', marginBottom: 56 }}>
           <div>
             <V1Eyebrow>Banks vs Delt</V1Eyebrow>
-            <h2 style={{ ...v1H2, marginTop: 18 }}>
+            <h2 data-v1-section-title style={{ ...v1H2, marginTop: 18 }}>
               Why Delt beats<br/>the bank.
             </h2>
           </div>
@@ -96,7 +96,7 @@ function V1CompareSection() {
         </div>
 
         {/* ─── Unified comparison frame ─── */}
-        <div style={{
+        <div data-v1-comparison data-v1-table-wrap style={{
           background: V1.white,
           border: `1px solid ${V1.line}`,
           borderRadius: 24,
@@ -104,7 +104,7 @@ function V1CompareSection() {
           boxShadow: '0 1px 2px rgba(10,37,64,0.03), 0 40px 80px -50px rgba(10,37,64,0.22)',
         }}>
           {/* Column headers */}
-          <div style={{
+          <div data-v1-grid-3col style={{
             display: 'grid',
             gridTemplateColumns: '200px 1fr 1fr',
             background: V1.bg,
@@ -169,7 +169,7 @@ function V1CompareSection() {
         </div>
 
         {/* Result strip below */}
-        <div style={{ marginTop: 24, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+        <div data-v1-grid-3col style={{ marginTop: 24, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
           {[
             { label: 'Median time to funds',     value: '24 h',   sub: 'vs 2–6 weeks at a bank' },
             { label: 'Avg savings vs SBA',       value: '19%',    sub: 'on total cost of capital' },
@@ -215,7 +215,7 @@ function V1CompareSection() {
 function V1CompareRow({ r, i, visible, last }) {
   const delay = 100 + i * 120;
   return (
-    <div style={{
+    <div data-v1-grid-3col style={{
       display: 'grid',
       gridTemplateColumns: '200px 1fr 1fr',
       borderBottom: last ? 'none' : `1px solid ${V1.line}`,
@@ -326,12 +326,12 @@ function V1CompareRow({ r, i, visible, last }) {
 function V1StepsSection() {
   const steps = DeltContent.steps;
   return (
-    <section style={{ background: V1.white, padding: '96px 0', borderTop: `1px solid ${V1.line}`, borderBottom: `1px solid ${V1.line}` }}>
+    <section data-v1-section style={{ background: V1.white, padding: '96px 0', borderTop: `1px solid ${V1.line}`, borderBottom: `1px solid ${V1.line}` }}>
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'end', marginBottom: 64 }}>
+        <div data-v1-grid-2col style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'end', marginBottom: 64 }}>
           <div>
             <V1Eyebrow>How it works</V1Eyebrow>
-            <h2 style={{ ...v1H2, marginTop: 18 }}>Four steps.<br />One business day.</h2>
+            <h2 data-v1-section-title style={{ ...v1H2, marginTop: 18 }}>Four steps.<br />One business day.</h2>
           </div>
           <p style={{
             fontFamily: V1.fontBody, fontSize: 17, lineHeight: 1.6, color: V1.text,
@@ -345,7 +345,7 @@ function V1StepsSection() {
         {/* Steps list — wide rows with numeric column, content, and timing column */}
         <div style={{ borderTop: `1px solid ${V1.line}` }}>
           {steps.map((s, i) => (
-            <div key={s.n} style={{
+            <div data-v1-grid-3col key={s.n} style={{
               display: 'grid', gridTemplateColumns: '120px 1fr 240px',
               gap: 48, alignItems: 'center',
               padding: '40px 0',
@@ -392,10 +392,10 @@ function V1CalcSection({ calcState, setCalcState, onApply, onNavHow }) {
   return (
     <section data-v1-calc style={{ background: V1.bg, padding: '96px 0' }}>
       <div style={{ maxWidth: 1080, margin: '0 auto', padding: '0 40px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'end', marginBottom: 48 }}>
+        <div data-v1-grid-2col style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'end', marginBottom: 48 }}>
           <div>
             <V1Eyebrow>Live calculator</V1Eyebrow>
-            <h2 style={{ ...v1H2, marginTop: 18 }}>Price the deal<br />before you apply.</h2>
+            <h2 data-v1-section-title style={{ ...v1H2, marginTop: 18 }}>Price the deal<br />before you apply.</h2>
           </div>
           <p style={{
             fontFamily: V1.fontBody, fontSize: 17, lineHeight: 1.6, color: V1.text,
@@ -419,12 +419,12 @@ function V1CalcSection({ calcState, setCalcState, onApply, onNavHow }) {
 function V1ReviewsSection() {
   const items = DeltContent.testimonials;
   return (
-    <section style={{ background: V1.white, padding: '96px 0', borderTop: `1px solid ${V1.line}`, borderBottom: `1px solid ${V1.line}` }}>
+    <section data-v1-section style={{ background: V1.white, padding: '96px 0', borderTop: `1px solid ${V1.line}`, borderBottom: `1px solid ${V1.line}` }}>
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'end', marginBottom: 56 }}>
+        <div data-v1-grid-2col style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'end', marginBottom: 56 }}>
           <div>
             <V1Eyebrow>Operators</V1Eyebrow>
-            <h2 style={{ ...v1H2, marginTop: 18 }}>Verified on the renewal call.</h2>
+            <h2 data-v1-section-title style={{ ...v1H2, marginTop: 18 }}>Verified on the renewal call.</h2>
           </div>
           <p style={{
             fontFamily: V1.fontBody, fontSize: 17, lineHeight: 1.6, color: V1.text,
@@ -435,7 +435,7 @@ function V1ReviewsSection() {
           </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+        <div data-v1-grid-3col style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
           {items.map((t, i) => (
             <figure key={i} style={{
               background: V1.bg, border: `1px solid ${V1.line}`, borderRadius: 20,
@@ -475,11 +475,11 @@ function V1ReviewsSection() {
 function V1FAQSection() {
   const [open, setOpen] = React.useState(0);
   return (
-    <section style={{ background: V1.bg, padding: '96px 0' }}>
+    <section data-v1-section style={{ background: V1.bg, padding: '96px 0' }}>
       <div style={{ maxWidth: 960, margin: '0 auto', padding: '0 40px' }}>
         <div style={{ marginBottom: 48 }}>
           <V1Eyebrow>Questions</V1Eyebrow>
-          <h2 style={{ ...v1H2, marginTop: 18 }}>What operators actually ask.</h2>
+          <h2 data-v1-section-title style={{ ...v1H2, marginTop: 18 }}>What operators actually ask.</h2>
         </div>
         <div style={{ borderTop: `1px solid ${V1.line}` }}>
           {DeltContent.faq.map((f, i) => {
@@ -534,7 +534,7 @@ function V1CTASection({ onApply, onTalk }) {
   ];
 
   return (
-    <section ref={secRef} style={{
+    <section data-v1-section ref={secRef} style={{
       background: V1.ink, color: '#fff',
       padding: '100px 0 96px',
       position: 'relative', overflow: 'hidden',
@@ -580,7 +580,7 @@ function V1CTASection({ onApply, onTalk }) {
         </div>
 
         {/* Headline row: big copy left, oversized "60s" card right */}
-        <div style={{
+        <div data-v1-grid-2col style={{
           marginTop: 32,
           display: 'grid',
           gridTemplateColumns: '1fr 360px',
@@ -588,7 +588,7 @@ function V1CTASection({ onApply, onTalk }) {
           alignItems: 'center',
         }}>
           <div>
-            <h2 style={{
+            <h2 data-v1-section-title style={{
               fontFamily: V1.fontDisplay,
               fontSize: 'clamp(2.6rem, 5.4vw, 4.6rem)',
               fontWeight: 600, lineHeight: 1.02, letterSpacing: '-0.04em',
@@ -768,7 +768,7 @@ function V1CTASection({ onApply, onTalk }) {
             transition: 'width 1500ms cubic-bezier(0.22, 1, 0.36, 1) 900ms',
           }} />
 
-          <div style={{
+          <div data-v1-grid-4col style={{
             display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16,
             position: 'relative',
           }}>
@@ -963,7 +963,7 @@ function useUCReady() {
 // Horizontal progressive bar. Width grows from 0 → pct/max on ready flip.
 function UCBar({ label, pct, max, color, delay = 0, ready }) {
   return (
-    <div style={{
+    <div data-v1-grid-3col style={{
       display: 'grid', gridTemplateColumns: '140px 1fr 48px',
       alignItems: 'center', gap: 16,
     }}>
@@ -1043,7 +1043,7 @@ function V1UseCasePane({ uc, active }) {
       </p>
 
       {/* Stats — editorial triple with thin rules, no cards */}
-      <div style={{
+      <div data-v1-grid-3col style={{
         marginTop: 44,
         display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
         borderTop: `1px solid ${V1.line}`,
@@ -1139,13 +1139,13 @@ function V1UseCasesSection() {
   const uc = USE_CASES[active];
 
   return (
-    <section style={{ background: V1.bg, padding: '120px 0' }}>
+    <section data-v1-section style={{ background: V1.bg, padding: '120px 0' }}>
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px' }}>
         {/* Heading */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'end', marginBottom: 56 }}>
+        <div data-v1-grid-2col style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'end', marginBottom: 56 }}>
           <div>
             <V1Eyebrow>Use cases</V1Eyebrow>
-            <h2 style={{ ...v1H2, marginTop: 18 }}>
+            <h2 data-v1-section-title style={{ ...v1H2, marginTop: 18 }}>
               Deploy your capital<br/>strategically.
             </h2>
           </div>
@@ -1159,7 +1159,7 @@ function V1UseCasesSection() {
         </div>
 
         {/* Editorial two-column frame — no card shell */}
-        <div style={{
+        <div data-v1-grid-2col style={{
           display: 'grid',
           gridTemplateColumns: '360px 1fr',
           gap: 0,

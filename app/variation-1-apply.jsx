@@ -107,7 +107,7 @@ function V1StepBusiness({ form, setForm, accent }) {
         business credit and we don't surface this to bureaus.
       </p>
 
-      <div style={{
+      <div data-v1-form-grid style={{
         marginTop: 30,
         display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 18,
       }}>
@@ -360,7 +360,7 @@ function V1StepIdentity({ form, setForm, accent, onAdvance }) {
         )}
       </div>
 
-      <div style={{
+      <div data-v1-form-grid style={{
         marginTop: 22,
         display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 18, maxWidth: 480,
       }}>
@@ -676,6 +676,7 @@ function V1ApplicationFlow({ open, onClose, prefill, accent }) {
 
   const modal = (
     <div
+      data-v1-apply-modal-overlay
       onClick={(e) => { if (e.target === e.currentTarget) handleClose(); }}
       style={{
         position: 'fixed', inset: 0, zIndex: 100,
@@ -692,7 +693,7 @@ function V1ApplicationFlow({ open, onClose, prefill, accent }) {
         @keyframes v1apSlideIn { from { opacity: 0; transform: translateY(18px) scale(.985); } to { opacity: 1; transform: none; } }
       `}</style>
 
-      <div style={{
+      <div data-v1-apply-modal style={{
         width: '100%', maxWidth: 1080, maxHeight: 'calc(100vh - 48px)',
         background: V1.bg, borderRadius: 20, overflow: 'hidden',
         display: 'grid', gridTemplateColumns: '300px 1fr',
@@ -808,7 +809,7 @@ function V1ApplicationFlow({ open, onClose, prefill, accent }) {
         </aside>
 
         {/* ─── Right panel — content ─── */}
-        <div style={{
+        <div data-v1-apply-body style={{
           display: 'flex', flexDirection: 'column',
           background: V1.bg, overflow: 'hidden', position: 'relative',
         }}>
@@ -856,7 +857,7 @@ function V1ApplicationFlow({ open, onClose, prefill, accent }) {
           </div>
 
           {/* action bar */}
-          <div style={{
+          <div data-v1-modal-footer style={{
             padding: '16px 32px', borderTop: `1px solid ${V1.line}`,
             background: V1.white,
             display: 'flex', justifyContent: 'space-between', alignItems: 'center',

@@ -244,7 +244,7 @@ function V1CalcAnalyzer({ onApply, onNavHow, hideHeader }) {
       {!hideHeader && (
         <div style={{ textAlign: 'center', padding: '48px 40px 16px' }}>
           <V1Eyebrow>Live calculator</V1Eyebrow>
-          <h2 style={{
+          <h2 data-v1-section-title style={{
             fontFamily: V1.fontDisplay, fontSize: 'clamp(1.5rem, 3.5vw, 2.25rem)',
             fontWeight: 700, color: V1.ink, lineHeight: 1.15,
             letterSpacing: '-0.03em', margin: '18px 0 8px',
@@ -258,7 +258,7 @@ function V1CalcAnalyzer({ onApply, onNavHow, hideHeader }) {
       )}
 
       {/* Body — two-column */}
-      <div style={{
+      <div data-v1-grid-2col style={{
         display: 'grid', gridTemplateColumns: '3fr 2fr', gap: 20,
         padding: hideHeader ? '40px 40px' : '24px 40px 40px',
       }}>
@@ -276,7 +276,7 @@ function V1CalcAnalyzer({ onApply, onNavHow, hideHeader }) {
           {hasRevenue && (
             <div style={v1CardStyle}>
               <V1CalcLabel>Time in business</V1CalcLabel>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+              <div data-v1-grid-2col style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                 {[
                   { v: '<6mo',   l: 'Less than 6 months' },
                   { v: '6-12mo', l: '6–12 months' },
@@ -294,7 +294,7 @@ function V1CalcAnalyzer({ onApply, onNavHow, hideHeader }) {
           {hasTIB && (
             <div style={v1CardStyle}>
               <V1CalcLabel>Do you currently accept credit cards?</V1CalcLabel>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+              <div data-v1-grid-2col style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                 <V1CalcPill active={acceptsCards === true} onClick={() => onSelectCards(true)} icon="check">Yes</V1CalcPill>
                 <V1CalcPill active={acceptsCards === false} onClick={() => onSelectCards(false)} icon="x">No</V1CalcPill>
               </div>
@@ -519,10 +519,10 @@ function V1CalculatorPage({ accent, onApply, onNavHow }) {
   return (
     <div style={{ background: V1.bg }}>
       {/* Page hero */}
-      <section style={{ padding: '80px 40px 48px' }}>
+      <section data-v1-section style={{ padding: '80px 40px 48px' }}>
         <div style={{ maxWidth: 1080, margin: '0 auto', textAlign: 'center' }}>
           <V1Eyebrow>Calculator</V1Eyebrow>
-          <h1 style={{
+          <h1 data-v1-section-title style={{
             fontFamily: V1.fontDisplay, fontSize: 'clamp(2.5rem, 6vw, 4.25rem)',
             fontWeight: 700, letterSpacing: '-0.04em', lineHeight: 1.02,
             color: V1.ink, margin: '24px auto 0', maxWidth: 900,
@@ -547,17 +547,17 @@ function V1CalculatorPage({ accent, onApply, onNavHow }) {
       </section>
 
       {/* The analyzer */}
-      <section style={{ padding: '0 24px 64px' }}>
+      <section data-v1-section style={{ padding: '0 24px 64px' }}>
         <V1CalcAnalyzer onApply={onApply} onNavHow={onNavHow} />
       </section>
 
       {/* How the numbers work */}
-      <section style={{ background: V1.white, padding: '96px 40px', borderTop: `1px solid ${V1.line}`, borderBottom: `1px solid ${V1.line}` }}>
+      <section data-v1-section style={{ background: V1.white, padding: '96px 40px', borderTop: `1px solid ${V1.line}`, borderBottom: `1px solid ${V1.line}` }}>
         <div style={{ maxWidth: 1080, margin: '0 auto' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'end', marginBottom: 56 }}>
+          <div data-v1-grid-2col style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'end', marginBottom: 56 }}>
             <div>
               <V1Eyebrow>Transparent math</V1Eyebrow>
-              <h2 style={{ ...v1H2, marginTop: 18 }}>How the numbers<br />actually work.</h2>
+              <h2 data-v1-section-title style={{ ...v1H2, marginTop: 18 }}>How the numbers<br />actually work.</h2>
             </div>
             <p style={{ fontFamily: V1.fontBody, fontSize: 16, lineHeight: 1.6, color: V1.text, margin: 0, maxWidth: 480, justifySelf: 'end' }}>
               One multiplier — called a factor rate — replaces the APR gymnastics
@@ -565,7 +565,7 @@ function V1CalculatorPage({ accent, onApply, onNavHow }) {
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+          <div data-v1-grid-3col style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
             {[
               { e: 'Formula',        t: 'Monthly revenue × 50–67%', d: 'That range is the standard. Your factor multiplies it — we publish both.' },
               { e: 'Factor rate',    t: '1.12× – 1.22×',            d: 'Longer time in business and larger advances pull the factor down. Median is 1.18×.' },
@@ -592,11 +592,11 @@ function V1CalculatorPage({ accent, onApply, onNavHow }) {
       </section>
 
       {/* FAQ trimmed, calculator-specific */}
-      <section style={{ padding: '96px 40px' }}>
+      <section data-v1-section style={{ padding: '96px 40px' }}>
         <div style={{ maxWidth: 880, margin: '0 auto' }}>
           <div style={{ marginBottom: 48 }}>
             <V1Eyebrow>Common questions</V1Eyebrow>
-            <h2 style={{ ...v1H2, marginTop: 18 }}>About the numbers you just saw.</h2>
+            <h2 data-v1-section-title style={{ ...v1H2, marginTop: 18 }}>About the numbers you just saw.</h2>
           </div>
           <V1CalcFAQ />
         </div>

@@ -148,7 +148,7 @@ function AboutHero() {
   const [heroRef, heroInView] = useInView(0.1);
 
   return (
-    <section ref={heroRef} style={{
+    <section data-v1-section ref={heroRef} style={{
       background: V1.white,
       padding: '140px 0 100px',
       borderBottom: `1px solid ${V1.line}`,
@@ -172,7 +172,7 @@ function AboutHero() {
 
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px', position: 'relative' }}>
         <V1Eyebrow>About Delt</V1Eyebrow>
-        <h1 style={{
+        <h1 data-v1-section-title style={{
           marginTop: 18,
           fontFamily: V1.fontDisplay, fontSize: 'clamp(52px, 8vw, 104px)',
           fontWeight: 700, color: V1.ink,
@@ -216,7 +216,7 @@ function AboutHero() {
           Wired in one day.
         </h1>
 
-        <div style={{
+        <div data-v1-grid-2col style={{
           marginTop: 48,
           display: 'grid', gridTemplateColumns: '1fr 1fr',
           gap: 64, alignItems: 'end',
@@ -242,7 +242,7 @@ function AboutHero() {
         </div>
 
         {/* Stats strip */}
-        <div style={{
+        <div data-v1-grid-4col style={{
           marginTop: 88,
           display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)',
           borderTop: `1px solid ${V1.line}`,
@@ -264,15 +264,15 @@ function AboutHero() {
 function AboutThesis() {
   const [ref, inView] = useInView(0.25);
   return (
-    <section ref={ref} style={{ background: V1.bg, padding: '140px 0' }}>
+    <section data-v1-section ref={ref} style={{ background: V1.bg, padding: '140px 0' }}>
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px' }}>
-        <div style={{
+        <div data-v1-grid-2col style={{
           display: 'grid', gridTemplateColumns: '1fr 1fr',
           gap: 120, alignItems: 'start',
         }}>
           <div>
             <V1Eyebrow>Thesis</V1Eyebrow>
-            <h2 style={{ ...v1H2, marginTop: 18 }}>
+            <h2 data-v1-section-title style={{ ...v1H2, marginTop: 18 }}>
               Most lenders<br/>
               <span style={{
                 display: 'inline-block',
@@ -364,20 +364,20 @@ function AboutPrinciples() {
   };
 
   return (
-    <section ref={ref} style={{
+    <section data-v1-section ref={ref} style={{
       background: V1.white,
       padding: '140px 0',
       borderTop: `1px solid ${V1.line}`,
       borderBottom: `1px solid ${V1.line}`,
     }}>
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px' }}>
-        <div style={{
+        <div data-v1-grid-2col style={{
           display: 'grid', gridTemplateColumns: '1fr 1fr',
           gap: 64, alignItems: 'end', marginBottom: 56,
         }}>
           <div>
             <V1Eyebrow>How we operate</V1Eyebrow>
-            <h2 style={{ ...v1H2, marginTop: 18 }}>
+            <h2 data-v1-section-title style={{ ...v1H2, marginTop: 18 }}>
               Four principles.<br/>Taped to every wall.
             </h2>
           </div>
@@ -539,11 +539,11 @@ function AboutPrinciples() {
 function AboutTimeline() {
   const [ref, inView] = useInView(0.1);
   return (
-    <section ref={ref} style={{ background: V1.bg, padding: '140px 0' }}>
+    <section data-v1-section ref={ref} style={{ background: V1.bg, padding: '140px 0' }}>
       <div style={{ maxWidth: 1080, margin: '0 auto', padding: '0 40px' }}>
         <div style={{ marginBottom: 72, maxWidth: 720 }}>
           <V1Eyebrow>Our story</V1Eyebrow>
-          <h2 style={{ ...v1H2, marginTop: 18 }}>Six years. One book.</h2>
+          <h2 data-v1-section-title style={{ ...v1H2, marginTop: 18 }}>Six years. One book.</h2>
           <p style={{
             marginTop: 20,
             fontFamily: V1.fontBody, fontSize: 17, lineHeight: 1.6, color: V1.text,
@@ -595,7 +595,7 @@ function AboutTimeline() {
                   }} />
                 </div>
 
-                <div style={{
+                <div data-v1-grid-2col style={{
                   display: 'grid', gridTemplateColumns: '140px 1fr',
                   gap: 32, alignItems: 'start',
                 }}>
@@ -648,18 +648,18 @@ function AboutTimeline() {
 function AboutLeadership() {
   const [ref, inView] = useInView(0.15);
   return (
-    <section ref={ref} style={{
+    <section data-v1-section ref={ref} style={{
       background: V1.white, padding: '140px 0',
       borderTop: `1px solid ${V1.line}`, borderBottom: `1px solid ${V1.line}`,
     }}>
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px' }}>
-        <div style={{
+        <div data-v1-grid-2col style={{
           display: 'grid', gridTemplateColumns: '1fr 1fr',
           gap: 64, alignItems: 'end', marginBottom: 56,
         }}>
           <div>
             <V1Eyebrow>Leadership</V1Eyebrow>
-            <h2 style={{ ...v1H2, marginTop: 18 }}>The people<br/>on the desk.</h2>
+            <h2 data-v1-section-title style={{ ...v1H2, marginTop: 18 }}>The people<br/>on the desk.</h2>
           </div>
           <p style={{
             fontFamily: V1.fontBody, fontSize: 16.5, lineHeight: 1.6,
@@ -670,7 +670,7 @@ function AboutLeadership() {
           </p>
         </div>
 
-        <div style={{
+        <div data-v1-grid-4col style={{
           display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 16,
         }}>
           {ABOUT_LEADERSHIP.map((p, i) => (
