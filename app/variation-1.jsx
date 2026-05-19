@@ -43,7 +43,7 @@ function V1Chrome({ page, navTo, accent, openApp }) {
     { k: 'about',   l: 'About' },
     { k: 'reviews', l: 'Operators' },
     { k: 'faq',     l: 'FAQ' },
-    { k: 'talk',    l: 'Talk' },
+    { k: 'talk',    l: 'Contact' },
   ];
   const handleNav = (k) => { navTo(k); };
   return (

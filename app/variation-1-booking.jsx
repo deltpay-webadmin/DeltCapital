@@ -134,25 +134,9 @@ function V1BkIcon({ name, size = 14 }) {
 }
 
 const V1_SPECIALISTS = [
-  {
-    id: 1, name: 'Daniel Martinez', title: 'Funding Advisor',
-    tenure: '4y at Delt', deals: '340+ deals', focus: 'Restaurants · Retail · Services',
-    blurb: 'Guides operators through the approval and funding process, start to finish.',
-    quote: "I'll show you what the price actually is. If another lender is cheaper, I'll say so.",
-  },
-  {
-    id: 2, name: 'Elena Morgan', title: 'Funding Advisor',
-    tenure: '3y at Delt', deals: '220+ deals', focus: 'Logistics · Trucking · Construction',
-    blurb: 'Specializes in deposit-based underwriting for seasonal and cyclical books.',
-    quote: 'Bring me your messy Q4 — I underwrite the trend, not the snapshot.',
-  },
-  {
-    id: 3, name: 'Robert Klein', title: 'Director, Underwriting & Risk',
-    tenure: '6y at Delt', deals: 'Signs every offer',
-    focus: 'Large files · Complex books',
-    blurb: 'Oversees approvals and owns every funding decision that goes out the door.',
-    quote: 'If a rate looks too good, it usually is. I sign off on the ones that actually close.',
-  },
+  { id: 1, name: 'Marcus Reeves',    title: 'Funding Specialist' },
+  { id: 2, name: 'Jordan Bellamy',   title: 'Funding Specialist' },
+  { id: 3, name: 'Sasha Whitfield',  title: 'Funding Specialist' },
 ];
 
 // 8:00am → 5:30pm in 30-minute increments. Last slot starts at 5:30pm so
@@ -692,44 +676,6 @@ function V1SpecialistCard({ person, active, onPick, accent, idx }) {
         )}
       </div>
 
-      {/* Meta row */}
-      <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
-        {[
-          person.tenure,
-          person.deals,
-        ].map((m) => (
-          <span key={m} style={{
-            fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 600,
-            letterSpacing: '0.1em', textTransform: 'uppercase',
-            color: V1.muted,
-          }}>{m}</span>
-        ))}
-      </div>
-
-      {/* Focus */}
-      <div style={{
-        fontFamily: V1.fontBody, fontSize: 12.5, lineHeight: 1.5,
-        color: V1.text,
-      }}>
-        <span style={{ color: V1.muted, fontFamily: V1.fontMono, fontSize: 10.5, letterSpacing: '0.1em', textTransform: 'uppercase', marginRight: 6 }}>Focus</span>
-        {person.focus}
-      </div>
-
-      {/* Blurb */}
-      <div style={{
-        fontFamily: V1.fontBody, fontSize: 13, lineHeight: 1.55, color: V1.text,
-      }}>{person.blurb}</div>
-
-      {/* Quote */}
-      <div style={{
-        fontFamily: '"Source Serif Pro", Georgia, serif',
-        fontStyle: 'italic', fontWeight: 400,
-        fontSize: 13.5, lineHeight: 1.5,
-        color: active ? V1.ink : V1.text,
-        paddingLeft: 12, borderLeft: `2px solid ${active ? accent : V1.line}`,
-        transition: 'border-color .2s, color .2s',
-      }}>"{person.quote}"</div>
-
       <style>{`@keyframes bkCardIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}`}</style>
     </button>
   );
@@ -1216,7 +1162,7 @@ function V1BookingPage({ accent, onApply }) {
                   fontFamily: V1.fontDisplay, fontSize: 'clamp(1.5rem, 3vw, 2rem)',
                   fontWeight: 600, letterSpacing: '-0.025em', color: V1.ink,
                   margin: '12px 0 0',
-                }}>Pick your underwriter.</h2>
+                }}>Pick your specialist.</h2>
               </div>
               <p style={{
                 fontFamily: V1.fontBody, fontSize: 14, color: V1.muted,
