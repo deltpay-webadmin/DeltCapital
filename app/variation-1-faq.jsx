@@ -14,9 +14,9 @@
 const FAQ_CATS = [
   {
     k: 'pricing',
-    label: 'Pricing & rates',
+    label: 'Pricing & cost',
     eyebrow: '01 · Pricing',
-    intro: 'How the factor rate works, why it\'s a single number, and what you actually pay.',
+    intro: 'How a Delt loan is priced. One flat fee, no APR, no compounding.',
     items: [
       {
         q: 'Is there interest for a loan from Delt?',
@@ -28,7 +28,7 @@ const FAQ_CATS = [
               cost of the loan is simply the loan fee, which is the difference
               between the total owed amount and the initial loan amount you
               apply for on your Dashboard. The total cost of the loan never
-              changes.
+              changes and your balance never grows.
             </p>
             <FaqMath
               rows={[
@@ -43,50 +43,39 @@ const FAQ_CATS = [
         ),
       },
       {
-        q: 'How do I repay a loan from Delt?',
-        short: 'A fixed percentage of your daily card sales, deducted automatically.',
+        q: "What's the cost of a Delt loan?",
+        short: 'One flat fee — the difference between the total owed and the loan amount.',
         a: (
           <>
             <p>
-              A fixed percentage of your daily card sales is deducted
-              automatically until your loan is repaid. If sales are up one
-              day, you pay more; if you have a slow day, you pay less.
+              There is no interest, just one flat fee. The total cost of the
+              loan is the loan fee, which is the difference between the total
+              owed amount and the initial loan amount you apply for on your
+              Dashboard. The total cost of the loan never changes and your
+              balance never grows.
             </p>
             <p>
-              <a href="#" style={{ color: V1.blue, textDecoration: 'underline' }}>
-                Learn more about Delt loan repayment.
-              </a>
+              Actual fees depend on your payment-processing history, loan
+              amount, and other eligibility factors. You see the exact fee and
+              total owed in the offer, before you sign.
             </p>
           </>
         ),
       },
       {
-        q: 'Does my rate get better on a second draw?',
-        short: 'Yes. Repeat borrowers in good standing see the factor step down each renewal.',
+        q: 'Are there late fees or prepayment penalties?',
+        short: 'No late fees. No prepayment penalty. Pay early at no extra cost.',
         a: (
           <>
             <p>
-              Renewal pricing is the cleanest discount we offer, and it isn't a
-              promo — it's underwriting. Once we've watched a full repayment
-              cycle on your account, the file gets cheaper to underwrite, and
-              we pass that back. <b>Repeat borrowers in good standing typically
-              see 4–8 basis points off the factor</b> on each renewal, with no
-              re-application fee.
+              <b>No late fees.</b> There are no additional late fees added to
+              your total amount owed.
             </p>
             <p>
-              68% of our book funds with us more than once. The first deal
-              proves the relationship; every draw after that is priced like it.
+              <b>No prepayment penalty.</b> You can make prepayments at any
+              time at no additional cost. The total amount you owe does not
+              change due to prepayments — you simply finish the loan sooner.
             </p>
-            <FaqMath
-              rows={[
-                ['First draw factor',   '1.20×'],
-                ['Second draw factor',  '1.16×'],
-                ['Third draw factor',   '1.14×'],
-                ['Re-application fee',  '$0'],
-                ['Decision time',       '< 6 hours'],
-              ]}
-              note="Illustrative — your renewal pricing is set by repayment history and current revenue."
-            />
           </>
         ),
       },
@@ -96,7 +85,7 @@ const FAQ_CATS = [
     k: 'eligibility',
     label: 'Eligibility',
     eyebrow: '02 · Who qualifies',
-    intro: 'What we look at, what we don\'t, and what disqualifies a file fast.',
+    intro: 'What we look at, what offers look like, and whether applying touches your credit.',
     items: [
       {
         q: "How do you determine my business's loan offer?",
@@ -109,10 +98,10 @@ const FAQ_CATS = [
               history, and payment frequency.
             </p>
             <ul style={faqUlStyle}>
-              <li><b>Minimum monthly revenue:</b> $15,000 (trailing 3 mo avg)</li>
-              <li><b>Minimum time in business:</b> 6 months</li>
-              <li><b>Minimum average daily balance:</b> $1,500</li>
-              <li><b>Max negative days:</b> 5 in trailing 90 days</li>
+              <li><b>Card processing volume</b> on your operating account</li>
+              <li><b>Time on Delt</b> and overall account history</li>
+              <li><b>Sales history and deposit consistency</b></li>
+              <li><b>Status of any bankruptcy filings</b></li>
             </ul>
             <p>
               <a href="#" style={{ color: V1.blue, textDecoration: 'underline' }}>
@@ -123,39 +112,42 @@ const FAQ_CATS = [
         ),
       },
       {
-        q: 'Do I need collateral?',
-        short: 'No UCC-1 filing. No PG beyond standard assurance.',
+        q: 'What loan amounts are available through Delt?',
+        short: 'Loan offers range from $1,000 to $350,000, based on business performance.',
         a: (
           <>
             <p>
-              We don't file UCC-1s against your business. The only guarantee
-              we require is a <b>standard personal assurance</b> — you agree
-              not to move assets out of the operating entity while the book is
-              active. That's enforceable, but it's not a lien.
+              Loan offers range from <b>$1,000 to $350,000</b>, depending on
+              your business performance. We take into account:
             </p>
-            <p>
-              Inventory, receivables, equipment, real estate — we don't touch
-              any of it. If a lender is asking for collateral on a $50K–$150K
-              revenue-based advance, that's a red flag, not us.
-            </p>
+            <ul style={faqUlStyle}>
+              <li>Your time using Delt</li>
+              <li>Your processing volume and frequency</li>
+              <li>Your customer mix</li>
+              <li>Your account history and sales consistency</li>
+            </ul>
+            <FaqMath
+              rows={[
+                ['Minimum offer', '$1,000'],
+                ['Maximum offer', '$350,000'],
+                ['Decision time', '< 6 hours'],
+                ['Funding time',  'Next business day'],
+              ]}
+              note="Your exact offer range is set by underwriting and shown in your Dashboard."
+            />
           </>
         ),
       },
       {
-        q: 'What industries do you avoid?',
-        short: 'A short list — mostly regulatory, not judgmental.',
+        q: 'Does applying for a Delt loan affect my credit score?',
+        short: 'No. Applying does not affect your personal or business credit score.',
         a: (
           <>
             <p>
-              We can't fund: cannabis (state-legal or otherwise), firearms
-              retailers, gambling operators, MLM / network marketing, adult
-              entertainment, crypto exchanges, or anything on the OFAC SDN list.
-            </p>
-            <p>
-              We <i>can</i> fund: restaurants, retail, logistics, healthcare
-              (ex-pharma), construction, trades, e-commerce, services,
-              manufacturing, auto, beauty, fitness, and about 80 other NAICS
-              codes. If you're not sure, apply — Get Funded tells you in 60s.
+              No, applying for a Delt loan does not affect your personal or
+              business credit score, and there is no credit score requirement
+              to apply. We don't require a personal guarantee for your business
+              to take a loan.
             </p>
           </>
         ),
@@ -165,69 +157,9 @@ const FAQ_CATS = [
   {
     k: 'process',
     label: 'Process',
-    eyebrow: '03 · How it works',
-    intro: 'What happens between "apply" and "funded" and how long each step takes.',
+    eyebrow: '03 · Getting funded',
+    intro: 'How offers appear, how fast funds land, and what the money can be used for.',
     items: [
-      {
-        q: 'Will this hurt my credit?',
-        short: 'No. Get Funded is a soft pull. Hard pull only on counter-sign.',
-        a: (
-          <>
-            <p>
-              Get Funded runs a <b>soft inquiry</b> — no effect on your
-              score. A hard pull happens <i>only</i> if you counter-sign an
-              offer, and it's on the personal guarantor, not the business EIN.
-            </p>
-            <p>
-              If you apply, get an offer, and decide not to take it, your
-              credit is untouched. We don't sell your information or pass your
-              application to partners — ever.
-            </p>
-          </>
-        ),
-      },
-      {
-        q: 'How fast is "24 hours", really?',
-        short: 'Median time from signed offer to wire: 19 hours.',
-        a: (
-          <>
-            <p>
-              Marketing says 24 hours. The actual median across Q4 was{' '}
-              <b>19h 14m</b> from signed offer to cleared wire. Here's where
-              the time goes on a typical file:
-            </p>
-            <FaqMath
-              rows={[
-                ['Get Funded → applied',     '1–3 min'],
-                ['Applied → bank connected', '5–10 min'],
-                ['Connected → offer issued', '2–6 hours'],
-                ['Offer → counter-signed',   'your call'],
-                ['Signed → wire cleared',    '4–18 hours'],
-              ]}
-              note="Same-day funding is available on files submitted before 10am ET."
-            />
-            <p>
-              Files submitted after 3pm ET on Fridays fund Monday — that's the
-              one exception we can't bend.
-            </p>
-          </>
-        ),
-      },
-      {
-        q: 'What do I need to apply?',
-        short: 'EIN, driver\'s license, and 15 minutes.',
-        a: (
-          <>
-            <p>
-              You'll need: your EIN, a driver's license photo, and Plaid
-              credentials for your primary operating bank. That's it. No tax
-              returns, no P&amp;L, no three months of statements, no voided
-              check. If an underwriter asks for more, it's almost always on
-              files over $250K or in one of our stricter NAICS codes.
-            </p>
-          </>
-        ),
-      },
       {
         q: 'How do I request a loan from Delt?',
         short: 'Eligible offers appear automatically in your Dashboard — no request needed.',
@@ -238,139 +170,145 @@ const FAQ_CATS = [
               business is not eligible at this time. Rest assured, we
               automatically review Delt accounts on a daily basis to evaluate
               the many factors about your business that we already have to
-              assess your loan eligibility. We will notify you if you become
-              eligible for Delt Loans at a later time. You do not need to
-              contact us or provide any additional information to become
-              eligible for a loan offer.
+              assess your loan eligibility.
             </p>
+            <p>
+              We will notify you if you become eligible for Delt Loans at a
+              later time. You do not need to contact us or provide any
+              additional information to become eligible for a loan offer.
+            </p>
+          </>
+        ),
+      },
+      {
+        q: 'How quickly are funds deposited?',
+        short: 'Next business day after approval. Sometimes same-day.',
+        a: (
+          <>
+            <p>
+              Once approved, money is deposited in your account the
+              <b> next business day</b>, subject to processing time and
+              completion of the loan agreement. To reduce processing time,
+              business ownership information on file with Delt should be up to
+              date.
+            </p>
+          </>
+        ),
+      },
+      {
+        q: 'What can a Delt loan be used for?',
+        short: 'Any legitimate business need — inventory, payroll, expansion, debt refi.',
+        a: (
+          <>
+            <p>Loans can be used for any business need, including:</p>
+            <ul style={faqUlStyle}>
+              <li>Covering short-term cash flow</li>
+              <li>Hiring employees and meeting payroll</li>
+              <li>Purchasing inventory and equipment</li>
+              <li>Refinancing and paying off existing debt</li>
+              <li>Renovating an existing location</li>
+              <li>Opening a new location</li>
+            </ul>
           </>
         ),
       },
     ],
   },
   {
-    k: 'security',
-    label: 'Security & data',
-    eyebrow: '04 · Security',
-    intro: 'What we see, what we don\'t, what we keep, and how to revoke.',
+    k: 'repayment',
+    label: 'Repayment',
+    eyebrow: '04 · Repayment',
+    intro: 'How repayment works day-to-day, the terms available, and what happens on slow days.',
     items: [
       {
-        q: 'What can Delt do with my bank connection?',
-        short: 'Read-only. We see balances and deposits. We cannot move money.',
+        q: 'How do I repay a loan from Delt?',
+        short: 'A fixed percentage of your daily card sales, deducted automatically.',
         a: (
           <>
             <p>
-              Plaid gives us a <b>read-only token</b> scoped to the accounts
-              you choose. We see: daily balances, deposits, and withdrawals,
-              categorized. We can't initiate transfers, change credentials,
-              open accounts, or pull card data. The same security layer runs
-              Venmo, Chime, and Robinhood.
-            </p>
-            <p>
-              Revoke access anytime at{' '}
-              <code style={{ color: V1.blue }}>my.plaid.com</code> — it kills
-              our read token immediately.
-            </p>
-          </>
-        ),
-      },
-      {
-        q: 'What data do you keep, and for how long?',
-        short: '90 days of deposit summaries. 7 years of signed contracts.',
-        a: (
-          <>
-            <p>
-              If you're approved and funded, we retain aggregate deposit
-              summaries (weekly totals, no individual transactions) for the
-              life of the book plus 7 years — that's the SBA-equivalent
-              retention standard, and it's what our compliance team signs off
-              on.
-            </p>
-            <p>
-              If you apply and are declined, or apply and walk, we{' '}
-              <b>purge raw bank data within 30 days</b>. You can request
-              earlier deletion at any point by emailing{' '}
-              <code>privacy@delt.capital</code>.
-            </p>
-          </>
-        ),
-      },
-      {
-        q: 'Do you sell my data?',
-        short: 'No.',
-        a: (
-          <p>
-            We don't sell, rent, or share your data with third-party
-            marketers, lead-gen networks, data brokers, or "partners." If you
-            apply with us and then start getting MCA calls three days later,
-            that isn't from us. Forward the call with the number to{' '}
-            <code>abuse@delt.capital</code> and we'll investigate — a few
-            employees have been terminated over this. We take it seriously.
-          </p>
-        ),
-      },
-    ],
-  },
-  {
-    k: 'after',
-    label: 'After funding',
-    eyebrow: '05 · Once you\'re funded',
-    intro: 'Renewals, pay-off, servicing, and what happens if things go sideways.',
-    items: [
-      {
-        q: 'What if revenue drops mid-term?',
-        short: 'Call us. ~12% of books get restructured without penalty.',
-        a: (
-          <>
-            <p>
-              Revenue drops happen. Seasonal businesses, bad quarters, a
-              pandemic — we've seen it. What we ask: <b>call before you miss
-              a debit.</b> We'll run a restructure — typically a 30-day
-              deferral followed by a smaller debit over a longer term. No
-              penalty. No added factor.
-            </p>
-            <FaqQuote
-              who="Elena Morgan, Funding Advisor"
-              text="Missed debits without a heads-up are what hurt. A phone call 48 hours ahead is always cheaper than the alternative."
-            />
-          </>
-        ),
-      },
-      {
-        q: 'When can I renew for more?',
-        short: 'At 50% paid down. Often at a lower factor.',
-        a: (
-          <>
-            <p>
-              Most operators renew at the 50% pay-down mark — we roll the
-              remaining balance into a new, larger advance. Repeat clients
-              see their factor drop by <b>2–4 basis points</b> on average per
-              renewal, up to three renewals. After that you've earned the
-              floor rate we publish.
-            </p>
-          </>
-        ),
-      },
-      {
-        q: 'Can I pay off early?',
-        short: 'Yes — with a rebate on unearned factor. No penalty.',
-        a: (
-          <>
-            <p>
-              Pay off at any time. We rebate the <b>unearned portion</b> of
-              the factor, pro-rated to how far into the term you are. Most
-              competitors collect the full factor regardless — read the fine
-              print. We spell it out on page 1 of the contract.
+              A fixed percentage of your daily card sales is deducted
+              automatically until your loan is repaid. The percentage stays
+              the same, but the amount adjusts to match your cash flow — if
+              sales are up one day, you pay more; if you have a slow day, you
+              pay less.
             </p>
             <FaqMath
               rows={[
-                ['Original factor cost', '$18,000'],
-                ['Term',                 '10 months'],
-                ['Paid off at',          'Month 4'],
-                ['Factor earned',        '$7,200 (40%)'],
-                ['Rebate to you',        '$10,800'],
+                ['Daily sales · $3,850', 'Payment · $385'],
+                ['Daily sales · $3,550', 'Payment · $355'],
+                ['Daily sales · $4,280', 'Payment · $428'],
+                ['Daily sales · $5,220', 'Payment · $522'],
+                ['Daily sales · $5,890', 'Payment · $589'],
               ]}
+              note="Illustrative — repayment flexes with your real sales volume."
             />
+          </>
+        ),
+      },
+      {
+        q: 'What are the available repayment terms?',
+        short: 'Target terms from 90 to 360 days, depending on eligibility.',
+        a: (
+          <>
+            <p>
+              Delt Loans offer different target repayment terms ranging from
+              <b> 90 days to 360 days</b>, depending on eligibility. The
+              maximum repayment term is 60 days following the end of the
+              target repayment term. Any outstanding balance due at the end of
+              the maximum term will be collected automatically via ACH.
+            </p>
+            <p>
+              A minimum of <b>1/18 of the initial balance</b> must be repaid
+              every 60 days to keep the loan in good standing.
+            </p>
+          </>
+        ),
+      },
+      {
+        q: 'What happens if I miss a payment?',
+        short: 'We pull the 60-day minimum from your Delt balance or linked bank account.',
+        a: (
+          <>
+            <p>
+              If your daily card sales cannot cover the 60-day minimum
+              payment, Delt may debit the remaining minimum payment amount due
+              from your Delt balance or your Delt-linked bank account.
+            </p>
+            <p>
+              There are no late fees added to the total amount owed. If you
+              expect a sustained drop in revenue, call us before a minimum
+              comes due — we've restructured ~12% of active books mid-term
+              without penalty.
+            </p>
+          </>
+        ),
+      },
+    ],
+  },
+  {
+    k: 'finep',
+    label: 'The fine print',
+    eyebrow: '05 · The fine print',
+    intro: 'Who issues the loan, what governs it, and where to read the legal terms.',
+    items: [
+      {
+        q: 'Who issues Delt loans?',
+        short: 'Delt Capital, a direct lender. Loans subject to credit approval.',
+        a: (
+          <>
+            <p>
+              Delt Loans are issued by Delt Capital as a direct lender. Loan
+              eligibility is not guaranteed and all loans are subject to
+              credit approval. A minimum payment is required and you must
+              repay your loan as specified in the loan terms.
+            </p>
+            <p>
+              Loans may not be available to borrowers in certain
+              jurisdictions. Delt reserves the right to change or discontinue
+              the program without notice. Terms and availability may change
+              based on the business's ability to meet applicable credit and
+              eligibility criteria.
+            </p>
           </>
         ),
       },
@@ -652,7 +590,7 @@ function FaqHero({ accent, query, setQuery, totalCount, filteredCount }) {
             letterSpacing: '0.12em', textTransform: 'uppercase',
             color: 'rgba(255,255,255,0.45)', padding: '7px 0',
           }}>Try —</span>
-          {['factor rate', 'plaid', 'collateral', 'soft pull', 'early payoff', 'renew'].map((t) => (
+          {['interest', 'repayment', 'eligibility', 'credit score', 'funds', 'late fees'].map((t) => (
             <button
               key={t}
               onClick={() => setQuery(t)}
