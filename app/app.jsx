@@ -361,7 +361,7 @@ function FooterBlock({ accent = DELT.colors.indigo, brand, onNav }) {
   return (
     <footer style={{ background: DELT.colors.ink, color: '#E9E7DF', padding: '64px 32px 40px' }}>
       <div style={{ maxWidth: 1120, margin: '0 auto' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: 48, marginBottom: 56 }}>
+        <div data-v1-grid-4col data-v1-footer-grid style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: 48, marginBottom: 56 }}>
           <div>
             {brand}
             <p style={{ fontFamily: DELT.font.body, fontSize: 13.5, lineHeight: 1.6, color: '#9E9BA8', marginTop: 16, maxWidth: 300 }}>
