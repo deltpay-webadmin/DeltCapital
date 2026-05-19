@@ -43,7 +43,7 @@ function V1Chrome({ page, navTo, accent, openApp }) {
     { k: 'about',   l: 'About' },
     { k: 'reviews', l: 'Operators' },
     { k: 'faq',     l: 'FAQ' },
-    { k: 'talk',    l: 'Talk' },
+    { k: 'talk',    l: 'Contact' },
   ];
   const [menuOpen, setMenuOpen] = React.useState(false);
   const handleNav = (k) => { setMenuOpen(false); navTo(k); };
