@@ -41,7 +41,7 @@ function V1UnderwriterDonut({ person, accent, active }) {
 
 function V1BookingHero({ accent }) {
   return (
-    <section style={{
+    <section data-v1-section style={{
       background: V1.ink,
       padding: '80px 0 72px',
       color: '#fff',
@@ -65,7 +65,7 @@ function V1BookingHero({ accent }) {
         <div style={{ animation: 'bkFadeUp 600ms cubic-bezier(.2,.7,.3,1) both' }}>
           <V1Eyebrow color={V1.blueSoft}>Concierge · Real human</V1Eyebrow>
         </div>
-        <h1 style={{
+        <h1 data-v1-section-title style={{
           fontFamily: V1.fontDisplay, fontSize: 'clamp(2.4rem, 5.4vw, 4.5rem)',
           fontWeight: 600, letterSpacing: '-0.04em', lineHeight: 1.02,
           color: '#fff', margin: '22px 0 0', maxWidth: 840,
@@ -398,7 +398,7 @@ function V1BookingCalendar({ currentDate, setCurrentDate, selectedDate, onPickDa
         border: `1px solid ${V1.line}`, borderRadius: 12, overflow: 'hidden',
         background: V1.white,
       }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', background: V1.bg, borderBottom: `1px solid ${V1.line}` }}>
+        <div data-v1-grid-4col style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', background: V1.bg, borderBottom: `1px solid ${V1.line}` }}>
           {dow.map((d) => (
             <div key={d} style={{
               padding: '10px 0', textAlign: 'center',
@@ -407,7 +407,7 @@ function V1BookingCalendar({ currentDate, setCurrentDate, selectedDate, onPickDa
             }}>{d}</div>
           ))}
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)' }}>
+        <div data-v1-grid-4col style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)' }}>
           {cells.map((d, i) => {
             if (!d) return <div key={i} style={{ aspectRatio: '1', background: V1.bgWarm }} />;
             const past = isPast(d);
@@ -822,7 +822,7 @@ function V1BookingForm({
           onSubmit={(e) => { e.preventDefault(); onSubmit(); }}
           style={{ display: 'flex', flexDirection: 'column', gap: 14 }}
         >
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <div data-v1-grid-2col style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
             <label>
               <span style={labelStyle}>First name</span>
               <input
@@ -1201,7 +1201,7 @@ function V1BookingPage({ accent, onApply }) {
     <>
       <V1BookingHero accent={accent} />
 
-      <section style={{ background: V1.bg, padding: '80px 0 96px' }}>
+      <section data-v1-section style={{ background: V1.bg, padding: '80px 0 96px' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 40px' }}>
 
           {/* Specialist selector */}
@@ -1212,7 +1212,7 @@ function V1BookingPage({ accent, onApply }) {
             }}>
               <div>
                 <V1Eyebrow>Step 01 · Who</V1Eyebrow>
-                <h2 style={{
+                <h2 data-v1-section-title style={{
                   fontFamily: V1.fontDisplay, fontSize: 'clamp(1.5rem, 3vw, 2rem)',
                   fontWeight: 600, letterSpacing: '-0.025em', color: V1.ink,
                   margin: '12px 0 0',
@@ -1227,7 +1227,7 @@ function V1BookingPage({ accent, onApply }) {
               </p>
             </div>
 
-            <div style={{
+            <div data-v1-grid-3col style={{
               display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16,
             }}>
               {V1_SPECIALISTS.map((p, i) => (
@@ -1257,7 +1257,7 @@ function V1BookingPage({ accent, onApply }) {
           </div>
 
           {/* Calendar + slots + confirm */}
-          <div style={{
+          <div data-v1-grid-3col style={{
             display: 'grid', gridTemplateColumns: '1.35fr 0.75fr 0.9fr', gap: 28,
             alignItems: 'flex-start',
           }}>
@@ -1287,7 +1287,7 @@ function V1BookingPage({ accent, onApply }) {
           </div>
 
           {/* Trust / assurance strip */}
-          <div style={{
+          <div data-v1-grid-4col style={{
             marginTop: 72, padding: '28px 32px',
             background: V1.white, border: `1px solid ${V1.line}`, borderRadius: 14,
             display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 28,

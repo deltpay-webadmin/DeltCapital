@@ -42,7 +42,7 @@ function FfHero({ onApply }) {
     transition: `opacity 720ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms, transform 720ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms`,
   });
   return (
-    <section style={{
+    <section data-v1-section style={{
       background: V1.ink, color: '#fff',
       position: 'relative', overflow: 'hidden',
       padding: '88px 0 72px',
@@ -78,7 +78,7 @@ function FfHero({ onApply }) {
         <div style={enter(80)}>
           <V1Eyebrow color={V1.blueSoft}>From estimate to wire</V1Eyebrow>
         </div>
-        <h1 style={{
+        <h1 data-v1-section-title style={{
           margin: '24px 0 0',
           fontFamily: V1.fontDisplay,
           fontSize: 'clamp(2.6rem, 5.4vw, 4.6rem)',
@@ -108,7 +108,7 @@ function FfHero({ onApply }) {
           on our side, who reads what, and how long every step actually takes.
         </p>
 
-        <div style={{
+        <div data-v1-grid-4col style={{
           marginTop: 56,
           display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)',
           borderTop: '1px solid rgba(255,255,255,0.12)',
@@ -153,14 +153,14 @@ function FfHero({ onApply }) {
 function FfStepShell({ index, eyebrow, title, tagline, body, bullets, statLabel, mock }) {
   const [ref, inView] = useV1InView(0.2, '0px 0px -10% 0px');
   return (
-    <section ref={ref} style={{
+    <section data-v1-section ref={ref} style={{
       padding: '88px 0',
       borderTop: index === 1 ? 'none' : `1px solid ${V1.line}`,
       background: V1.bg,
       position: 'relative',
     }}>
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 40px' }}>
-        <div style={{
+        <div data-v1-grid-2col style={{
           display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 72,
           alignItems: 'start',
         }}>
@@ -180,7 +180,7 @@ function FfStepShell({ index, eyebrow, title, tagline, body, bullets, statLabel,
               <span style={{ width: 14, height: 1, background: V1.blue }} />
               <span>{eyebrow}</span>
             </div>
-            <h2 style={{
+            <h2 data-v1-section-title style={{
               margin: '20px 0 8px', fontFamily: V1.fontDisplay,
               fontSize: 48, fontWeight: 900, lineHeight: 1.05, letterSpacing: '-0.035em',
               color: V1.ink,
@@ -416,7 +416,7 @@ function FfMock2({ active }) {
         height: 1, background: 'rgba(255,255,255,0.12)', position: 'relative', zIndex: 1,
       }} />
 
-      <div style={{
+      <div data-v1-grid-3col style={{
         marginTop: 18, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14,
         position: 'relative', zIndex: 1,
       }}>
@@ -625,7 +625,7 @@ function FfCta({ onApply, onCalc }) {
   const [ref, inView] = useV1InView(0.2, '0px 0px -10% 0px');
   const [hover, setHover] = ffUseState(false);
   return (
-    <section ref={ref} style={{
+    <section data-v1-section ref={ref} style={{
       background: V1.ink, color: '#fff',
       padding: '88px 0 96px', position: 'relative', overflow: 'hidden',
     }}>
@@ -645,7 +645,7 @@ function FfCta({ onApply, onCalc }) {
         }}>
           <V1Eyebrow color={V1.blueSoft}>Now you know</V1Eyebrow>
         </div>
-        <h2 style={{
+        <h2 data-v1-section-title style={{
           margin: '20px 0 0', fontFamily: V1.fontDisplay,
           fontSize: 'clamp(2rem, 4.4vw, 3.4rem)', fontWeight: 900,
           lineHeight: 1.05, letterSpacing: '-0.035em', color: '#fff',

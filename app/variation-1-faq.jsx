@@ -584,17 +584,17 @@ function FaqItem({ item, open, onToggle, accent }) {
 
 function FaqCategorySection({ cat, openMap, setOpenMap, accent }) {
   return (
-    <section id={`faq-${cat.k}`} style={{
+    <section data-v1-section id={`faq-${cat.k}`} style={{
       paddingTop: 80, paddingBottom: 8, scrollMarginTop: 90,
     }}>
-      <div style={{
+      <div data-v1-grid-2col style={{
         display: 'grid', gridTemplateColumns: '280px 1fr', gap: 60,
         alignItems: 'flex-start',
       }}>
         {/* Left rail — sticky eyebrow + intro */}
         <div style={{ position: 'sticky', top: 110 }}>
           <V1Eyebrow>{cat.eyebrow}</V1Eyebrow>
-          <h2 style={{
+          <h2 data-v1-section-title style={{
             fontFamily: V1.fontDisplay, fontSize: 32, fontWeight: 600,
             letterSpacing: '-0.03em', color: V1.ink, lineHeight: 1.1,
             margin: '14px 0 16px',
@@ -634,7 +634,7 @@ function FaqCategorySection({ cat, openMap, setOpenMap, accent }) {
 
 function FaqHero({ accent, query, setQuery, totalCount, filteredCount }) {
   return (
-    <section style={{
+    <section data-v1-section style={{
       background: V1.ink, color: V1.white, position: 'relative', overflow: 'hidden',
       padding: '88px 40px 88px',
     }}>
@@ -651,7 +651,7 @@ function FaqHero({ accent, query, setQuery, totalCount, filteredCount }) {
 
       <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative' }}>
         <V1Eyebrow color={V1.blueSoft}>Questions</V1Eyebrow>
-        <h1 style={{
+        <h1 data-v1-section-title style={{
           fontFamily: V1.fontDisplay,
           fontSize: 'clamp(2.6rem, 6vw, 5rem)',
           fontWeight: 600, letterSpacing: '-0.04em', lineHeight: 1,
@@ -880,17 +880,17 @@ function V1FAQPage({ accent, onApply, onTalk }) {
       </div>
 
       {/* Closing band — still stuck? */}
-      <section style={{
+      <section data-v1-section style={{
         background: V1.white, borderTop: `1px solid ${V1.line}`,
         padding: '72px 40px',
       }}>
-        <div style={{
+        <div data-v1-grid-2col style={{
           maxWidth: 1100, margin: '0 auto',
           display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 60, alignItems: 'center',
         }}>
           <div>
             <V1Eyebrow>Still stuck</V1Eyebrow>
-            <h2 style={{
+            <h2 data-v1-section-title style={{
               fontFamily: V1.fontDisplay, fontSize: 'clamp(1.8rem, 3.2vw, 2.6rem)',
               fontWeight: 600, letterSpacing: '-0.03em', color: V1.ink,
               margin: '14px 0 0', lineHeight: 1.1,

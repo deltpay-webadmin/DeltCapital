@@ -105,7 +105,7 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
   })();
 
   return (
-    <section style={{
+    <section data-v1-section style={{
       display: 'grid',
       gridTemplateColumns: '0.9fr 1.1fr',
       minHeight: 'calc(100vh - 96px)',
@@ -154,7 +154,7 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
             <V1Eyebrow color={V1.blueSoft}>Sign in</V1Eyebrow>
           </div>
 
-          <h1 style={{
+          <h1 data-v1-section-title style={{
             margin: '28px 0 0',
             fontFamily: V1.fontDisplay,
             // Brand §4.3 — H1: Codec Pro Ultra, 56px, line-height 1.02
@@ -182,7 +182,7 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
             display: 'flex', flexDirection: 'column', gap: 20,
           }}>
             {trustSignals.map((s, i) => (
-              <div key={i} style={{
+              <div data-v1-grid-2col key={i} style={{
                 display: 'grid', gridTemplateColumns: '14px 1fr',
                 gap: 14, alignItems: 'baseline',
                 ...enter(700 + i * 120),
@@ -287,7 +287,7 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
             position: sent ? 'absolute' : 'static',
             inset: sent ? 0 : undefined,
           }}>
-            <h2 style={{
+            <h2 data-v1-section-title style={{
               fontFamily: V1.fontDisplay,
               // Brand §4.3 — H3: Codec Pro Extra Bold, 40px, line-height 1.05
               fontSize: 40, fontWeight: 800,
@@ -496,7 +496,7 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
             </div>
 
             {/* SSO */}
-            <div style={{
+            <div data-v1-grid-2col style={{
               marginTop: 20,
               display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12,
               ...enter(900),
@@ -647,7 +647,7 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
                   </svg>
                 </div>
 
-                <h2 style={{
+                <h2 data-v1-section-title style={{
                   fontFamily: V1.fontDisplay,
                   // Brand §4.3 — H3: Codec Pro Extra Bold, 40px, line-height 1.05
                   fontSize: 40, fontWeight: 800,

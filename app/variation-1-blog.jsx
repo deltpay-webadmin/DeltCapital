@@ -275,7 +275,7 @@ function BlogPlate({ seed = 0, aspect = '16/10', tone = 'light' }) {
 
 function BlogMasthead({ accent }) {
   return (
-    <section style={{
+    <section data-v1-section style={{
       background: V1.ink, color: V1.white,
       position: 'relative', overflow: 'hidden',
       padding: '64px 40px 72px',
@@ -308,10 +308,10 @@ function BlogMasthead({ accent }) {
         </div>
 
         {/* Lockup */}
-        <div style={{ paddingTop: 48, display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 64, alignItems: 'flex-end' }}>
+        <div data-v1-grid-2col style={{ paddingTop: 48, display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 64, alignItems: 'flex-end' }}>
           <div>
             <V1Eyebrow color={V1.blueSoft}>The Ledger</V1Eyebrow>
-            <h1 style={{
+            <h1 data-v1-section-title style={{
               fontFamily: V1.fontDisplay,
               fontSize: 'clamp(3.4rem, 8vw, 7rem)',
               fontWeight: 600, letterSpacing: '-0.045em', lineHeight: 0.92,
@@ -380,7 +380,7 @@ function BlogFeatured({ post, accent }) {
           <BlogMeta post={post} />
         </div>
 
-        <div style={{
+        <div data-v1-grid-2col style={{
           display: 'grid', gridTemplateColumns: '1.15fr 1fr', gap: 56,
           alignItems: 'center',
         }}>
@@ -390,7 +390,7 @@ function BlogFeatured({ post, accent }) {
               letterSpacing: '0.16em', textTransform: 'uppercase', color: accent,
               marginBottom: 14,
             }}>{post.kicker}</div>
-            <h2 style={{
+            <h2 data-v1-section-title style={{
               fontFamily: V1.fontDisplay,
               fontSize: 'clamp(2rem, 4.4vw, 3.4rem)',
               fontWeight: 600, letterSpacing: '-0.035em', lineHeight: 1.05,
@@ -594,7 +594,7 @@ function BlogCard({ post, seed, accent }) {
 
 function BlogSeriesRail({ posts, accent }) {
   return (
-    <section style={{
+    <section data-v1-section style={{
       background: V1.ink, color: V1.white,
       padding: '80px 40px', position: 'relative', overflow: 'hidden',
     }}>
@@ -604,13 +604,13 @@ function BlogSeriesRail({ posts, accent }) {
         filter: 'blur(20px)', pointerEvents: 'none',
       }} />
       <div style={{ maxWidth: 1280, margin: '0 auto', position: 'relative' }}>
-        <div style={{
+        <div data-v1-grid-2col style={{
           display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64,
           alignItems: 'flex-end', marginBottom: 48,
         }}>
           <div>
             <V1Eyebrow color={V1.blueSoft}>Series</V1Eyebrow>
-            <h2 style={{
+            <h2 data-v1-section-title style={{
               fontFamily: V1.fontDisplay,
               fontSize: 'clamp(2rem, 4.2vw, 3rem)',
               fontWeight: 600, letterSpacing: '-0.035em', lineHeight: 1.05,
@@ -633,7 +633,7 @@ function BlogSeriesRail({ posts, accent }) {
           </p>
         </div>
 
-        <div style={{
+        <div data-v1-grid-3col style={{
           display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20,
         }}>
           {posts.map((p, i) => (
@@ -696,15 +696,15 @@ function BlogSeriesRail({ posts, accent }) {
 
 function BlogArchive({ accent }) {
   return (
-    <section style={{ background: V1.bg, padding: '80px 40px', borderTop: `1px solid ${V1.line}` }}>
+    <section data-v1-section style={{ background: V1.bg, padding: '80px 40px', borderTop: `1px solid ${V1.line}` }}>
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-        <div style={{
+        <div data-v1-grid-2col style={{
           display: 'grid', gridTemplateColumns: '280px 1fr', gap: 48,
           alignItems: 'flex-start',
         }}>
           <div>
             <V1Eyebrow>Archive</V1Eyebrow>
-            <h2 style={{
+            <h2 data-v1-section-title style={{
               fontFamily: V1.fontDisplay, fontSize: 32, fontWeight: 600,
               letterSpacing: '-0.03em', color: V1.ink, lineHeight: 1.1,
               margin: '14px 0 16px',
@@ -778,18 +778,18 @@ function BlogNewsletter({ accent, onTalk }) {
   const [email, setEmail] = React.useState('');
   const [submitted, setSubmitted] = React.useState(false);
   return (
-    <section style={{
+    <section data-v1-section style={{
       background: V1.white, borderTop: `1px solid ${V1.line}`,
       padding: '72px 40px',
     }}>
-      <div style={{
+      <div data-v1-grid-2col style={{
         maxWidth: 1080, margin: '0 auto',
         display: 'grid', gridTemplateColumns: '1.1fr 1fr', gap: 56,
         alignItems: 'center',
       }}>
         <div>
           <V1Eyebrow>Subscribe</V1Eyebrow>
-          <h2 style={{
+          <h2 data-v1-section-title style={{
             fontFamily: V1.fontDisplay,
             fontSize: 'clamp(1.8rem, 3.4vw, 2.6rem)',
             fontWeight: 600, letterSpacing: '-0.03em', color: V1.ink,
@@ -980,7 +980,7 @@ function V1BlogPage({ accent, onApply, onTalk }) {
       <BlogCategoryBar activeK={activeK} onSelect={setActiveK} counts={counts} accent={accentColor} />
 
       {/* Grid of recent posts */}
-      <section style={{ background: V1.bg, padding: '56px 40px 40px' }}>
+      <section data-v1-section style={{ background: V1.bg, padding: '56px 40px 40px' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto' }}>
           <div style={{
             display: 'flex', alignItems: 'baseline', justifyContent: 'space-between',
@@ -1008,7 +1008,7 @@ function V1BlogPage({ accent, onApply, onTalk }) {
               </p>
             </div>
           ) : (
-            <div style={{
+            <div data-v1-grid-3col style={{
               display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 28,
             }}>
               {filtered.map((p, i) => (

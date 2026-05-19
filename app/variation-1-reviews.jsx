@@ -241,7 +241,7 @@ function V1ReviewsPage({ accent, onApply, onTalk }) {
   return (
     <>
       {/* ─── HERO ─── */}
-      <section style={{
+      <section data-v1-section style={{
         background: V1.white,
         padding: '120px 0 80px',
         borderBottom: `1px solid ${V1.line}`,
@@ -257,11 +257,11 @@ function V1ReviewsPage({ accent, onApply, onTalk }) {
 
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px', position: 'relative' }}>
           <V1Eyebrow>Operators</V1Eyebrow>
-          <div style={{
+          <div data-v1-grid-2col style={{
             display: 'grid', gridTemplateColumns: '1.3fr 1fr',
             gap: 80, alignItems: 'end', marginTop: 18,
           }}>
-            <h1 style={{
+            <h1 data-v1-section-title style={{
               fontFamily: V1.fontDisplay, fontSize: 'clamp(44px, 6.5vw, 80px)',
               fontWeight: 700, color: V1.ink,
               letterSpacing: '-0.035em', lineHeight: 1.02,
@@ -280,7 +280,7 @@ function V1ReviewsPage({ accent, onApply, onTalk }) {
           </div>
 
           {/* Hard numbers strip */}
-          <div style={{
+          <div data-v1-grid-4col style={{
             marginTop: 64, display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)',
             gap: 0, borderTop: `1px solid ${V1.line}`,
           }}>
@@ -320,7 +320,7 @@ function V1ReviewsPage({ accent, onApply, onTalk }) {
       </section>
 
       {/* ─── FILTER + GRID ─── */}
-      <section style={{ background: V1.bg, padding: '80px 0 120px' }}>
+      <section data-v1-section style={{ background: V1.bg, padding: '80px 0 120px' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px' }}>
           {/* Filter row */}
           <div style={{
@@ -363,7 +363,7 @@ function V1ReviewsPage({ accent, onApply, onTalk }) {
           </div>
 
           {/* Grid — featured first card + regular cards */}
-          <div style={{
+          <div data-v1-grid-3col style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(3, 1fr)',
             gap: 20,
@@ -397,7 +397,7 @@ function V1ReviewsPage({ accent, onApply, onTalk }) {
       </section>
 
       {/* ─── PROOF STRIP — press / trust logos ─── */}
-      <section style={{
+      <section data-v1-section style={{
         background: V1.white,
         padding: '56px 0',
         borderTop: `1px solid ${V1.line}`,
