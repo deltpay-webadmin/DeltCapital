@@ -639,13 +639,33 @@ function V1StepDone({ form, accent }) {
 function V1ApplicationFlow({ open, onClose, prefill, accent }) {
   const [step, setStep] = React.useState(0);
   const [form, setForm] = React.useState({
-    businessName: '', ein: '', legalForm: 'LLC',
-    firstName: '', lastName: '', email: '', phone: '',
+    // Contact fields are pre-filled from the calculator lead-gate when present
+    businessName: prefill?.lead?.businessName || '',
+    ein: '', legalForm: 'LLC',
+    firstName: prefill?.lead?.firstName || '',
+    lastName: '',
+    email: prefill?.lead?.email || '',
+    phone: prefill?.lead?.phone || '',
     state: 'CA', useOfFunds: 'Inventory',
     bankConnected: false, bankInstitution: '', bankAccounts: null,
     ssn4: '', idVerified: false,
     amount: prefill?.high || 75000,
   });
+
+  // If the modal is re-opened with a newer prefill (e.g. user re-runs the
+  // calculator and the lead-gate captures different contact info), merge
+  // those values in without clobbering anything the user has typed.
+  React.useEffect(() => {
+    if (!open || !prefill?.lead) return;
+    setForm((f) => ({
+      ...f,
+      businessName: f.businessName || prefill.lead.businessName || '',
+      firstName:    f.firstName    || prefill.lead.firstName    || '',
+      email:        f.email        || prefill.lead.email        || '',
+      phone:        f.phone        || prefill.lead.phone        || '',
+      amount:       prefill.high   || f.amount,
+    }));
+  }, [open, prefill]);
   const [closing, setClosing] = React.useState(false);
 
   React.useEffect(() => {
