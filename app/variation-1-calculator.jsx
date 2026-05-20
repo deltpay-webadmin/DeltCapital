@@ -3,9 +3,9 @@
 //   • Progressive reveal: revenue → TIB → cards (Y/N) → card sales
 //   • TIB multipliers (50-67% of revenue, shifts by tenure, <6mo = redirect)
 //   • Delt Boost toggle: 1.75× boost + 0% first-$5K banner
-//   • Custom amount input
 //   • Redirect case UI for <6mo businesses
-//   • 2.5s "calculating…" buffer before showing results
+//   • Lead-capture gate before the funding range is revealed
+//   • Unified bottom strip: "How it works" → Delt-Boost toggle
 // Designed in V1's purple/violet language — no navy/indigo from the original.
 
 const { useState: v1cUseState, useEffect: v1cUseEffect, useRef: v1cUseRef } = React;
@@ -144,11 +144,10 @@ function V1CalcPill({ active, onClick, children, icon }) {
 // ═══════════════════════════════════════════════════════════════
 // CALCULATOR CORE — the analyzer card itself
 // ═══════════════════════════════════════════════════════════════
-// Animated "How it works →" button — appears below the calculator results
-// only when the user toggles processing-with-Delt to true. Renders as a
-// hairline-bordered ghost button (not a footer link) so it reads as a
-// proper CTA. Fades + slides up on mount; unmounts cleanly when the
-// toggle flips off.
+// Animated "How it works →" standalone button.
+// NOTE: Superseded by V1CalcHowInlineLink which lives inside the
+// bottom strip alongside the Delt-Boost toggle. Kept here in case we
+// want a standalone variant again for an A/B test.
 function V1CalcHowLink({ onClick }) {
   const [shown, setShown] = v1cUseState(false);
   const [hover, setHover] = v1cUseState(false);
@@ -194,6 +193,47 @@ function V1CalcHowLink({ onClick }) {
   );
 }
 
+// Inline variant of V1CalcHowLink that lives *inside* the bottom
+// strip directly above the Delt-Boost toggle. Lighter visual weight
+// than the standalone button — reads as a connecting prompt ("Curious
+// how it works? →") so the strip feels like a single guided action
+// instead of two stacked cards.
+function V1CalcHowInlineLink({ onClick }) {
+  const [hover, setHover] = v1cUseState(false);
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        display: 'inline-flex', alignItems: 'center', gap: 8,
+        padding: '6px 10px', marginLeft: -10,
+        background: 'transparent', border: 'none',
+        color: V1.blue,
+        fontFamily: V1.fontDisplay, fontSize: 12.5, fontWeight: 700,
+        letterSpacing: '0.02em',
+        cursor: 'pointer', borderRadius: 8,
+        transition: 'background 180ms, color 180ms',
+      }}
+    >
+      <span style={{
+        width: 22, height: 22, borderRadius: 999, flexShrink: 0,
+        background: `${V1.blue}1A`, color: V1.blue,
+        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+        transition: 'background 180ms',
+      }}>
+        <V1CalcIcon kind="spark" />
+      </span>
+      <span>Curious how it works?</span>
+      <span aria-hidden style={{
+        display: 'inline-flex',
+        transform: hover ? 'translateX(3px)' : 'translateX(0)',
+        transition: 'transform 260ms cubic-bezier(0.22, 1, 0.36, 1)',
+      }}>→</span>
+    </button>
+  );
+}
+
 function V1CalcAnalyzer({ onApply, onNavHow, onNavProcessing, hideHeader }) {
   useV1LeadAnimations();
   const [revenue, setRevenue] = v1cUseState(0);
@@ -203,8 +243,6 @@ function V1CalcAnalyzer({ onApply, onNavHow, onNavProcessing, hideHeader }) {
   const [cardSales, setCardSales] = v1cUseState(0);
   const [cardSalesInput, setCardSalesInput] = v1cUseState('');
   const [deltToggle, setDeltToggle] = v1cUseState(false);
-  const [customAmt, setCustomAmt] = v1cUseState('');
-  const [customAmtInput, setCustomAmtInput] = v1cUseState('');
 
   const [showResults, setShowResults] = v1cUseState(false);
   const calcTimer = v1cUseRef(null);
@@ -377,12 +415,6 @@ function V1CalcAnalyzer({ onApply, onNavHow, onNavProcessing, hideHeader }) {
     setCardSalesInput(n > 0 ? n.toLocaleString() : digits);
     setCardSales(n);
   };
-  const onCustomAmt = (raw) => {
-    const digits = raw.replace(/[^0-9]/g, '');
-    const n = Math.min(parseInt(digits || '0', 10), 500000);
-    setCustomAmtInput(n > 0 ? n.toLocaleString() : digits);
-    setCustomAmt(n > 0 ? String(n) : '');
-  };
   const onSelectCards = (v) => {
     setAcceptsCards(v);
     if (!v) { setCardSales(0); setCardSalesInput(''); setDeltToggle(false); }
@@ -499,15 +531,12 @@ function V1CalcAnalyzer({ onApply, onNavHow, onNavProcessing, hideHeader }) {
                 fontSize: 'clamp(2.25rem, 5vw, 3rem)',
                 fontWeight: 800, lineHeight: 1.05, letterSpacing: '-0.035em',
                 color: !hasRevenue ? '#d1d5db'
-                     : customAmt ? V1.blue
                      : boosted ? V1.blue
                      : V1.ink,
                 fontVariantNumeric: 'tabular-nums',
                 transition: 'color .4s',
               }}>
-                {customAmt ? (
-                  v1fmtK(Number(customAmt))
-                ) : hasRevenue && showResults ? (
+                {hasRevenue && showResults ? (
                   <>{v1fmtK(displayLow)}<span style={{ margin: '0 6px', opacity: 0.35 }}>–</span>{v1fmtK(displayHigh)}</>
                 ) : hasRevenue && allFilled ? (
                   <span style={{ color: V1.muted, fontSize: '0.7em', fontWeight: 600, letterSpacing: 0 }}>Calculating…</span>
@@ -517,9 +546,8 @@ function V1CalcAnalyzer({ onApply, onNavHow, onNavProcessing, hideHeader }) {
               </span>
             </div>
             <p style={{ fontFamily: V1.fontBody, fontSize: 13, color: V1.muted, marginTop: 6, lineHeight: 1.5 }}>
-              {!hasRevenue   ? 'Complete the fields to see your estimate.'
-               : customAmt   ? 'Your custom amount'
-               : boosted     ? 'With Delt processing'
+              {!hasRevenue ? 'Complete the fields to see your estimate.'
+               : boosted   ? 'With Delt processing'
                : 'Based on your monthly revenue'}
             </p>
 
@@ -535,21 +563,6 @@ function V1CalcAnalyzer({ onApply, onNavHow, onNavProcessing, hideHeader }) {
                   <V1CalcIcon kind="spark" />
                   0% processing on your first $5,000
                 </span>
-              </div>
-            )}
-
-            {/* Custom amount */}
-            {hasRevenue && (
-              <div style={{ marginTop: 20, paddingTop: 20, borderTop: `1px solid ${V1.line}` }}>
-                <V1CalcLabel>Custom amount</V1CalcLabel>
-                <V1CalcMoneyInput big={false} placeholder="Enter amount"
-                  value={customAmtInput} onChange={onCustomAmt}
-                  onBlur={() => customAmt && setCustomAmtInput(Number(customAmt).toLocaleString())} />
-                {customAmt && (
-                  <div style={{ marginTop: 6, fontSize: 11.5, color: V1.blue, fontWeight: 500, fontFamily: V1.fontBody }}>
-                    Custom amount selected
-                  </div>
-                )}
               </div>
             )}
 
@@ -592,24 +605,37 @@ function V1CalcAnalyzer({ onApply, onNavHow, onNavProcessing, hideHeader }) {
             <p style={{ fontSize: 10.5, color: V1.muted, opacity: 0.75, marginTop: 14, lineHeight: 1.45, fontFamily: V1.fontBody }}>
               Estimates are approximate and not a guarantee of funding. Final offers are based on a full review of your business.
             </p>
-
-            {/* "How it works" link — only when user actively toggled Delt
-                processing on (not the no-cards cross-sell case). */}
-            {deltToggle && hasRevenue && !isRedirect && (
-              <V1CalcHowLink onClick={onNavHow} />
-            )}
           </div>
 
-          {/* ── Delt Boost toggle — pinned to bottom ── */}
-          <div style={{ marginTop: 20, marginLeft: -28, marginRight: -28, marginBottom: -28, borderTop: `1px solid ${V1.line}` }}>
+          {/* ── "How it works" → Delt Boost toggle — unified bottom strip ──
+             These two used to read as separate floating cards. We now
+             render them inside a single blue-tinted footer with no rule
+             between them, so the eye reads "learn how it works → flip
+             the switch" as one continuous action group. The whole strip
+             tints up when the toggle is on for extra cohesion. */}
+          <div style={{
+            marginTop: 20, marginLeft: -28, marginRight: -28, marginBottom: -28,
+            background: deltToggle
+              ? `linear-gradient(135deg, ${V1.blue}0A 0%, ${V1.blue}14 100%)`
+              : `${V1.bg}`,
+            borderTop: `1px solid ${deltToggle ? V1.blue + '22' : V1.line}`,
+            transition: 'background .3s, border-color .3s',
+          }}>
+            {/* "How it works" rail — only shown when the user actively
+                toggled Delt processing on (matching the original visibility
+                logic). Sits flush above the toggle with no divider, so the
+                two read as a single guided action group. */}
+            {deltToggle && hasRevenue && !isRedirect && (
+              <div style={{ padding: '14px 28px 0' }}>
+                <V1CalcHowInlineLink onClick={onNavHow} />
+              </div>
+            )}
+
             <button onClick={() => setDeltToggle(!deltToggle)} disabled={noCards}
               style={{
-                width: '100%', padding: '18px 28px', border: 'none',
-                background: deltToggle
-                  ? `linear-gradient(135deg, ${V1.blue}0A 0%, ${V1.blue}14 100%)`
-                  : 'transparent',
+                width: '100%', padding: '14px 28px 18px', border: 'none',
+                background: 'transparent',
                 cursor: noCards ? 'default' : 'pointer', textAlign: 'left',
-                transition: 'background .3s',
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
                 fontFamily: V1.fontBody,
               }}>
