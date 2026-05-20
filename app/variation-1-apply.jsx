@@ -151,7 +151,8 @@ function V1StepBank({ form, setForm, accent, onAdvance }) {
       bankInstitution: data.institution,
       bankAccounts: data.accounts,
     });
-    setTimeout(() => { onAdvance && onAdvance(); }, 700);
+    // Skip showing the "accounts synced" card — go straight to Identity.
+    onAdvance && onAdvance();
   };
 
   return (
@@ -379,7 +380,16 @@ function V1StepIdentity({ form, setForm, accent, onAdvance }) {
         </V1ApplyField>
       </div>
 
-      <V1IDVerify open={idvOpen} onClose={() => setIdvOpen(false)} onComplete={handleIdvComplete} />
+      <V1IDVerify
+        open={idvOpen}
+        onClose={() => setIdvOpen(false)}
+        onComplete={handleIdvComplete}
+        userInfo={{
+          name: { given_name: form.firstName, family_name: form.lastName },
+          email_address: form.email,
+          phone_number: form.phone,
+        }}
+      />
 
       <div style={{
         marginTop: 32, padding: '18px 20px',

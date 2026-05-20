@@ -1,5 +1,5 @@
 // POST /api/plaid-create-idv
-//   body: { clientUserId: string }
+//   body: { clientUserId: string, user?: { name?, email_address?, phone_number? } }
 //   → { identity_verification_id, shareable_url, status }
 //
 // Creates an Identity Verification session and returns Plaid's
@@ -7,14 +7,53 @@
 // code so the applicant can scan with their phone and complete ID + selfie
 // capture there. Desktop polls /api/plaid-get-idv-status until status flips
 // to "success".
+//
+// Pre-filling the `user` object (name/email/phone we already collected at
+// Step 01) is recommended by Plaid — it skips the equivalent screens in
+// the IDV UI and runs anti-fraud checks against the email. Plaid accepts
+// fully-omitted optional sub-fields, so we sanitize per-field rather than
+// sending half-formed values that fail input validation.
 
 const QRCode = require('qrcode');
 const { plaidFetch, requireMethod, readJsonBody } = require('./_plaid');
 
+// Plaid wants E.164 (e.g. "+12345678909"). The frontend collects "(555)
+// 555-0199"; strip non-digits, prepend "+1" for plain 10-digit US numbers,
+// "+" for an 11-digit number that already has a country code, otherwise
+// drop the field rather than risk an INVALID_FIELD error.
+function normalizePhone(raw) {
+  if (!raw || typeof raw !== 'string') return null;
+  const digits = raw.replace(/\D+/g, '');
+  if (digits.length === 10) return '+1' + digits;
+  if (digits.length === 11 && digits[0] === '1') return '+' + digits;
+  if (digits.length > 10 && raw.trim().startsWith('+')) return '+' + digits;
+  return null;
+}
+
+function sanitizeUser(input) {
+  if (!input || typeof input !== 'object') return null;
+  const out = {};
+  if (typeof input.email_address === 'string' && /\S+@\S+\.\S+/.test(input.email_address)) {
+    out.email_address = input.email_address.trim();
+  }
+  const phone = normalizePhone(input.phone_number);
+  if (phone) out.phone_number = phone;
+  if (input.name && typeof input.name === 'object'
+      && typeof input.name.given_name === 'string' && input.name.given_name.trim()
+      && typeof input.name.family_name === 'string' && input.name.family_name.trim()) {
+    out.name = {
+      given_name: input.name.given_name.trim(),
+      family_name: input.name.family_name.trim(),
+    };
+  }
+  return Object.keys(out).length ? out : null;
+}
+
 module.exports = async function handler(req, res) {
   if (!requireMethod(req, res, 'POST')) return;
 
-  const { clientUserId } = readJsonBody(req);
+  const body = readJsonBody(req);
+  const { clientUserId, user } = body;
   if (!clientUserId || typeof clientUserId !== 'string') {
     res.status(400).json({ error: 'clientUserId is required' });
     return;
@@ -38,12 +77,20 @@ module.exports = async function handler(req, res) {
     `last4=${JSON.stringify(templateId.slice(-4))}`
   );
 
+  const sanitizedUser = sanitizeUser(user);
+
   try {
     const data = await plaidFetch('/identity_verification/create', {
       is_shareable: true,
       template_id: templateId,
       gave_consent: true,
-      user: { client_user_id: clientUserId },
+      // Return the existing session for this (client_user_id, template_id)
+      // instead of throwing INVALID_FIELD when one already exists. The
+      // client_user_id is stable per browser (localStorage), so a retried
+      // verification — common after a closed mobile handoff or a reload —
+      // would otherwise wedge the user.
+      is_idempotent: true,
+      user: { client_user_id: clientUserId, ...(sanitizedUser || {}) },
     });
     // Render the QR server-side so the IDV shareable_url stays inside our
     // infrastructure (mirrors api/plaid-create-link-token.js — see the

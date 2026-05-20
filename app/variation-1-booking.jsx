@@ -169,7 +169,7 @@ function v1BkParseTime(t) {
 // label slots in the visitor's timezone while the API payload stays ET.
 const V1_USER_TZ = (() => {
   try { return Intl.DateTimeFormat().resolvedOptions().timeZone; }
-  catch { return 'America/New_York'; }
+  catch (_) { return 'America/New_York'; }
 })();
 
 const V1_USER_TZ_SHORT = (() => {
@@ -179,7 +179,7 @@ const V1_USER_TZ_SHORT = (() => {
     }).formatToParts(new Date());
     const tzn = parts.find((p) => p.type === 'timeZoneName');
     return tzn ? tzn.value : V1_USER_TZ;
-  } catch { return V1_USER_TZ; }
+  } catch (_) { return V1_USER_TZ; }
 })();
 
 const V1_IS_ET_USER = V1_USER_TZ === 'America/New_York';
