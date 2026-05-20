@@ -678,6 +678,38 @@ function V1CalcAnalyzer({ onApply, onNavHow, onNavProcessing, hideHeader }) {
                 }} />
               </div>
             </button>
+
+            {/* Two-approvals tease — the marketing payoff for flipping
+                the switch. Aspirational copy ("built so…") so we don't
+                overpromise a product flow that's still being wired up.
+                Animates in/out with the toggle so it feels earned. */}
+            <div style={{
+              maxHeight: deltToggle && hasRevenue && !isRedirect ? 80 : 0,
+              opacity: deltToggle && hasRevenue && !isRedirect ? 1 : 0,
+              overflow: 'hidden',
+              transition: 'max-height 320ms cubic-bezier(0.22,1,0.36,1), opacity 240ms ease-out',
+            }}>
+              <div style={{
+                padding: '0 28px 16px',
+                display: 'flex', alignItems: 'flex-start', gap: 10,
+                fontFamily: V1.fontBody, fontSize: 12, lineHeight: 1.5,
+                color: V1.text,
+              }}>
+                <span style={{
+                  width: 18, height: 18, borderRadius: 999, flexShrink: 0, marginTop: 1,
+                  background: `${V1.blue}1F`, color: V1.blue,
+                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <V1CalcIcon kind="check" />
+                </span>
+                <span>
+                  <strong style={{ color: V1.ink }}>One review, two yeses.</strong>{' '}
+                  Delt is built so a single underwriting decision covers your
+                  capital <em>and</em> your merchant services—with lower processing
+                  fees baked in.
+                </span>
+              </div>
+            </div>
           </div>
           </div>{/* /blur shroud */}
 

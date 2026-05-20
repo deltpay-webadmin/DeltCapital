@@ -65,10 +65,15 @@ function HwHero({ accent, onApply }) {
           </h1>
           <p style={{
             fontFamily: V1.fontBody, fontSize: 19, lineHeight: 1.55,
-            color: V1.text, margin: '32px auto 0', maxWidth: 620,
+            color: V1.text, margin: '32px auto 0', maxWidth: 640,
           }}>
-            Four steps. No paperwork. No phone tag. A direct-lender model that
-            cuts three weeks off the way banks do this.
+            Four steps. No paperwork. No phone tag. Built so a single review
+            can clear you for capital{' '}<em style={{
+              fontStyle: 'italic',
+              fontFamily: '"Source Serif Pro", Georgia, serif',
+              color: V1.ink,
+            }}>and</em>{' '}merchant services—one stack, lower fees, three weeks
+            faster than the bank route.
           </p>
         </div>
 
@@ -770,6 +775,254 @@ function HwSpeedStrip() {
 }
 
 // ═══════════════════════════════════════════════════════════════
+// TWO APPROVALS — the bigger marketing claim that contextualizes the 4 steps
+// ═══════════════════════════════════════════════════════════════
+// HwTwoApprovals — the centerpiece marketing claim: one application,
+// one underwriting review, two yeses (capital + merchant services).
+// Side-by-side visual contrasts the legacy operator stack (two
+// separate applications, two reviews, two onboardings, fees stacked)
+// against the Delt stack (one of each). Aspirational tone—"built so"
+// rather than "does"—since the integrated flow is still being wired
+// up product-side. Sits between the 4-step walkthrough and the
+// SpeedStrip so it reads as the bigger truth that contextualizes
+// the four steps the user just saw.
+// ══════════════════════════════════════════════════════════════
+function HwTwoApprovals({ onApply }) {
+  const legacy = [
+    { t: 'Apply for processing', d: 'Separate merchant-services application. Hard pull. 1–2 weeks to onboard.' },
+    { t: 'Apply for capital',    d: 'Separate lender. Separate paperwork. Separate Plaid pull or bank statements.' },
+    { t: 'Two underwriting reviews', d: 'Two analysts, two timelines, two sets of stipulations to clear.' },
+    { t: 'Stacked fees',         d: 'Processor takes their margin. Lender takes theirs. Nobody is talking to each other.' },
+  ];
+  const delt = [
+    { t: 'One application',       d: 'Five fields. Same form covers capital and merchant services.' },
+    { t: 'One Plaid connection',  d: 'Read deposits once. Powers underwriting and processing setup at the same time.' },
+    { t: 'One underwriter',       d: 'The same human signs both decisions. Pricing built for the bundle, not bolted on.' },
+    { t: 'Lower fees, in writing', d: "Capital priced with processing economics in mind. We make less per dollar so you keep more." },
+  ];
+
+  return (
+    <section data-v1-section style={{
+      position: 'relative', overflow: 'hidden',
+      padding: '120px 40px', background: V1.bg, borderBottom: `1px solid ${V1.line}`,
+    }}>
+      {/* Subtle accent wash so this section visually steps forward */}
+      <div aria-hidden style={{
+        position: 'absolute', inset: 0, pointerEvents: 'none',
+        background: `radial-gradient(ellipse 900px 480px at 50% 0%, ${V1.blue}10 0%, transparent 65%)`,
+      }} />
+
+      <div style={{ position: 'relative', maxWidth: 1240, margin: '0 auto' }}>
+        <div style={{ marginBottom: 56, textAlign: 'center', maxWidth: 780, marginInline: 'auto' }}>
+          <V1Eyebrow>The bigger picture</V1Eyebrow>
+          <h2 data-v1-section-title style={{ ...v1H2, marginTop: 18 }}>
+            One application.<br/>
+            <em style={{
+              fontStyle: 'italic',
+              fontFamily: '"Source Serif Pro", Georgia, serif',
+              fontWeight: 400,
+              background: `linear-gradient(90deg, ${V1.blue}, #818CF8)`,
+              WebkitBackgroundClip: 'text', backgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}>Two approvals.</em>
+          </h2>
+          <p style={{
+            fontFamily: V1.fontBody, fontSize: 17, lineHeight: 1.6,
+            color: V1.text, margin: '24px auto 0', maxWidth: 660,
+          }}>
+            Most operators apply twice—once to a processor, once to a lender—and
+            pay for both reviews out of margin. Delt is built so a single
+            underwriting decision clears you for working capital and merchant
+            services in the same pass. One stack. Lower fees. Fewer logins.
+          </p>
+        </div>
+
+        {/* Side-by-side comparison */}
+        <div data-v1-grid-2col style={{
+          display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 20,
+          marginTop: 16,
+        }}>
+          {/* LEGACY column */}
+          <div style={{
+            background: V1.white,
+            border: `1px solid ${V1.line}`,
+            borderRadius: 20, padding: 32,
+            position: 'relative',
+          }}>
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+              padding: '5px 11px', borderRadius: 999,
+              background: '#F1F2F4', color: V1.muted,
+              fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 700,
+              letterSpacing: '0.14em', textTransform: 'uppercase',
+            }}>
+              The legacy stack
+            </div>
+            <h3 style={{
+              margin: '14px 0 4px',
+              fontFamily: V1.fontDisplay, fontSize: 22, fontWeight: 600,
+              color: V1.ink, letterSpacing: '-0.02em',
+            }}>
+              Two applications. Two reviews. Two bills.
+            </h3>
+            <p style={{
+              margin: '0 0 22px',
+              fontFamily: V1.fontBody, fontSize: 13.5, color: V1.muted, lineHeight: 1.5,
+            }}>
+              Average operator: ~3 weeks to onboarding + funding. ~12 hours of
+              their week spent in two portals that don't talk to each other.
+            </p>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+              {legacy.map((i) => (
+                <li key={i.t} style={{
+                  display: 'flex', alignItems: 'flex-start', gap: 12,
+                  padding: '12px 0', borderTop: `1px solid ${V1.line}`,
+                }}>
+                  <span style={{
+                    width: 22, height: 22, borderRadius: 6, flexShrink: 0, marginTop: 1,
+                    background: '#F1F2F4', color: V1.muted,
+                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                    fontFamily: V1.fontMono, fontSize: 13, fontWeight: 700,
+                  }}>×</span>
+                  <div>
+                    <div style={{
+                      fontFamily: V1.fontDisplay, fontSize: 14.5, fontWeight: 600,
+                      color: V1.ink, marginBottom: 2,
+                    }}>{i.t}</div>
+                    <div style={{
+                      fontFamily: V1.fontBody, fontSize: 13, color: V1.text, lineHeight: 1.5,
+                    }}>{i.d}</div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* DELT column — visually emphasized */}
+          <div style={{
+            background: `linear-gradient(145deg, ${V1.white} 0%, #F4EEFB 100%)`,
+            border: `1.5px solid ${V1.blue}33`,
+            borderRadius: 20, padding: 32,
+            position: 'relative',
+            boxShadow: `0 12px 40px -16px ${V1.blue}3A`,
+          }}>
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+              padding: '5px 11px', borderRadius: 999,
+              background: `linear-gradient(135deg, ${V1.blue} 0%, #818CF8 100%)`,
+              color: '#fff',
+              fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 700,
+              letterSpacing: '0.14em', textTransform: 'uppercase',
+              boxShadow: `0 4px 12px -4px ${V1.blue}AA`,
+            }}>
+              <HwIcon kind="check" />
+              The Delt stack
+            </div>
+            <h3 style={{
+              margin: '14px 0 4px',
+              fontFamily: V1.fontDisplay, fontSize: 22, fontWeight: 600,
+              color: V1.ink, letterSpacing: '-0.02em',
+            }}>
+              One application. One review. One yes—twice.
+            </h3>
+            <p style={{
+              margin: '0 0 22px',
+              fontFamily: V1.fontBody, fontSize: 13.5, color: V1.muted, lineHeight: 1.5,
+            }}>
+              Built for operators who'd rather run their business than chase
+              decisions. Wire in 24 hours. Processing live in the same review.
+            </p>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+              {delt.map((i) => (
+                <li key={i.t} style={{
+                  display: 'flex', alignItems: 'flex-start', gap: 12,
+                  padding: '12px 0', borderTop: `1px solid ${V1.blue}22`,
+                }}>
+                  <span style={{
+                    width: 22, height: 22, borderRadius: 6, flexShrink: 0, marginTop: 1,
+                    background: `linear-gradient(135deg, ${V1.blue}, #818CF8)`, color: '#fff',
+                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                    boxShadow: `0 2px 6px -1px ${V1.blue}66`,
+                  }}>
+                    <HwIcon kind="check" />
+                  </span>
+                  <div>
+                    <div style={{
+                      fontFamily: V1.fontDisplay, fontSize: 14.5, fontWeight: 600,
+                      color: V1.ink, marginBottom: 2,
+                    }}>{i.t}</div>
+                    <div style={{
+                      fontFamily: V1.fontBody, fontSize: 13, color: V1.text, lineHeight: 1.5,
+                    }}>{i.d}</div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* Outcome strip — the why-it-matters payoff */}
+        <div style={{
+          marginTop: 32, padding: '22px 28px',
+          background: V1.white, border: `1px solid ${V1.line}`,
+          borderRadius: 16,
+          display: 'flex', flexWrap: 'wrap', alignItems: 'center',
+          justifyContent: 'space-between', gap: 20,
+        }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 28, flex: 1, minWidth: 280 }}>
+            {[
+              { k: '~3 wks → same week', v: 'Time to capital + processing live' },
+              { k: '2 reviews → 1',       v: 'Underwriting friction' },
+              { k: 'Stacked fees → one',  v: 'Pricing built for the bundle' },
+            ].map((o) => (
+              <div key={o.k} style={{ minWidth: 0 }}>
+                <div style={{
+                  fontFamily: V1.fontDisplay, fontSize: 17, fontWeight: 700,
+                  color: V1.blue, letterSpacing: '-0.015em', lineHeight: 1.1,
+                  fontVariantNumeric: 'tabular-nums',
+                }}>{o.k}</div>
+                <div style={{
+                  fontFamily: V1.fontBody, fontSize: 12.5, color: V1.muted,
+                  marginTop: 4, lineHeight: 1.4,
+                }}>{o.v}</div>
+              </div>
+            ))}
+          </div>
+          {onApply && (
+            <button onClick={onApply} style={{
+              padding: '12px 22px', borderRadius: 12, border: 'none',
+              background: `linear-gradient(135deg, ${V1.blue} 0%, #6366F1 50%, ${V1.blue} 100%)`,
+              color: '#fff',
+              fontFamily: V1.fontBody, fontSize: 14, fontWeight: 700,
+              cursor: 'pointer', flexShrink: 0,
+              boxShadow: `0 10px 30px -10px ${V1.blue}AA, 0 4px 10px -4px ${V1.blue}77`,
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+              transition: 'transform .15s, box-shadow .2s',
+            }}
+              onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-1px)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; }}
+            >
+              Apply once. Get both. →
+            </button>
+          )}
+        </div>
+
+        {/* Tiny honesty footnote so the aspirational copy stays credible */}
+        <p style={{
+          marginTop: 18, textAlign: 'center',
+          fontFamily: V1.fontBody, fontSize: 11.5, color: V1.muted,
+          fontStyle: 'italic', lineHeight: 1.5,
+        }}>
+          Integrated capital + processing approvals are rolling out across
+          merchant categories now. Talk to a specialist about availability for
+          your business.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
 // UNDER THE HOOD — what happens on our side
 // ═══════════════════════════════════════════════════════════════
 function HwUnderTheHood() {
@@ -978,6 +1231,7 @@ function HowItWorksPage({ accent, onApply, onTalk }) {
         ]}
       />
 
+      <HwTwoApprovals onApply={onApply} />
       <HwSpeedStrip />
       <HwUnderTheHood />
       <HwCTA onApply={onApply} onTalk={onTalk} />
