@@ -449,7 +449,7 @@ function PpExample() {
               <ul style={{ listStyle: 'none', padding: 0, margin: '24px 0 0' }}>
                 {[
                   '12-month term',
-                  '1.22× factor',
+                  '34% APR interest rate',
                   'Daily ACH debit',
                   'Renewal sized off statements',
                 ].map((t) => (
@@ -494,7 +494,7 @@ function PpExample() {
               <ul style={{ listStyle: 'none', padding: 0, margin: '24px 0 0' }}>
                 {[
                   '12-month term',
-                  '1.18× factor',
+                  '10% loan fee (flat)',
                   'Repayment off card settlement',
                   'Pre-approved renewal at month 6',
                 ].map((t) => (

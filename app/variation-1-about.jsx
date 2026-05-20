@@ -831,7 +831,6 @@ function V1AboutPage({ accent, onApply, onTalk }) {
       <AboutThesis />
       <AboutPrinciples />
       <AboutTimeline />
-      <AboutLeadership />
       <V1CTASection onApply={onApply} onTalk={onTalk} />
     </>
   );
