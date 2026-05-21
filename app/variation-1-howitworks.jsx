@@ -4,7 +4,7 @@
 //   2. Four sticky scroll-scrubbed steps, each with a mock UI animation:
 //      • 01 Apply — form autocompleting
 //      • 02 Connect — bank accounts linking
-//      • 03 Offer — factor rate spinning into place
+//      • 03 Offer — loan fee spinning into place
 //      • 04 Funded — wire confirmation
 //   3. Time-to-funds comparison strip
 //   4. Under the hood (what happens on our side)
@@ -435,7 +435,7 @@ function HwMockConnect({ progress, active }) {
 
 // ─── Mock 3: Offer "spinning" into place ───
 function HwMockOffer({ progress, active }) {
-  // Factor rate animates from 1.45 → 1.18 as progress goes 0 → 1
+  // Loan fee animates from 1.45 → 1.18 as progress goes 0 → 1
   const factor = 1.45 - (1.45 - 1.18) * Math.min(1, progress * 1.5);
   const amount = Math.floor(120000 * Math.min(1, progress * 1.3));
   const payment = Math.floor(5842 * Math.min(1, progress * 1.4));
@@ -483,7 +483,7 @@ function HwMockOffer({ progress, active }) {
             marginTop: 28, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0,
             border: `1px solid ${V1.line}`, borderRadius: 14, overflow: 'hidden',
           }}>
-            <OfferCell label="Factor rate" value={`${factor.toFixed(3).replace(/0$/, '')}×`} emphasis />
+            <OfferCell label="Loan fee" value={`${factor.toFixed(3).replace(/0$/, '')}×`} emphasis />
             <OfferCell label="Total payback" value={fmt$(Math.floor(amount * factor))} />
             <OfferCell label="Daily debit" value={fmt$(payment / 20) + '/bd'} />
             <OfferCell label="Term" value="8 months" />
@@ -1212,9 +1212,9 @@ function HowItWorksPage({ accent, onApply, onTalk }) {
       <HwStep
         num="03" label="Offer" mockKind="offer" accent={accent}
         title="A real offer, priced by a human."
-        body="Every file crosses a Delt underwriter's desk. No black-box scoring. You get the actual numbers — factor rate, term, payment schedule — and the name of the analyst who signed it. Offers are live in under four hours on most files."
+        body="Every file crosses a Delt underwriter's desk. No black-box scoring. You get the actual numbers — flat loan fee, term, payment schedule — and the name of the analyst who signed it. Offers are live in under four hours on most files."
         bullets={[
-          'Factor rate published, not hidden',
+          'Loan fee published, not hidden',
           'Payment schedule shown before you sign',
           '72-hour lock so you can compare',
         ]}

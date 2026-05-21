@@ -537,7 +537,7 @@ function FaqHero({ accent, query, setQuery, totalCount, filteredCount }) {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search questions — e.g. factor rate, Plaid, collateral…"
+            placeholder="Search questions — e.g. loan fee, Plaid, collateral…"
             style={{
               width: '100%', padding: '16px 20px 16px 50px',
               background: 'rgba(255,255,255,0.06)',
