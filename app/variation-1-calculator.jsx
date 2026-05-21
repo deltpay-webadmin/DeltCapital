@@ -3,9 +3,9 @@
 //   • Progressive reveal: revenue → TIB → cards (Y/N) → card sales
 //   • TIB multipliers (50-67% of revenue, shifts by tenure, <6mo = redirect)
 //   • Delt Boost toggle: 1.75× boost + 0% first-$5K banner
-//   • Custom amount input
 //   • Redirect case UI for <6mo businesses
-//   • 2.5s "calculating…" buffer before showing results
+//   • Lead-capture gate before the funding range is revealed
+//   • Unified bottom strip: "How it works" → Delt-Boost toggle
 // Designed in V1's purple/violet language — no navy/indigo from the original.
 
 const { useState: v1cUseState, useEffect: v1cUseEffect, useRef: v1cUseRef } = React;
@@ -21,6 +21,50 @@ const TIB_MULT = {
   '1-2yr':   { low: 0.56, high: 0.62 },
   '2yr+':    { low: 0.60, high: 0.67 },
 };
+
+// Animated radial spinner used inside the "calculating…" theater.
+function V1CalcSpinner() {
+  return (
+    <div style={{ position: 'relative', width: 56, height: 56 }}>
+      <svg width="56" height="56" viewBox="0 0 56 56" style={{ animation: 'v1LeadSpin 1100ms linear infinite' }}>
+        <defs>
+          <linearGradient id="v1LeadSpinG" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor={V1.blue} stopOpacity="0" />
+            <stop offset="100%" stopColor={V1.blue} stopOpacity="1" />
+          </linearGradient>
+        </defs>
+        <circle cx="28" cy="28" r="22" fill="none" stroke={V1.line} strokeWidth="3" />
+        <circle cx="28" cy="28" r="22" fill="none"
+          stroke="url(#v1LeadSpinG)" strokeWidth="3" strokeLinecap="round"
+          strokeDasharray="60 200" />
+      </svg>
+      <div style={{
+        position: 'absolute', inset: 0, display: 'flex',
+        alignItems: 'center', justifyContent: 'center',
+        color: V1.blue,
+      }}>
+        <V1CalcIcon kind="spark" />
+      </div>
+    </div>
+  );
+}
+
+// One-time CSS injection for the animations used by the lead-gate flow.
+// React doesn't render <style> in document scope in older browsers if
+// embedded inline, so we attach it to <head> on first mount.
+function useV1LeadAnimations() {
+  v1cUseEffect(() => {
+    if (typeof document === 'undefined') return;
+    if (document.getElementById('v1-lead-anims')) return;
+    const s = document.createElement('style');
+    s.id = 'v1-lead-anims';
+    s.textContent = `
+      @keyframes v1LeadFadeIn { from { opacity: 0; transform: translateY(6px);} to { opacity: 1; transform: translateY(0);} }
+      @keyframes v1LeadSpin { to { transform: rotate(360deg);} }
+    `;
+    document.head.appendChild(s);
+  }, []);
+}
 
 function V1CalcIcon({ kind }) {
   const p = { width: 14, height: 14, viewBox: '0 0 14 14', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' };
@@ -100,11 +144,10 @@ function V1CalcPill({ active, onClick, children, icon }) {
 // ═══════════════════════════════════════════════════════════════
 // CALCULATOR CORE — the analyzer card itself
 // ═══════════════════════════════════════════════════════════════
-// Animated "How it works →" button — appears below the calculator results
-// only when the user toggles processing-with-Delt to true. Renders as a
-// hairline-bordered ghost button (not a footer link) so it reads as a
-// proper CTA. Fades + slides up on mount; unmounts cleanly when the
-// toggle flips off.
+// Animated "How it works →" standalone button.
+// NOTE: Superseded by V1CalcHowInlineLink which lives inside the
+// bottom strip alongside the Delt-Boost toggle. Kept here in case we
+// want a standalone variant again for an A/B test.
 function V1CalcHowLink({ onClick }) {
   const [shown, setShown] = v1cUseState(false);
   const [hover, setHover] = v1cUseState(false);
@@ -150,7 +193,49 @@ function V1CalcHowLink({ onClick }) {
   );
 }
 
-function V1CalcAnalyzer({ onApply, onNavHow, hideHeader }) {
+// Inline variant of V1CalcHowLink that lives *inside* the bottom
+// strip directly above the Delt-Boost toggle. Lighter visual weight
+// than the standalone button — reads as a connecting prompt ("Curious
+// how it works? →") so the strip feels like a single guided action
+// instead of two stacked cards.
+function V1CalcHowInlineLink({ onClick }) {
+  const [hover, setHover] = v1cUseState(false);
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        display: 'inline-flex', alignItems: 'center', gap: 8,
+        padding: '6px 10px', marginLeft: -10,
+        background: 'transparent', border: 'none',
+        color: V1.blue,
+        fontFamily: V1.fontDisplay, fontSize: 12.5, fontWeight: 700,
+        letterSpacing: '0.02em',
+        cursor: 'pointer', borderRadius: 8,
+        transition: 'background 180ms, color 180ms',
+      }}
+    >
+      <span style={{
+        width: 22, height: 22, borderRadius: 999, flexShrink: 0,
+        background: `${V1.blue}1A`, color: V1.blue,
+        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+        transition: 'background 180ms',
+      }}>
+        <V1CalcIcon kind="spark" />
+      </span>
+      <span>Curious how it works?</span>
+      <span aria-hidden style={{
+        display: 'inline-flex',
+        transform: hover ? 'translateX(3px)' : 'translateX(0)',
+        transition: 'transform 260ms cubic-bezier(0.22, 1, 0.36, 1)',
+      }}>→</span>
+    </button>
+  );
+}
+
+function V1CalcAnalyzer({ onApply, onNavHow, onNavProcessing, hideHeader }) {
+  useV1LeadAnimations();
   const [revenue, setRevenue] = v1cUseState(0);
   const [revenueInput, setRevenueInput] = v1cUseState('');
   const [tib, setTib] = v1cUseState('');
@@ -158,11 +243,32 @@ function V1CalcAnalyzer({ onApply, onNavHow, hideHeader }) {
   const [cardSales, setCardSales] = v1cUseState(0);
   const [cardSalesInput, setCardSalesInput] = v1cUseState('');
   const [deltToggle, setDeltToggle] = v1cUseState(false);
-  const [customAmt, setCustomAmt] = v1cUseState('');
-  const [customAmtInput, setCustomAmtInput] = v1cUseState('');
 
   const [showResults, setShowResults] = v1cUseState(false);
   const calcTimer = v1cUseRef(null);
+
+  // ─── Lead-capture gate ──────────────────────────────────────
+  // Before the final funding-range number is revealed, we show a
+  // "calculating…" theater animation, then a frosted-glass lead form
+  // overlaid on a blurred preview of the result. Once submitted, the
+  // result un-blurs and the captured fields pre-fill the apply flow.
+  const [leadStage, setLeadStage] = v1cUseState('idle'); // idle | calculating | gating | captured
+  const [theaterPhase, setTheaterPhase] = v1cUseState(0); // 0..2 for the 3 lines
+  const [leadFirst, setLeadFirst] = v1cUseState('');
+  const [leadBiz, setLeadBiz] = v1cUseState('');
+  const [leadEmail, setLeadEmail] = v1cUseState('');
+  const [leadPhone, setLeadPhone] = v1cUseState('');
+  const [leadSubmitting, setLeadSubmitting] = v1cUseState(false);
+  const [leadError, setLeadError] = v1cUseState('');
+  // leadId comes back from /api/leads when Supabase persistence is
+  // enabled. We stash it so the apply modal can ping /api/apply-progress
+  // with the right key, and so the offer CTA can pass it through.
+  const [leadId, setLeadId] = v1cUseState(null);
+  const theaterTimers = v1cUseRef([]);
+
+  const isCaptured = leadStage === 'captured';
+  const showGate   = leadStage === 'gating' && !isCaptured;
+  const showTheater = leadStage === 'calculating';
 
   const noCards = acceptsCards === false;
   const crossSell = noCards;
@@ -194,16 +300,118 @@ function V1CalcAnalyzer({ onApply, onNavHow, hideHeader }) {
 
   const allFilled = hasRevenue && hasTIB && acceptsCards !== null && (noCards || cardSales > 0);
 
+  // Drive the gate state machine off the calculator inputs.
+  //  - inputs incomplete       → idle (nothing computed)
+  //  - inputs complete, not yet captured → run calculating theater → gating
+  //  - already captured this session → reveal immediately on input changes
   v1cUseEffect(() => {
-    if (!allFilled) {
-      if (calcTimer.current) clearTimeout(calcTimer.current);
-      setShowResults(false); return;
-    }
+    // Clear any pending timers from a previous run
     if (calcTimer.current) clearTimeout(calcTimer.current);
+    theaterTimers.current.forEach((t) => clearTimeout(t));
+    theaterTimers.current = [];
+
+    if (!allFilled) {
+      setShowResults(false);
+      if (!isCaptured) setLeadStage('idle');
+      return;
+    }
+
+    // Redirect cases (<6mo TIB / no card sales path) don't gate — they
+    // already render their own redirect UI, not a dollar range.
+    if (isRedirect) {
+      setShowResults(true);
+      return;
+    }
+
+    if (isCaptured) {
+      // Already gave us their info; just show the recalculated number.
+      setShowResults(false);
+      calcTimer.current = setTimeout(() => setShowResults(true), 700);
+      return;
+    }
+
+    // First-time reveal: run the 3-phase theater, then open the gate.
     setShowResults(false);
-    calcTimer.current = setTimeout(() => setShowResults(true), 1800);
-    return () => { if (calcTimer.current) clearTimeout(calcTimer.current); };
-  }, [allFilled, revenue, tib, acceptsCards, cardSales]);
+    setLeadStage('calculating');
+    setTheaterPhase(0);
+    theaterTimers.current.push(setTimeout(() => setTheaterPhase(1), 900));
+    theaterTimers.current.push(setTimeout(() => setTheaterPhase(2), 1800));
+    theaterTimers.current.push(setTimeout(() => {
+      // Reveal the (blurred) number underneath the gate at the same time
+      // we swap the theater out for the form — feels like the result IS
+      // already calculated, just locked behind the form.
+      setShowResults(true);
+      setLeadStage('gating');
+    }, 2700));
+
+    return () => {
+      if (calcTimer.current) clearTimeout(calcTimer.current);
+      theaterTimers.current.forEach((t) => clearTimeout(t));
+      theaterTimers.current = [];
+    };
+  }, [allFilled, revenue, tib, acceptsCards, cardSales, isRedirect, isCaptured]);
+
+  // Lead form validation
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(leadEmail.trim());
+  const phoneValid = leadPhone.replace(/[^0-9]/g, '').length >= 10;
+  const leadValid = leadFirst.trim().length >= 1
+                 && leadBiz.trim().length >= 1
+                 && emailValid
+                 && phoneValid;
+
+  const onLeadPhone = (raw) => {
+    const d = raw.replace(/[^0-9]/g, '').slice(0, 10);
+    let f = d;
+    if (d.length > 6)      f = `(${d.slice(0,3)}) ${d.slice(3,6)}-${d.slice(6)}`;
+    else if (d.length > 3) f = `(${d.slice(0,3)}) ${d.slice(3)}`;
+    else if (d.length > 0) f = `(${d}`;
+    setLeadPhone(f);
+  };
+
+  const submitLead = async () => {
+    if (!leadValid || leadSubmitting) return;
+    setLeadSubmitting(true);
+    setLeadError('');
+    const payload = {
+      firstName: leadFirst.trim(),
+      businessName: leadBiz.trim(),
+      email: leadEmail.trim(),
+      phone: leadPhone.trim(),
+      source: 'calculator-gate',
+      estimate: {
+        low: displayLow,
+        high: displayHigh,
+        revenue,
+        tib,
+        acceptsCards,
+        cardSales: noCards ? 0 : cardSales,
+        boosted,
+      },
+    };
+    try {
+      // Best-effort: even if the API fails, we still let the user through
+      // — we have their data in component state and pre-fill apply with
+      // it, so the lead is captured in the apply submission downstream.
+      try {
+        const r = await fetch('/api/leads', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        // Capture the lead row id when the server returned one. Optional
+        // — older deploys without Supabase wired up just won't include it.
+        if (r && r.ok) {
+          const json = await r.json().catch(() => null);
+          if (json && json.leadId) setLeadId(json.leadId);
+        }
+      } catch (_) { /* swallow — we still reveal */ }
+      setLeadStage('captured');
+    } catch (err) {
+      setLeadError('Something went wrong. Try once more?');
+    } finally {
+      setLeadSubmitting(false);
+    }
+  };
 
   const onRevenue = (raw) => {
     const digits = raw.replace(/[^0-9]/g, '');
@@ -216,12 +424,6 @@ function V1CalcAnalyzer({ onApply, onNavHow, hideHeader }) {
     const n = Math.min(parseInt(digits || '0', 10), 250000);
     setCardSalesInput(n > 0 ? n.toLocaleString() : digits);
     setCardSales(n);
-  };
-  const onCustomAmt = (raw) => {
-    const digits = raw.replace(/[^0-9]/g, '');
-    const n = Math.min(parseInt(digits || '0', 10), 500000);
-    setCustomAmtInput(n > 0 ? n.toLocaleString() : digits);
-    setCustomAmt(n > 0 ? String(n) : '');
   };
   const onSelectCards = (v) => {
     setAcceptsCards(v);
@@ -311,6 +513,7 @@ function V1CalcAnalyzer({ onApply, onNavHow, hideHeader }) {
 
         {/* RIGHT — funding range panel */}
         <div style={{
+          position: 'relative', // anchor for theater + lead-gate overlays
           background: hasRevenue && boosted
             ? `linear-gradient(145deg, ${V1.bg} 0%, #F4EEFB 50%, ${V1.bg} 100%)`
             : V1.bg,
@@ -321,6 +524,14 @@ function V1CalcAnalyzer({ onApply, onNavHow, hideHeader }) {
           boxShadow: hasRevenue && boosted ? `0 8px 32px ${V1.blue}1A` : 'none',
           transition: 'background .4s, border .4s, box-shadow .4s',
         }}>
+          {/* Blur shroud on the underlying result panel while gating */}
+          <div style={{
+            filter: showGate ? 'blur(10px)' : 'none',
+            transition: 'filter 600ms cubic-bezier(0.22,1,0.36,1)',
+            display: 'flex', flexDirection: 'column', flex: 1,
+            pointerEvents: showGate ? 'none' : 'auto',
+            userSelect: showGate ? 'none' : 'auto',
+          }}>
           {/* Funding amount */}
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <V1CalcLabel>Estimated funding range</V1CalcLabel>
@@ -330,15 +541,12 @@ function V1CalcAnalyzer({ onApply, onNavHow, hideHeader }) {
                 fontSize: 'clamp(2.25rem, 5vw, 3rem)',
                 fontWeight: 800, lineHeight: 1.05, letterSpacing: '-0.035em',
                 color: !hasRevenue ? '#d1d5db'
-                     : customAmt ? V1.blue
                      : boosted ? V1.blue
                      : V1.ink,
                 fontVariantNumeric: 'tabular-nums',
                 transition: 'color .4s',
               }}>
-                {customAmt ? (
-                  v1fmtK(Number(customAmt))
-                ) : hasRevenue && showResults ? (
+                {hasRevenue && showResults ? (
                   <>{v1fmtK(displayLow)}<span style={{ margin: '0 6px', opacity: 0.35 }}>–</span>{v1fmtK(displayHigh)}</>
                 ) : hasRevenue && allFilled ? (
                   <span style={{ color: V1.muted, fontSize: '0.7em', fontWeight: 600, letterSpacing: 0 }}>Calculating…</span>
@@ -348,9 +556,8 @@ function V1CalcAnalyzer({ onApply, onNavHow, hideHeader }) {
               </span>
             </div>
             <p style={{ fontFamily: V1.fontBody, fontSize: 13, color: V1.muted, marginTop: 6, lineHeight: 1.5 }}>
-              {!hasRevenue   ? 'Complete the fields to see your estimate.'
-               : customAmt   ? 'Your custom amount'
-               : boosted     ? 'With Delt processing'
+              {!hasRevenue ? 'Complete the fields to see your estimate.'
+               : boosted   ? 'With Delt processing'
                : 'Based on your monthly revenue'}
             </p>
 
@@ -369,28 +576,23 @@ function V1CalcAnalyzer({ onApply, onNavHow, hideHeader }) {
               </div>
             )}
 
-            {/* Custom amount */}
-            {hasRevenue && (
-              <div style={{ marginTop: 20, paddingTop: 20, borderTop: `1px solid ${V1.line}` }}>
-                <V1CalcLabel>Custom amount</V1CalcLabel>
-                <V1CalcMoneyInput big={false} placeholder="Enter amount"
-                  value={customAmtInput} onChange={onCustomAmt}
-                  onBlur={() => customAmt && setCustomAmtInput(Number(customAmt).toLocaleString())} />
-                {customAmt && (
-                  <div style={{ marginTop: 6, fontSize: 11.5, color: V1.blue, fontWeight: 500, fontFamily: V1.fontBody }}>
-                    Custom amount selected
-                  </div>
-                )}
-              </div>
-            )}
-
             {/* Redirect case */}
             {hasRevenue && isRedirect && (
-              <div style={{
-                marginTop: 16, padding: 16, borderRadius: 14,
-                border: `1.5px solid ${V1.blue}22`,
-                background: `${V1.blue}05`,
-              }}>
+              <div
+                onClick={onNavProcessing}
+                role={onNavProcessing ? 'button' : undefined}
+                tabIndex={onNavProcessing ? 0 : undefined}
+                onKeyDown={onNavProcessing ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onNavProcessing(); } } : undefined}
+                style={{
+                  marginTop: 16, padding: 16, borderRadius: 14,
+                  border: `1.5px solid ${V1.blue}22`,
+                  background: `${V1.blue}05`,
+                  cursor: onNavProcessing ? 'pointer' : 'default',
+                  transition: 'background 220ms, border-color 220ms, transform 220ms',
+                }}
+                onMouseEnter={(e) => { if (onNavProcessing) { e.currentTarget.style.background = `${V1.blue}0D`; e.currentTarget.style.borderColor = `${V1.blue}55`; } }}
+                onMouseLeave={(e) => { if (onNavProcessing) { e.currentTarget.style.background = `${V1.blue}05`; e.currentTarget.style.borderColor = `${V1.blue}22`; } }}
+              >
                 <div style={{ color: V1.blue, marginBottom: 8 }}><V1CalcIcon kind="rocket" /></div>
                 <div style={{ fontSize: 13, fontWeight: 700, color: V1.ink, fontFamily: V1.fontDisplay, letterSpacing: '-0.01em', lineHeight: 1.35 }}>
                   Get started with Delt today.
@@ -398,30 +600,52 @@ function V1CalcAnalyzer({ onApply, onNavHow, hideHeader }) {
                 <div style={{ fontSize: 12, color: V1.muted, lineHeight: 1.5, marginTop: 4, fontFamily: V1.fontBody }}>
                   New businesses that process with Delt get a pre-approved offer and up to 2× more capital as they grow.
                 </div>
+                {onNavProcessing && (
+                  <div style={{
+                    marginTop: 10, fontSize: 11.5, fontWeight: 600,
+                    color: V1.blue, fontFamily: V1.fontDisplay, letterSpacing: '0.02em',
+                    display: 'inline-flex', alignItems: 'center', gap: 6,
+                  }}>
+                    See how it works →
+                  </div>
+                )}
               </div>
             )}
 
             <p style={{ fontSize: 10.5, color: V1.muted, opacity: 0.75, marginTop: 14, lineHeight: 1.45, fontFamily: V1.fontBody }}>
               Estimates are approximate and not a guarantee of funding. Final offers are based on a full review of your business.
             </p>
-
-            {/* "How it works" link — only when user actively toggled Delt
-                processing on (not the no-cards cross-sell case). */}
-            {deltToggle && hasRevenue && !isRedirect && (
-              <V1CalcHowLink onClick={onNavHow} />
-            )}
           </div>
 
-          {/* ── Delt Boost toggle — pinned to bottom ── */}
-          <div style={{ marginTop: 20, marginLeft: -28, marginRight: -28, marginBottom: -28, borderTop: `1px solid ${V1.line}` }}>
+          {/* ── "How it works" → Delt Boost toggle — unified bottom strip ──
+             These two used to read as separate floating cards. We now
+             render them inside a single blue-tinted footer with no rule
+             between them, so the eye reads "learn how it works → flip
+             the switch" as one continuous action group. The whole strip
+             tints up when the toggle is on for extra cohesion. */}
+          <div style={{
+            marginTop: 20, marginLeft: -28, marginRight: -28, marginBottom: -28,
+            background: deltToggle
+              ? `linear-gradient(135deg, ${V1.blue}0A 0%, ${V1.blue}14 100%)`
+              : `${V1.bg}`,
+            borderTop: `1px solid ${deltToggle ? V1.blue + '22' : V1.line}`,
+            transition: 'background .3s, border-color .3s',
+          }}>
+            {/* "How it works" rail — only shown when the user actively
+                toggled Delt processing on (matching the original visibility
+                logic). Sits flush above the toggle with no divider, so the
+                two read as a single guided action group. */}
+            {deltToggle && hasRevenue && !isRedirect && (
+              <div style={{ padding: '14px 28px 0' }}>
+                <V1CalcHowInlineLink onClick={onNavHow} />
+              </div>
+            )}
+
             <button onClick={() => setDeltToggle(!deltToggle)} disabled={noCards}
               style={{
-                width: '100%', padding: '18px 28px', border: 'none',
-                background: deltToggle
-                  ? `linear-gradient(135deg, ${V1.blue}0A 0%, ${V1.blue}14 100%)`
-                  : 'transparent',
+                width: '100%', padding: '14px 28px 18px', border: 'none',
+                background: 'transparent',
                 cursor: noCards ? 'default' : 'pointer', textAlign: 'left',
-                transition: 'background .3s',
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
                 fontFamily: V1.fontBody,
               }}>
@@ -464,14 +688,191 @@ function V1CalcAnalyzer({ onApply, onNavHow, hideHeader }) {
                 }} />
               </div>
             </button>
+
+            {/* Two-approvals tease — the marketing payoff for flipping
+                the switch. Aspirational copy ("built so…") so we don't
+                overpromise a product flow that's still being wired up.
+                Animates in/out with the toggle so it feels earned. */}
+            <div style={{
+              maxHeight: deltToggle && hasRevenue && !isRedirect ? 80 : 0,
+              opacity: deltToggle && hasRevenue && !isRedirect ? 1 : 0,
+              overflow: 'hidden',
+              transition: 'max-height 320ms cubic-bezier(0.22,1,0.36,1), opacity 240ms ease-out',
+            }}>
+              <div style={{
+                padding: '0 28px 16px',
+                display: 'flex', alignItems: 'flex-start', gap: 10,
+                fontFamily: V1.fontBody, fontSize: 12, lineHeight: 1.5,
+                color: V1.text,
+              }}>
+                <span style={{
+                  width: 18, height: 18, borderRadius: 999, flexShrink: 0, marginTop: 1,
+                  background: `${V1.blue}1F`, color: V1.blue,
+                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <V1CalcIcon kind="check" />
+                </span>
+                <span>
+                  <strong style={{ color: V1.ink }}>One review, two yeses.</strong>{' '}
+                  Delt is built so a single underwriting decision covers your
+                  capital <em>and</em> your merchant services—with lower processing
+                  fees baked in.
+                </span>
+              </div>
+            </div>
           </div>
+          </div>{/* /blur shroud */}
+
+          {/* ─── Theater: "calculating…" 3-phase animation ─── */}
+          {showTheater && (
+            <div aria-live="polite" style={{
+              position: 'absolute', inset: 0, borderRadius: 20,
+              background: `linear-gradient(145deg, ${V1.bg}F2 0%, ${V1.white}F2 100%)`,
+              display: 'flex', flexDirection: 'column',
+              alignItems: 'center', justifyContent: 'center',
+              padding: 28, zIndex: 2,
+              animation: 'v1LeadFadeIn 280ms ease-out',
+            }}>
+              <V1CalcSpinner />
+              <div style={{ marginTop: 22, width: '100%', maxWidth: 320 }}>
+                {[
+                  'Analyzing your monthly volume…',
+                  'Matching capital partners…',
+                  'Pre-qualifying your offer…',
+                ].map((line, i) => (
+                  <div key={i} style={{
+                    display: 'flex', alignItems: 'center', gap: 10,
+                    padding: '6px 0',
+                    opacity: theaterPhase >= i ? 1 : 0.25,
+                    color: theaterPhase > i ? V1.ink : V1.muted,
+                    transition: 'opacity 280ms, color 280ms',
+                    fontFamily: V1.fontBody, fontSize: 13.5, fontWeight: 500,
+                  }}>
+                    <span style={{
+                      width: 16, height: 16, borderRadius: 999, flexShrink: 0,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      background: theaterPhase > i ? V1.blue : 'transparent',
+                      border: theaterPhase > i ? 'none' : `1.5px solid ${V1.line}`,
+                      color: '#fff',
+                      transition: 'all 240ms',
+                    }}>
+                      {theaterPhase > i ? <V1CalcIcon kind="check" /> : null}
+                    </span>
+                    <span>{line}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ─── Lead gate: frosted form over the blurred number ─── */}
+          {showGate && (
+            <div style={{
+              position: 'absolute', inset: 0, borderRadius: 20,
+              background: `${V1.white}D9`,
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              display: 'flex', flexDirection: 'column',
+              padding: '26px 24px', zIndex: 3,
+              animation: 'v1LeadFadeIn 320ms cubic-bezier(0.22,1,0.36,1)',
+              boxShadow: `inset 0 1px 0 ${V1.white}, 0 8px 32px -12px ${V1.blue}33`,
+            }}>
+              <div style={{
+                display: 'inline-flex', alignSelf: 'flex-start', alignItems: 'center', gap: 8,
+                padding: '5px 11px', borderRadius: 999,
+                background: `linear-gradient(135deg, ${V1.blue} 0%, #818CF8 100%)`,
+                color: '#fff',
+                fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 700,
+                letterSpacing: '0.14em', textTransform: 'uppercase',
+                boxShadow: `0 4px 12px -4px ${V1.blue}AA`,
+              }}>
+                <V1CalcIcon kind="spark" />
+                Your offer is ready
+              </div>
+              <h3 style={{
+                margin: '12px 0 4px',
+                fontFamily: V1.fontDisplay, fontSize: 'clamp(1.15rem, 2vw, 1.35rem)',
+                fontWeight: 700, letterSpacing: '-0.02em', color: V1.ink,
+                lineHeight: 1.15,
+              }}>
+                Where should we send it?
+              </h3>
+              <p style={{
+                margin: 0, fontFamily: V1.fontBody, fontSize: 12.5,
+                color: V1.muted, lineHeight: 1.5,
+              }}>
+                We'll text and email your full funding range now. No credit pull.
+              </p>
+
+              <div style={{ marginTop: 14, display: 'grid', gap: 8 }}>
+                <V1LeadInput value={leadFirst} onChange={setLeadFirst}
+                  placeholder="First name" autoComplete="given-name" />
+                <V1LeadInput value={leadBiz} onChange={setLeadBiz}
+                  placeholder="Business name" autoComplete="organization" />
+                <V1LeadInput value={leadEmail} onChange={setLeadEmail}
+                  type="email" placeholder="Business email" autoComplete="email" inputMode="email" />
+                <V1LeadInput value={leadPhone} onChange={onLeadPhone}
+                  type="tel" placeholder="Mobile number" autoComplete="tel" inputMode="tel" />
+              </div>
+
+              {leadError && (
+                <div style={{
+                  marginTop: 8, padding: '8px 12px', borderRadius: 8,
+                  background: '#FEF2F2', color: '#B91C1C',
+                  fontFamily: V1.fontBody, fontSize: 12.5,
+                }}>{leadError}</div>
+              )}
+
+              <button
+                onClick={submitLead}
+                disabled={!leadValid || leadSubmitting}
+                style={{
+                  marginTop: 12, width: '100%', padding: '14px 20px',
+                  borderRadius: 12, border: 'none',
+                  fontFamily: V1.fontBody, fontSize: 15, fontWeight: 700,
+                  cursor: (!leadValid || leadSubmitting) ? 'default' : 'pointer',
+                  background: (!leadValid || leadSubmitting)
+                    ? `${V1.blue}55`
+                    : `linear-gradient(135deg, ${V1.blue} 0%, #6366F1 50%, ${V1.blue} 100%)`,
+                  color: (!leadValid || leadSubmitting) ? 'rgba(255,255,255,0.7)' : '#fff',
+                  boxShadow: (!leadValid || leadSubmitting) ? 'none'
+                    : `0 10px 30px -10px ${V1.blue}AA, 0 4px 10px -4px ${V1.blue}77`,
+                  transition: 'transform .15s, box-shadow .2s',
+                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                }}
+              >
+                {leadSubmitting ? 'Unlocking…' : 'Reveal my offer'}
+                {!leadSubmitting && <V1CalcIcon kind="arr" />}
+              </button>
+              <div style={{
+                marginTop: 8, textAlign: 'center',
+                fontFamily: V1.fontBody, fontSize: 11, color: V1.muted,
+                lineHeight: 1.5,
+              }}>
+                We'll never sell your info. Unsubscribe anytime.
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
       {/* CTA row — spans full width */}
       <div style={{ padding: '0 40px 40px' }}>
         <button
-          onClick={() => onApply?.({ low: displayLow, high: displayHigh, factor: 1.18, ok: true })}
+          onClick={() => onApply?.({
+            low: displayLow, high: displayHigh, factor: 1.18, ok: true,
+            // Pass the Supabase lead id through so apply-progress beacons
+            // can correlate (when present — null is fine and the beacon
+            // endpoint no-ops on missing leadId).
+            leadId: isCaptured ? leadId : null,
+            // Pre-fill apply contact step with whatever the lead gave us
+            lead: isCaptured ? {
+              firstName: leadFirst.trim(),
+              businessName: leadBiz.trim(),
+              email: leadEmail.trim(),
+              phone: leadPhone.trim(),
+            } : null,
+          })}
           disabled={ctaDisabled}
           style={{
             width: '100%', padding: '18px 28px', borderRadius: 14, border: 'none',
@@ -504,6 +905,33 @@ function V1CalcAnalyzer({ onApply, onNavHow, hideHeader }) {
   );
 }
 
+// ═══ Helper: small input used inside the lead-gate form ═════════
+function V1LeadInput({ value, onChange, placeholder, type = 'text', autoComplete, inputMode }) {
+  const [focused, setFocused] = v1cUseState(false);
+  return (
+    <input
+      type={type}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
+      placeholder={placeholder}
+      autoComplete={autoComplete}
+      inputMode={inputMode}
+      style={{
+        width: '100%', boxSizing: 'border-box',
+        padding: '12px 14px',
+        fontFamily: V1.fontBody, fontSize: 14.5, color: V1.ink,
+        background: V1.white,
+        border: `1.5px solid ${focused ? V1.blue : V1.line}`,
+        borderRadius: 10, outline: 'none',
+        boxShadow: focused ? `0 0 0 4px ${V1.blue}1A` : 'none',
+        transition: 'border-color .15s, box-shadow .15s',
+      }}
+    />
+  );
+}
+
 const v1CardStyle = {
   background: V1.white,
   border: `1px solid ${V1.line}`,
@@ -515,7 +943,7 @@ const v1CardStyle = {
 // ═══════════════════════════════════════════════════════════════
 // V1 CALCULATOR PAGE — full page wrapping the analyzer
 // ═══════════════════════════════════════════════════════════════
-function V1CalculatorPage({ accent, onApply, onNavHow }) {
+function V1CalculatorPage({ accent, onApply, onNavHow, onNavProcessing }) {
   return (
     <div style={{ background: V1.bg }}>
       {/* Page hero */}
@@ -548,7 +976,7 @@ function V1CalculatorPage({ accent, onApply, onNavHow }) {
 
       {/* The analyzer */}
       <section data-v1-section style={{ padding: '0 24px 64px' }}>
-        <V1CalcAnalyzer onApply={onApply} onNavHow={onNavHow} />
+        <V1CalcAnalyzer onApply={onApply} onNavHow={onNavHow} onNavProcessing={onNavProcessing} />
       </section>
 
       {/* How the numbers work */}

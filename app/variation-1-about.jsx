@@ -30,24 +30,6 @@ const ABOUT_PRINCIPLES = [
   },
 ];
 
-const ABOUT_TIMELINE = [
-  { y: '2019', title: 'Delt founded',       body: 'Two underwriters and an engineer set out to rebuild small-business lending from scratch. Seed round closes in 42 days.' },
-  { y: '2020', title: 'First $1M month',    body: 'Delt crosses $1M deployed in a single month. First repeat borrower signs a third draw before month-end.' },
-  { y: '2021', title: 'Plaid partnership',  body: 'Live bank-data underwriting goes into production. Decision-to-fund time drops from 72 to 19 hours.' },
-  { y: '2022', title: 'Series A',           body: 'Backed by operators, not just venture. Book expands to construction, logistics, and multi-unit F&B.' },
-  { y: '2023', title: 'SOC 2 Type II',      body: 'Achieved SOC 2 Type II compliance with zero findings. First AI-assisted underwriting model rolls out.' },
-  { y: '2024', title: '$100M deployed',     body: 'Delt crosses $100M deployed lifetime, with an average fund time of 24 hours and a 94% refinance rate.' },
-  { y: '2025', title: '$200M milestone',    body: 'Book crosses $200M. Team grows to 48. Launch same-day wire for qualified operators.' },
-];
-
-const ABOUT_LEADERSHIP = [
-  { n: 'Elena Park',      r: 'Co-founder, CEO',      bio: '10 yrs at OnDeck credit · Wharton MBA',   color: '#4945FF' },
-  { n: 'David Okonkwo',   r: 'Co-founder, CTO',      bio: 'Ex-Plaid staff eng · MIT CS',              color: '#4945FF' },
-  { n: 'Priya Singh',     r: 'Head of Underwriting', bio: '8 yrs at Kabbage · Fraud & risk',          color: '#818CF8' },
-  { n: 'Marcus Chen',     r: 'Head of Capital',      bio: 'Ex-Goldman SMB lending · 2 Fed funds',     color: '#4338CA' },
-  { n: 'Nora Hassan',     r: 'Head of Operator Desk', bio: 'Scaled support at Brex to 20K accounts',  color: '#6366F1' },
-];
-
 const ABOUT_VALUES = [
   { label: 'Years operating',      value: 6,       suffix: '',  sub: 'Founded 2019' },
   { label: 'Capital deployed',     value: 200,     suffix: 'M', prefix: '$', sub: 'Lifetime, through Q4' },
@@ -320,12 +302,16 @@ function AboutThesis() {
               display: 'flex', alignItems: 'center', gap: 18,
             }}>
               <div style={{
-                flexShrink: 0, width: 40, height: 40, borderRadius: 999,
+                flexShrink: 0, width: 40, height: 40, borderRadius: 10,
                 background: `linear-gradient(135deg, ${V1.blue}, #818CF8)`, color: '#fff',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontFamily: V1.fontDisplay, fontSize: 15, fontWeight: 700,
                 boxShadow: `0 6px 16px -6px ${V1.blue}AA`,
-              }}>EP</div>
+              }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M7 7h.01M7 12h.01M7 17h.01M11 7h6M11 12h6M11 17h6"/>
+                  <rect x="3" y="3" width="18" height="18" rx="3"/>
+                </svg>
+              </div>
               <div>
                 <div style={{
                   fontFamily: V1.fontBody, fontSize: 14, fontStyle: 'italic', color: V1.ink,
@@ -336,7 +322,7 @@ function AboutThesis() {
                   marginTop: 4, fontFamily: V1.fontMono, fontSize: 11,
                   color: V1.muted, letterSpacing: '0.08em', textTransform: 'uppercase',
                 }}>
-                  Elena Park, Co-founder
+                  The Delt underwriting team
                 </div>
               </div>
             </div>
@@ -535,109 +521,199 @@ function AboutPrinciples() {
   );
 }
 
-// ─── Timeline ───
+// ─── Why business lending ───
+const ABOUT_PILLARS = [
+  {
+    k: '01',
+    t: 'Capital is the operator\u2019s oxygen',
+    d: 'Small businesses run on timing. The right capital at the right week is the difference between hiring, opening a second location, or stalling out. Speed isn\u2019t a luxury — it\u2019s the product.',
+    img: 'app/assets/about/pillar-01_oxygen.jpg',
+    tags: ['Speed', 'Cash flow', 'Growth'],
+  },
+  {
+    k: '02',
+    t: 'Main Street is the engine of the economy',
+    d: 'Small businesses generate roughly half of US private-sector GDP and create the majority of net new jobs. Every dollar that lands in an operator\u2019s account multiplies through payroll, suppliers, and local communities.',
+    img: 'app/assets/about/pillar-02_mainstreet.jpg',
+    tags: ['SMB', 'Jobs', 'GDP'],
+  },
+  {
+    k: '03',
+    t: 'Banks were never built for this',
+    d: 'Legacy underwriting was designed for collateral and decade-long relationships, not for a roofer who needs a truck by Friday. A modern lender has to read live cash flow, not a paper file.',
+    img: 'app/assets/about/pillar-03_banks.jpg',
+    tags: ['Legacy', 'Friction', 'Collateral'],
+  },
+  {
+    k: '04',
+    t: 'Closing the access gap is the work',
+    d: 'Most credit-worthy operators in this country still get a \u201cno\u201d from the bank — usually for reasons that have nothing to do with their actual business. Our job is to give those operators a real, fairly-priced answer in hours.',
+    img: 'app/assets/about/pillar-04_access.jpg',
+    tags: ['Access', 'Fair pricing', 'Operators'],
+  },
+];
+
+function AboutPillarGallery() {
+  const [active, setActive] = React.useState(0);
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        gap: 10,
+        height: 460,
+        width: '100%',
+      }}
+    >
+      {ABOUT_PILLARS.map((p, i) => {
+        const isActive = i === active;
+        return (
+          <div
+            key={p.k}
+            role="button"
+            tabIndex={0}
+            aria-pressed={isActive}
+            onMouseEnter={() => setActive(i)}
+            onFocus={() => setActive(i)}
+            onClick={() => setActive(i)}
+            style={{
+              position: 'relative',
+              flex: isActive ? '1 1 0' : '0 0 88px',
+              minWidth: 88,
+              borderRadius: 18,
+              overflow: 'hidden',
+              cursor: 'pointer',
+              outline: 'none',
+              transition: 'flex 520ms cubic-bezier(0.22,1,0.36,1)',
+              boxShadow: isActive
+                ? '0 18px 40px rgba(4,30,66,0.22)'
+                : '0 6px 14px rgba(4,30,66,0.10)',
+            }}
+          >
+            <img
+              src={p.img}
+              alt=""
+              style={{
+                position: 'absolute', inset: 0, width: '100%', height: '100%',
+                objectFit: 'cover',
+                filter: isActive ? 'none' : 'saturate(0.85) brightness(0.9)',
+                transition: 'filter 520ms ease',
+              }}
+            />
+            {/* Gradient overlay */}
+            <div style={{
+              position: 'absolute', inset: 0,
+              background: isActive
+                ? 'linear-gradient(180deg, rgba(4,30,66,0.08) 0%, rgba(4,30,66,0.18) 45%, rgba(4,30,66,0.82) 100%)'
+                : 'linear-gradient(180deg, rgba(4,30,66,0.45) 0%, rgba(4,30,66,0.78) 100%)',
+              transition: 'background 520ms ease',
+            }} />
+
+            {/* Collapsed state — vertical text rail */}
+            {!isActive && (
+              <div style={{
+                position: 'absolute', inset: 0,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <div style={{
+                  writingMode: 'vertical-rl',
+                  transform: 'rotate(180deg)',
+                  fontFamily: V1.fontDisplay,
+                  fontSize: 15, fontWeight: 600,
+                  color: '#ffffff',
+                  letterSpacing: '-0.01em',
+                  textShadow: '0 1px 2px rgba(0,0,0,0.35)',
+                  display: 'flex', alignItems: 'center', gap: 14,
+                }}>
+                  <span style={{
+                    fontFamily: V1.fontMono, fontSize: 11, fontWeight: 600,
+                    letterSpacing: '0.18em', color: V1.blueSoft,
+                  }}>{p.k}</span>
+                  <span style={{
+                    overflow: 'hidden', textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap', maxHeight: 320,
+                  }}>{p.t}</span>
+                </div>
+              </div>
+            )}
+
+            {/* Active state — bottom overlay */}
+            <div style={{
+              position: 'absolute', left: 0, right: 0, bottom: 0,
+              padding: '24px 28px 28px',
+              opacity: isActive ? 1 : 0,
+              transform: isActive ? 'translateY(0)' : 'translateY(8px)',
+              transition: 'opacity 360ms ease 120ms, transform 360ms ease 120ms',
+              pointerEvents: isActive ? 'auto' : 'none',
+            }}>
+              <div style={{
+                fontFamily: V1.fontMono, fontSize: 11, fontWeight: 600,
+                letterSpacing: '0.18em', textTransform: 'uppercase',
+                color: V1.blueSoft, marginBottom: 8,
+              }}>{p.k} · Pillar</div>
+              <h3 style={{
+                margin: '0 0 10px',
+                fontFamily: V1.fontDisplay, fontSize: 26, fontWeight: 600,
+                color: '#ffffff', letterSpacing: '-0.02em', lineHeight: 1.2,
+                maxWidth: 540,
+              }}>{p.t}</h3>
+              <p style={{
+                margin: '0 0 14px',
+                fontFamily: V1.fontBody, fontSize: 15, lineHeight: 1.55,
+                color: 'rgba(255,255,255,0.88)',
+                maxWidth: 560,
+              }}>{p.d}</p>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                {p.tags.map((tag) => (
+                  <span key={tag} style={{
+                    fontFamily: V1.fontMono, fontSize: 11, fontWeight: 500,
+                    letterSpacing: '0.08em', textTransform: 'uppercase',
+                    color: '#ffffff',
+                    padding: '6px 10px',
+                    borderRadius: 999,
+                    background: 'rgba(255,255,255,0.14)',
+                    border: '1px solid rgba(255,255,255,0.22)',
+                    backdropFilter: 'blur(4px)',
+                  }}>{tag}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function AboutTimeline() {
   const [ref, inView] = useInView(0.1);
   return (
     <section data-v1-section ref={ref} style={{ background: V1.bg, padding: '140px 0' }}>
-      <div style={{ maxWidth: 1080, margin: '0 auto', padding: '0 40px' }}>
-        <div style={{ marginBottom: 72, maxWidth: 720 }}>
-          <V1Eyebrow>Our story</V1Eyebrow>
-          <h2 data-v1-section-title style={{ ...v1H2, marginTop: 18 }}>Six years. One book.</h2>
+      <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 40px' }}>
+        <div style={{ marginBottom: 56, maxWidth: 760 }}>
+          <V1Eyebrow>Why business lending</V1Eyebrow>
+          <h2 data-v1-section-title style={{ ...v1H2, marginTop: 18 }}>
+            Capital is what<br/>turns small businesses<br/>into big ones.
+          </h2>
           <p style={{
             marginTop: 20,
             fontFamily: V1.fontBody, fontSize: 17, lineHeight: 1.6, color: V1.text,
-            maxWidth: 580,
+            maxWidth: 620,
           }}>
-            We don't white-label, resell, or repackage. Every dollar deployed
-            under the Delt name is underwritten by our team and held on our
-            balance sheet.
+            Small businesses are the economy. They employ nearly half of
+            America, create most of its new jobs, and keep main streets
+            standing. Modern, fairly-priced business lending is how those
+            operators turn a good week into a growth year — and how local
+            economies compound.
           </p>
         </div>
 
-        {/* Timeline */}
-        <div style={{ position: 'relative', paddingLeft: 80 }}>
-          {/* Vertical line */}
-          <div aria-hidden style={{
-            position: 'absolute', left: 38, top: 0, bottom: 0,
-            width: 2, background: V1.line, borderRadius: 1,
-          }} />
-          <div aria-hidden style={{
-            position: 'absolute', left: 38, top: 0,
-            width: 2,
-            height: inView ? '100%' : '0%',
-            background: `linear-gradient(180deg, ${V1.blue}, #818CF8, transparent)`,
-            borderRadius: 1,
-            transition: 'height 2400ms cubic-bezier(0.22,1,0.36,1) 200ms',
-          }} />
-
-          {ABOUT_TIMELINE.map((m, i) => {
-            const latest = i === ABOUT_TIMELINE.length - 1;
-            return (
-              <div key={m.y} style={{
-                position: 'relative', paddingBottom: latest ? 0 : 48,
-                opacity: inView ? 1 : 0,
-                transform: inView ? 'translateX(0)' : 'translateX(-12px)',
-                transition: `all 700ms cubic-bezier(0.22,1,0.36,1) ${300 + i * 140}ms`,
-              }}>
-                {/* Node */}
-                <div aria-hidden style={{
-                  position: 'absolute', left: -51, top: 4,
-                  width: 26, height: 26, borderRadius: 999,
-                  background: V1.white,
-                  border: `2px solid ${latest ? V1.blue : V1.line}`,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}>
-                  <span style={{
-                    width: 10, height: 10, borderRadius: 999,
-                    background: latest ? `linear-gradient(135deg, ${V1.blue}, #818CF8)` : V1.muted,
-                    boxShadow: latest ? `0 0 0 4px ${V1.blue}22` : 'none',
-                  }} />
-                </div>
-
-                <div data-v1-grid-2col style={{
-                  display: 'grid', gridTemplateColumns: '140px 1fr',
-                  gap: 32, alignItems: 'start',
-                }}>
-                  <div style={{
-                    fontFamily: V1.fontDisplay, fontSize: 32, fontWeight: 700,
-                    color: latest ? V1.blue : V1.ink,
-                    letterSpacing: '-0.03em', lineHeight: 1,
-                    fontVariantNumeric: 'tabular-nums',
-                  }}>
-                    {m.y}
-                  </div>
-                  <div>
-                    <h3 style={{
-                      margin: 0,
-                      fontFamily: V1.fontDisplay, fontSize: 22, fontWeight: 600,
-                      color: V1.ink, letterSpacing: '-0.02em', lineHeight: 1.2,
-                    }}>
-                      {m.title}
-                    </h3>
-                    <p style={{
-                      marginTop: 10, marginBottom: 0,
-                      fontFamily: V1.fontBody, fontSize: 15.5, lineHeight: 1.6,
-                      color: V1.text, maxWidth: 620,
-                    }}>
-                      {m.body}
-                    </p>
-                    {latest && (
-                      <span style={{
-                        display: 'inline-block', marginTop: 12,
-                        padding: '4px 12px', borderRadius: 999,
-                        background: `${V1.blue}14`, color: V1.blue,
-                        fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 600,
-                        letterSpacing: '0.12em', textTransform: 'uppercase',
-                      }}>
-                        Current chapter
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+        <div style={{
+          opacity: inView ? 1 : 0,
+          transform: inView ? 'translateY(0)' : 'translateY(16px)',
+          transition: 'all 700ms cubic-bezier(0.22,1,0.36,1) 150ms',
+        }}>
+          <AboutPillarGallery />
         </div>
       </div>
     </section>
@@ -670,11 +746,18 @@ function AboutLeadership() {
           </p>
         </div>
 
+        {/* Function strip — the desk by discipline, not by individual */}
         <div data-v1-grid-4col style={{
           display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 16,
         }}>
-          {ABOUT_LEADERSHIP.map((p, i) => (
-            <article key={p.n} style={{
+          {[
+            { k: 'Underwriting', d: 'Reads cash flow, prices the file, signs the offer.' },
+            { k: 'Capital',      d: 'Manages the balance sheet so funded deals stay funded.' },
+            { k: 'Operator desk', d: 'Owns the borrower relationship from first call to renewal.' },
+            { k: 'Risk',         d: 'Watches portfolio health and catches drift before it costs.' },
+            { k: 'Engineering',  d: 'Builds the data pipelines that turn deposits into decisions.' },
+          ].map((f, i) => (
+            <article key={f.k} style={{
               background: V1.bg,
               border: `1px solid ${V1.line}`,
               borderRadius: 16,
@@ -689,7 +772,7 @@ function AboutLeadership() {
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-4px)';
               e.currentTarget.style.boxShadow = '0 20px 40px -24px rgba(10,37,64,0.2)';
-              e.currentTarget.style.borderColor = p.color + '60';
+              e.currentTarget.style.borderColor = V1.blue + '60';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = inView ? 'translateY(0)' : 'translateY(20px)';
@@ -698,35 +781,39 @@ function AboutLeadership() {
             }}
             >
               <div style={{
-                width: 64, height: 64, borderRadius: 999,
-                background: `linear-gradient(135deg, ${p.color}, ${p.color}AA)`,
+                width: 56, height: 56, borderRadius: 14,
+                background: `linear-gradient(135deg, ${V1.blue}, #818CF8)`,
                 color: '#fff',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontFamily: V1.fontDisplay, fontSize: 22, fontWeight: 700,
-                letterSpacing: '-0.02em',
-                boxShadow: `0 8px 20px -8px ${p.color}AA`,
+                boxShadow: `0 8px 20px -8px ${V1.blue}AA`,
               }}>
-                {avatarInitials(p.n)}
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  {i === 0 && (<><path d="M3 12h3l2-7 4 14 2-7h7"/></>)}
+                  {i === 1 && (<><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></>)}
+                  {i === 2 && (<><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5z"/></>)}
+                  {i === 3 && (<><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></>)}
+                  {i === 4 && (<><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></>)}
+                </svg>
               </div>
               <div>
                 <div style={{
                   fontFamily: V1.fontDisplay, fontSize: 16, fontWeight: 600,
                   color: V1.ink, letterSpacing: '-0.015em', lineHeight: 1.2,
                 }}>
-                  {p.n}
+                  {f.k}
                 </div>
                 <div style={{
                   marginTop: 4, fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 600,
-                  color: p.color, letterSpacing: '0.12em', textTransform: 'uppercase',
+                  color: V1.blue, letterSpacing: '0.12em', textTransform: 'uppercase',
                 }}>
-                  {p.r}
+                  Function
                 </div>
               </div>
               <div style={{
                 fontFamily: V1.fontBody, fontSize: 12.5, lineHeight: 1.55, color: V1.muted,
                 borderTop: `1px solid ${V1.line}`, paddingTop: 14,
               }}>
-                {p.bio}
+                {f.d}
               </div>
             </article>
           ))}
@@ -744,7 +831,6 @@ function V1AboutPage({ accent, onApply, onTalk }) {
       <AboutThesis />
       <AboutPrinciples />
       <AboutTimeline />
-      <AboutLeadership />
       <V1CTASection onApply={onApply} onTalk={onTalk} />
     </>
   );
