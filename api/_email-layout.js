@@ -45,22 +45,32 @@ const COMPANY = {
 const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
 function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ESC[c]); }
 
-// The trust strip — four small badges centered under the main content.
-// Rendered as a single-row table so it doesn't reflow into a stacked
-// column on narrow Outlook clients (which mangle CSS flexbox).
+// The trust strip — three official brand seals centered under the main
+// content. Rendered as a single-row table so it doesn't reflow into a
+// stacked column on narrow Outlook clients (which mangle CSS flexbox).
+//
+// We pin the height in both the HTML attribute AND the inline style so
+// Outlook (which respects attributes more than CSS) and Gmail (vice
+// versa) both render at the same size.
 function trustStrip() {
-  const cell = (src, alt) => `
-    <td align="center" valign="middle" style="padding:0 8px;">
-      <img src="${src}" alt="${alt}" height="32"
-           style="height:32px;width:auto;display:block;border:0;outline:none;text-decoration:none;" />
+  const cell = (src, alt, h = 44) => `
+    <td align="center" valign="middle" style="padding:0 14px;">
+      <img src="${src}" alt="${alt}" height="${h}"
+           style="height:${h}px;width:auto;display:block;border:0;outline:none;text-decoration:none;" />
     </td>`;
   return `
-    <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:28px auto 0;">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:32px auto 4px;">
       <tr>
-        ${cell(ASSETS.badges.bbb,   'BBB Accredited A+ Rating')}
+        ${cell(ASSETS.badges.bbb,   'BBB Accredited Business — A+ Rating')}
         ${cell(ASSETS.badges.pci,   'PCI DSS Compliant')}
-        ${cell(ASSETS.badges.plaid, 'Bank-linked via Plaid')}
-        ${cell(ASSETS.badges.ssl,   '256-bit TLS Encrypted')}
+        ${cell(ASSETS.badges.plaid, 'Bank verification powered by Plaid')}
+      </tr>
+      <tr>
+        <td colspan="3" align="center" style="padding:14px 0 0;">
+          <p style="margin:0;font-size:11px;line-height:1.5;color:#8A8693;letter-spacing:0.02em;">
+            Accredited, compliant, and bank-grade secure. All connections encrypted with 256-bit TLS.
+          </p>
+        </td>
       </tr>
     </table>`;
 }
