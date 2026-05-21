@@ -258,6 +258,12 @@ function V1CalcAnalyzer({ onApply, onNavHow, onNavProcessing, hideHeader }) {
   const [leadBiz, setLeadBiz] = v1cUseState('');
   const [leadEmail, setLeadEmail] = v1cUseState('');
   const [leadPhone, setLeadPhone] = v1cUseState('');
+  // Country code stored separately so the formatter only handles the
+  // 10-digit national number. Default to USA (+1). Canada uses the same
+  // dial prefix — we disambiguate the dropdown option as '+1c' but emit
+  // '+1' on submit via the normalizer below.
+  const [leadCountryCode, setLeadCountryCode] = v1cUseState('+1');
+  const dialPrefix = leadCountryCode === '+1c' ? '+1' : leadCountryCode;
   const [leadSubmitting, setLeadSubmitting] = v1cUseState(false);
   const [leadError, setLeadError] = v1cUseState('');
   // leadId comes back from /api/leads when Supabase persistence is
@@ -360,7 +366,14 @@ function V1CalcAnalyzer({ onApply, onNavHow, onNavProcessing, hideHeader }) {
                  && phoneValid;
 
   const onLeadPhone = (raw) => {
-    const d = raw.replace(/[^0-9]/g, '').slice(0, 10);
+    // Strip every non-digit. If a user pastes "+1 864 555 0123" or
+    // "18645550123" while +1 is selected, drop the leading country-code
+    // digit so the area code starts at the right place.
+    let d = raw.replace(/[^0-9]/g, '');
+    if (dialPrefix === '+1' && d.length === 11 && d.startsWith('1')) {
+      d = d.slice(1);
+    }
+    d = d.slice(0, 10);
     let f = d;
     if (d.length > 6)      f = `(${d.slice(0,3)}) ${d.slice(3,6)}-${d.slice(6)}`;
     else if (d.length > 3) f = `(${d.slice(0,3)}) ${d.slice(3)}`;
@@ -376,7 +389,7 @@ function V1CalcAnalyzer({ onApply, onNavHow, onNavProcessing, hideHeader }) {
       firstName: leadFirst.trim(),
       businessName: leadBiz.trim(),
       email: leadEmail.trim(),
-      phone: leadPhone.trim(),
+      phone: leadPhone ? `${dialPrefix} ${leadPhone}`.trim() : '',
       source: 'calculator-gate',
       estimate: {
         low: displayLow,
@@ -665,7 +678,9 @@ function V1CalcAnalyzer({ onApply, onNavHow, onNavProcessing, hideHeader }) {
                     fontSize: 13.5, fontWeight: 600,
                     color: deltToggle ? V1.ink : V1.muted, transition: 'color .3s',
                   }}>
-                    Switch processing to Delt for 25% more capital
+                    {noCards
+                      ? 'Sign up for Delt payments for 25% more capital'
+                      : 'Switch processing to Delt for 25% more capital'}
                   </div>
                   {deltToggle && hasRevenue && !isRedirect && (
                     <div style={{ fontSize: 11.5, color: V1.blue, fontWeight: 500, marginTop: 2, fontVariantNumeric: 'tabular-nums' }}>
@@ -811,8 +826,12 @@ function V1CalcAnalyzer({ onApply, onNavHow, onNavProcessing, hideHeader }) {
                   placeholder="Business name" autoComplete="organization" />
                 <V1LeadInput value={leadEmail} onChange={setLeadEmail}
                   type="email" placeholder="Business email" autoComplete="email" inputMode="email" />
-                <V1LeadInput value={leadPhone} onChange={onLeadPhone}
-                  type="tel" placeholder="Mobile number" autoComplete="tel" inputMode="tel" />
+                <V1PhoneInput
+                  countryCode={leadCountryCode}
+                  onCountryChange={setLeadCountryCode}
+                  value={leadPhone}
+                  onChange={onLeadPhone}
+                />
               </div>
 
               {leadError && (
@@ -870,7 +889,7 @@ function V1CalcAnalyzer({ onApply, onNavHow, onNavProcessing, hideHeader }) {
               firstName: leadFirst.trim(),
               businessName: leadBiz.trim(),
               email: leadEmail.trim(),
-              phone: leadPhone.trim(),
+              phone: leadPhone ? `${dialPrefix} ${leadPhone}`.trim() : '',
             } : null,
           })}
           disabled={ctaDisabled}
@@ -929,6 +948,77 @@ function V1LeadInput({ value, onChange, placeholder, type = 'text', autoComplete
         transition: 'border-color .15s, box-shadow .15s',
       }}
     />
+  );
+}
+
+// ═══ Helper: phone input with country-code prefix select ════════
+// USA-default. A small curated list of common codes (no need to ship
+// 200 ISO codes for an SMB funding form). Visually one combined input
+// to match V1LeadInput: select on the left shares the same rounded
+// border as the digits field on the right.
+const V1_PHONE_COUNTRIES = [
+  { code: '+1',   label: '🇺🇸 +1'   },
+  { code: '+1c',  label: '🇨🇦 +1'   },  // Canada — disambiguated as +1c, normalized to +1 on submit
+  { code: '+52',  label: '🇲🇽 +52'  },
+  { code: '+44',  label: '🇬🇧 +44'  },
+  { code: '+61',  label: '🇦🇺 +61'  },
+  { code: '+91',  label: '🇮🇳 +91'  },
+  { code: '+33',  label: '🇫🇷 +33'  },
+  { code: '+49',  label: '🇩🇪 +49'  },
+  { code: '+34',  label: '🇪🇸 +34'  },
+  { code: '+55',  label: '🇧🇷 +55'  },
+];
+
+function V1PhoneInput({ countryCode, onCountryChange, value, onChange }) {
+  const [focused, setFocused] = v1cUseState(false);
+  const borderColor = focused ? V1.blue : V1.line;
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'stretch',
+      width: '100%', boxSizing: 'border-box',
+      border: `1.5px solid ${borderColor}`,
+      borderRadius: 10, overflow: 'hidden',
+      background: V1.white,
+      boxShadow: focused ? `0 0 0 4px ${V1.blue}1A` : 'none',
+      transition: 'border-color .15s, box-shadow .15s',
+    }}>
+      <select
+        value={countryCode}
+        onChange={(e) => onCountryChange(e.target.value)}
+        aria-label="Country code"
+        style={{
+          flexShrink: 0,
+          appearance: 'none', WebkitAppearance: 'none', MozAppearance: 'none',
+          padding: '12px 28px 12px 12px',
+          fontFamily: V1.fontBody, fontSize: 14.5, color: V1.ink,
+          background: `${V1.bg} url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path fill='%239ca3af' d='M6 8L2 4h8z'/></svg>") no-repeat right 8px center`,
+          border: 'none', outline: 'none',
+          borderRight: `1px solid ${V1.line}`,
+          cursor: 'pointer',
+        }}
+      >
+        {V1_PHONE_COUNTRIES.map((c) => (
+          <option key={c.code} value={c.code}>{c.label}</option>
+        ))}
+      </select>
+      <input
+        type="tel"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        placeholder="Mobile number"
+        autoComplete="tel-national"
+        inputMode="tel"
+        style={{
+          flex: 1, minWidth: 0,
+          padding: '12px 14px',
+          fontFamily: V1.fontBody, fontSize: 14.5, color: V1.ink,
+          background: V1.white,
+          border: 'none', outline: 'none',
+        }}
+      />
+    </div>
   );
 }
 
