@@ -5,7 +5,8 @@
     { "source": "/apply",           "destination": "/" },
     { "source": "/apply/:path*",    "destination": "/" },
     { "source": "/admin",           "destination": "/api/admin" },
-    { "source": "/admin/leads",     "destination": "/api/admin-leads" }
+    { "source": "/admin/leads",     "destination": "/api/admin-leads" },
+    { "source": "/r/:code",         "destination": "/api/r?c=:code" }
   ],
   "crons": [
     { "path": "/api/sms-nudge", "schedule": "*/15 * * * *" }

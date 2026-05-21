@@ -107,6 +107,27 @@ async function getLead(leadId) {
   return Array.isArray(rows) && rows.length ? rows[0] : null;
 }
 
+// Lookup by the first 8 characters of a lead's UUID. Used by the
+// /api/r short-link redirector so SMS bodies stay under 160 chars.
+// We require the prefix to be at least 6 hex chars to keep collisions
+// effectively impossible (16^8 = ~4.3B possible 8-char prefixes vs.
+// realistic lead volume of < 1M lifetime).
+async function getLeadByPrefix(prefix) {
+  if (!ENABLED) return null;
+  const p = String(prefix || '').toLowerCase().replace(/[^a-f0-9]/g, '');
+  if (p.length < 6) return null;
+  // PostgREST `like` filter — case-insensitive via `ilike`. We anchor
+  // with `*` (PostgREST wildcard) at the end so 'abc12345' matches
+  // 'abc12345-...'.
+  const path = `/leads?id=ilike.${encodeURIComponent(p + '*')}&select=*&limit=2`;
+  const rows = await pgFetch(path, { method: 'GET' });
+  if (!Array.isArray(rows) || rows.length === 0) return null;
+  // If more than one row matches, be safe and return null — the operator
+  // can lengthen the prefix. (Vanishingly unlikely at our scale.)
+  if (rows.length > 1) return null;
+  return rows[0];
+}
+
 // Find leads that submitted N+ minutes ago but never reached the
 // 'plaid_connected' milestone and haven't been nudged yet. Used by the
 // /api/sms-nudge cron.
@@ -211,6 +232,7 @@ module.exports = {
   ENABLED,
   createLead,
   getLead,
+  getLeadByPrefix,
   findStaleLeads,
   markNudged,
   markCompleted,

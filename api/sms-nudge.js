@@ -28,6 +28,7 @@
 
 const store = require('./_store');
 const { getAccessToken, sendMail } = require('./_email');
+const { buildApplyUrlFromRow, buildShortUrl, SITE_ORIGIN } = require('./_deeplink');
 
 const NOTIFY_TO = process.env.LEADS_NOTIFY_EMAIL
                 || process.env.BOOKING_NOTIFY_EMAIL
@@ -35,13 +36,9 @@ const NOTIFY_TO = process.env.LEADS_NOTIFY_EMAIL
 
 const FROM_MAILBOX = process.env.OUTLOOK_FROM_EMAIL;
 
-const SITE_ORIGIN = (() => {
-  const explicit = process.env.PUBLIC_SITE_ORIGIN;
-  if (explicit) return explicit;
-  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL;
-  if (vercel) return /^https?:\/\//i.test(vercel) ? vercel : `https://${vercel}`;
-  return 'https://deltcapital.com';
-})();
+// Hosted logo for email branding. Served from the same origin as the
+// production site so deliverability heuristics see a same-domain image.
+const LOGO_URL = `${SITE_ORIGIN.replace(/\/$/, '')}/app/assets/logo-dark.png`;
 
 // Operator's number for the click-to-text mailto link. Google Voice
 // inbound texting accepts mailto:<10digits>@txt.voice.google.com but
@@ -57,37 +54,13 @@ function googleVoiceLink({ phone, body }) {
   return `https://voice.google.com/u/0/messages?itemId=t.%2B1${digits}`;
 }
 
-function smsTemplate({ firstName, low, high, applyUrl }) {
-  const greet = firstName ? `${firstName}, ` : '';
-  const range = (low && high)
-    ? `$${low.toLocaleString()}\u2013$${high.toLocaleString()}`
-    : 'your funding offer';
-  // Keep under 160 chars to avoid multi-segment SMS billing on the
-  // operator's eventual Twilio migration. Current count: ~140.
-  return `${greet}this is David at Delt Capital. Your ${range} offer is still open \u2014 takes 2 min to claim: ${applyUrl}`;
-}
-
-function buildApplyDeepLink({ leadId, lead, estimate }) {
-  const e = estimate || {};
-  const payload = {
-    v: 1, t: Date.now(),
-    leadId: leadId || undefined,
-    firstName: String((lead && lead.first_name) || '').trim(),
-    businessName: String((lead && lead.business_name) || '').trim(),
-    email: String((lead && lead.email) || '').trim(),
-    phone: String((lead && lead.phone) || '').trim(),
-    low: Number(e.low) || 0,
-    high: Number(e.high) || 0,
-    revenue: Number(e.revenue) || 0,
-    tib: String(e.tib || ''),
-    acceptsCards: e.acceptsCards === true ? 1 : (e.acceptsCards === false ? 0 : null),
-    cardSales: Number(e.cardSales) || 0,
-    boosted: !!e.boosted,
-  };
-  const json = JSON.stringify(payload);
-  const b64 = Buffer.from(json, 'utf8').toString('base64')
-    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-  return `${SITE_ORIGIN.replace(/\/$/, '')}/apply?d=${b64}`;
+// SMS body. We use the branded short link (/r/<8-char>) rather than the
+// raw /apply?d=<base64> payload so the message stays well under 160
+// chars AND looks like a real link a human would send. The short link
+// 302s through api/r.js back to the same payloaded /apply URL.
+function smsTemplate({ firstName, shortUrl }) {
+  const name = firstName ? String(firstName).trim() : 'Hey';
+  return `${name}, this is David at Delt Capital. Saw you started the funding calculator earlier \u2014 here's your offer link, takes 2 min: ${shortUrl}`;
 }
 
 // HTML-escape so a malicious business_name can't inject markup into our
@@ -106,7 +79,7 @@ function nudgeEmail({ firstName, estimate, applyUrl }) {
     : 'your pre-qualified offer';
   return `<!doctype html><html><body style="margin:0;padding:0;background:#F8F7FB;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#1A1A1F;">
   <div style="max-width:560px;margin:32px auto;background:#fff;border-radius:14px;padding:36px 40px;box-shadow:0 8px 24px -12px rgba(31,28,80,0.18);">
-    <div style="font-size:13px;color:#6B6877;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:14px;">Delt Capital</div>
+    <div style="margin:0 0 22px;"><img src="${LOGO_URL}" alt="Delt Capital" width="132" style="height:32px;width:auto;display:block;border:0;outline:none;text-decoration:none;" /></div>
     <h1 style="font-size:22px;line-height:1.25;margin:0 0 16px;font-weight:600;color:#1A1A1F;">${esc(firstName ? `${firstName}, your offer is still open` : 'Your offer is still open')}</h1>
     <p style="font-size:15px;line-height:1.55;margin:0 0 14px;">You looked at your ${esc(range)} funding range earlier today. The offer's still good \u2014 it takes about 2 minutes to claim and there's no impact to your credit.</p>
     <p style="font-size:15px;line-height:1.55;margin:0 0 22px;">If there's anything I can answer for you, just reply to this email.</p>
@@ -118,9 +91,10 @@ function nudgeEmail({ firstName, estimate, applyUrl }) {
 </body></html>`;
 }
 
-function internalNudgeNote({ lead, applyUrl, smsBody, gvLink }) {
+function internalNudgeNote({ lead, applyUrl, shortUrl, smsBody, gvLink }) {
   return `<!doctype html><html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#1A1A1F;background:#F8F7FB;padding:24px;">
   <div style="max-width:600px;background:#fff;border-radius:12px;padding:28px;box-shadow:0 4px 18px -8px rgba(0,0,0,0.12);">
+    <div style="margin:0 0 16px;"><img src="${LOGO_URL}" alt="Delt Capital" width="110" style="height:26px;width:auto;display:block;border:0;outline:none;text-decoration:none;" /></div>
     <h2 style="margin:0 0 12px;font-size:18px;">T+45min nudge fired</h2>
     <p style="margin:6px 0;font-size:14px;"><b>Lead:</b> ${esc(lead.first_name || '')} \u2014 ${esc(lead.business_name || '')}</p>
     <p style="margin:6px 0;font-size:14px;"><b>Email:</b> ${esc(lead.email || '')}</p>
@@ -132,7 +106,8 @@ function internalNudgeNote({ lead, applyUrl, smsBody, gvLink }) {
     </p>
     <p style="margin:12px 0 6px;font-size:13px;color:#555;">Copy this body:</p>
     <div style="background:#F4F4F8;border-radius:8px;padding:14px;font-family:Menlo,monospace;font-size:13px;line-height:1.45;white-space:pre-wrap;">${esc(smsBody)}</div>
-    <p style="margin:18px 0 0;font-size:12.5px;color:#6B6877;">Deep link (already in the SMS body): <a href="${esc(applyUrl)}">${esc(applyUrl)}</a></p>
+    <p style="margin:18px 0 0;font-size:12.5px;color:#6B6877;">Short link in SMS: <a href="${esc(shortUrl)}">${esc(shortUrl)}</a></p>
+    <p style="margin:6px 0 0;font-size:12.5px;color:#6B6877;">Full deep link (302 target): <a href="${esc(applyUrl)}">${esc(applyUrl)}</a></p>
   </div>
 </body></html>`;
 }
@@ -213,17 +188,11 @@ module.exports = async function handler(req, res) {
 
   const results = [];
   for (const lead of stale) {
-    const ctx = {
-      leadId: lead.id,
-      lead,
-      estimate: lead.estimate || {},
-    };
-    const applyUrl = buildApplyDeepLink(ctx);
+    const applyUrl = buildApplyUrlFromRow(lead);
+    const shortUrl = buildShortUrl(lead.id) || applyUrl;
     const smsBody  = smsTemplate({
       firstName: lead.first_name,
-      low: lead.estimate && lead.estimate.low,
-      high: lead.estimate && lead.estimate.high,
-      applyUrl,
+      shortUrl,
     });
     const gvLink = googleVoiceLink({ phone: lead.phone, body: smsBody });
 
@@ -251,7 +220,7 @@ module.exports = async function handler(req, res) {
       await sendMail(
         token, FROM_MAILBOX, NOTIFY_TO,
         `[Delt SMS nudge] ${lead.first_name || ''} \u2014 ${lead.business_name || ''}`,
-        internalNudgeNote({ lead, applyUrl, smsBody, gvLink }),
+        internalNudgeNote({ lead, applyUrl, shortUrl, smsBody, gvLink }),
         { from: FROM_MAILBOX, fromName: 'Delt Capital Bot' }
       );
     } catch (err) {

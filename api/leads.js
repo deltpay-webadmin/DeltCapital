@@ -22,31 +22,15 @@
 
 const store = require('./_store');
 const { getAccessToken, sendMail } = require('./_email');
+const { buildApplyUrl, SITE_ORIGIN } = require('./_deeplink');
 
 const NOTIFY_TO = process.env.LEADS_NOTIFY_EMAIL
                 || process.env.BOOKING_NOTIFY_EMAIL
                 || 'david@deltpay.com';
 
-// Public site origin used to build the email's "Continue my application"
-// deep link. We prefer an explicit env var so preview deploys can point at
-// their own host; fall back to production.
-// Note: VERCEL_PROJECT_PRODUCTION_URL is bare host (no scheme), so we
-// prepend https:// when falling back to it. PUBLIC_SITE_ORIGIN is expected
-// to be a full origin (https://example.com).
-const SITE_ORIGIN = (() => {
-  const explicit = process.env.PUBLIC_SITE_ORIGIN;
-  if (explicit) return explicit;
-  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL;
-  if (vercel) return /^https?:\/\//i.test(vercel) ? vercel : `https://${vercel}`;
-  return 'https://deltcapital.com';
-})();
-
-// base64url helper — keeps the deep-link payload URL-safe without padding.
-function b64url(obj) {
-  const json = JSON.stringify(obj);
-  return Buffer.from(json, 'utf8').toString('base64')
-    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-}
+// Hosted logo for email branding. Same-origin asset → keeps SpamAssassin /
+// Gmail's deliverability heuristics happy (no off-domain images).
+const LOGO_URL = `${SITE_ORIGIN.replace(/\/$/, '')}/app/assets/logo-dark.png`;
 
 // Heuristic: only echo back the business name in the email body when it
 // looks like a real name. A user who types '123 my business' as a
@@ -64,36 +48,10 @@ function isPlausibleBusinessName(s) {
   return true;
 }
 
-// Build the deep link the email button points at. We embed the lead's
-// contact info + calculator estimate as a URL-safe base64url payload so
-// the landing page can pre-fill the application without a database round
-// trip. The site normalizes both the modern `/apply?d=` route (preferred
-// for email clients that strip fragments) and the legacy `#apply?d=`
-// fragment form.
-function buildApplyDeepLink({ leadId, firstName, businessName, email, phone, estimate }) {
-  const e = estimate || {};
-  const payload = {
-    v: 1,
-    t: Date.now(),
-    // leadId lets the apply modal ping /api/apply-progress under the
-    // right key so we can correlate funnel events back to the lead row.
-    // Optional — old deep links that predate Supabase persistence won't
-    // include one, and the client tolerates its absence.
-    leadId: leadId ? String(leadId) : undefined,
-    firstName: String(firstName || '').trim(),
-    businessName: String(businessName || '').trim(),
-    email: String(email || '').trim(),
-    phone: String(phone || '').trim(),
-    low: Number(e.low) || 0,
-    high: Number(e.high) || 0,
-    revenue: Number(e.revenue) || 0,
-    tib: String(e.tib || ''),
-    acceptsCards: e.acceptsCards === true ? 1 : (e.acceptsCards === false ? 0 : null),
-    cardSales: Number(e.cardSales) || 0,
-    boosted: !!e.boosted,
-  };
-  return `${SITE_ORIGIN.replace(/\/$/, '')}/apply?d=${b64url(payload)}`;
-}
+// Deep-link builder lives in api/_deeplink.js (shared with sms-nudge.js +
+// the /r/<prefix> redirector). Kept as a thin wrapper so the rest of this
+// file reads the same as before.
+function buildApplyDeepLink(args) { return buildApplyUrl(args); }
 
 // Microsoft Graph auth + sendMail live in api/_email.js so api/sms-nudge
 // (and any future server-fired email) can reuse the same flow.
@@ -164,6 +122,9 @@ function leadEmail({ firstName, businessName, email, phone, estimate, applyUrl }
                || buildApplyDeepLink({ firstName, businessName, email, phone, estimate });
   return `
     <div style="font-family:Arial,sans-serif;color:#0F0E17;line-height:1.55;max-width:560px;">
+      <div style="margin:0 0 22px;">
+        <img src="${LOGO_URL}" alt="Delt Capital" width="148" style="height:36px;width:auto;display:block;border:0;outline:none;text-decoration:none;" />
+      </div>
       <h2 style="margin:0 0 14px;font-size:22px;letter-spacing:-0.01em;">
         Your pre-qualified funding range is <span style="color:#5B5BD6;">${esc(range)}</span>.
       </h2>
