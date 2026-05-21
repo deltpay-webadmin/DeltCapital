@@ -83,9 +83,11 @@ function V1BookingHero({ accent }) {
           color: 'rgba(255,255,255,0.72)', margin: '28px 0 0', maxWidth: 620,
           animation: 'bkFadeUp 700ms cubic-bezier(.2,.7,.3,1) 140ms both',
         }}>
-          You'll get a real number, an honest read on whether we're the right fit,
-          and a clear next step. No pitch deck, no pressure — just the math behind
-          your offer and the underwriter who'd actually approve it.
+          We're the only funding shop that prices your offer off your real card volume —
+          not just a bank statement. Bring your last processing report, or connect your
+          account live, and in 30 minutes you'll have the exact rate, term, and payment
+          we'd fund you at. If we can't beat the offer you're holding, we'll tell you
+          who can.
         </p>
 
         {/* Inline meeting chips */}
