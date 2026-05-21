@@ -1,4 +1,13 @@
 {
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/apply",           "destination": "/index.html" },
+    { "source": "/apply/:path*",    "destination": "/index.html" },
+    { "source": "/admin",           "destination": "/api/admin" },
+    { "source": "/admin/leads",     "destination": "/api/admin-leads" }
+  ],
+  "crons": [
+    { "path": "/api/sms-nudge", "schedule": "*/15 * * * *" }
+  ]
 }
