@@ -141,8 +141,27 @@ function V1StepBusiness({ form, setForm, accent }) {
 }
 
 // ─── Step 2: Bank (Plaid) ───
-function V1StepBank({ form, setForm, accent, onAdvance }) {
+function V1StepBank({ form, setForm, accent, onAdvance, autoOpen }) {
   const [plaidOpen, setPlaidOpen] = React.useState(false);
+
+  // When the user lands on Bank via the email deep-link we kick Plaid Link
+  // open automatically — they've already committed once (clicked the
+  // email CTA), and the gap between "page loaded" and "first action" is
+  // where most apply-flow drop-off happens. Only fire when the bank isn't
+  // already connected (e.g. user is resuming a finished step) and only
+  // once per mount.
+  const autoOpenedRef = React.useRef(false);
+  React.useEffect(() => {
+    if (!autoOpen) return;
+    if (autoOpenedRef.current) return;
+    if (form.bankConnected) return;
+    autoOpenedRef.current = true;
+    // Defer one tick so the Bank step has actually painted before Plaid's
+    // popup steals focus — keeps the transition from looking jarring.
+    const t = setTimeout(() => setPlaidOpen(true), 350);
+    return () => clearTimeout(t);
+  }, [autoOpen, form.bankConnected]);
+
   const handlePlaidSuccess = (data) => {
     setPlaidOpen(false);
     setForm({
@@ -636,8 +655,24 @@ function V1StepDone({ form, accent }) {
 }
 
 // ─── Main shell ───
-function V1ApplicationFlow({ open, onClose, prefill, accent }) {
-  const [step, setStep] = React.useState(0);
+function V1ApplicationFlow({
+  open, onClose, prefill, accent,
+  // New props: see app/variation-1.jsx for the wiring.
+  // • startStep    — 0 (Business) by default; 1 (Bank) when arriving via
+  //                  the post-calculator email deep-link, because business
+  //                  + contact are already on file from the lead-gate.
+  // • autoOpenPlaid — when true, kicks Plaid Link open the instant the
+  //                  Bank step paints. Pairs with startStep=1.
+  // • onDraftChange — fires on each form mutation so the host can persist
+  //                  progress to localStorage and let users resume later.
+  // • onComplete    — fires on the "Done" step so the host can clear the
+  //                  saved draft.
+  startStep = 0,
+  autoOpenPlaid = false,
+  onDraftChange,
+  onComplete,
+}) {
+  const [step, setStep] = React.useState(startStep);
   const [form, setForm] = React.useState({
     // Contact fields are pre-filled from the calculator lead-gate when present
     businessName: prefill?.lead?.businessName || '',
@@ -649,6 +684,10 @@ function V1ApplicationFlow({ open, onClose, prefill, accent }) {
     state: 'CA', useOfFunds: 'Inventory',
     bankConnected: false, bankInstitution: '', bankAccounts: null,
     ssn4: '', idVerified: false,
+    // Offer amount defaults to the *high end* of the calculator estimate
+    // so the slider starts where the email said the user pre-qualified.
+    // The previous default of 75000 was a regression — it threw away the
+    // estimate.high they were just shown.
     amount: prefill?.high || 75000,
   });
 
@@ -669,8 +708,36 @@ function V1ApplicationFlow({ open, onClose, prefill, accent }) {
   const [closing, setClosing] = React.useState(false);
 
   React.useEffect(() => {
-    if (open) { setStep(0); setClosing(false); }
-  }, [open]);
+    if (open) { setStep(startStep); setClosing(false); }
+  }, [open, startStep]);
+
+  // Persist every form mutation to the host (localStorage). We snapshot
+  // the bits that pre-fill on the next visit: contact, calculator inputs,
+  // and the in-progress bank/idv/amount state. Underwriting-sensitive
+  // values (e.g. accept-decision) are never persisted client-side.
+  React.useEffect(() => {
+    if (!open) return;
+    if (typeof onDraftChange !== 'function') return;
+    onDraftChange({
+      ...(prefill || {}),
+      lead: {
+        firstName:    form.firstName,
+        businessName: form.businessName,
+        email:        form.email,
+        phone:        form.phone,
+      },
+      // Carry the user's in-progress offer amount so a resume lands them
+      // on the slider position they had, not the prefill high.
+      pendingAmount: form.amount,
+    });
+  }, [open, form.firstName, form.businessName, form.email, form.phone, form.amount]);
+
+  // Fire onComplete when we reach the Done step (index 4). Used by the
+  // host to clear the saved draft — once the application is in, there's
+  // nothing left to resume.
+  React.useEffect(() => {
+    if (open && step >= 4 && typeof onComplete === 'function') onComplete();
+  }, [open, step]);
 
   // Prevent body scroll while open
   React.useEffect(() => {
@@ -870,7 +937,7 @@ function V1ApplicationFlow({ open, onClose, prefill, accent }) {
             padding: '38px 40px',
           }}>
             {step === 0 && <V1StepBusiness form={form} setForm={setForm} accent={accent} />}
-            {step === 1 && <V1StepBank form={form} setForm={setForm} accent={accent} onAdvance={() => setStep(2)} />}
+            {step === 1 && <V1StepBank form={form} setForm={setForm} accent={accent} onAdvance={() => setStep(2)} autoOpen={autoOpenPlaid} />}
             {step === 2 && <V1StepIdentity form={form} setForm={setForm} accent={accent} onAdvance={() => setStep(3)} />}
             {step === 3 && <V1StepOffer form={form} prefill={prefill} accent={accent} />}
             {step === 4 && <V1StepDone form={form} accent={accent} />}

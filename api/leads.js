@@ -24,6 +24,69 @@ const NOTIFY_TO = process.env.LEADS_NOTIFY_EMAIL
                 || process.env.BOOKING_NOTIFY_EMAIL
                 || 'david@deltpay.com';
 
+// Public site origin used to build the email's "Continue my application"
+// deep link. We prefer an explicit env var so preview deploys can point at
+// their own host; fall back to production.
+// Note: VERCEL_PROJECT_PRODUCTION_URL is bare host (no scheme), so we
+// prepend https:// when falling back to it. PUBLIC_SITE_ORIGIN is expected
+// to be a full origin (https://example.com).
+const SITE_ORIGIN = (() => {
+  const explicit = process.env.PUBLIC_SITE_ORIGIN;
+  if (explicit) return explicit;
+  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+  if (vercel) return /^https?:\/\//i.test(vercel) ? vercel : `https://${vercel}`;
+  return 'https://deltcapital.com';
+})();
+
+// base64url helper — keeps the deep-link payload URL-safe without padding.
+function b64url(obj) {
+  const json = JSON.stringify(obj);
+  return Buffer.from(json, 'utf8').toString('base64')
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+// Heuristic: only echo back the business name in the email body when it
+// looks like a real name. A user who types '123 my business' as a
+// placeholder should still receive an email that reads naturally
+// ("about your business") instead of repeating their junk input.
+function isPlausibleBusinessName(s) {
+  const t = String(s || '').trim();
+  if (t.length < 2) return false;
+  // Must contain at least one letter and start with a letter.
+  if (!/^[A-Za-z]/.test(t)) return false;
+  if (!/[A-Za-z]{2,}/.test(t)) return false;
+  // Reject obvious placeholders.
+  if (/\bmy (business|company|biz|shop)\b/i.test(t)) return false;
+  if (/\btest\b/i.test(t) && t.length < 8) return false;
+  return true;
+}
+
+// Build the deep link the email button points at. We embed the lead's
+// contact info + calculator estimate as a URL-safe base64url payload so
+// the landing page can pre-fill the application without a database round
+// trip. The site normalizes both the modern `/apply?d=` route (preferred
+// for email clients that strip fragments) and the legacy `#apply?d=`
+// fragment form.
+function buildApplyDeepLink({ firstName, businessName, email, phone, estimate }) {
+  const e = estimate || {};
+  const payload = {
+    v: 1,
+    t: Date.now(),
+    firstName: String(firstName || '').trim(),
+    businessName: String(businessName || '').trim(),
+    email: String(email || '').trim(),
+    phone: String(phone || '').trim(),
+    low: Number(e.low) || 0,
+    high: Number(e.high) || 0,
+    revenue: Number(e.revenue) || 0,
+    tib: String(e.tib || ''),
+    acceptsCards: e.acceptsCards === true ? 1 : (e.acceptsCards === false ? 0 : null),
+    cardSales: Number(e.cardSales) || 0,
+    boosted: !!e.boosted,
+  };
+  return `${SITE_ORIGIN.replace(/\/$/, '')}/apply?d=${b64url(payload)}`;
+}
+
 async function getAccessToken() {
   const tenant = process.env.OUTLOOK_TENANT_ID;
   const clientId = process.env.OUTLOOK_CLIENT_ID;
@@ -102,7 +165,7 @@ function tibLabel(t) {
   return String(t || 'Unknown');
 }
 
-function internalEmail({ firstName, businessName, email, phone, source, estimate }) {
+function internalEmail({ firstName, businessName, email, phone, source, estimate, applyUrl }) {
   const e = estimate || {};
   const range = (e.low && e.high) ? `${fmtMoney(e.low)} – ${fmtMoney(e.high)}` : '—';
   return `
@@ -130,13 +193,25 @@ function internalEmail({ firstName, businessName, email, phone, source, estimate
       <p style="margin:24px 0 0;color:#5A6577;font-size:12.5px;">
         Specialist follow-up window: <strong>within 1 business hour</strong>.
       </p>
+      ${applyUrl ? `<p style="margin:14px 0 0;font-size:12.5px;">
+        <a href="${esc(applyUrl)}" style="color:#5B5BD6;">Open this lead's pre-filled application</a>
+        (skip business + contact, lands on bank link).
+      </p>` : ''}
     </div>
   `;
 }
 
-function leadEmail({ firstName, businessName, estimate }) {
+function leadEmail({ firstName, businessName, email, phone, estimate, applyUrl }) {
   const e = estimate || {};
   const range = (e.low && e.high) ? `${fmtMoney(e.low)} – ${fmtMoney(e.high)}` : 'your custom amount';
+  // Only echo the business name when it looks real — protects against
+  // placeholder inputs like "123 my business" reading back awkwardly.
+  const showBiz = isPlausibleBusinessName(businessName);
+  const aboutClause = showBiz
+    ? `Based on what you told us about <strong>${esc(businessName)}</strong>,`
+    : `Based on the numbers you shared,`;
+  const ctaUrl = applyUrl
+               || buildApplyDeepLink({ firstName, businessName, email, phone, estimate });
   return `
     <div style="font-family:Arial,sans-serif;color:#0F0E17;line-height:1.55;max-width:560px;">
       <h2 style="margin:0 0 14px;font-size:22px;letter-spacing:-0.01em;">
@@ -144,17 +219,18 @@ function leadEmail({ firstName, businessName, estimate }) {
       </h2>
       <p style="margin:0 0 14px;">Hi ${esc(firstName)},</p>
       <p style="margin:0 0 14px;">
-        Based on what you told us about <strong>${esc(businessName)}</strong>, we've
+        ${aboutClause} we've
         pre-qualified you for between <strong>${esc(range)}</strong> in working
         capital${e.boosted ? ' — that\'s the boosted estimate that comes with switching processing to Delt' : ''}.
       </p>
       <p style="margin:0 0 14px;">
         A funding specialist will reach out within the next business hour to
         confirm the exact offer and walk you through next steps. If you'd rather
-        keep moving now, the application takes about 2 minutes:
+        keep moving now, the application takes about 2 minutes — we'll skip the
+        questions you already answered and take you straight to the bank link:
       </p>
       <p style="margin:0 0 20px;">
-        <a href="https://deltcapital.com/#calc"
+        <a href="${esc(ctaUrl)}"
            style="display:inline-block;background:#5B5BD6;color:#fff;text-decoration:none;
                   padding:12px 22px;border-radius:10px;font-family:Arial,sans-serif;
                   font-size:14.5px;font-weight:700;">
@@ -205,7 +281,11 @@ module.exports = async function handler(req, res) {
       return;
     }
 
-    const ctx = { firstName, businessName, email, phone, source, estimate };
+    // Build the deep-link once so it can ride inside both the lead email
+    // (CTA) and the internal notification (so David's team can paste-jump
+    // a customer directly into their pre-filled application if needed).
+    const applyUrl = buildApplyDeepLink({ firstName, businessName, email, phone, estimate });
+    const ctx = { firstName, businessName, email, phone, source, estimate, applyUrl };
 
     let token;
     try {
@@ -231,6 +311,8 @@ module.exports = async function handler(req, res) {
     }
     try {
       await sendMail(token, NOTIFY_TO, email, leadSubject, leadEmail(ctx), {
+        // applyUrl already inside ctx — leadEmail consumes it.
+        // (Listed here purely to make the dependency obvious to readers.)
         from: fromMailbox,
         fromName: 'Delt Capital',
         replyTo: [NOTIFY_TO],
@@ -240,7 +322,7 @@ module.exports = async function handler(req, res) {
       console.error('leads booker sendMail failed:', err && err.stack ? err.stack : err);
     }
 
-    res.status(200).json({ ok: true, emailed: true });
+    res.status(200).json({ ok: true, emailed: true, applyUrl });
   } catch (err) {
     console.error('leads api error:', err && err.stack ? err.stack : err);
     // Soft-fail: front-end already has the data and will retry via apply form.
