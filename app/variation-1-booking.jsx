@@ -83,9 +83,9 @@ function V1BookingHero({ accent }) {
           color: 'rgba(255,255,255,0.72)', margin: '28px 0 0', maxWidth: 620,
           animation: 'bkFadeUp 700ms cubic-bezier(.2,.7,.3,1) 140ms both',
         }}>
-          30 minutes on Microsoft Teams. Bring your P&amp;L or don't — we'll walk you through
-          a factor rate, repayment options, and what a pay-early rebate would look
-          like on your numbers. No soft-pull required.
+          You'll get a real number, an honest read on whether we're the right fit,
+          and a clear next step. No pitch deck, no pressure — just the math behind
+          your offer and the underwriter who'd actually approve it.
         </p>
 
         {/* Inline meeting chips */}
