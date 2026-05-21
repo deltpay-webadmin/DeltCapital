@@ -28,17 +28,14 @@
 
 const store = require('./_store');
 const { getAccessToken, sendMail } = require('./_email');
-const { buildApplyUrlFromRow, buildShortUrl, SITE_ORIGIN } = require('./_deeplink');
+const { buildApplyUrlFromRow, buildShortUrl } = require('./_deeplink');
+const { renderEmail, esc: layoutEsc } = require('./_email-layout');
 
 const NOTIFY_TO = process.env.LEADS_NOTIFY_EMAIL
                 || process.env.BOOKING_NOTIFY_EMAIL
                 || 'david@deltpay.com';
 
 const FROM_MAILBOX = process.env.OUTLOOK_FROM_EMAIL;
-
-// Hosted logo for email branding. Served from the same origin as the
-// production site so deliverability heuristics see a same-domain image.
-const LOGO_URL = `${SITE_ORIGIN.replace(/\/$/, '')}/app/assets/logo-dark.png`;
 
 // Operator's number for the click-to-text mailto link. Google Voice
 // inbound texting accepts mailto:<10digits>@txt.voice.google.com but
@@ -63,53 +60,84 @@ function smsTemplate({ firstName, shortUrl }) {
   return `${name}, this is David at Delt Capital. Saw you started the funding calculator earlier \u2014 here's your offer link, takes 2 min: ${shortUrl}`;
 }
 
-// HTML-escape so a malicious business_name can't inject markup into our
-// internal email.
-const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
-function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ESC[c]); }
+// HTML-escape — shared with _email-layout so we don't drift between modules.
+const esc = layoutEsc;
 function fmtMoney(n) {
   const v = Number(n);
   if (!Number.isFinite(v) || v <= 0) return '$0';
   return '$' + Math.round(v).toLocaleString();
 }
 
-function nudgeEmail({ firstName, estimate, applyUrl }) {
+function nudgeEmailBody({ firstName, estimate, applyUrl }) {
   const range = (estimate && estimate.low && estimate.high)
     ? `${fmtMoney(estimate.low)}\u2013${fmtMoney(estimate.high)}`
     : 'your pre-qualified offer';
-  return `<!doctype html><html><body style="margin:0;padding:0;background:#F8F7FB;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#1A1A1F;">
-  <div style="max-width:560px;margin:32px auto;background:#fff;border-radius:14px;padding:36px 40px;box-shadow:0 8px 24px -12px rgba(31,28,80,0.18);">
-    <div style="margin:0 0 22px;"><img src="${LOGO_URL}" alt="Delt Capital" width="132" style="height:32px;width:auto;display:block;border:0;outline:none;text-decoration:none;" /></div>
-    <h1 style="font-size:22px;line-height:1.25;margin:0 0 16px;font-weight:600;color:#1A1A1F;">${esc(firstName ? `${firstName}, your offer is still open` : 'Your offer is still open')}</h1>
-    <p style="font-size:15px;line-height:1.55;margin:0 0 14px;">You looked at your ${esc(range)} funding range earlier today. The offer's still good \u2014 it takes about 2 minutes to claim and there's no impact to your credit.</p>
-    <p style="font-size:15px;line-height:1.55;margin:0 0 22px;">If there's anything I can answer for you, just reply to this email.</p>
-    <p style="margin:24px 0;">
-      <a href="${esc(applyUrl)}" style="display:inline-block;padding:14px 26px;background:linear-gradient(135deg,#5B5BD6 0%,#6366F1 50%,#5B5BD6 100%);color:#fff;text-decoration:none;border-radius:10px;font-weight:600;font-size:15px;">Continue my application</a>
-    </p>
-    <p style="font-size:12.5px;color:#6B6877;line-height:1.5;margin-top:28px;">\u2014 David Hazday, Delt Capital</p>
-  </div>
-</body></html>`;
+  return `
+      <p style="margin:0 0 6px;font-size:13px;color:#6B6877;letter-spacing:0.04em;text-transform:uppercase;font-weight:600;">Your offer is still open</p>
+      <h1 style="margin:0 0 16px;font-size:24px;line-height:1.25;font-weight:700;color:#0A1133;letter-spacing:-0.01em;">
+        ${esc(firstName ? `${firstName}, your ${range} range is ready when you are.` : `Your ${range} range is ready when you are.`)}
+      </h1>
+      <p style="font-size:15px;line-height:1.6;margin:0 0 14px;color:#0F0E17;">
+        You started the funding calculator earlier today and we've held your
+        ${esc(range)} pre-qualification open. It takes about 2 minutes to claim,
+        there's no credit pull until you accept terms, and bank verification
+        runs through Plaid \u2014 read-only, never your password.
+      </p>
+      <p style="font-size:15px;line-height:1.6;margin:0 0 22px;color:#0F0E17;">
+        If there's anything I can answer first, just reply to this email \u2014
+        it goes straight to my inbox.
+      </p>
+      <p style="margin:0 0 18px;">
+        <a href="${esc(applyUrl)}"
+           style="display:inline-block;padding:14px 28px;background:linear-gradient(135deg,#5B5BD6 0%,#6366F1 50%,#5B5BD6 100%);color:#FFFFFF;text-decoration:none;border-radius:10px;font-weight:700;font-size:15px;letter-spacing:0.01em;">
+          Continue my application &rarr;
+        </a>
+      </p>
+      <p style="margin:22px 0 0;color:#0A1133;font-size:13.5px;line-height:1.55;">
+        \u2014 David Hazday<br/>
+        <span style="color:#6B6877;font-weight:500;">Founder, Delt Capital</span>
+      </p>
+  `;
 }
 
-function internalNudgeNote({ lead, applyUrl, shortUrl, smsBody, gvLink }) {
-  return `<!doctype html><html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#1A1A1F;background:#F8F7FB;padding:24px;">
-  <div style="max-width:600px;background:#fff;border-radius:12px;padding:28px;box-shadow:0 4px 18px -8px rgba(0,0,0,0.12);">
-    <div style="margin:0 0 16px;"><img src="${LOGO_URL}" alt="Delt Capital" width="110" style="height:26px;width:auto;display:block;border:0;outline:none;text-decoration:none;" /></div>
-    <h2 style="margin:0 0 12px;font-size:18px;">T+45min nudge fired</h2>
-    <p style="margin:6px 0;font-size:14px;"><b>Lead:</b> ${esc(lead.first_name || '')} \u2014 ${esc(lead.business_name || '')}</p>
-    <p style="margin:6px 0;font-size:14px;"><b>Email:</b> ${esc(lead.email || '')}</p>
-    <p style="margin:6px 0;font-size:14px;"><b>Phone:</b> ${esc(lead.phone || '')}</p>
-    <hr style="border:none;border-top:1px solid #EEE;margin:18px 0;" />
-    <p style="margin:6px 0;font-size:14px;font-weight:600;">Send the SMS yourself from Google Voice:</p>
-    <p style="margin:8px 0;">
-      <a href="${esc(gvLink)}" style="color:#5B5BD6;font-weight:600;">Open Google Voice \u2192 ${esc(lead.phone || '')}</a>
-    </p>
-    <p style="margin:12px 0 6px;font-size:13px;color:#555;">Copy this body:</p>
-    <div style="background:#F4F4F8;border-radius:8px;padding:14px;font-family:Menlo,monospace;font-size:13px;line-height:1.45;white-space:pre-wrap;">${esc(smsBody)}</div>
-    <p style="margin:18px 0 0;font-size:12.5px;color:#6B6877;">Short link in SMS: <a href="${esc(shortUrl)}">${esc(shortUrl)}</a></p>
-    <p style="margin:6px 0 0;font-size:12.5px;color:#6B6877;">Full deep link (302 target): <a href="${esc(applyUrl)}">${esc(applyUrl)}</a></p>
-  </div>
-</body></html>`;
+function nudgeEmail({ firstName, estimate, applyUrl, leadEmail, leadPhone }) {
+  const range = (estimate && estimate.low && estimate.high)
+    ? `${fmtMoney(estimate.low)}\u2013${fmtMoney(estimate.high)}`
+    : 'your funding offer';
+  return renderEmail({
+    body: nudgeEmailBody({ firstName, estimate, applyUrl }),
+    audience: 'lead',
+    includeTrustStrip: true,
+    recipientEmail: leadEmail,
+    recipientPhone: leadPhone,
+    preheader: `Pick up where you left off. Your ${range} range is still good \u2014 2-min application, no credit pull.`,
+  });
+}
+
+function internalNudgeBody({ lead, applyUrl, shortUrl, smsBody, gvLink }) {
+  return `
+      <h2 style="margin:0 0 12px;font-size:18px;">T+45min nudge fired</h2>
+      <p style="margin:6px 0;font-size:14px;"><b>Lead:</b> ${esc(lead.first_name || '')} \u2014 ${esc(lead.business_name || '')}</p>
+      <p style="margin:6px 0;font-size:14px;"><b>Email:</b> ${esc(lead.email || '')}</p>
+      <p style="margin:6px 0;font-size:14px;"><b>Phone:</b> ${esc(lead.phone || '')}</p>
+      <hr style="border:none;border-top:1px solid #EEE;margin:18px 0;" />
+      <p style="margin:6px 0;font-size:14px;font-weight:600;">Send the SMS yourself from Google Voice:</p>
+      <p style="margin:8px 0;">
+        <a href="${esc(gvLink)}" style="color:#5B5BD6;font-weight:600;">Open Google Voice \u2192 ${esc(lead.phone || '')}</a>
+      </p>
+      <p style="margin:12px 0 6px;font-size:13px;color:#555;">Copy this body:</p>
+      <div style="background:#F4F4F8;border-radius:8px;padding:14px;font-family:Menlo,monospace;font-size:13px;line-height:1.45;white-space:pre-wrap;">${esc(smsBody)}</div>
+      <p style="margin:18px 0 0;font-size:12.5px;color:#6B6877;">Short link in SMS: <a href="${esc(shortUrl)}">${esc(shortUrl)}</a></p>
+      <p style="margin:6px 0 0;font-size:12.5px;color:#6B6877;">Full deep link (302 target): <a href="${esc(applyUrl)}">${esc(applyUrl)}</a></p>
+  `;
+}
+
+function internalNudgeNote(ctx) {
+  return renderEmail({
+    body: internalNudgeBody(ctx),
+    audience: 'operator',
+    includeTrustStrip: false,
+  });
 }
 
 // Quiet hours: don't fire between 9pm and 8am Eastern, and skip
@@ -201,7 +229,13 @@ module.exports = async function handler(req, res) {
       await sendMail(
         token, FROM_MAILBOX, lead.email,
         `Still want that funding offer?`,
-        nudgeEmail({ firstName: lead.first_name, estimate: lead.estimate || {}, applyUrl }),
+        nudgeEmail({
+          firstName: lead.first_name,
+          estimate: lead.estimate || {},
+          applyUrl,
+          leadEmail: lead.email,
+          leadPhone: lead.phone,
+        }),
         {
           from: FROM_MAILBOX,
           fromName: 'David @ Delt Capital',

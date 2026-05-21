@@ -22,15 +22,12 @@
 
 const store = require('./_store');
 const { getAccessToken, sendMail } = require('./_email');
-const { buildApplyUrl, SITE_ORIGIN } = require('./_deeplink');
+const { buildApplyUrl } = require('./_deeplink');
+const { renderEmail } = require('./_email-layout');
 
 const NOTIFY_TO = process.env.LEADS_NOTIFY_EMAIL
                 || process.env.BOOKING_NOTIFY_EMAIL
                 || 'david@deltpay.com';
-
-// Hosted logo for email branding. Same-origin asset → keeps SpamAssassin /
-// Gmail's deliverability heuristics happy (no off-domain images).
-const LOGO_URL = `${SITE_ORIGIN.replace(/\/$/, '')}/app/assets/logo-dark.png`;
 
 // Heuristic: only echo back the business name in the email body when it
 // looks like a real name. A user who types '123 my business' as a
@@ -56,8 +53,8 @@ function buildApplyDeepLink(args) { return buildApplyUrl(args); }
 // Microsoft Graph auth + sendMail live in api/_email.js so api/sms-nudge
 // (and any future server-fired email) can reuse the same flow.
 
-const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
-function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ESC[c]); }
+// HTML-escape inherited via _email-layout (shared with other email modules)
+const { esc } = require('./_email-layout');
 
 function fmtMoney(n) {
   if (!Number.isFinite(n) || n <= 0) return '$0';
@@ -73,11 +70,10 @@ function tibLabel(t) {
   return String(t || 'Unknown');
 }
 
-function internalEmail({ firstName, businessName, email, phone, source, estimate, applyUrl }) {
+function internalEmailBody({ firstName, businessName, email, phone, source, estimate, applyUrl }) {
   const e = estimate || {};
   const range = (e.low && e.high) ? `${fmtMoney(e.low)} – ${fmtMoney(e.high)}` : '—';
   return `
-    <div style="font-family:Arial,sans-serif;color:#0F0E17;line-height:1.5;">
       <h2 style="margin:0 0 8px;font-size:18px;">New calculator lead</h2>
       <p style="margin:0 0 16px;color:#5A6577;font-size:13px;">
         ${esc(firstName)} from ${esc(businessName)} requested their funding range
@@ -105,11 +101,18 @@ function internalEmail({ firstName, businessName, email, phone, source, estimate
         <a href="${esc(applyUrl)}" style="color:#5B5BD6;">Open this lead's pre-filled application</a>
         (skip business + contact, lands on bank link).
       </p>` : ''}
-    </div>
   `;
 }
 
-function leadEmail({ firstName, businessName, email, phone, estimate, applyUrl }) {
+function internalEmail(ctx) {
+  return renderEmail({
+    body: internalEmailBody(ctx),
+    audience: 'operator',
+    includeTrustStrip: false,
+  });
+}
+
+function leadEmailBody({ firstName, businessName, email, phone, estimate, applyUrl }) {
   const e = estimate || {};
   const range = (e.low && e.high) ? `${fmtMoney(e.low)} – ${fmtMoney(e.high)}` : 'your custom amount';
   // Only echo the business name when it looks real — protects against
@@ -121,44 +124,64 @@ function leadEmail({ firstName, businessName, email, phone, estimate, applyUrl }
   const ctaUrl = applyUrl
                || buildApplyDeepLink({ firstName, businessName, email, phone, estimate });
   return `
-    <div style="font-family:Arial,sans-serif;color:#0F0E17;line-height:1.55;max-width:560px;">
-      <div style="margin:0 0 22px;">
-        <img src="${LOGO_URL}" alt="Delt Capital" width="148" style="height:36px;width:auto;display:block;border:0;outline:none;text-decoration:none;" />
-      </div>
-      <h2 style="margin:0 0 14px;font-size:22px;letter-spacing:-0.01em;">
-        Your pre-qualified funding range is <span style="color:#5B5BD6;">${esc(range)}</span>.
-      </h2>
-      <p style="margin:0 0 14px;">Hi ${esc(firstName)},</p>
-      <p style="margin:0 0 14px;">
-        ${aboutClause} we've
-        pre-qualified you for between <strong>${esc(range)}</strong> in working
+      <p style="margin:0 0 6px;font-size:13px;color:#6B6877;letter-spacing:0.04em;text-transform:uppercase;font-weight:600;">Your pre-qualified offer</p>
+      <h1 style="margin:0 0 16px;font-size:26px;line-height:1.2;letter-spacing:-0.01em;font-weight:700;color:#0A1133;">
+        ${esc(range)} <span style="font-weight:500;color:#6B6877;font-size:20px;">in working capital</span>
+      </h1>
+      <p style="margin:0 0 14px;font-size:15.5px;line-height:1.55;">Hi ${esc(firstName)},</p>
+      <p style="margin:0 0 14px;font-size:15px;line-height:1.6;">
+        ${aboutClause} we've pre-qualified you for between <strong>${esc(range)}</strong> in working
         capital${e.boosted ? ' — that\'s the boosted estimate that comes with switching processing to Delt' : ''}.
       </p>
-      <p style="margin:0 0 14px;">
+      <p style="margin:0 0 22px;font-size:15px;line-height:1.6;">
         A funding specialist will reach out within the next business hour to
-        confirm the exact offer and walk you through next steps. If you'd rather
-        keep moving now, the application takes about 2 minutes — we'll skip the
-        questions you already answered and take you straight to the bank link:
+        confirm the exact offer. If you'd rather keep moving now, the application
+        takes about 2 minutes — we'll skip the questions you already answered and
+        take you straight to the bank-link step:
       </p>
-      <p style="margin:0 0 20px;">
+      <p style="margin:0 0 18px;">
         <a href="${esc(ctaUrl)}"
-           style="display:inline-block;background:#5B5BD6;color:#fff;text-decoration:none;
-                  padding:12px 22px;border-radius:10px;font-family:Arial,sans-serif;
-                  font-size:14.5px;font-weight:700;">
-          Continue my application
+           style="display:inline-block;background:linear-gradient(135deg,#5B5BD6 0%,#6366F1 50%,#5B5BD6 100%);color:#FFFFFF;text-decoration:none;
+                  padding:14px 28px;border-radius:10px;font-family:Arial,sans-serif;
+                  font-size:15px;font-weight:700;letter-spacing:0.01em;">
+          Continue my application &rarr;
         </a>
       </p>
-      <p style="margin:0 0 14px;color:#5A6577;font-size:13.5px;">
-        No credit pull until you accept an offer. Most operators get a final
-        number back the same day.
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:18px 0 4px;">
+        <tr>
+          <td valign="top" style="padding:0 10px 0 0;font-size:13px;color:#5A6577;line-height:1.55;">
+            <strong style="color:#0A1133;">No credit pull</strong> until you accept terms.
+          </td>
+          <td valign="top" style="padding:0 10px;font-size:13px;color:#5A6577;line-height:1.55;">
+            <strong style="color:#0A1133;">Bank-grade verification</strong> via Plaid.
+          </td>
+          <td valign="top" style="padding:0 0 0 10px;font-size:13px;color:#5A6577;line-height:1.55;">
+            <strong style="color:#0A1133;">Funded as fast as 24h</strong> after acceptance.
+          </td>
+        </tr>
+      </table>
+      <p style="margin:22px 0 0;color:#5A6577;font-size:13.5px;line-height:1.55;">
+        Questions? Just reply to this email — it goes straight to my inbox.
       </p>
-      <p style="margin:24px 0 0;color:#5A6577;font-size:13px;">— Delt Capital</p>
-      <p style="margin:18px 0 0;color:#9aa3ad;font-size:11.5px;line-height:1.5;border-top:1px solid #e7e3da;padding-top:12px;">
-        You're receiving this because you used the funding calculator on
-        deltcapital.com. Reply to unsubscribe.
+      <p style="margin:14px 0 0;color:#0A1133;font-size:13.5px;line-height:1.55;">
+        — David Hazday<br/>
+        <span style="color:#6B6877;font-weight:500;">Founder, Delt Capital</span>
       </p>
-    </div>
   `;
+}
+
+function leadEmail(ctx) {
+  const preheader = (ctx.estimate && ctx.estimate.low && ctx.estimate.high)
+    ? `Your ${fmtMoney(ctx.estimate.low)}\u2013${fmtMoney(ctx.estimate.high)} offer is ready. Specialist follow-up within 1 business hour.`
+    : 'Your pre-qualified funding offer is ready. Specialist follow-up within 1 business hour.';
+  return renderEmail({
+    body: leadEmailBody(ctx),
+    audience: 'lead',
+    includeTrustStrip: true,
+    recipientEmail: ctx.email,
+    recipientPhone: ctx.phone,
+    preheader,
+  });
 }
 
 module.exports = async function handler(req, res) {
