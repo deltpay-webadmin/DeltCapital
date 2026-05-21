@@ -101,7 +101,7 @@ function V1SupportHero({ accent }) {
 // ═══ Topic chips ════════════════════════════════════════════════
 const V1_SUP_TOPICS = [
   { k: 'application', label: 'Application status',    icon: 'file',   hint: "I've applied and want an update." },
-  { k: 'pricing',     label: 'Pricing / factor rate', icon: 'dollar', hint: 'Questions about my offer or rebate.' },
+  { k: 'pricing',     label: 'Pricing / loan fee',    icon: 'dollar', hint: 'Questions about my offer or rebate.' },
   { k: 'funding',     label: 'Funding & payments',    icon: 'dollar', hint: 'Wire timing, ACH, renewal, pay-early.' },
   { k: 'account',     label: 'Account & documents',   icon: 'user',   hint: 'Login, statements, tax docs, changes.' },
   { k: 'general',     label: 'General inquiry',       icon: 'help',   hint: 'Press, partnerships, anything else.' },

@@ -84,7 +84,7 @@ function V1BookingHero({ accent }) {
           animation: 'bkFadeUp 700ms cubic-bezier(.2,.7,.3,1) 140ms both',
         }}>
           30 minutes on Microsoft Teams. Bring your P&amp;L or don't — we'll walk you through
-          a factor rate, repayment options, and what a pay-early rebate would look
+          a flat loan fee, repayment options, and what a pay-early rebate would look
           like on your numbers. No soft-pull required.
         </p>
 

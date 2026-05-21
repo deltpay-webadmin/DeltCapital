@@ -135,7 +135,7 @@ function DeltCalculator({ compact = false, onApply, themeAccent = DELT.colors.in
                 </div>
                 <div style={{ display: 'flex', gap: 18, marginTop: 12, fontSize: 12.5, fontFamily: DELT.font.body }}>
                   <div>
-                    <div style={{ color: DELT.colors.inkMute, fontSize: 10.5, letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 600 }}>Factor</div>
+                    <div style={{ color: DELT.colors.inkMute, fontSize: 10.5, letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 600 }}>Loan fee</div>
                     <div style={{ color: DELT.colors.ink, fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{est.factor.toFixed(2)}×</div>
                   </div>
                   <div>
@@ -432,7 +432,7 @@ function AboutPage({ accent }) {
           We under­write businesses the way your CFO would — by reading deposits, not pulling credit reports.
         </h1>
         <p style={{ fontFamily: DELT.font.body, fontSize: 18, lineHeight: 1.6, color: DELT.colors.inkSoft, marginTop: 28, maxWidth: 680 }}>
-          Delt was founded in 2019 by two operators who got quoted 1.48× on an inventory-buy advance and decided the MCA market needed a direct lender that didn't hide behind broker layers.
+          Delt was founded in 2019 by two operators who got quoted 1.48× on a revenue-based financing deal and decided the market needed a direct lender that didn't hide behind broker layers.
         </p>
       </div>
 
@@ -441,8 +441,8 @@ function AboutPage({ accent }) {
           {[
             { h: 'Direct capital', t: 'We lend off our own balance sheet. No broker points, no middleman markup, no "we\'ll shop you around."' },
             { h: 'Revenue-based', t: 'We underwrite 90 days of deposits via Plaid. Your FICO is a check, not the decision.' },
-            { h: 'Flat pricing', t: 'One factor rate. No origination fee, no "processing fee," no ACH fees. The number you see is the number you pay.' },
-            { h: 'Early-pay rebates', t: 'Pay off early and we return the unearned factor pro-rata. The industry standard — owe the full factor — is a tax on success.' },
+            { h: 'Flat pricing', t: 'One loan fee. Flat — it will not increase. No origination fee, no "processing fee," no ACH fees. The number you see is the number you pay.' },
+            { h: 'Early-pay rebates', t: 'Pay off early and we return the unearned loan fee pro-rata. The industry standard — owe the full fee — is a tax on success.' },
             { h: 'No prepayment penalties', t: 'Ever. On any product. Written into every contract on page one.' },
             { h: 'In-house underwriting', t: 'Two-person underwriting desk. Your file is read by a human who has authority to price it.' },
           ].map(v => (
@@ -459,9 +459,9 @@ function AboutPage({ accent }) {
 
 function HowItWorksPage({ accent, onApply }) {
   const steps = [
-    { n: '01', t: 'Get Funded', d: 'Three fields on the calculator — revenue, time in business, card processor. We return a funded-range estimate and a factor rate in under a minute. Soft-pull only; no impact to your business credit.', time: '< 1 minute', doc: 'No statements, no tax returns.' },
+    { n: '01', t: 'Get Funded', d: 'Three fields on the calculator — revenue, time in business, card processor. We return a funded-range estimate and a flat loan fee in under a minute. Soft-pull only; no impact to your business credit.', time: '< 1 minute', doc: 'No statements, no tax returns.' },
     { n: '02', t: 'Connect bank', d: 'Plaid read-only link to your primary operating account. We analyze 90 days of deposits, average daily balances, and negative-day frequency. This replaces the statement-review step other lenders drag out for weeks.', time: '~ 2 minutes', doc: 'Plaid. Read-only.' },
-    { n: '03', t: 'Receive offer', d: 'One page. Amount, factor rate, term, daily or weekly debit size, total repayment, full amortization schedule. No other fees. Sign it or send it to your CFO — no "advisor" to route around.', time: 'Same day', doc: 'Single PDF. No addenda.' },
+    { n: '03', t: 'Receive offer', d: 'One page. Amount, flat loan fee, term, daily or weekly debit size, total repayment, full amortization schedule. No other fees. Sign it or send it to your CFO — no "advisor" to route around.', time: 'Same day', doc: 'Single PDF. No addenda.' },
     { n: '04', t: 'Fund', d: 'Wire or ACH to your operating account. Wire before 2 pm ET clears same-day; ACH next business day. Funds are yours — no restricted accounts, no controlled disbursements.', time: '24 hours', doc: 'Wire or ACH. Your choice.' },
   ];
 
@@ -523,7 +523,7 @@ function ReviewsPage({ accent }) {
               </div>
               <div style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
                 <div style={{ color: accent, fontWeight: 600 }}>{t.f} funded</div>
-                <div>{t.r} factor</div>
+                <div>{t.r} loan fee</div>
               </div>
             </figcaption>
           </figure>
@@ -758,7 +758,7 @@ function StepOffer({ form, prefill, accent }) {
         </div>
         <div style={{ padding: 24, display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, background: DELT.colors.card }}>
           {[
-            ['Factor rate', `${factor.toFixed(2)}×`],
+            ['Loan fee', `${factor.toFixed(2)}×`],
             ['Total repayment', `$${total.toLocaleString()}`],
             ['Term', `${term} months`],
             ['Daily debit', `$${daily.toLocaleString()}`],

@@ -1078,18 +1078,18 @@ function V1CalculatorPage({ accent, onApply, onNavHow, onNavProcessing }) {
               <h2 data-v1-section-title style={{ ...v1H2, marginTop: 18 }}>How the numbers<br />actually work.</h2>
             </div>
             <p style={{ fontFamily: V1.fontBody, fontSize: 16, lineHeight: 1.6, color: V1.text, margin: 0, maxWidth: 480, justifySelf: 'end' }}>
-              One multiplier — called a factor rate — replaces the APR gymnastics
+              One flat loan fee — a multiplier that will not increase — replaces the APR gymnastics
               banks use. Here's every input, and every lever that moves your offer.
             </p>
           </div>
 
           <div data-v1-grid-3col style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
             {[
-              { e: 'Formula',        t: 'Monthly revenue × 50–67%', d: 'That range is the standard. Your factor multiplies it — we publish both.' },
-              { e: 'Factor rate',    t: '1.12× – 1.22×',            d: 'Longer time in business and larger advances pull the factor down. Median is 1.18×.' },
+              { e: 'Formula',        t: 'Monthly revenue × 50–67%', d: 'That range is the standard. Your loan fee multiplies it — we publish both.' },
+              { e: 'Loan fee',       t: '1.12× – 1.22×',            d: 'Flat — it will not increase. Longer time in business and larger amounts pull it down. Median is 1.18×.' },
               { e: 'Delt Boost',     t: 'Up to 1.75×',              d: 'Switch your card processing to Delt and we underwrite against projected deposits, not just historical ones.' },
               { e: 'Repayment',      t: '4–10 months',              d: 'Fixed daily or weekly debit sized to your revenue. Schedule in your offer before you sign.' },
-              { e: 'Early-pay',      t: 'Rebated pro-rata',         d: 'Pay the advance off early and we return the unearned factor. Not standard in MCA — we wrote it into every contract.' },
+              { e: 'Early-pay',      t: 'Rebated pro-rata',         d: 'Pay the financing off early and we return the unearned portion of the loan fee. Not standard in this industry — we wrote it into every contract.' },
               { e: 'Prepayment',     t: '$0 penalty',               d: 'There is no prepayment penalty on any Delt product. Full stop.' },
             ].map((b, i) => (
               <div key={i} style={{

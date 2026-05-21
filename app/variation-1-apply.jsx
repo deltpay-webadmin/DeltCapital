@@ -529,7 +529,7 @@ function V1StepOffer({ form, prefill, accent }) {
           display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)',
         }}>
           {[
-            ['Factor rate', `${factor.toFixed(2)}×`],
+            ['Loan fee', `${factor.toFixed(2)}×`],
             ['Total repayment', `$${total.toLocaleString()}`],
             ['Term', `${term} months`],
             ['Weekly debit', `$${weekly.toLocaleString()}`],

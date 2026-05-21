@@ -69,7 +69,7 @@ function V1CompareSection() {
   // deltStrength = 0..1 (how much Delt wins on this metric)
   const rows = [
     { k: 'Speed to funds', delt: '24–48 hours',     bank: '4–8 weeks',                                                          win: 'weeks faster',       tone: 'pos',     strength: 0.98 },
-    { k: 'Total cost',     delt: '1.18× factor rate', bank: '11–15% APR + guarantee fee + origination',                          win: 'flat, no APR',       tone: 'neutral', strength: 0.75 },
+    { k: 'Total cost',     delt: '1.18× loan fee',   bank: '11–15% APR + guarantee fee + origination',                          win: 'flat, no APR',       tone: 'neutral', strength: 0.75 },
     { k: 'Paperwork',      delt: 'Plaid link + 1-page app', bank: '3 mo statements + P&L + tax returns + business plan + PFS',  win: 'minutes, not days',  tone: 'pos',     strength: 0.92 },
     { k: 'Repayment',      delt: '% of daily sales', bank: 'Fixed monthly payment regardless of revenue',                        win: 'slows when you do',  tone: 'pos',     strength: 0.95 },
     { k: 'Qualification',  delt: 'Revenue-based',   bank: '700+ credit score + 2 yrs financials + collateral appraisal + real estate lien', win: 'cash flow, not credit', tone: 'pos', strength: 1.00 },
@@ -170,7 +170,7 @@ function V1CompareSection() {
                   Delt<span style={{ color: V1.blue }}>.</span>
                 </div>
                 <div style={{ fontFamily: V1.fontMono, fontSize: 10.5, color: V1.blue, opacity: 0.85, marginTop: 2, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-                  MCA · direct funder
+                  Revenue-based financing · direct funder
                 </div>
               </div>
             </div>

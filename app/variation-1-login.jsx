@@ -173,7 +173,7 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
             ...enter(540),
           }}>
             Your session is secured, soft-pulled, and auto-expires. We never
-            store card data or factor terms in the browser.
+            store card data or loan terms in the browser.
           </p>
 
           <div style={{

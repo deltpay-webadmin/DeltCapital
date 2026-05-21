@@ -752,11 +752,11 @@ function V1FundingFlowPage({ accent, onApply, onCalc }) {
         eyebrow="Review & approval"
         title="Reviewed by humans."
         tagline="Revenue-based. Transparent. Same-day."
-        body="Our underwriting desk reads your revenue patterns — not just your credit score. We look at real deposit flow, balance stability, and trailing cash position to size the offer. One factor rate, one page, no hidden fees."
+        body="Our underwriting desk reads your revenue patterns — not just your credit score. We look at real deposit flow, balance stability, and trailing cash position to size the offer. One flat loan fee, one page, no hidden fees."
         bullets={[
           { icon: 'chart',  text: 'Revenue-based underwriting — we focus on cash flow' },
           { icon: 'users',  text: 'Dedicated funding specialist assigned to your file' },
-          { icon: 'pie',    text: 'Transparent pricing — one factor rate, no compounding' },
+          { icon: 'pie',    text: 'Transparent pricing — one flat loan fee, no compounding' },
           { icon: 'zap',    text: 'Most files approved within hours, not weeks' },
         ]}
         statLabel="Average approval time · 24 hours"

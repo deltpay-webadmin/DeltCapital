@@ -195,7 +195,7 @@ function ReviewCard({ t, meta, featured, idx }) {
         borderTop: `1px solid ${featured ? 'rgba(255,255,255,0.08)' : V1.line}`,
       }}>
         <FooterMetric featured={featured} label="Funded" value={t.f} highlight />
-        <FooterMetric featured={featured} label="Factor" value={t.r} />
+        <FooterMetric featured={featured} label="Loan fee" value={t.r} />
         <FooterMetric featured={featured} label={meta.draw > 1 ? `Draw #${meta.draw}` : 'First draw'} value={`${meta.years} yr`} />
         {featured && <FooterMetric featured={featured} label="Saved vs bank" value={meta.savings} />}
       </div>
@@ -274,7 +274,7 @@ function V1ReviewsPage({ accent, onApply, onTalk }) {
               color: V1.text, margin: 0, maxWidth: 440,
             }}>
               Every quote is from a borrower who has closed at least once.
-              Business names are real, on request. We publish the factor and
+              Business names are real, on request. We publish the loan fee and
               funding amount beside each story — no anonymized marketing fluff.
             </p>
           </div>

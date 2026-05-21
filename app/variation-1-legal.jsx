@@ -488,7 +488,7 @@ function V1PrivacyPolicy({ onBack, onNavTerms }) {
       otherLink={{ label: 'Terms of Use', onClick: onNavTerms }}
     >
       <LegalSection id="pp-1" eyebrow="01 · Introduction" title="Introduction">
-        <LegalP>Delt Pay LLC ("Delt Pay," "we," "our," or "us") provides merchant cash advance ("MCA") and other credit and lending products to businesses. This Privacy Policy explains how we collect, use, store, and share information — including personal data about business owners, authorized representatives, and other individuals ("you") — when you use our platform and apply for or manage a financing product with us.</LegalP>
+        <LegalP>Delt Pay LLC ("Delt Pay," "we," "our," or "us") provides revenue-based financing and other credit and lending products to businesses. This Privacy Policy explains how we collect, use, store, and share information — including personal data about business owners, authorized representatives, and other individuals ("you") — when you use our platform and apply for or manage a financing product with us.</LegalP>
         <LegalP>Our services are powered in part by Plaid Inc. ("Plaid") and Plaid Consumer Reporting Agency, Inc. ("Plaid CRA"), third-party financial data and consumer reporting platforms. When you connect a bank account or undergo identity verification through our platform, you interact with Plaid and/or Plaid CRA directly. We encourage you to review the following Plaid policies for a full description of Plaid's own data practices:</LegalP>
         <LegalList items={[
           <>Plaid End User Privacy Policy: <LegalLink href="https://plaid.com/legal" external>plaid.com/legal</LegalLink></>,
@@ -565,7 +565,7 @@ function V1PrivacyPolicy({ onBack, onNavTerms }) {
       <LegalSection id="pp-4" eyebrow="04 · Use" title="How We Use Your Information">
         <LegalP>We use the information we collect for the following purposes:</LegalP>
         <LegalList items={[
-          <><b>Application processing:</b> To evaluate, underwrite, approve, or decline your application for a merchant cash advance or other financing product, including through the use of consumer reports obtained from Plaid CRA.</>,
+          <><b>Application processing:</b> To evaluate, underwrite, approve, or decline your application for revenue-based financing or other financing product, including through the use of consumer reports obtained from Plaid CRA.</>,
           <><b>Identity and bank account verification:</b> To confirm the identity of business representatives (including through biometric verification via Plaid IDV) and verify ownership of connected bank accounts.</>,
           <><b>Income and cash flow assessment:</b> To assess business revenue, cash flow patterns, and repayment capacity using transaction history, balance data, income/payroll information, and consumer report data obtained through Plaid and Plaid CRA.</>,
           <><b>Automated and AI-assisted decision-making:</b> We may use automated tools, algorithms, and artificial intelligence systems to assist in evaluating applications, assessing creditworthiness, and making financing decisions. These tools analyze financial data, transaction history, and other information to generate assessments and recommendations. A human reviewer is involved in final financing decisions.</>,
@@ -650,7 +650,7 @@ function V1PrivacyPolicy({ onBack, onNavTerms }) {
       </LegalSection>
 
       <LegalSection id="pp-11" eyebrow="11 · FCRA" title="FCRA Compliance Notice">
-        <LegalP>When Delt Pay obtains a consumer report about you from Plaid CRA or any other consumer reporting agency, we do so for permissible purposes under the Fair Credit Reporting Act ("FCRA"), including evaluating your application for a merchant cash advance or other financing product. We will provide you with any required adverse action notices if a credit decision is based in whole or in part on information contained in a consumer report. You have the right to obtain a free copy of any consumer report used in connection with an adverse action, and to dispute the accuracy or completeness of any information in that report.</LegalP>
+        <LegalP>When Delt Pay obtains a consumer report about you from Plaid CRA or any other consumer reporting agency, we do so for permissible purposes under the Fair Credit Reporting Act ("FCRA"), including evaluating your application for revenue-based financing or other financing product. We will provide you with any required adverse action notices if a credit decision is based in whole or in part on information contained in a consumer report. You have the right to obtain a free copy of any consumer report used in connection with an adverse action, and to dispute the accuracy or completeness of any information in that report.</LegalP>
       </LegalSection>
 
       <LegalSection id="pp-12" eyebrow="12 · California" title="California Privacy Notice">

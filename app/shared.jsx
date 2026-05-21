@@ -37,20 +37,20 @@ const DeltContent = {
     { v: '$200M+', l: 'Deployed since 2019' },
     { v: '2,850+', l: 'Businesses funded' },
     { v: '24h', l: 'Median time to funds' },
-    { v: '1.18x', l: 'Median factor rate' },
+    { v: '1.18x', l: 'Median loan fee' },
   ],
   compare: [
     { k: 'Speed to funds',      delt: '24 hours',               bank: '2–6 weeks' },
-    { k: 'Factor rate (median)', delt: '1.18×',                  bank: '1.35–1.49×' },
+    { k: 'Loan fee (median)',    delt: '1.18×',                  bank: '1.35–1.49×' },
     { k: 'Paperwork',           delt: 'Plaid connection',       bank: '3 months statements, tax returns' },
     { k: 'Credit pull',         delt: 'Soft inquiry',           bank: 'Hard pull' },
     { k: 'Collateral',          delt: 'None',                   bank: 'Personal guarantee + UCC' },
-    { k: 'Prepayment penalty',  delt: 'None — early pays save', bank: 'Full factor owed' },
+    { k: 'Prepayment penalty',  delt: 'None — early pays save', bank: 'Full fee owed' },
   ],
   steps: [
     { n: '01', t: 'Get Funded', d: 'Three questions. Soft-pull only. Range in 60 seconds.', time: '1 min' },
     { n: '02', t: 'Connect bank', d: 'Plaid read-only. No statements, no tax returns.', time: '2 min' },
-    { n: '03', t: 'Offer', d: 'A single factor rate, flat fee schedule, no compounding.', time: 'Same day' },
+    { n: '03', t: 'Offer', d: 'One flat loan fee, fixed payment schedule, no compounding.', time: 'Same day' },
     { n: '04', t: 'Fund', d: 'Wire or ACH to your operating account. You pick.', time: '24 h' },
   ],
   uses: [
@@ -60,18 +60,18 @@ const DeltContent = {
   testimonials: [
     { q: 'Closed in 19 hours. The bank still hasn\'t returned my call.', n: 'Maria Rodriguez', b: 'La Rosa Restaurant', f: '$110K', r: '1.16×' },
     { q: 'Third draw with Delt. Every rate has been lower than the last.', n: 'Mike Rosario', b: 'Rosario Construction', f: '$180K', r: '1.14×' },
-    { q: 'Factor rate on the first email. No games, no callbacks, no "advisor".', n: 'Sarah Thompson', b: 'Bloom Beauty', f: '$65K', r: '1.19×' },
-    { q: 'Paid early and they actually rebated the unearned factor. Unheard of.', n: 'Marcus Williams', b: 'Williams Logistics', f: '$80K', r: '1.17×' },
+    { q: 'Loan fee on the first email. No games, no callbacks, no "advisor".', n: 'Sarah Thompson', b: 'Bloom Beauty', f: '$65K', r: '1.19×' },
+    { q: 'Paid early and they actually rebated the unearned portion of the loan fee. Unheard of.', n: 'Marcus Williams', b: 'Williams Logistics', f: '$80K', r: '1.17×' },
     { q: 'I forwarded the offer to my CFO — she said "take it, I can\'t beat that."', n: 'Emily Ward', b: 'Ward Market', f: '$50K', r: '1.18×' },
     { q: 'Underwriter called me by name and knew my book. Not a call center.', n: 'David Roberts', b: 'Roberts Auto', f: '$95K', r: '1.15×' },
   ],
   faq: [
-    { q: 'What\'s a factor rate, really?', a: 'One multiplier. $100K at 1.18× = $118K repaid, total. No compounding, no APR gymnastics. Pay early, pay less — we rebate unearned factor.' },
+    { q: 'What\'s the loan fee, really?', a: 'One flat multiplier — it will not increase. $100K at 1.18× = $118K repaid, total. No compounding, no APR gymnastics. Pay early, pay less — we rebate the unearned portion of the loan fee.' },
     { q: 'How is repayment structured?', a: 'A fixed daily or weekly debit sized to your revenue. Typically 4–10 months. You see the schedule in your offer before you sign anything.' },
     { q: 'Will this hurt my credit?', a: 'No. Get Funded is a soft pull. A hard pull only happens if you counter-sign an offer — and only on the guarantor, not the business.' },
     { q: 'Do I need collateral?', a: 'No UCC-1 filing, no personal guarantee beyond a standard assurance. We underwrite revenue, not assets.' },
     { q: 'What if revenue drops mid-term?', a: 'Call us. We\'ve restructured ~12% of active books without penalty. Talk to us before you miss a debit.' },
-    { q: 'Does my rate get better on a second draw?', a: 'Yes. Repeat borrowers in good standing typically see 4–8 basis points off the factor on each renewal. 68% of our book funds with us more than once — the math is in the file.' },
+    { q: 'Does my rate get better on a second draw?', a: 'Yes. Repeat borrowers in good standing typically see 4–8 basis points off the loan fee on each renewal. 68% of our book funds with us more than once — the math is in the file.' },
   ],
 };
 

@@ -297,7 +297,7 @@ function V1Hero({ accent, onApply }) {
             color: 'rgba(247,245,240,0.75)', margin: '32px 0 0', maxWidth: 520,
             ...enter(560),
           }}>
-            Revenue-based funding from <span style={{ color: '#F7F5F0', fontWeight: 500 }}>$5,000 to $500,000</span>, underwritten off deposits — not your FICO, not your collateral, not a call center's script. Median factor <span style={{ color: '#F7F5F0', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>1.18×</span>. Median time to funds, <span style={{ color: '#F7F5F0', fontWeight: 500 }}>24 hours</span>.
+            Revenue-based financing from <span style={{ color: '#F7F5F0', fontWeight: 500 }}>$5,000 to $500,000</span>, underwritten off deposits — not your FICO, not your collateral, not a call center's script. Median loan fee <span style={{ color: '#F7F5F0', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>1.18×</span> — flat, will not increase. Median time to funds, <span style={{ color: '#F7F5F0', fontWeight: 500 }}>24 hours</span>.
           </p>
 
           <div style={{
@@ -314,7 +314,7 @@ function V1Hero({ accent, onApply }) {
             display: 'flex', gap: 36, flexWrap: 'wrap',
           }}>
             {[
-              ['Today\'s median', '1.18×', 'factor'],
+              ['Today\'s median', '1.18×', 'loan fee'],
               ['Time to funds', '24h', 'median'],
               ['Soft-pull', 'Yes', 'only'],
             ].map(([l, v, s], i) => (
