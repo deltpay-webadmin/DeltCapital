@@ -20,6 +20,9 @@
 //   LEADS_NOTIFY_EMAIL   — internal recipient (defaults to BOOKING_NOTIFY_EMAIL
 //                           or david@deltpay.com)
 
+const store = require('./_store');
+const { getAccessToken, sendMail } = require('./_email');
+
 const NOTIFY_TO = process.env.LEADS_NOTIFY_EMAIL
                 || process.env.BOOKING_NOTIFY_EMAIL
                 || 'david@deltpay.com';
@@ -67,11 +70,16 @@ function isPlausibleBusinessName(s) {
 // trip. The site normalizes both the modern `/apply?d=` route (preferred
 // for email clients that strip fragments) and the legacy `#apply?d=`
 // fragment form.
-function buildApplyDeepLink({ firstName, businessName, email, phone, estimate }) {
+function buildApplyDeepLink({ leadId, firstName, businessName, email, phone, estimate }) {
   const e = estimate || {};
   const payload = {
     v: 1,
     t: Date.now(),
+    // leadId lets the apply modal ping /api/apply-progress under the
+    // right key so we can correlate funnel events back to the lead row.
+    // Optional — old deep links that predate Supabase persistence won't
+    // include one, and the client tolerates its absence.
+    leadId: leadId ? String(leadId) : undefined,
     firstName: String(firstName || '').trim(),
     businessName: String(businessName || '').trim(),
     email: String(email || '').trim(),
@@ -87,66 +95,8 @@ function buildApplyDeepLink({ firstName, businessName, email, phone, estimate })
   return `${SITE_ORIGIN.replace(/\/$/, '')}/apply?d=${b64url(payload)}`;
 }
 
-async function getAccessToken() {
-  const tenant = process.env.OUTLOOK_TENANT_ID;
-  const clientId = process.env.OUTLOOK_CLIENT_ID;
-  const secret = process.env.OUTLOOK_CLIENT_SECRET;
-  if (!tenant || !clientId || !secret) {
-    throw new Error('Missing OUTLOOK_TENANT_ID / OUTLOOK_CLIENT_ID / OUTLOOK_CLIENT_SECRET');
-  }
-  const body = new URLSearchParams({
-    client_id: clientId,
-    client_secret: secret,
-    scope: 'https://graph.microsoft.com/.default',
-    grant_type: 'client_credentials',
-  });
-  const r = await fetch(`https://login.microsoftonline.com/${tenant}/oauth2/v2.0/token`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: body.toString(),
-  });
-  if (!r.ok) {
-    const text = await r.text().catch(() => '');
-    throw new Error(`Token request failed (${r.status}): ${text.slice(0, 400)}`);
-  }
-  const data = await r.json();
-  if (!data.access_token) throw new Error('Token response missing access_token');
-  return data.access_token;
-}
-
-// Send through David's licensed mailbox with Send-As on the noreply
-// shared mailbox — identical pattern to /api/book.
-async function sendMail(token, senderMailbox, to, subject, html, opts = {}) {
-  const url = `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(senderMailbox)}/sendMail`;
-  const message = {
-    subject,
-    body: { contentType: 'HTML', content: html },
-    toRecipients: [{ emailAddress: { address: to } }],
-  };
-  if (opts.from) {
-    const fromAddr = { address: opts.from };
-    if (opts.fromName) fromAddr.name = opts.fromName;
-    message.from = { emailAddress: fromAddr };
-  }
-  if (opts.replyTo && opts.replyTo.length) {
-    message.replyTo = opts.replyTo.map((addr) => ({ emailAddress: { address: addr } }));
-  }
-  if (opts.bcc && opts.bcc.length) {
-    message.bccRecipients = opts.bcc.map((addr) => ({ emailAddress: { address: addr } }));
-  }
-  const r = await fetch(url, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ message, saveToSentItems: true }),
-  });
-  if (r.status !== 202) {
-    const text = await r.text().catch(() => '');
-    throw new Error(`sendMail to ${to} failed (${r.status}): ${text.slice(0, 400)}`);
-  }
-}
+// Microsoft Graph auth + sendMail live in api/_email.js so api/sms-nudge
+// (and any future server-fired email) can reuse the same flow.
 
 const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
 function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ESC[c]); }
@@ -281,10 +231,22 @@ module.exports = async function handler(req, res) {
       return;
     }
 
+    // Persist the lead first so we can embed its id in the deep link
+    // payload. Best-effort: if Supabase isn't configured (or errors) we
+    // still build a deep link without a leadId — the email flow keeps
+    // working, we just can't track progress / fire the cron nudge.
+    let leadId = null;
+    try {
+      const row = await store.createLead({ firstName, businessName, email, phone, source, estimate });
+      leadId = row && row.id ? row.id : null;
+    } catch (err) {
+      console.error('leads store.createLead failed:', err && err.message);
+    }
+
     // Build the deep-link once so it can ride inside both the lead email
     // (CTA) and the internal notification (so David's team can paste-jump
     // a customer directly into their pre-filled application if needed).
-    const applyUrl = buildApplyDeepLink({ firstName, businessName, email, phone, estimate });
+    const applyUrl = buildApplyDeepLink({ leadId, firstName, businessName, email, phone, estimate });
     const ctx = { firstName, businessName, email, phone, source, estimate, applyUrl };
 
     let token;
@@ -322,7 +284,7 @@ module.exports = async function handler(req, res) {
       console.error('leads booker sendMail failed:', err && err.stack ? err.stack : err);
     }
 
-    res.status(200).json({ ok: true, emailed: true, applyUrl });
+    res.status(200).json({ ok: true, emailed: true, applyUrl, leadId });
   } catch (err) {
     console.error('leads api error:', err && err.stack ? err.stack : err);
     // Soft-fail: front-end already has the data and will retry via apply form.

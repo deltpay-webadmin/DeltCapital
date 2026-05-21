@@ -260,6 +260,10 @@ function V1CalcAnalyzer({ onApply, onNavHow, onNavProcessing, hideHeader }) {
   const [leadPhone, setLeadPhone] = v1cUseState('');
   const [leadSubmitting, setLeadSubmitting] = v1cUseState(false);
   const [leadError, setLeadError] = v1cUseState('');
+  // leadId comes back from /api/leads when Supabase persistence is
+  // enabled. We stash it so the apply modal can ping /api/apply-progress
+  // with the right key, and so the offer CTA can pass it through.
+  const [leadId, setLeadId] = v1cUseState(null);
   const theaterTimers = v1cUseRef([]);
 
   const isCaptured = leadStage === 'captured';
@@ -389,11 +393,17 @@ function V1CalcAnalyzer({ onApply, onNavHow, onNavProcessing, hideHeader }) {
       // — we have their data in component state and pre-fill apply with
       // it, so the lead is captured in the apply submission downstream.
       try {
-        await fetch('/api/leads', {
+        const r = await fetch('/api/leads', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         });
+        // Capture the lead row id when the server returned one. Optional
+        // — older deploys without Supabase wired up just won't include it.
+        if (r && r.ok) {
+          const json = await r.json().catch(() => null);
+          if (json && json.leadId) setLeadId(json.leadId);
+        }
       } catch (_) { /* swallow — we still reveal */ }
       setLeadStage('captured');
     } catch (err) {
@@ -851,6 +861,10 @@ function V1CalcAnalyzer({ onApply, onNavHow, onNavProcessing, hideHeader }) {
         <button
           onClick={() => onApply?.({
             low: displayLow, high: displayHigh, factor: 1.18, ok: true,
+            // Pass the Supabase lead id through so apply-progress beacons
+            // can correlate (when present — null is fine and the beacon
+            // endpoint no-ops on missing leadId).
+            leadId: isCaptured ? leadId : null,
             // Pre-fill apply contact step with whatever the lead gave us
             lead: isCaptured ? {
               firstName: leadFirst.trim(),

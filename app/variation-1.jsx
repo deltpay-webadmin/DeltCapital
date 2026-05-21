@@ -592,6 +592,11 @@ function Variation1() {
         high:   Number(payload.high) || 0,
         factor: 1.18,
         ok:     true,
+        // leadId comes from api/leads.js when the lead row landed in
+        // Supabase. It rides through the apply modal so each milestone
+        // beacon (api/apply-progress) ties back to the original lead row.
+        // Optional — deep links built before Supabase wiring won't have one.
+        leadId: payload.leadId || null,
         lead: {
           firstName:    payload.firstName    || '',
           businessName: payload.businessName || '',

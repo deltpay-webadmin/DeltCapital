@@ -739,6 +739,68 @@ function V1ApplicationFlow({
     if (open && step >= 4 && typeof onComplete === 'function') onComplete();
   }, [open, step]);
 
+  // ─── Apply-flow analytics beacon ───
+  // Fire fire-and-forget pings to /api/apply-progress as the user clears
+  // milestones. The beacon is keyed by prefill.leadId (set by the email
+  // deep link or the calculator lead-gate); without it the endpoint no-
+  // ops, so we never pin progress to an orphan row.
+  //
+  // Using a ref to track "already fired" so a re-render or a form-merge
+  // doesn't double-ping. We deliberately don't await — these are pure
+  // analytics and must never block UI transitions.
+  const beaconLeadId = prefill && prefill.leadId;
+  const beaconFiredRef = React.useRef({});
+  const fireBeacon = React.useCallback((event, meta) => {
+    if (!beaconLeadId) return;
+    if (beaconFiredRef.current[event]) return;
+    beaconFiredRef.current[event] = true;
+    try {
+      const body = JSON.stringify({ leadId: beaconLeadId, event, meta: meta || null });
+      // navigator.sendBeacon survives page unloads (the user closing the
+      // tab after submitting), but it only accepts Blob/FormData/string
+      // and ignores response codes. fetch keepalive is the modern
+      // equivalent and gives us actual feedback; pick whichever exists.
+      if (typeof navigator !== 'undefined' && navigator.sendBeacon) {
+        const blob = new Blob([body], { type: 'application/json' });
+        navigator.sendBeacon('/api/apply-progress', blob);
+      } else {
+        fetch('/api/apply-progress', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body, keepalive: true,
+        }).catch(() => {});
+      }
+    } catch (_) { /* analytics must never throw into the UI */ }
+  }, [beaconLeadId]);
+
+  // modal_opened — fire once per open per leadId. Reset the fired-state
+  // when the modal closes so re-opening (e.g. after a refresh) re-pings.
+  React.useEffect(() => {
+    if (!open) { beaconFiredRef.current = {}; return; }
+    fireBeacon('modal_opened', { fromEmail: !!(prefill && prefill.fromEmail) });
+  }, [open, fireBeacon]);
+
+  // plaid_connected — fire when Plaid Link returns success.
+  React.useEffect(() => {
+    if (!open) return;
+    if (form.bankConnected) {
+      fireBeacon('plaid_connected', { institution: form.bankInstitution || null });
+    }
+  }, [open, form.bankConnected, form.bankInstitution, fireBeacon]);
+
+  // idv_done — fire when IDV flips true.
+  React.useEffect(() => {
+    if (!open) return;
+    if (form.idVerified) fireBeacon('idv_done');
+  }, [open, form.idVerified, fireBeacon]);
+
+  // submitted — fire when the user lands on the Done step (which is
+  // gated on completing every prior step and clicking Accept offer).
+  React.useEffect(() => {
+    if (!open) return;
+    if (step >= 4) fireBeacon('submitted', { amount: form.amount });
+  }, [open, step, form.amount, fireBeacon]);
+
   // Prevent body scroll while open
   React.useEffect(() => {
     if (!open) return;
