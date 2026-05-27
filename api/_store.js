@@ -107,6 +107,38 @@ async function getLead(leadId) {
   return Array.isArray(rows) && rows.length ? rows[0] : null;
 }
 
+// Lookup the most recent lead row for a given email — used by the customer
+// portal after Supabase Auth resolves the signed-in user's email. Case
+// insensitive because Supabase Auth normalizes emails to lowercase but our
+// lead capture preserves whatever the visitor typed.
+async function getLeadByEmail(email) {
+  if (!ENABLED) return null;
+  const e = String(email || '').trim().toLowerCase();
+  if (!e) return null;
+  const path = `/leads?email=ilike.${encodeURIComponent(e)}&select=*&order=created_at.desc&limit=1`;
+  const rows = await pgFetch(path, { method: 'GET' });
+  return Array.isArray(rows) && rows.length ? rows[0] : null;
+}
+
+// Admin sets the underwriting verdict on a lead. `decidedBy` is the admin
+// email from the verified session cookie — stored for the audit trail.
+async function setApprovalStatus(leadId, status, decidedBy) {
+  if (!ENABLED || !leadId) return null;
+  if (!['pending', 'approved', 'denied'].includes(status)) {
+    throw new Error(`Invalid approval_status: ${status}`);
+  }
+  const rows = await pgFetch(`/leads?id=eq.${encodeURIComponent(leadId)}`, {
+    method: 'PATCH',
+    headers: { Prefer: 'return=representation' },
+    body: JSON.stringify({
+      approval_status: status,
+      approval_decided_at: new Date().toISOString(),
+      approval_decided_by: decidedBy || null,
+    }),
+  });
+  return Array.isArray(rows) && rows.length ? rows[0] : null;
+}
+
 // Lookup by the first 8 characters of a lead's UUID. Used by the
 // /api/r short-link redirector so SMS bodies stay under 160 chars.
 // We require the prefix to be at least 6 hex chars to keep collisions
@@ -232,11 +264,13 @@ module.exports = {
   ENABLED,
   createLead,
   getLead,
+  getLeadByEmail,
   getLeadByPrefix,
   findStaleLeads,
   markNudged,
   markCompleted,
   listLeads,
   recordEvent,
+  setApprovalStatus,
   VALID_EVENTS,
 };

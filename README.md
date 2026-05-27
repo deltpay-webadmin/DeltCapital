@@ -29,7 +29,42 @@ Zero-config Vercel static deploy — `index.html` is the entry, `app/*.jsx` load
 - `app/variation-1-*.jsx` — V1 pages/sections (motion, sections, calculator, how-it-works, reviews, about, booking, support, FAQ, blog, apply)
 - `app/assets/hero.mp4` — V1 hero loop
 
+## Customer portal
+
+After applying, customers can sign in at `/portal` (or via the "Login" link in
+the header) to see their underwriting status.
+
+Flow:
+1. Customer enters their email on `/#login`. `app/variation-1-login.jsx` POSTs
+   to `/api/customer-login`, which calls Supabase Auth's admin
+   `generate_link` API to mint a magic-link URL, then emails it via Outlook.
+2. Customer clicks the link → Supabase verifies → redirects to
+   `${SITE_ORIGIN}/?portal=1#access_token=…&refresh_token=…&expires_at=…`.
+3. The inline bootstrap script in `index.html` pulls those tokens out of the
+   fragment, stores them in `localStorage` under `deltcap:sb:*` keys, and
+   strips the fragment before React mounts.
+4. `app/variation-1-portal.jsx` (V1PortalPage) reads the access token and
+   calls `/api/customer-status` with `Authorization: Bearer …`. The server
+   validates the JWT against Supabase's `/auth/v1/user` endpoint, looks up
+   the lead by email, and returns `{ status, firstName, businessName,
+   estimate, … }`. The page renders one of four states keyed off
+   `approval_status`: `approved`, `pending`, `denied`, `no_application`.
+
+Admins flip the verdict from `/admin/leads` — each row has Approve / Deny
+buttons that POST to `/api/admin-approve` (gated by the existing admin
+session cookie).
+
 ## Vercel environment variables
+
+### Supabase — used by the customer portal + lead store
+
+```
+SUPABASE_URL                https://<project>.supabase.co
+SUPABASE_SERVICE_ROLE_KEY   server-only admin key (Project Settings → API)
+```
+
+The portal magic-link flow also requires the Outlook env vars below — that's
+how the actual email goes out. The schema is in `docs/SUPABASE_SCHEMA.sql`.
 
 ### Booking (Outlook / Microsoft Graph) — used by `api/book.js`, `api/availability.js`
 

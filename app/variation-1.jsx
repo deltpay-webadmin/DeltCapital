@@ -457,7 +457,7 @@ function V1Hero({ accent, onApply }) {
 // browser's Back/Forward buttons work and deep links resolve on reload. Every
 // navTo() fades the body out for ~200ms before swapping content so page
 // changes feel like a transition rather than a hard snap.
-const V1_PAGES = new Set(['home', 'about', 'how', 'reviews', 'calc', 'talk', 'support', 'faq', 'blog', 'login', 'terms', 'privacy', 'eca', 'funding-flow', 'processing']);
+const V1_PAGES = new Set(['home', 'about', 'how', 'reviews', 'calc', 'talk', 'support', 'faq', 'blog', 'login', 'portal', 'terms', 'privacy', 'eca', 'funding-flow', 'processing']);
 function readPageFromHash() {
   if (typeof window === 'undefined') return 'home';
   // Apply is special-cased: it's a route that opens the modal rather than
@@ -466,6 +466,15 @@ function readPageFromHash() {
   // apply payload from a separate helper below.
   const path = (window.location.pathname || '').replace(/\/+$/, '');
   if (path === '/apply') return 'home';
+  // Customer portal can be reached three ways:
+  //   /portal              — clean URL after Vercel rewrite
+  //   /?portal=1#…tokens   — Supabase Auth magic-link verify redirect
+  //   /#portal             — in-app navigation (navTo('portal'))
+  // The pathname and querystring checks handle the first two; the
+  // hash check at the end of this function handles the third.
+  if (path === '/portal') return 'portal';
+  const sp = new URLSearchParams(window.location.search || '');
+  if (sp.get('portal') === '1') return 'portal';
   const h = (window.location.hash || '').replace(/^#\/?/, '').split('?')[0];
   if (h === 'apply') return 'home';
   return V1_PAGES.has(h) ? h : 'home';
@@ -667,6 +676,7 @@ function Variation1() {
     page === 'faq'     ? <V1FAQPage accent={accent} onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} /> :
     page === 'blog'    ? <V1BlogPage accent={accent} onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} /> :
     page === 'login'   ? <V1LoginPage onClose={() => navTo('home')} onApply={() => openApp(null, null)} onSignIn={() => {}} onNavLegal={navTo} /> :
+    page === 'portal'  ? <V1PortalPage onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} onNavLogin={() => navTo('login')} /> :
     page === 'terms'   ? <V1TermsOfUse onBack={() => navTo('home')} onNavPrivacy={() => navTo('privacy')} /> :
     page === 'privacy' ? <V1PrivacyPolicy onBack={() => navTo('home')} onNavTerms={() => navTo('terms')} /> :
     page === 'eca'     ? <V1ElectronicCommunications onBack={() => navTo('home')} /> :

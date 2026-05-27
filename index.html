@@ -278,6 +278,39 @@
     })();
   </script>
 
+  <!-- Supabase Auth callback bridge.
+       Runs before React mounts so the access_token from the magic-link
+       redirect (`/?portal=1#access_token=…&refresh_token=…&expires_at=…`)
+       lands in localStorage before V1PortalPage's mount effect tries to
+       read it. We strip the fragment immediately so a page refresh can't
+       replay a consumed link and so the JWT doesn't sit in browser
+       history. Keys must match app/variation-1-portal.jsx#PORTAL_LS. -->
+  <script>
+    (function () {
+      try {
+        var hash = window.location.hash || '';
+        if (hash.indexOf('access_token=') < 0) return;
+        var params = new URLSearchParams(hash.replace(/^#/, ''));
+        var access  = params.get('access_token');
+        var refresh = params.get('refresh_token');
+        var exp     = params.get('expires_at');
+        if (!access) return;
+        try {
+          window.localStorage.setItem('deltcap:sb:access_token', access);
+          if (refresh) window.localStorage.setItem('deltcap:sb:refresh_token', refresh);
+          if (exp)     window.localStorage.setItem('deltcap:sb:expires_at', exp);
+        } catch (e) { /* quota / private mode */ }
+        // Strip the fragment; preserve `?portal=1` so readPageFromHash
+        // still resolves the right initial route.
+        var search = window.location.search || '';
+        if (search.indexOf('portal=') < 0) {
+          search = (search ? search + '&' : '?') + 'portal=1';
+        }
+        window.history.replaceState({ page: 'portal' }, '', window.location.pathname + search);
+      } catch (e) { /* fall through — V1PortalPage will redirect to login */ }
+    })();
+  </script>
+
   <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
@@ -302,6 +335,7 @@
   <script type="text/babel" src="app/variation-1-apply.jsx"></script>
   <script type="text/babel" src="app/variation-1-legal.jsx"></script>
   <script type="text/babel" src="app/variation-1-login.jsx"></script>
+  <script type="text/babel" src="app/variation-1-portal.jsx"></script>
   <script type="text/babel" src="app/variation-1-funding-flow.jsx"></script>
   <script type="text/babel" src="app/variation-1-processing.jsx"></script>
   <script type="text/babel" src="app/variation-1.jsx"></script>

@@ -83,6 +83,16 @@ function statusFor(lead) {
   return { label: 'No reply', tone: 'cold' };
 }
 
+// Underwriting verdict — set by an admin via /api/admin-approve and surfaced
+// in the customer portal at /#portal. Distinct from `statusFor` above, which
+// tracks the apply-funnel position.
+function approvalFor(lead) {
+  const s = lead.approval_status || 'pending';
+  if (s === 'approved') return { label: 'Approved',  tone: 'good' };
+  if (s === 'denied')   return { label: 'Denied',    tone: 'bad'  };
+  return                       { label: 'Pending',   tone: 'warn' };
+}
+
 function googleVoiceLink(phone) {
   const digits = String(phone || '').replace(/\D+/g, '');
   // GV web UI \u2014 lands on conversations, operator types the number in
@@ -97,20 +107,24 @@ function dashboardHtml({ email, leads }) {
     const applyUrl = buildApplyDeepLink({ leadId: lead.id, lead, estimate: lead.estimate });
     const sms = smsBodyFor(lead, applyUrl);
     const status = statusFor(lead);
+    const approval = approvalFor(lead);
     const e = lead.estimate || {};
     return `
-      <tr>
+      <tr data-lead-id="${esc(lead.id)}">
         <td>
           <div class="name">${esc(lead.first_name || '\u2014')}${lead.business_name ? ` <span class="biz">/ ${esc(lead.business_name)}</span>` : ''}</div>
           <div class="contact">${esc(lead.email || '')}${lead.phone ? ` \u00b7 ${esc(lead.phone)}` : ''}</div>
         </td>
         <td class="range">${esc(fmtMoney(e.low))}\u2013${esc(fmtMoney(e.high))}</td>
         <td><span class="pill pill-${status.tone}">${esc(status.label)}</span></td>
+        <td><span class="pill pill-${approval.tone} approval-pill">${esc(approval.label)}</span></td>
         <td class="when">${esc(fmtRelative(lead.created_at))}</td>
         <td class="actions">
           ${lead.phone ? `<a class="btn btn-primary" href="${esc(googleVoiceLink(lead.phone))}" target="_blank" rel="noopener">Text in GV</a>` : `<span class="muted">no phone</span>`}
           <button class="btn btn-ghost copy-sms" data-sms="${esc(sms)}">Copy SMS</button>
           <a class="btn btn-ghost" href="${esc(applyUrl)}" target="_blank" rel="noopener">Apply link</a>
+          <button class="btn btn-approve approve-btn" data-status="approved">Approve</button>
+          <button class="btn btn-deny deny-btn" data-status="denied">Deny</button>
         </td>
       </tr>`;
   }).join('');
@@ -150,6 +164,12 @@ function dashboardHtml({ email, leads }) {
     .pill-mid{background:#EEF1FF;color:#3D45B5}
     .pill-warn{background:#FFF4E0;color:#8B5A00}
     .pill-cold{background:#F1F0F5;color:#6B6877}
+    .pill-bad{background:#FDECEF;color:#B0344E}
+    .btn-approve{background:#0E7C4A;color:#fff;border-color:#0E7C4A}
+    .btn-approve:hover{background:#0a6b3f}
+    .btn-deny{background:#B0344E;color:#fff;border-color:#B0344E}
+    .btn-deny:hover{background:#94283F}
+    .btn[disabled]{opacity:.55;cursor:default}
     .muted{color:#9D99AC;font-size:12px}
     .empty{padding:40px;text-align:center;color:#6B6877}
   </style>
@@ -170,7 +190,8 @@ function dashboardHtml({ email, leads }) {
         <thead><tr>
           <th>Lead</th>
           <th>Range</th>
-          <th>Status</th>
+          <th>Funnel</th>
+          <th>Decision</th>
           <th>Submitted</th>
           <th>Actions</th>
         </tr></thead>
@@ -191,6 +212,50 @@ function dashboardHtml({ email, leads }) {
           }
         });
       });
+
+      // Approve / Deny — POST to /api/admin-approve, then optimistically
+      // rewrite the row's decision pill. We don't reload the page so the
+      // operator can rip through a batch without losing scroll position.
+      function bindVerdict(selector, label, toneClass) {
+        document.querySelectorAll(selector).forEach((btn) => {
+          btn.addEventListener('click', async () => {
+            const row = btn.closest('tr');
+            const leadId = row && row.dataset.leadId;
+            const status = btn.dataset.status;
+            if (!leadId || !status) return;
+            const siblings = row.querySelectorAll('.approve-btn, .deny-btn');
+            siblings.forEach((b) => { b.disabled = true; });
+            const orig = btn.textContent;
+            btn.textContent = 'Saving…';
+            try {
+              const r = await fetch('/api/admin-approve', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ leadId, status }),
+              });
+              if (!r.ok) throw new Error('http ' + r.status);
+              const pill = row.querySelector('.approval-pill');
+              if (pill) {
+                pill.className = 'pill pill-' + toneClass + ' approval-pill';
+                pill.textContent = label;
+              }
+              btn.textContent = 'Saved';
+              setTimeout(() => {
+                btn.textContent = orig;
+                siblings.forEach((b) => { b.disabled = false; });
+              }, 1200);
+            } catch (err) {
+              btn.textContent = 'Failed';
+              setTimeout(() => {
+                btn.textContent = orig;
+                siblings.forEach((b) => { b.disabled = false; });
+              }, 1600);
+            }
+          });
+        });
+      }
+      bindVerdict('.approve-btn', 'Approved', 'good');
+      bindVerdict('.deny-btn',    'Denied',   'bad');
     </script>
   </body></html>`;
 }
