@@ -1018,6 +1018,22 @@ function V1ApplicationFlow({
               {step < 4 ? '🔒 Secured · Plaid · Soft-pull only' : 'Application received'}
             </div>
             <div style={{ display: 'flex', gap: 10 }}>
+              {/* Shortcut straight to the Identity step (no prefill). */}
+              {step < 2 && (
+                <button
+                  onClick={() => setStep(2)}
+                  style={{
+                    padding: '11px 14px', borderRadius: 10,
+                    background: 'transparent', border: `1px dashed ${V1.muted}`,
+                    color: V1.muted, cursor: 'pointer',
+                    fontFamily: V1.fontMono, fontSize: 11, fontWeight: 600,
+                    letterSpacing: '0.12em', textTransform: 'uppercase',
+                    transition: 'color .15s, border-color .15s',
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.color = V1.ink; e.currentTarget.style.borderColor = V1.ink; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.color = V1.muted; e.currentTarget.style.borderColor = V1.muted; }}
+                >Skip to Identity</button>
+              )}
               {step > 0 && step < 4 && (
                 <button
                   onClick={() => setStep(step - 1)}
