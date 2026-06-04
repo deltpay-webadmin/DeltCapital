@@ -20,23 +20,11 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  const rawTemplateId = process.env.PLAID_IDV_TEMPLATE_ID || '';
-  const templateId = rawTemplateId.trim();
+  const templateId = (process.env.PLAID_IDV_TEMPLATE_ID || '').trim();
   if (!templateId) {
     res.status(500).json({ error: 'PLAID_IDV_TEMPLATE_ID is not set' });
     return;
   }
-  // TEMP: dev-only diagnostic — remove once IDV is green. Logs the trimmed
-  // template id length, raw length (catches hidden chars that survive .trim
-  // for things like ​ zero-width spaces), prefix and last-4 so we can
-  // compare against the dashboard without leaking the full id.
-  console.log(
-    'plaid-create-idv templateId diagnostic: ' +
-    `raw.length=${rawTemplateId.length} ` +
-    `trimmed.length=${templateId.length} ` +
-    `prefix=${JSON.stringify(templateId.slice(0, 7))} ` +
-    `last4=${JSON.stringify(templateId.slice(-4))}`
-  );
 
   try {
     const data = await plaidFetch('/identity_verification/create', {

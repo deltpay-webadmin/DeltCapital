@@ -48,11 +48,13 @@ window.PlaidIntegration = window.PlaidIntegration || {
       return data;
     }),
 
-  createIDV: () =>
+  // `clientUserId` is optional — pass a fresh one (V1PlaidFreshClientUserId)
+  // on retry so a failed/terminal IDV session is never re-entered.
+  createIDV: (clientUserId) =>
     fetch('/api/plaid-create-idv', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ clientUserId: V1PlaidGetClientUserId() }),
+      body: JSON.stringify({ clientUserId: clientUserId || V1PlaidGetClientUserId() }),
     }).then(async (r) => {
       const data = await r.json().catch(() => ({}));
       if (!r.ok) throw V1PlaidThrowFromResponse(data, 'createIDV failed');
@@ -87,6 +89,38 @@ function V1PlaidGetClientUserId() {
     }
     return window.__deltPlaidUid;
   }
+}
+
+// A one-off client_user_id for a retry. Plaid keys identity verifications by
+// (client_user_id + template_id), so reusing the stable id can re-enter a
+// session that's already failed/expired. A fresh id guarantees a clean run.
+function V1PlaidFreshClientUserId() {
+  const rnd = (typeof crypto !== 'undefined' && crypto.randomUUID)
+    ? crypto.randomUUID()
+    : (Math.random().toString(36).slice(2) + Date.now().toString(36));
+  return 'delt-retry-' + rnd;
+}
+
+// Map Plaid's IDV `steps` object to a human reason for the step that failed,
+// so a failed verification says *what* went wrong (e.g. the selfie) instead of
+// a generic message. Each step value is a status string
+// ('success' | 'failed' | 'active' | 'expired' | 'canceled' | ...).
+function V1IDVFailedStepReason(steps) {
+  if (!steps || typeof steps !== 'object') return null;
+  const LABELS = {
+    selfie_check: 'the selfie / face match',
+    documentary_verification: 'the ID document scan',
+    kyc_check: 'the identity details (KYC)',
+    verify_sms: 'phone verification',
+    risk_check: 'the risk check',
+    accept_tos: 'the consent step',
+  };
+  const terminal = ['failed', 'expired', 'canceled'];
+  for (const key of Object.keys(LABELS)) {
+    const v = (steps[key] || '').toString().toLowerCase();
+    if (terminal.includes(v)) return LABELS[key];
+  }
+  return null;
 }
 
 // ─── Plaid logo (4-square grid mark) ─────────────────────────────
@@ -493,8 +527,10 @@ function V1IDVerify({ open, onClose, onComplete }) {
         if (status === 'success') { stopPolling(); setStage('done'); return; }
         if (status === 'failed' || status === 'expired' || status === 'canceled') {
           stopPolling();
+          const stepReason = V1IDVFailedStepReason(res.steps);
           setErr(status === 'expired' ? 'Session expired. Start a new verification.' :
                  status === 'canceled' ? 'Verification was canceled.' :
+                 stepReason ? `Verification failed on ${stepReason}. You can try again.` :
                  'Verification could not be completed.');
           setStage('failed');
           return;
@@ -510,11 +546,14 @@ function V1IDVerify({ open, onClose, onComplete }) {
     pollTimerRef.current = setTimeout(tick, 1500);
   }
 
-  async function beginVerification() {
+  async function beginVerification(clientUserId) {
+    // Guard against being called directly as an onClick handler (where the
+    // first arg is a SyntheticEvent, not an id).
+    const cuid = typeof clientUserId === 'string' ? clientUserId : undefined;
     setErr(null);
     setStage('creating');
     try {
-      const res = await window.PlaidIntegration.createIDV();
+      const res = await window.PlaidIntegration.createIDV(cuid);
       if (!res.shareable_url || !res.identity_verification_id) {
         throw new Error('Missing shareable_url or id');
       }
@@ -545,7 +584,8 @@ function V1IDVerify({ open, onClose, onComplete }) {
   function retry() {
     stopPolling();
     setIdv(null); setErr(null);
-    beginVerification();
+    // Fresh client_user_id so we never re-enter the failed/terminal session.
+    beginVerification(V1PlaidFreshClientUserId());
   }
 
   if (!open) return null;
