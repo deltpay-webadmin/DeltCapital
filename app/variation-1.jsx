@@ -36,7 +36,10 @@ function V1Ticker({ accent }) {
   );
 }
 
-function V1Chrome({ page, navTo, accent, openApp }) {
+function V1Chrome({ page, navTo, accent, openApp, currentUser }) {
+  // When signed in, the auth entry point becomes the dashboard instead of login.
+  const authKey   = currentUser ? 'dashboard' : 'login';
+  const authLabel = currentUser ? 'Dashboard' : 'Login';
   const links = [
     { k: 'how',         l: 'How It Works' },
     { k: 'calc',        l: 'Calculator' },
@@ -82,7 +85,7 @@ function V1Chrome({ page, navTo, accent, openApp }) {
           ))}
         </nav>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-          <a data-v1-desktop-nav onClick={() => navTo('login')} style={{ fontFamily: DELT.font.body, fontSize: 13.5, color: page === 'login' ? '#F7F5F0' : 'rgba(247,245,240,0.75)', cursor: 'pointer' }}>Login</a>
+          <a data-v1-desktop-nav onClick={() => navTo(authKey)} style={{ fontFamily: DELT.font.body, fontSize: 13.5, color: page === authKey ? '#F7F5F0' : 'rgba(247,245,240,0.75)', cursor: 'pointer' }}>{authLabel}</a>
           <Btn variant="indigo" size="sm" onClick={openApp} style={{ background: accent, borderColor: accent }}>Get Funded</Btn>
           {/* Mobile hamburger — hidden on desktop via CSS, shown <= 768px */}
           <button
@@ -146,12 +149,12 @@ function V1Chrome({ page, navTo, accent, openApp }) {
             borderBottom: '1px solid rgba(247,245,240,0.08)',
           }}>{ln.l}</a>
         ))}
-        <a onClick={() => handleNav('login')} style={{
+        <a onClick={() => handleNav(authKey)} style={{
           fontFamily: DELT.font.display, fontSize: 28, fontWeight: 600,
-          color: page === 'login' ? '#F7F5F0' : 'rgba(247,245,240,0.78)',
+          color: page === authKey ? '#F7F5F0' : 'rgba(247,245,240,0.78)',
           cursor: 'pointer', padding: '12px 4px',
           borderBottom: '1px solid rgba(247,245,240,0.08)',
-        }}>Login</a>
+        }}>{authLabel}</a>
       </nav>
       <div style={{ marginTop: 'auto', paddingTop: 24 }}>
         <Btn variant="indigo" size="lg" onClick={() => { setMenuOpen(false); openApp(); }} style={{ background: accent, borderColor: accent, width: '100%' }}>Get Funded</Btn>
@@ -457,7 +460,7 @@ function V1Hero({ accent, onApply }) {
 // browser's Back/Forward buttons work and deep links resolve on reload. Every
 // navTo() fades the body out for ~200ms before swapping content so page
 // changes feel like a transition rather than a hard snap.
-const V1_PAGES = new Set(['home', 'about', 'how', 'reviews', 'calc', 'talk', 'support', 'faq', 'blog', 'login', 'terms', 'privacy', 'eca', 'funding-flow', 'processing']);
+const V1_PAGES = new Set(['home', 'about', 'how', 'reviews', 'calc', 'talk', 'support', 'faq', 'blog', 'login', 'dashboard', 'terms', 'privacy', 'eca', 'funding-flow', 'processing']);
 function readPageFromHash() {
   if (typeof window === 'undefined') return 'home';
   // Apply is special-cased: it's a route that opens the modal rather than
@@ -552,10 +555,13 @@ function Variation1() {
   // signal to (a) jump past the business/contact step and (b) auto-open
   // Plaid Link so the user only sees the friction they haven't passed.
   const [appFromEmail, setAppFromEmail] = React.useState(false);
-  // Signed-in Supabase user (null when logged out). The account chrome that
-  // consumes this is a follow-up; for now it proves the session is live and
-  // survives reloads via Supabase's localStorage-persisted session.
+  // Signed-in Supabase user (null when logged out). Drives the dashboard page
+  // and the nav account chrome; survives reloads via Supabase's
+  // localStorage-persisted session.
   const [currentUser, setCurrentUser] = React.useState(null);
+  // False until we've checked for a persisted session, so the dashboard route
+  // doesn't flash the login page before the async hydrate resolves.
+  const [sessionChecked, setSessionChecked] = React.useState(false);
 
   // Hydrate the signed-in user from any persisted Supabase session on mount.
   React.useEffect(() => {
@@ -565,8 +571,15 @@ function Variation1() {
         const { data } = await v1GetSession();
         if (!cancelled && data && data.session) setCurrentUser(data.session.user);
       } catch (_) { /* not configured / offline — stay logged out */ }
+      finally { if (!cancelled) setSessionChecked(true); }
     })();
     return () => { cancelled = true; };
+  }, []);
+
+  // Clear the Supabase session, drop the in-memory user, and return home.
+  const handleSignOut = React.useCallback(async () => {
+    try { await v1SignOut(); } catch (_) { /* best effort */ }
+    setCurrentUser(null);
   }, []);
 
   // Core page swap: fade the body, swap page, scroll to top, fade back in.
@@ -682,7 +695,14 @@ function Variation1() {
     page === 'support' ? <V1SupportPage accent={accent} onTalk={() => navTo('talk')} onApply={() => openApp(null, null)} /> :
     page === 'faq'     ? <V1FAQPage accent={accent} onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} /> :
     page === 'blog'    ? <V1BlogPage accent={accent} onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} /> :
-    page === 'login'   ? <V1LoginPage onClose={() => navTo('home')} onApply={() => openApp(null, null)} onSignIn={(user) => { setCurrentUser(user || null); navTo('home'); }} onNavLegal={navTo} /> :
+    page === 'login'   ? <V1LoginPage onClose={() => navTo('home')} onApply={() => openApp(null, null)} onSignIn={(user) => { setCurrentUser(user || null); navTo('dashboard'); }} onNavLegal={navTo} /> :
+    page === 'dashboard' ? (
+      currentUser
+        ? <V1DashboardPage user={currentUser} onApply={() => openApp(null, null)} onSignOut={async () => { await handleSignOut(); navTo('home'); }} />
+        : (sessionChecked
+            ? <V1LoginPage onClose={() => navTo('home')} onApply={() => openApp(null, null)} onSignIn={(user) => { setCurrentUser(user || null); navTo('dashboard'); }} onNavLegal={navTo} />
+            : <div style={{ minHeight: 'calc(100vh - 96px)' }} />)
+    ) :
     page === 'terms'   ? <V1TermsOfUse onBack={() => navTo('home')} onNavPrivacy={() => navTo('privacy')} /> :
     page === 'privacy' ? <V1PrivacyPolicy onBack={() => navTo('home')} onNavTerms={() => navTo('terms')} /> :
     page === 'eca'     ? <V1ElectronicCommunications onBack={() => navTo('home')} /> :
@@ -692,7 +712,7 @@ function Variation1() {
 
   return (
     <>
-      <V1Chrome page={page} navTo={navTo} accent={accent} openApp={() => openApp(null, null)} />
+      <V1Chrome page={page} navTo={navTo} accent={accent} openApp={() => openApp(null, null)} currentUser={currentUser} />
       <div style={{
         opacity: transitioning ? 0 : 1,
         transform: transitioning ? 'translateY(6px)' : 'translateY(0)',
