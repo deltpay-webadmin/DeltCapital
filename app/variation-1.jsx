@@ -552,6 +552,22 @@ function Variation1() {
   // signal to (a) jump past the business/contact step and (b) auto-open
   // Plaid Link so the user only sees the friction they haven't passed.
   const [appFromEmail, setAppFromEmail] = React.useState(false);
+  // Signed-in Supabase user (null when logged out). The account chrome that
+  // consumes this is a follow-up; for now it proves the session is live and
+  // survives reloads via Supabase's localStorage-persisted session.
+  const [currentUser, setCurrentUser] = React.useState(null);
+
+  // Hydrate the signed-in user from any persisted Supabase session on mount.
+  React.useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data } = await v1GetSession();
+        if (!cancelled && data && data.session) setCurrentUser(data.session.user);
+      } catch (_) { /* not configured / offline — stay logged out */ }
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   // Core page swap: fade the body, swap page, scroll to top, fade back in.
   // `pushUrl` is false when we're responding to a popstate so we don't
@@ -666,7 +682,7 @@ function Variation1() {
     page === 'support' ? <V1SupportPage accent={accent} onTalk={() => navTo('talk')} onApply={() => openApp(null, null)} /> :
     page === 'faq'     ? <V1FAQPage accent={accent} onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} /> :
     page === 'blog'    ? <V1BlogPage accent={accent} onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} /> :
-    page === 'login'   ? <V1LoginPage onClose={() => navTo('home')} onApply={() => openApp(null, null)} onSignIn={() => {}} onNavLegal={navTo} /> :
+    page === 'login'   ? <V1LoginPage onClose={() => navTo('home')} onApply={() => openApp(null, null)} onSignIn={(user) => { setCurrentUser(user || null); navTo('home'); }} onNavLegal={navTo} /> :
     page === 'terms'   ? <V1TermsOfUse onBack={() => navTo('home')} onNavPrivacy={() => navTo('privacy')} /> :
     page === 'privacy' ? <V1PrivacyPolicy onBack={() => navTo('home')} onNavTerms={() => navTo('terms')} /> :
     page === 'eca'     ? <V1ElectronicCommunications onBack={() => navTo('home')} /> :
