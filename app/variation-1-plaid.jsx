@@ -123,6 +123,74 @@ function V1IDVFailedStepReason(steps) {
   return null;
 }
 
+// Turn a thrown create/poll error into friendly { title, body, code } copy so
+// the modal shows a human message instead of dumping Plaid's raw error string.
+function V1IDVErrorCopy(e) {
+  const code = (e && e.plaidCode) || null;
+  switch (code) {
+    case 'INVALID_FIELD':
+      // Should be handled by is_idempotent server-side; this is a safety net.
+      return { title: 'A verification is already in progress',
+               body: 'Tap “Begin verification” again to pick up where you left off.', code };
+    case 'INVALID_API_KEYS':
+    case 'INVALID_API_KEY':
+    case 'INVALID_SECRET':
+      return { title: 'Verification is temporarily unavailable',
+               body: 'Identity checks aren’t configured correctly right now. Please try again later or contact support.', code };
+    case 'PRODUCT_NOT_READY':
+    case 'INTERNAL_SERVER_ERROR':
+    case 'PLAID_ERROR':
+      return { title: 'Plaid had a brief hiccup',
+               body: 'The verification service is momentarily unavailable. Give it a few seconds and try again.', code };
+    case 'RATE_LIMIT_EXCEEDED':
+      return { title: 'Too many attempts',
+               body: 'Please wait a moment before starting another verification.', code };
+    default:
+      return { title: 'Could not start verification',
+               body: 'Something went wrong starting your ID check. Please try again.', code };
+  }
+}
+
+// Clean inline alert for IDV errors. Accepts a { title, body, code } object
+// (or a plain string for back-compat) and renders an icon + headline + concise
+// body, with the technical code tucked into a small "Ref:" line for support.
+function V1IDVAlert({ err }) {
+  if (!err) return null;
+  const title = typeof err === 'string' ? null : err.title;
+  const body  = typeof err === 'string' ? err  : err.body;
+  const code  = typeof err === 'string' ? null : err.code;
+  return (
+    <div role="alert" style={{
+      background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 10,
+      padding: '12px 14px', marginBottom: 14, textAlign: 'left',
+      display: 'flex', gap: 10, alignItems: 'flex-start',
+    }}>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#DC2626"
+           strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"
+           style={{ flexShrink: 0, marginTop: 1 }}>
+        <circle cx="8" cy="8" r="6.5" /><path d="M8 5v3.5M8 11h.01" />
+      </svg>
+      <div>
+        {title && (
+          <div style={{
+            fontFamily: V1.fontDisplay, fontSize: 13.5, fontWeight: 700,
+            color: '#991B1B', marginBottom: 2,
+          }}>{title}</div>
+        )}
+        <div style={{
+          fontFamily: V1.fontBody, fontSize: 12.5, lineHeight: 1.5, color: '#B91C1C',
+        }}>{body}</div>
+        {code && (
+          <div style={{
+            marginTop: 6, fontFamily: V1.fontMono, fontSize: 9.5, fontWeight: 600,
+            letterSpacing: '0.1em', textTransform: 'uppercase', color: '#D69A9A',
+          }}>Ref: {code}</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ─── Plaid logo (4-square grid mark) ─────────────────────────────
 function V1PlaidLogo({ size = 16, color = 'currentColor' }) {
   return (
@@ -528,10 +596,15 @@ function V1IDVerify({ open, onClose, onComplete }) {
         if (status === 'failed' || status === 'expired' || status === 'canceled') {
           stopPolling();
           const stepReason = V1IDVFailedStepReason(res.steps);
-          setErr(status === 'expired' ? 'Session expired. Start a new verification.' :
-                 status === 'canceled' ? 'Verification was canceled.' :
-                 stepReason ? `Verification failed on ${stepReason}. You can try again.` :
-                 'Verification could not be completed.');
+          setErr({
+            title: status === 'expired'  ? 'Verification expired'
+                 : status === 'canceled' ? 'Verification canceled'
+                 : 'Verification didn’t pass',
+            body: status === 'expired'  ? 'The session timed out before it finished. Start a new verification.'
+                : status === 'canceled' ? 'The verification was canceled before it finished.'
+                : stepReason ? `Plaid couldn’t verify ${stepReason}.`
+                : 'Plaid couldn’t finish verifying your identity.',
+          });
           setStage('failed');
           return;
         }
@@ -546,7 +619,7 @@ function V1IDVerify({ open, onClose, onComplete }) {
     pollTimerRef.current = setTimeout(tick, 1500);
   }
 
-  async function beginVerification(clientUserId) {
+  async function beginVerification(clientUserId, isAutoFresh) {
     // Guard against being called directly as an onClick handler (where the
     // first arg is a SyntheticEvent, not an id).
     const cuid = typeof clientUserId === 'string' ? clientUserId : undefined;
@@ -554,16 +627,31 @@ function V1IDVerify({ open, onClose, onComplete }) {
     setStage('creating');
     try {
       const res = await window.PlaidIntegration.createIDV(cuid);
-      if (!res.shareable_url || !res.identity_verification_id) {
-        throw new Error('Missing shareable_url or id');
+      if (!res.identity_verification_id) {
+        throw new Error('Missing identity_verification_id');
+      }
+      const status = (res.status || '').toLowerCase();
+      // Idempotent create can return an *existing* session — branch on state.
+      if (status === 'success') {
+        // Already verified earlier; short-circuit straight to done.
+        setIdv(res);
+        setStage('done');
+        return;
+      }
+      if ((status === 'failed' || status === 'expired' || status === 'canceled') && !isAutoFresh) {
+        // The existing session is terminal — transparently start a brand-new
+        // one with a fresh client_user_id so the user isn't stuck re-entering
+        // a dead session. Guarded by isAutoFresh to avoid looping.
+        return beginVerification(V1PlaidFreshClientUserId(), true);
+      }
+      if (!res.shareable_url) {
+        throw new Error('Missing shareable_url');
       }
       setIdv(res);
       setStage('choose-device');
     } catch (e) {
       console.error(e);
-      const code = e && e.plaidCode ? ` (${e.plaidCode})` : '';
-      const msg = e && e.plaidMessage ? ` — ${e.plaidMessage}` : '';
-      setErr(`Could not start verification${code}${msg}. Try again.`);
+      setErr(V1IDVErrorCopy(e));
       setStage('intro');
     }
   }
@@ -642,13 +730,7 @@ function V1IDVerify({ open, onClose, onComplete }) {
             Two steps: (1) photo of a government ID, (2) a quick selfie. Plaid
             matches face geometry between the two and stores nothing afterward.
           </div>
-          {err && (
-            <div style={{
-              background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 8,
-              padding: '10px 12px', marginBottom: 14,
-              fontFamily: V1.fontBody, fontSize: 12.5, color: '#991B1B',
-            }}>{err}</div>
-          )}
+          <V1IDVAlert err={err} />
           <button onClick={beginVerification} style={{
             width: '100%', background: '#000', color: '#fff', border: 'none',
             padding: '13px 16px', borderRadius: 10, cursor: 'pointer',
@@ -799,12 +881,12 @@ function V1IDVerify({ open, onClose, onComplete }) {
           <div style={{
             fontFamily: V1.fontDisplay, fontSize: 18, fontWeight: 700,
             color: '#0F0E17', marginBottom: 8,
-          }}>Verification didn't complete</div>
+          }}>{(err && err.title) || 'Verification didn’t complete'}</div>
           <div style={{
             fontFamily: V1.fontBody, fontSize: 13, color: '#475569',
             lineHeight: 1.55, marginBottom: 18, maxWidth: 280, margin: '0 auto 18px',
           }}>
-            {err || 'Plaid couldn\'t finish verifying your identity.'} You can try again.
+            {((err && err.body) || 'Plaid couldn’t finish verifying your identity.') + ' You can try again.'}
           </div>
           <button onClick={retry} style={{
             width: '100%', background: '#000', color: '#fff', border: 'none',

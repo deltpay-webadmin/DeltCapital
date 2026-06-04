@@ -31,6 +31,12 @@ module.exports = async function handler(req, res) {
       is_shareable: true,
       template_id: templateId,
       gave_consent: true,
+      // Idempotent create: if a verification already exists for this
+      // client_user_id + template_id, Plaid returns it instead of failing
+      // with INVALID_FIELD ("session already exists"). The frontend inspects
+      // the returned `status` to resume, short-circuit (already success), or
+      // start fresh (terminal/failed) as appropriate.
+      is_idempotent: true,
       user: { client_user_id: clientUserId },
     });
     // Render the QR server-side so the IDV shareable_url stays inside our
