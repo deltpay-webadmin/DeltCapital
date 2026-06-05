@@ -797,7 +797,7 @@ function Variation1() {
         ? ((currentApplication && typeof currentApplication === 'object' && currentApplication.status !== 'approved')
             // Signed in but not yet approved — show the tracker, not the funded dashboard.
             ? <V1StatusPage user={currentUser} onNavDashboard={async () => { await loadApplication(); navTo('dashboard'); }} onNavSupport={() => navTo('support')} onApply={() => openApp(null, null)} />
-            : <V1DashboardPage user={currentUser} onApply={() => openApp(null, null)} onSignOut={async () => { await handleSignOut(); navTo('home'); }} />)
+            : <V1DashboardPage user={currentUser} onApply={() => openApp(null, null)} onNavHome={() => navTo('home')} onSignOut={async () => { await handleSignOut(); navTo('home'); }} />)
         : (sessionChecked
             ? <V1LoginPage onClose={() => navTo('home')} onApply={() => openApp(null, null)} onSignIn={handleSignedIn} onNavLegal={navTo} />
             : <div style={{ minHeight: 'calc(100vh - 96px)' }} />)
@@ -816,9 +816,18 @@ function Variation1() {
     page === 'processing' ? <V1ProcessingPage accent={accent} onApply={() => openApp(null, null)} onCalc={() => navTo('calc')} /> :
     home;
 
+  // The dashboard is a signed-in app shell — it renders its own header and owns
+  // the full viewport, so we drop the public marketing chrome + footer. Only
+  // when the *full dashboard* actually renders, though: an in-review account on
+  // #dashboard falls through to the status tracker (see body gate), which still
+  // needs the marketing chrome for navigation.
+  const dashboardShowsApp = currentUser &&
+    !(currentApplication && typeof currentApplication === 'object' && currentApplication.status !== 'approved');
+  const isAppShell = page === 'dashboard' && dashboardShowsApp;
+
   return (
     <>
-      <V1Chrome page={page} navTo={navTo} accent={accent} openApp={() => openApp(null, null)} currentUser={currentUser} />
+      {!isAppShell && <V1Chrome page={page} navTo={navTo} accent={accent} openApp={() => openApp(null, null)} currentUser={currentUser} />}
       <div style={{
         opacity: transitioning ? 0 : 1,
         transform: transitioning ? 'translateY(6px)' : 'translateY(0)',
@@ -826,7 +835,7 @@ function Variation1() {
       }}>
         {body}
       </div>
-      <FooterBlock accent={accent} brand={V1Chrome.brand} onNav={navTo} />
+      {!isAppShell && <FooterBlock accent={accent} brand={V1Chrome.brand} onNav={navTo} />}
       <V1ApplicationFlow
         open={appOpen}
         onClose={() => { setAppOpen(false); setAppFromEmail(false); }}

@@ -479,12 +479,22 @@ function V1DashSettings({ email }) {
   );
 }
 
-// ─── Account sub-header (below the marketing chrome) ───
-function V1DashHeader({ email, onSignOut, signingOut }) {
+// ─── Account header — the dashboard's own app-shell header (the marketing
+// chrome is hidden on this route). Logo returns to the marketing site; Log out
+// ends the session. ───
+function V1DashHeader({ email, onSignOut, signingOut, onNavHome }) {
   return (
-    <div style={{ background: '#fff', borderBottom: `1px solid ${V1.line}` }}>
+    <div style={{ background: '#fff', borderBottom: `1px solid ${V1.line}`, position: 'sticky', top: 0, zIndex: 20 }}>
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '14px 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+          <img
+            src="app/assets/logo-dark.png"
+            alt="Delt Capital — back to site"
+            onClick={onNavHome}
+            title="Back to deltcapital.com"
+            style={{ height: 26, width: 'auto', display: 'block', cursor: 'pointer' }}
+          />
+          <span aria-hidden style={{ width: 1, height: 22, background: V1.line }} />
           <span style={{ fontFamily: V1.fontMono, fontSize: 13.5, fontWeight: 700, letterSpacing: '0.04em', color: V1.ink }}>{V1_DASH.account}</span>
           <V1Pill label="Open" tone="green" />
           <V1Pill label="Performing" tone="indigo" />
@@ -512,7 +522,7 @@ function V1DashHeader({ email, onSignOut, signingOut }) {
   );
 }
 
-function V1DashboardPage({ user, onSignOut, onApply }) {
+function V1DashboardPage({ user, onSignOut, onApply, onNavHome }) {
   const mounted = useV1Mounted(40);
   const [tab, setTab] = React.useState('summary');
   const [session, setSession] = React.useState(null);
@@ -545,7 +555,7 @@ function V1DashboardPage({ user, onSignOut, onApply }) {
   ];
 
   return (
-    <section data-v1-section style={{ background: V1.bg, minHeight: 'calc(100vh - 96px)' }}>
+    <section data-v1-section style={{ background: V1.bg, minHeight: '100vh' }}>
       <style>{`
         @media (max-width: 900px) {
           [data-v1-dash-tiles] { grid-template-columns: 1fr 1fr !important; }
@@ -555,7 +565,7 @@ function V1DashboardPage({ user, onSignOut, onApply }) {
           [data-v1-dash-tiles] { grid-template-columns: 1fr !important; }
         }
       `}</style>
-      <V1DashHeader email={email} onSignOut={handleSignOut} signingOut={signingOut} />
+      <V1DashHeader email={email} onSignOut={handleSignOut} signingOut={signingOut} onNavHome={onNavHome} />
 
       {/* Tab nav */}
       <div style={{ background: '#fff', borderBottom: `1px solid ${V1.line}` }}>
