@@ -398,7 +398,12 @@ function V1StepIdentity({ form, setForm, accent, onAdvance }) {
         </V1ApplyField>
       </div>
 
-      <V1IDVerify open={idvOpen} onClose={() => setIdvOpen(false)} onComplete={handleIdvComplete} />
+      <V1IDVerify
+        open={idvOpen}
+        onClose={() => setIdvOpen(false)}
+        onComplete={handleIdvComplete}
+        user={{ firstName: form.firstName, lastName: form.lastName, email: form.email, phone: form.phone }}
+      />
 
       <div style={{
         marginTop: 32, padding: '18px 20px',

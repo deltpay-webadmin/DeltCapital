@@ -49,12 +49,14 @@ window.PlaidIntegration = window.PlaidIntegration || {
     }),
 
   // `clientUserId` is optional — pass a fresh one (V1PlaidFreshClientUserId)
-  // on retry so a failed/terminal IDV session is never re-entered.
-  createIDV: (clientUserId) =>
+  // on retry so a failed/terminal IDV session is never re-entered. `user` is
+  // optional PII (firstName/lastName/email/phone) forwarded so Plaid can
+  // pre-fill / streamline the identity + phone-verification steps.
+  createIDV: (clientUserId, user) =>
     fetch('/api/plaid-create-idv', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ clientUserId: clientUserId || V1PlaidGetClientUserId() }),
+      body: JSON.stringify({ clientUserId: clientUserId || V1PlaidGetClientUserId(), user }),
     }).then(async (r) => {
       const data = await r.json().catch(() => ({}));
       if (!r.ok) throw V1PlaidThrowFromResponse(data, 'createIDV failed');
@@ -65,6 +67,19 @@ window.PlaidIntegration = window.PlaidIntegration || {
     fetch(`/api/plaid-get-idv-status?id=${encodeURIComponent(id)}`).then(async (r) => {
       const data = await r.json().catch(() => ({}));
       if (!r.ok) throw V1PlaidThrowFromResponse(data, 'pollIDV failed');
+      return data;
+    }),
+
+  // Poll the hosted-link session so the desktop can detect when the user
+  // finishes connecting their bank on their phone (the QR handoff).
+  getLinkStatus: (linkToken) =>
+    fetch('/api/plaid-get-link-status', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ link_token: linkToken }),
+    }).then(async (r) => {
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) throw V1PlaidThrowFromResponse(data, 'getLinkStatus failed');
       return data;
     }),
 };
@@ -308,11 +323,71 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
   const [err, setErr] = React.useState(null);
   const [linkedSummary, setLinkedSummary] = React.useState(null); // { institution_name, accounts }
   const handlerRef = React.useRef(null);
+  const pollTimerRef = React.useRef(null);
+  const pollStoppedRef = React.useRef(false);
+
+  function stopLinkPolling() {
+    pollStoppedRef.current = true;
+    if (pollTimerRef.current) { clearTimeout(pollTimerRef.current); pollTimerRef.current = null; }
+  }
+
+  // Exchange a public_token and report success — shared by the desktop SDK
+  // callback and the mobile hosted-link poller so both paths advance the step.
+  const finishWithPublicToken = async (publicToken) => {
+    const result = await window.PlaidIntegration.exchangePublicToken(publicToken);
+    setLinkedSummary({
+      institution_name: result.institution_name || 'Your bank',
+      accounts: result.accounts || [],
+    });
+    setStage('success');
+    setTimeout(() => {
+      const accountStrs = (result.accounts || []).map((a) =>
+        a.mask ? `${a.name} ••${a.mask}` : a.name);
+      onSuccess && onSuccess({
+        institution: result.institution_name || 'Bank',
+        accounts: accountStrs,
+        item_id: result.item_id,
+      });
+    }, 900);
+  };
+
+  // Poll the hosted-link session until the phone finishes (or it expires), then
+  // finish exactly like the desktop SDK's onSuccess. Mirrors the IDV poller.
+  function startLinkPolling(linkToken) {
+    if (!linkToken) return;
+    pollStoppedRef.current = false;
+    const tick = async () => {
+      if (pollStoppedRef.current) return;
+      try {
+        const res = await window.PlaidIntegration.getLinkStatus(linkToken);
+        if (pollStoppedRef.current) return;
+        const status = (res.status || '').toLowerCase();
+        if (status === 'completed' && res.public_token) {
+          stopLinkPolling();
+          try { await finishWithPublicToken(res.public_token); }
+          catch (e) { console.error(e); setErr('Could not finish linking. Try again.'); setStage('intro'); }
+          return;
+        }
+        if (status === 'expired') {
+          stopLinkPolling();
+          setErr('That mobile link expired. Tap “Use my phone instead” for a fresh code.');
+          setStage('intro');
+          return;
+        }
+        // status === 'pending' → keep polling
+      } catch (e) {
+        console.warn('link status poll error:', e && e.message);
+      }
+      pollTimerRef.current = setTimeout(tick, 3000);
+    };
+    pollTimerRef.current = setTimeout(tick, 2000);
+  }
 
   // Reset on close. Tear down the Plaid SDK handler synchronously so its
   // document-level listeners can't swallow clicks on the page behind.
   React.useEffect(() => {
     if (!open) {
+      stopLinkPolling();
       if (handlerRef.current && handlerRef.current.destroy) {
         try { handlerRef.current.destroy(); } catch (_) {}
       }
@@ -323,6 +398,9 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
       return () => clearTimeout(t);
     }
   }, [open]);
+
+  // Hard cleanup: stop any poll timer if the component unmounts mid-handoff.
+  React.useEffect(() => () => stopLinkPolling(), []);
 
   // Mint a link_token whenever the modal opens.
   React.useEffect(() => {
@@ -356,21 +434,7 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
       token: tokenData.link_token,
       onSuccess: async (publicToken /*, metadata */) => {
         try {
-          const result = await window.PlaidIntegration.exchangePublicToken(publicToken);
-          setLinkedSummary({
-            institution_name: result.institution_name || 'Your bank',
-            accounts: result.accounts || [],
-          });
-          setStage('success');
-          setTimeout(() => {
-            const accountStrs = (result.accounts || []).map((a) =>
-              a.mask ? `${a.name} ••${a.mask}` : a.name);
-            onSuccess && onSuccess({
-              institution: result.institution_name || 'Bank',
-              accounts: accountStrs,
-              item_id: result.item_id,
-            });
-          }, 900);
+          await finishWithPublicToken(publicToken);
         } catch (e) {
           console.error(e);
           const code = e && e.plaidCode ? ` (${e.plaidCode})` : '';
@@ -436,7 +500,7 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
             fontFamily: V1.fontBody, fontSize: 14.5, fontWeight: 600, letterSpacing: '-0.005em',
           }}>Continue with Plaid</button>
           {tokenData && tokenData.hosted_link_url && (
-            <button onClick={() => setStage('mobile')} style={{
+            <button onClick={() => { setErr(null); setStage('mobile'); startLinkPolling(tokenData.link_token); }} style={{
               width: '100%', marginTop: 10,
               background: 'transparent', color: '#0F0E17',
               border: '1px solid #E2E8F0', padding: '12px 16px', borderRadius: 10,
@@ -495,8 +559,23 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
               color: '#0F0E17', borderBottom: '1px dashed #94a3b8',
             }}
           >Or open the link here</a>
-          <button onClick={() => setStage('intro')} style={{
-            display: 'block', margin: '6px auto 0',
+          <div style={{
+            margin: '0 auto', padding: '10px 12px', maxWidth: 'max-content',
+            background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: 10,
+            display: 'inline-flex', alignItems: 'center', gap: 10,
+          }}>
+            <div style={{
+              width: 14, height: 14, borderRadius: 999,
+              border: '2px solid #E2E8F0', borderTopColor: '#0a0a0a',
+              animation: 'v1plaidSpin 700ms linear infinite',
+            }} />
+            <span style={{
+              fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 600,
+              letterSpacing: '0.14em', textTransform: 'uppercase', color: '#475569',
+            }}>Waiting for your phone…</span>
+          </div>
+          <button onClick={() => { stopLinkPolling(); setStage('intro'); }} style={{
+            display: 'block', margin: '14px auto 0',
             background: 'transparent', color: '#64748b', border: 'none',
             cursor: 'pointer', fontFamily: V1.fontBody, fontSize: 12.5,
           }}>← Back</button>
@@ -541,7 +620,7 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
 // Stages:
 //   intro → creating → choose-device → mobile-handoff (polling) → done
 //   any-stage → failed (with retry)
-function V1IDVerify({ open, onClose, onComplete }) {
+function V1IDVerify({ open, onClose, onComplete, user }) {
   const [stage, setStage] = React.useState('intro');
   const [idv, setIdv] = React.useState(null);     // { identity_verification_id, shareable_url, status }
   const [err, setErr] = React.useState(null);
@@ -626,7 +705,7 @@ function V1IDVerify({ open, onClose, onComplete }) {
     setErr(null);
     setStage('creating');
     try {
-      const res = await window.PlaidIntegration.createIDV(cuid);
+      const res = await window.PlaidIntegration.createIDV(cuid, user);
       if (!res.identity_verification_id) {
         throw new Error('Missing identity_verification_id');
       }
