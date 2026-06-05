@@ -60,6 +60,7 @@ create table if not exists public.applications (
   business_name  text,
   offer          jsonb,                         -- { amount, factor, term }
   plaid          jsonb,                         -- { institution, accounts, idVerified }
+  dashboard      jsonb,                         -- admin-entered servicing data for the customer dashboard
   decided_at     timestamptz,
   decline_reason text
 );

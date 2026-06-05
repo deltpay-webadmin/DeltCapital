@@ -45,4 +45,28 @@ async function getUserFromRequest(req) {
   }
 }
 
-module.exports = { getUserFromRequest, readBearer };
+// ─── Admin allowlist ───
+// Who counts as an admin in the Supabase-login admin view. carlos@deltpay.com is
+// a built-in default so the admin works without extra config; ADMIN_ALLOWED_EMAILS
+// (comma-separated, shared with the magic-link admin) can add more.
+const DEFAULT_ADMIN_EMAILS = ['carlos@deltpay.com'];
+
+function adminEmailSet() {
+  const env = String(process.env.ADMIN_ALLOWED_EMAILS || '')
+    .split(',').map((s) => s.trim().toLowerCase()).filter(Boolean);
+  return new Set([...DEFAULT_ADMIN_EMAILS, ...env]);
+}
+
+function isAdminEmail(email) {
+  return adminEmailSet().has(String(email || '').trim().toLowerCase());
+}
+
+// Resolve the caller and confirm they're an admin, else null. Use to gate the
+// admin endpoints — never trust a client-asserted role.
+async function getAdminFromRequest(req) {
+  const user = await getUserFromRequest(req);
+  if (!user || !isAdminEmail(user.email)) return null;
+  return user;
+}
+
+module.exports = { getUserFromRequest, readBearer, isAdminEmail, getAdminFromRequest, DEFAULT_ADMIN_EMAILS };

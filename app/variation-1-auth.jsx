@@ -65,6 +65,13 @@ async function v1GetSession() {
   return client.auth.getSession();
 }
 
+// Admin allowlist for client-side routing/UI only — the real gate lives on the
+// server (api/_supabase-auth.js). Keep this in sync with DEFAULT_ADMIN_EMAILS.
+const V1_ADMIN_EMAILS = ['carlos@deltpay.com'];
+function v1IsAdminEmail(email) {
+  return V1_ADMIN_EMAILS.includes(String(email || '').trim().toLowerCase());
+}
+
 // Bare access token for the current session, or null. Used to authenticate
 // calls to our own /api/* endpoints (e.g. /api/application) which verify the
 // token server-side via Supabase GoTrue.

@@ -37,9 +37,11 @@ function V1Ticker({ accent }) {
 }
 
 function V1Chrome({ page, navTo, accent, openApp, currentUser }) {
-  // When signed in, the auth entry point becomes the dashboard instead of login.
-  const authKey   = currentUser ? 'dashboard' : 'login';
-  const authLabel = currentUser ? 'Dashboard' : 'Login';
+  // When signed in, the auth entry point becomes the dashboard (or the admin
+  // console for admins) instead of login.
+  const isAdminUser = currentUser && v1IsAdminEmail(currentUser.email);
+  const authKey   = currentUser ? (isAdminUser ? 'admin' : 'dashboard') : 'login';
+  const authLabel = currentUser ? (isAdminUser ? 'Admin' : 'Dashboard') : 'Login';
   const links = [
     { k: 'how',         l: 'How It Works' },
     { k: 'calc',        l: 'Calculator' },
@@ -460,7 +462,7 @@ function V1Hero({ accent, onApply }) {
 // browser's Back/Forward buttons work and deep links resolve on reload. Every
 // navTo() fades the body out for ~200ms before swapping content so page
 // changes feel like a transition rather than a hard snap.
-const V1_PAGES = new Set(['home', 'about', 'how', 'reviews', 'calc', 'talk', 'support', 'faq', 'blog', 'login', 'dashboard', 'status', 'terms', 'privacy', 'eca', 'funding-flow', 'processing']);
+const V1_PAGES = new Set(['home', 'about', 'how', 'reviews', 'calc', 'talk', 'support', 'faq', 'blog', 'login', 'dashboard', 'status', 'admin', 'terms', 'privacy', 'eca', 'funding-flow', 'processing']);
 function readPageFromHash() {
   if (typeof window === 'undefined') return 'home';
   // Apply is special-cased: it's a route that opens the modal rather than
@@ -644,6 +646,8 @@ function Variation1() {
   // to the tracker (or straight to the dashboard when already approved).
   const handleSignedIn = React.useCallback(async (user) => {
     setCurrentUser(user || null);
+    // Admins go straight to the operator console.
+    if (user && v1IsAdminEmail(user.email)) { navTo('admin'); return; }
     const app = await loadApplication({ submitPending: true });
     if (app && typeof app === 'object') {
       navTo(app.status === 'approved' ? 'dashboard' : 'status');
@@ -765,6 +769,16 @@ function Variation1() {
     </>
   );
 
+  // Auth-aware view gating (computed before `body` since the routes use it).
+  // dashboardShowsApp: the funded dashboard renders only for an approved (or
+  // application-less) account; in-review accounts fall through to the tracker.
+  const dashboardShowsApp = currentUser &&
+    !(currentApplication && typeof currentApplication === 'object' && currentApplication.status !== 'approved');
+  const isAdmin = currentUser && v1IsAdminEmail(currentUser.email);
+  // The dashboard and admin console are signed-in app shells — they render their
+  // own header and own the viewport, so the marketing chrome + footer are hidden.
+  const isAppShell = (page === 'dashboard' && dashboardShowsApp) || (page === 'admin' && isAdmin);
+
   const body =
     page === 'about'   ? <V1AboutPage accent={accent} onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} /> :
     page === 'how'     ? <HowItWorksPage accent={accent} onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} /> :
@@ -797,7 +811,17 @@ function Variation1() {
         ? ((currentApplication && typeof currentApplication === 'object' && currentApplication.status !== 'approved')
             // Signed in but not yet approved — show the tracker, not the funded dashboard.
             ? <V1StatusPage user={currentUser} onNavDashboard={async () => { await loadApplication(); navTo('dashboard'); }} onNavSupport={() => navTo('support')} onApply={() => openApp(null, null)} />
-            : <V1DashboardPage user={currentUser} onApply={() => openApp(null, null)} onNavHome={() => navTo('home')} onSignOut={async () => { await handleSignOut(); navTo('home'); }} />)
+            : <V1DashboardPage user={currentUser} application={(typeof currentApplication === 'object') ? currentApplication : null} onApply={() => openApp(null, null)} onNavHome={() => navTo('home')} onSignOut={async () => { await handleSignOut(); navTo('home'); }} />)
+        : (sessionChecked
+            ? <V1LoginPage onClose={() => navTo('home')} onApply={() => openApp(null, null)} onSignIn={handleSignedIn} onNavLegal={navTo} />
+            : <div style={{ minHeight: 'calc(100vh - 96px)' }} />)
+    ) :
+    page === 'admin' ? (
+      currentUser
+        ? (isAdmin
+            ? <V1AdminPage user={currentUser} onNavHome={() => navTo('home')} onSignOut={async () => { await handleSignOut(); navTo('home'); }} />
+            // Signed-in non-admins never see the console.
+            : <V1DashboardPage user={currentUser} application={(typeof currentApplication === 'object') ? currentApplication : null} onApply={() => openApp(null, null)} onNavHome={() => navTo('home')} onSignOut={async () => { await handleSignOut(); navTo('home'); }} />)
         : (sessionChecked
             ? <V1LoginPage onClose={() => navTo('home')} onApply={() => openApp(null, null)} onSignIn={handleSignedIn} onNavLegal={navTo} />
             : <div style={{ minHeight: 'calc(100vh - 96px)' }} />)
@@ -815,15 +839,6 @@ function Variation1() {
     page === 'funding-flow' ? <V1FundingFlowPage accent={accent} onApply={() => openApp(null, null)} onCalc={() => navTo('calc')} /> :
     page === 'processing' ? <V1ProcessingPage accent={accent} onApply={() => openApp(null, null)} onCalc={() => navTo('calc')} /> :
     home;
-
-  // The dashboard is a signed-in app shell — it renders its own header and owns
-  // the full viewport, so we drop the public marketing chrome + footer. Only
-  // when the *full dashboard* actually renders, though: an in-review account on
-  // #dashboard falls through to the status tracker (see body gate), which still
-  // needs the marketing chrome for navigation.
-  const dashboardShowsApp = currentUser &&
-    !(currentApplication && typeof currentApplication === 'object' && currentApplication.status !== 'approved');
-  const isAppShell = page === 'dashboard' && dashboardShowsApp;
 
   return (
     <>

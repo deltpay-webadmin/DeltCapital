@@ -34,6 +34,8 @@ function publicShape(row) {
     created_at: row.created_at || null,
     decided_at: row.decided_at || null,
     decline_reason: row.decline_reason || null,
+    // Admin-entered servicing data for the dashboard (null until filled).
+    dashboard: row.dashboard || null,
   };
 }
 

@@ -286,6 +286,34 @@ async function setApplicationDecision({ userId, status, reason }) {
   return Array.isArray(rows) && rows.length ? rows[0] : null;
 }
 
+// ─── Admin reads/writes (service role) ───
+
+// All applications, newest first. Optionally filtered by status.
+async function listApplications({ limit = 200, offset = 0, status } = {}) {
+  if (!ENABLED) return [];
+  let path = `/applications?select=*&order=created_at.desc&limit=${limit}&offset=${offset}`;
+  if (status) path += `&status=eq.${encodeURIComponent(status)}`;
+  const rows = await pgFetch(path, { method: 'GET' });
+  return Array.isArray(rows) ? rows : [];
+}
+
+async function getApplicationById(id) {
+  if (!ENABLED || !id) return null;
+  const rows = await pgFetch(`/applications?id=eq.${encodeURIComponent(id)}&select=*&limit=1`, { method: 'GET' });
+  return Array.isArray(rows) && rows.length ? rows[0] : null;
+}
+
+// Generic PATCH by id. `patch` is whitelisted by the caller (admin endpoint).
+async function updateApplicationById(id, patch) {
+  if (!ENABLED || !id || !patch) return null;
+  const rows = await pgFetch(`/applications?id=eq.${encodeURIComponent(id)}`, {
+    method: 'PATCH',
+    headers: { Prefer: 'return=representation' },
+    body: JSON.stringify(patch),
+  });
+  return Array.isArray(rows) && rows.length ? rows[0] : null;
+}
+
 module.exports = {
   ENABLED,
   createLead,
@@ -300,5 +328,8 @@ module.exports = {
   getApplicationByUser,
   createApplication,
   setApplicationDecision,
+  listApplications,
+  getApplicationById,
+  updateApplicationById,
   VALID_APP_STATUS,
 };
