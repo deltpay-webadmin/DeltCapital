@@ -270,7 +270,7 @@ function V1AdminEditor({ app, onClose, onSaved }) {
 }
 
 // ─── Application row ───
-function V1AdminRow({ app, onDecision, onEdit }) {
+function V1AdminRow({ app, onDecision, onEdit, onPreview }) {
   const tone = V1_ADMIN_STATUS_TONE[app.status] || V1_ADMIN_STATUS_TONE.applied;
   const amount = app.offer && app.offer.amount ? `$${Number(app.offer.amount).toLocaleString()}` : '—';
   const when = app.created_at ? new Date(app.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
@@ -287,12 +287,13 @@ function V1AdminRow({ app, onDecision, onEdit }) {
         {app.status !== 'approved' && <V1AdminGhostBtn tone="good" onClick={() => onDecision(app, 'approved')}>Approve</V1AdminGhostBtn>}
         {app.status !== 'denied' && <V1AdminGhostBtn tone="danger" onClick={() => onDecision(app, 'denied')}>Deny</V1AdminGhostBtn>}
         <V1AdminGhostBtn onClick={() => onEdit(app)}>Edit data</V1AdminGhostBtn>
+        <V1AdminGhostBtn onClick={() => onPreview(app)}>Preview</V1AdminGhostBtn>
       </div>
     </div>
   );
 }
 
-function V1AdminPage({ user, onSignOut, onNavHome }) {
+function V1AdminPage({ user, onSignOut, onNavHome, onPreview }) {
   const mounted = useV1Mounted(40);
   const [apps, setApps] = React.useState(null); // null = loading
   const [err, setErr] = React.useState('');
@@ -394,7 +395,7 @@ function V1AdminPage({ user, onSignOut, onNavHome }) {
           ) : queue.length === 0 ? (
             <div style={{ padding: 28, textAlign: 'center', fontFamily: V1.fontBody, fontSize: 13.5, color: V1.muted }}>No applicants waiting. 🎉</div>
           ) : (
-            queue.map((a) => <V1AdminRow key={a.id} app={a} onDecision={decide} onEdit={setEditing} />)
+            queue.map((a) => <V1AdminRow key={a.id} app={a} onDecision={decide} onEdit={setEditing} onPreview={onPreview} />)
           )}
         </V1DashCard>
 
@@ -417,7 +418,7 @@ function V1AdminPage({ user, onSignOut, onNavHome }) {
           ) : filtered.length === 0 ? (
             <div style={{ padding: 28, textAlign: 'center', fontFamily: V1.fontBody, fontSize: 13.5, color: V1.muted }}>No applications.</div>
           ) : (
-            filtered.map((a) => <V1AdminRow key={a.id} app={a} onDecision={decide} onEdit={setEditing} />)
+            filtered.map((a) => <V1AdminRow key={a.id} app={a} onDecision={decide} onEdit={setEditing} onPreview={onPreview} />)
           )}
         </V1DashCard>
       </div>

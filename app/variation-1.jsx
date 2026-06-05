@@ -595,6 +595,9 @@ function Variation1() {
   // 'none' (no row), or null (unknown / not loaded). Drives the dashboard
   // gate (only an approved application reaches the funded dashboard).
   const [currentApplication, setCurrentApplication] = React.useState(null);
+  // When an admin clicks "Preview" on an application, we render the customer
+  // dashboard populated with that application's data (read-only) for testing.
+  const [previewApp, setPreviewApp] = React.useState(null);
 
   // Fetch (and optionally first POST the pending) application for the signed-in
   // user. POST is idempotent server-side, so linking on every hydrate is safe.
@@ -663,6 +666,7 @@ function Variation1() {
     try { await v1SignOut(); } catch (_) { /* best effort */ }
     setCurrentUser(null);
     setCurrentApplication(null);
+    setPreviewApp(null);
   }, []);
 
   // Core page swap: fade the body, swap page, scroll to top, fade back in.
@@ -777,7 +781,7 @@ function Variation1() {
   const isAdmin = currentUser && v1IsAdminEmail(currentUser.email);
   // The dashboard and admin console are signed-in app shells — they render their
   // own header and own the viewport, so the marketing chrome + footer are hidden.
-  const isAppShell = (page === 'dashboard' && dashboardShowsApp) || (page === 'admin' && isAdmin);
+  const isAppShell = (page === 'dashboard' && (dashboardShowsApp || (isAdmin && previewApp))) || (page === 'admin' && isAdmin);
 
   const body =
     page === 'about'   ? <V1AboutPage accent={accent} onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} /> :
@@ -808,7 +812,14 @@ function Variation1() {
     ) :
     page === 'dashboard' ? (
       currentUser
-        ? ((currentApplication && typeof currentApplication === 'object' && currentApplication.status !== 'approved')
+        ? (isAdmin && previewApp
+            // Admin previewing a customer's dashboard (read-only) — bypasses the
+            // normal application gate so the admin's own (empty) row never diverts.
+            ? <V1DashboardPage user={currentUser} application={previewApp}
+                previewLabel={previewApp.email || previewApp.business_name || 'customer'}
+                onExitPreview={() => { setPreviewApp(null); navTo('admin'); }}
+                onApply={() => openApp(null, null)} onNavHome={() => navTo('home')} onSignOut={async () => { await handleSignOut(); navTo('home'); }} />
+            : (currentApplication && typeof currentApplication === 'object' && currentApplication.status !== 'approved')
             // Signed in but not yet approved — show the tracker, not the funded dashboard.
             ? <V1StatusPage user={currentUser} onNavDashboard={async () => { await loadApplication(); navTo('dashboard'); }} onNavSupport={() => navTo('support')} onApply={() => openApp(null, null)} />
             : <V1DashboardPage user={currentUser} application={(typeof currentApplication === 'object') ? currentApplication : null} onApply={() => openApp(null, null)} onNavHome={() => navTo('home')} onSignOut={async () => { await handleSignOut(); navTo('home'); }} />)
@@ -819,7 +830,7 @@ function Variation1() {
     page === 'admin' ? (
       currentUser
         ? (isAdmin
-            ? <V1AdminPage user={currentUser} onNavHome={() => navTo('home')} onSignOut={async () => { await handleSignOut(); navTo('home'); }} />
+            ? <V1AdminPage user={currentUser} onNavHome={() => navTo('home')} onPreview={(app) => { setPreviewApp(app); navTo('dashboard'); }} onSignOut={async () => { await handleSignOut(); navTo('home'); }} />
             // Signed-in non-admins never see the console.
             : <V1DashboardPage user={currentUser} application={(typeof currentApplication === 'object') ? currentApplication : null} onApply={() => openApp(null, null)} onNavHome={() => navTo('home')} onSignOut={async () => { await handleSignOut(); navTo('home'); }} />)
         : (sessionChecked

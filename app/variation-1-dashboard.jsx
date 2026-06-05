@@ -467,9 +467,9 @@ function V1DashSettings({ email, data: d }) {
 // ─── Account header — the dashboard's own app-shell header (the marketing
 // chrome is hidden on this route). Logo returns to the marketing site; Log out
 // ends the session. ───
-function V1DashHeader({ email, account, hasData, accountStatus, performance, onSignOut, signingOut, onNavHome }) {
+function V1DashHeader({ email, account, hasData, accountStatus, performance, onSignOut, signingOut, onNavHome, sticky = true }) {
   return (
-    <div style={{ background: '#fff', borderBottom: `1px solid ${V1.line}`, position: 'sticky', top: 0, zIndex: 20 }}>
+    <div style={{ background: '#fff', borderBottom: `1px solid ${V1.line}`, position: sticky ? 'sticky' : 'static', top: 0, zIndex: 20 }}>
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '14px 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
           <img
@@ -513,7 +513,7 @@ function V1DashHeader({ email, account, hasData, accountStatus, performance, onS
   );
 }
 
-function V1DashboardPage({ user, application, onSignOut, onApply, onNavHome }) {
+function V1DashboardPage({ user, application, onSignOut, onApply, onNavHome, previewLabel, onExitPreview }) {
   const mounted = useV1Mounted(40);
   const [tab, setTab] = React.useState('summary');
   const [session, setSession] = React.useState(null);
@@ -560,10 +560,31 @@ function V1DashboardPage({ user, application, onSignOut, onApply, onNavHome }) {
           [data-v1-dash-tiles] { grid-template-columns: 1fr !important; }
         }
       `}</style>
+      {previewLabel && (
+        <div style={{
+          position: 'sticky', top: 0, zIndex: 30,
+          background: V1.blue, color: '#fff',
+          padding: '9px 32px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 14, flexWrap: 'wrap',
+        }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontFamily: V1.fontBody, fontSize: 13, fontWeight: 600 }}>
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M1.5 8S4 3.5 8 3.5 14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8z"/><circle cx="8" cy="8" r="2"/></svg>
+            Previewing <b style={{ fontWeight: 700 }}>{previewLabel}</b> · read-only
+          </span>
+          <button type="button" onClick={onExitPreview} style={{
+            display: 'inline-flex', alignItems: 'center', gap: 6, padding: '5px 12px', borderRadius: 999,
+            background: 'rgba(255,255,255,0.18)', border: '1px solid rgba(255,255,255,0.5)', color: '#fff',
+            cursor: 'pointer', fontFamily: V1.fontBody, fontSize: 12.5, fontWeight: 600,
+          }}>
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M11 7H3M6 4L3 7l3 3"/></svg>
+            Exit preview
+          </button>
+        </div>
+      )}
       <V1DashHeader
         email={email} account={data.account} hasData={hasData}
         accountStatus={data.accountStatus} performance={data.performance}
         onSignOut={handleSignOut} signingOut={signingOut} onNavHome={onNavHome}
+        sticky={!previewLabel}
       />
 
       {/* Tab nav */}
