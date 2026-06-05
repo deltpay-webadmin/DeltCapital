@@ -64,3 +64,15 @@ async function v1GetSession() {
   if (!client) return { data: { session: null }, error: V1_NO_CLIENT_ERR };
   return client.auth.getSession();
 }
+
+// Bare access token for the current session, or null. Used to authenticate
+// calls to our own /api/* endpoints (e.g. /api/application) which verify the
+// token server-side via Supabase GoTrue.
+async function v1GetAccessToken() {
+  try {
+    const { data } = await v1GetSession();
+    return (data && data.session && data.session.access_token) || null;
+  } catch (_) {
+    return null;
+  }
+}

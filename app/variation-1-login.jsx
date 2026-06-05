@@ -64,9 +64,9 @@ function V1LoginField({ id, label, type = 'text', value, onChange, icon, trailin
   );
 }
 
-function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
+function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal, initialMode, prefillEmail, intent }) {
   const mounted = useV1Mounted(60);
-  const [email, setEmail]                 = React.useState('');
+  const [email, setEmail]                 = React.useState(prefillEmail || '');
   const [password, setPassword]           = React.useState('');
   const [showPassword, setShowPassword]   = React.useState(false);
   const [rememberMe, setRememberMe]       = React.useState(false);
@@ -78,7 +78,8 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
   const [hoverApply, setHoverApply]       = React.useState(false);
   const [hoverBack, setHoverBack]         = React.useState(false);
   const [sent, setSent]                   = React.useState(false);
-  const [mode, setMode]                   = React.useState('signin'); // 'signin' | 'signup'
+  const [mode, setMode]                   = React.useState(initialMode === 'signup' ? 'signup' : 'signin'); // 'signin' | 'signup'
+  const isTrackIntent = intent === 'track-status';
   const [error, setError]                 = React.useState('');
   const [loading, setLoading]             = React.useState(false);
 
@@ -297,7 +298,7 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
             letterSpacing: '0.2em', textTransform: 'uppercase', color: V1.muted,
           }}>
             <span style={{ width: 18, height: 1, background: V1.muted }} />
-            Sign in
+            {isSignup ? 'Create account' : 'Sign in'}
           </div>
         </div>
 
@@ -328,6 +329,17 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
                 {isSignup ? 'Create your Delt account.' : 'Sign in to your Delt account.'}
               </V1LineMask>
             </h2>
+
+            {isTrackIntent && isSignup && (
+              <p style={{
+                margin: '16px 0 0', maxWidth: 460,
+                fontFamily: V1.fontBody, fontSize: 15, lineHeight: 1.5, color: V1.muted,
+                ...enter(220),
+              }}>
+                One account lets you track your approval status in real time and,
+                once you're funded, manage payments, documents, and statements.
+              </p>
+            )}
 
             {/* Hairline rule */}
             <div style={{

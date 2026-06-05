@@ -169,6 +169,7 @@ function V1StepBank({ form, setForm, accent, onAdvance, autoOpen }) {
       bankConnected: true,
       bankInstitution: data.institution,
       bankAccounts: data.accounts,
+      bankItemId: data.item_id || null,
     });
     setTimeout(() => { onAdvance && onAdvance(); }, 700);
   };
@@ -582,8 +583,31 @@ function V1StepOffer({ form, prefill, accent }) {
 }
 
 // ─── Step 5: Done ───
-function V1StepDone({ form, accent }) {
+function V1StepDone({ form, prefill, accent, onTrackStatus }) {
   const ref = React.useMemo(() => `DLT-2026-${Math.floor(100000 + Math.random() * 900000)}`, []);
+  const [hoverCreate, setHoverCreate] = React.useState(false);
+
+  // Snapshot the application context the tracker/account needs. Mirrors the
+  // numbers shown on the Offer step so the status page and the offer agree.
+  const handleCreateAccount = () => {
+    if (typeof onTrackStatus !== 'function') return;
+    const amount = prefill?.high || form.amount || 75000;
+    const factor = prefill?.factor || 1.18;
+    onTrackStatus({
+      ref,
+      offer: { amount, factor, term: 8 },
+      plaid: {
+        institution: form.bankInstitution || null,
+        accounts: form.bankAccounts || null,
+        itemId: form.bankItemId || null,
+        idVerified: !!form.idVerified,
+      },
+      businessName: form.businessName || null,
+      email: form.email || null,
+      leadId: (prefill && prefill.leadId) || null,
+    });
+  };
+
   return (
     <div style={{ textAlign: 'center', padding: '24px 0 16px' }}>
       <div style={{
@@ -655,6 +679,63 @@ function V1StepDone({ form, accent }) {
           </div>
         ))}
       </div>
+
+      {/* Create-account CTA — track approval status in real time */}
+      <div style={{
+        maxWidth: 480, margin: '22px auto 0',
+        padding: '20px 22px', textAlign: 'left',
+        background: V1.white, border: `1px solid ${V1.line}`, borderRadius: 14,
+        boxShadow: '0 14px 36px -22px rgba(15,14,23,0.35)',
+        position: 'relative', overflow: 'hidden',
+      }}>
+        <div aria-hidden style={{
+          position: 'absolute', top: -90, right: -60, width: 220, height: 220,
+          background: `radial-gradient(circle, ${accent}1F, transparent 60%)`,
+          pointerEvents: 'none',
+        }} />
+        <div style={{
+          fontFamily: V1.fontMono, fontSize: 10, fontWeight: 600,
+          letterSpacing: '0.16em', textTransform: 'uppercase', color: accent,
+        }}>Real-time tracking</div>
+        <div style={{
+          marginTop: 8, fontFamily: V1.fontDisplay, fontSize: 19, fontWeight: 600,
+          letterSpacing: '-0.02em', color: V1.ink, lineHeight: 1.2,
+        }}>Want to track your approval status?</div>
+        <p style={{
+          margin: '8px 0 0', fontFamily: V1.fontBody, fontSize: 14,
+          color: V1.muted, lineHeight: 1.55,
+        }}>
+          Create an account and follow your application live — from
+          <b style={{ color: V1.ink }}> in review</b> to
+          <b style={{ color: V1.ink }}> approved</b> — plus payments, documents,
+          and statements once you're funded.
+        </p>
+        <button
+          type="button"
+          onClick={handleCreateAccount}
+          onMouseEnter={() => setHoverCreate(true)}
+          onMouseLeave={() => setHoverCreate(false)}
+          style={{
+            marginTop: 16, width: '100%',
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            padding: '13px 20px', borderRadius: 10, border: 'none', cursor: 'pointer',
+            background: `linear-gradient(135deg, ${accent}, #818CF8)`, color: V1.white,
+            fontFamily: V1.fontBody, fontSize: 14.5, fontWeight: 600,
+            boxShadow: `0 12px 30px -12px ${accent}aa`,
+            transform: hoverCreate ? 'translateY(-1px)' : 'translateY(0)',
+            transition: 'transform .15s, filter .15s',
+            filter: hoverCreate ? 'brightness(1.06)' : 'none',
+          }}
+        >
+          Create account &amp; track status
+          <svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round"/></svg>
+        </button>
+        <div style={{
+          marginTop: 10, fontFamily: V1.fontMono, fontSize: 9.5, fontWeight: 600,
+          letterSpacing: '0.14em', textTransform: 'uppercase', color: V1.muted,
+          textAlign: 'center',
+        }}>Takes 20 seconds · email + password</div>
+      </div>
     </div>
   );
 }
@@ -676,6 +757,10 @@ function V1ApplicationFlow({
   autoOpenPlaid = false,
   onDraftChange,
   onComplete,
+  // Fires from the Done step's "Create account & track status" CTA with the
+  // application payload. The host (variation-1.jsx) stashes it, closes the
+  // modal, and routes to account creation → the status tracker.
+  onTrackStatus,
 }) {
   const [step, setStep] = React.useState(startStep);
   const [form, setForm] = React.useState({
@@ -1007,7 +1092,7 @@ function V1ApplicationFlow({
             {step === 1 && <V1StepBank form={form} setForm={setForm} accent={accent} onAdvance={() => setStep(2)} autoOpen={autoOpenPlaid} />}
             {step === 2 && <V1StepIdentity form={form} setForm={setForm} accent={accent} onAdvance={() => setStep(3)} />}
             {step === 3 && <V1StepOffer form={form} prefill={prefill} accent={accent} />}
-            {step === 4 && <V1StepDone form={form} accent={accent} />}
+            {step === 4 && <V1StepDone form={form} prefill={prefill} accent={accent} onTrackStatus={onTrackStatus} />}
           </div>
 
           {/* action bar */}

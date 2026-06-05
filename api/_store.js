@@ -228,6 +228,64 @@ async function recordEvent({ leadId, event, meta }) {
   return { ok: true };
 }
 
+// ─── Applications ───
+// One row per account (keyed by Supabase auth user_id). The status tracker
+// polls these; the Approve/Deny transition is a future admin action.
+
+const VALID_APP_STATUS = new Set(['applied', 'in_review', 'approved', 'denied']);
+
+async function getApplicationByUser(userId) {
+  if (!ENABLED || !userId) return null;
+  const rows = await pgFetch(
+    `/applications?user_id=eq.${encodeURIComponent(userId)}&select=*&limit=1`,
+    { method: 'GET' }
+  );
+  return Array.isArray(rows) && rows.length ? rows[0] : null;
+}
+
+// Create the application for an account if one doesn't exist yet. Idempotent:
+// re-submitting (e.g. the handoff fires twice) returns the existing row and
+// never downgrades a status the admin may have already advanced.
+async function createApplication({ userId, email, leadId, ref, businessName, offer, plaid }) {
+  if (!ENABLED || !userId) return null;
+  const existing = await getApplicationByUser(userId);
+  if (existing) return existing;
+  const rows = await pgFetch('/applications', {
+    method: 'POST',
+    headers: { Prefer: 'return=representation' },
+    body: JSON.stringify([{
+      user_id: userId,
+      email: email || null,
+      lead_id: leadId || null,
+      ref: ref || null,
+      status: 'in_review',
+      business_name: businessName || null,
+      offer: offer || null,
+      plaid: plaid || null,
+    }]),
+  });
+  return Array.isArray(rows) ? rows[0] : null;
+}
+
+// Admin-only decision write (used by the future admin view). Service role
+// bypasses RLS; never call this from a user-authenticated path.
+async function setApplicationDecision({ userId, status, reason }) {
+  if (!ENABLED || !userId) return null;
+  if (!VALID_APP_STATUS.has(status)) {
+    throw new Error(`Unknown application status: ${status}`);
+  }
+  const rows = await pgFetch(`/applications?user_id=eq.${encodeURIComponent(userId)}`, {
+    method: 'PATCH',
+    headers: { Prefer: 'return=representation' },
+    body: JSON.stringify({
+      status,
+      decline_reason: status === 'denied' ? (reason || null) : null,
+      decided_at: (status === 'approved' || status === 'denied') ? new Date().toISOString() : null,
+    }),
+  });
+  return Array.isArray(rows) && rows.length ? rows[0] : null;
+}
+
 module.exports = {
   ENABLED,
   createLead,
@@ -239,4 +297,8 @@ module.exports = {
   listLeads,
   recordEvent,
   VALID_EVENTS,
+  getApplicationByUser,
+  createApplication,
+  setApplicationDecision,
+  VALID_APP_STATUS,
 };
