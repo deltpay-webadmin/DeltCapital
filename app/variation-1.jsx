@@ -609,7 +609,7 @@ function Variation1() {
       if (pend) {
         try {
           await fetch('/api/application', {
-            method: 'POST',
+            method: 'POST', cache: 'no-store',
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
             body: JSON.stringify(pend),
           });
@@ -618,7 +618,7 @@ function Variation1() {
       }
     }
     try {
-      const res = await fetch('/api/application', { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch('/api/application', { cache: 'no-store', headers: { Authorization: `Bearer ${token}` } });
       if (res.status === 404) { setCurrentApplication('none'); return 'none'; }
       if (!res.ok) { setCurrentApplication(null); return null; }
       const data = await res.json().catch(() => null);

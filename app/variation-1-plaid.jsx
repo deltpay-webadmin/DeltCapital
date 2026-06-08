@@ -413,10 +413,8 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
         setStage('intro');
       })
       .catch((e) => {
-        console.error(e);
-        const code = e && e.plaidCode ? ` (${e.plaidCode})` : '';
-        const msg = e && e.plaidMessage ? ` — ${e.plaidMessage}` : '';
-        setErr(`Could not reach Plaid${code}${msg}. Try again.`);
+        console.error('[v1-plaid] mintLinkToken failed:', e && (e.plaidCode || e.message), e && e.plaidMessage);
+        setErr('We couldn’t reach our secure bank-linking partner. Please try again in a moment.');
         setStage('intro');
       });
   }, [open]);
@@ -425,7 +423,8 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
 
   const launchHere = () => {
     if (!tokenData || !tokenData.link_token || !window.Plaid || !window.Plaid.create) {
-      setErr('Plaid Link SDK is not available.');
+      console.error('[v1-plaid] Plaid Link SDK or link_token unavailable');
+      setErr('We couldn’t open the secure bank connection. Please refresh the page and try again.');
       return;
     }
     setErr(null);
@@ -436,10 +435,8 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
         try {
           await finishWithPublicToken(publicToken);
         } catch (e) {
-          console.error(e);
-          const code = e && e.plaidCode ? ` (${e.plaidCode})` : '';
-          const msg = e && e.plaidMessage ? ` — ${e.plaidMessage}` : '';
-          setErr(`Could not finish linking${code}${msg}. Try again.`);
+          console.error('[v1-plaid] finishWithPublicToken failed:', e && (e.plaidCode || e.message), e && e.plaidMessage);
+          setErr('We couldn’t finish linking your bank. Please try again.');
           setStage('intro');
         }
       },

@@ -157,7 +157,9 @@ function V1StatusPage({ user, onNavDashboard, onNavSupport, onApply }) {
         const token = await v1GetAccessToken();
         if (cancelled) return;
         if (!token) { if (isFirst) { setPhase('error'); setErrMsg('Your session has expired. Please sign in again.'); } return; }
-        let res = await fetch('/api/application', { headers: { Authorization: `Bearer ${token}` } });
+        // cache:'no-store' so a freshly-created application is never masked by a
+        // stale 404 the browser cached before sign-up completed.
+        let res = await fetch('/api/application', { cache: 'no-store', headers: { Authorization: `Bearer ${token}` } });
         if (cancelled) return;
         // No row yet. If a finished application is still pending (its initial
         // submit failed during sign-up), submit it now so the tracker self-heals.
@@ -165,27 +167,28 @@ function V1StatusPage({ user, onNavDashboard, onNavSupport, onApply }) {
           const pend = (typeof loadPendingApplication === 'function') ? loadPendingApplication() : null;
           if (pend) {
             const post = await fetch('/api/application', {
-              method: 'POST',
+              method: 'POST', cache: 'no-store',
               headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
               body: JSON.stringify(pend),
             });
             if (cancelled) return;
             if (!post.ok) { setPhase('error'); setErrMsg('We couldn’t submit your application. Tap “Try again” to retry.'); return; }
             if (typeof clearPendingApplication === 'function') clearPendingApplication();
-            res = await fetch('/api/application', { headers: { Authorization: `Bearer ${token}` } });
+            res = await fetch('/api/application', { cache: 'no-store', headers: { Authorization: `Bearer ${token}` } });
             if (cancelled) return;
           } else {
             setApp(null); setPhase('none'); return;
           }
         }
         if (res.status === 404) { setApp(null); setPhase('none'); return; }
-        if (!res.ok) { if (isFirst) { setPhase('error'); setErrMsg('Could not load your application. We’ll keep trying.'); } return; }
+        if (!res.ok) { if (isFirst) { setPhase('error'); setErrMsg('We’re having trouble loading your application right now. We’ll keep trying.'); } return; }
         const data = await res.json().catch(() => null);
-        if (cancelled || !data || !data.application) { if (isFirst) setPhase('error'); return; }
+        if (cancelled || !data || !data.application) { if (isFirst) { setPhase('error'); setErrMsg('We’re having trouble loading your application right now. Please tap “Try again”.'); } return; }
         setApp(data.application);
         setPhase('ok');
       } catch (err) {
-        if (!cancelled && isFirst) { setPhase('error'); setErrMsg(String(err && err.message || err)); }
+        console.error('[v1-status] load failed:', err && err.message);
+        if (!cancelled && isFirst) { setPhase('error'); setErrMsg('We couldn’t reach the server. Check your connection and tap “Try again”.'); }
       }
     };
 

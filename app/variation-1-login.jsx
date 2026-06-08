@@ -4,6 +4,22 @@
 // Right: Pure White form column with hairline-underline inputs, sheen-sweep
 // submit, SSO chips, and a magic-link success state that crossfades in.
 
+// Map raw Supabase/auth error text to plain, reassuring language for end users.
+// The original message is left in the console (caller logs it) for debugging.
+function v1FriendlyAuthError(message, isSignup) {
+  const m = String(message || '').toLowerCase();
+  if (/invalid login credentials|invalid credentials/.test(m)) return 'The email or password you entered is incorrect. Please try again.';
+  if (/already registered|already been registered|user already exists|already exists/.test(m)) return 'An account with this email already exists. Try signing in instead.';
+  if (/password should be at least|password.*at least|weak password|password is too short/.test(m)) return 'Your password must be at least 6 characters.';
+  if (/rate limit|too many|over_email_send/.test(m)) return 'Too many attempts. Please wait a minute and try again.';
+  if (/invalid email|unable to validate email|email.*invalid/.test(m)) return 'Please enter a valid email address.';
+  if (/email not confirmed|not confirmed/.test(m)) return 'Please confirm your email first — check your inbox for the link.';
+  if (/network|failed to fetch|load failed|connection/.test(m)) return 'We couldn’t reach the server. Check your connection and try again.';
+  return isSignup
+    ? 'We couldn’t create your account just now. Please try again.'
+    : 'We couldn’t sign you in just now. Please try again.';
+}
+
 function V1LoginField({ id, label, type = 'text', value, onChange, icon, trailing, focused, onFocus, onBlur, autoComplete }) {
   const isActive = focused;
   return (
@@ -97,7 +113,7 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal, initialMode, pref
     try {
       if (isSignup) {
         const { data, error: err } = await v1SignUp(email, password);
-        if (err) { setError(err.message); return; }
+        if (err) { console.error('[v1-login] signup failed:', err.message); setError(v1FriendlyAuthError(err.message, true)); return; }
         // When email confirmation is on, signUp returns no session — show the
         // "check your inbox" screen. Otherwise the user is signed in immediately.
         if (data && data.session) {
@@ -107,9 +123,12 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal, initialMode, pref
         }
       } else {
         const { data, error: err } = await v1SignIn(email, password);
-        if (err) { setError(err.message); return; }
+        if (err) { console.error('[v1-login] signin failed:', err.message); setError(v1FriendlyAuthError(err.message, false)); return; }
         onSignIn && onSignIn(data.user);
       }
+    } catch (err) {
+      console.error('[v1-login] unexpected error:', err);
+      setError('We couldn’t reach the server. Check your connection and try again.');
     } finally {
       setLoading(false);
     }
