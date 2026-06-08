@@ -652,11 +652,11 @@ function Variation1() {
     // Admins go straight to the operator console.
     if (user && v1IsAdminEmail(user.email)) { navTo('admin'); return; }
     const app = await loadApplication({ submitPending: true });
-    if (app && typeof app === 'object') {
-      navTo(app.status === 'approved' ? 'dashboard' : 'status');
-    } else {
-      navTo('dashboard');
-    }
+    // Only an approved application opens the funded dashboard. Everything else —
+    // an in-review/denied row, no row yet, or a save that hasn't landed — goes to
+    // the status tracker, which shows the right state (and self-heals a pending
+    // submit) rather than dropping the user on an empty dashboard.
+    navTo(app && typeof app === 'object' && app.status === 'approved' ? 'dashboard' : 'status');
   // navTo is stable (declared below via useCallback); referenced lazily.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadApplication]);

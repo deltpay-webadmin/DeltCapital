@@ -144,6 +144,8 @@ function V1StatusPage({ user, onNavDashboard, onNavSupport, onApply }) {
   const [app, setApp]       = React.useState(null);
   const [errMsg, setErrMsg] = React.useState('');
   const [hoverDash, setHoverDash] = React.useState(false);
+  // Bumped by the "Try again" button to re-run the loader after an error.
+  const [reloadKey, setReloadKey] = React.useState(0);
 
   // Fetch the application once, then poll so an admin decision appears live.
   React.useEffect(() => {
@@ -155,8 +157,27 @@ function V1StatusPage({ user, onNavDashboard, onNavSupport, onApply }) {
         const token = await v1GetAccessToken();
         if (cancelled) return;
         if (!token) { if (isFirst) { setPhase('error'); setErrMsg('Your session has expired. Please sign in again.'); } return; }
-        const res = await fetch('/api/application', { headers: { Authorization: `Bearer ${token}` } });
+        let res = await fetch('/api/application', { headers: { Authorization: `Bearer ${token}` } });
         if (cancelled) return;
+        // No row yet. If a finished application is still pending (its initial
+        // submit failed during sign-up), submit it now so the tracker self-heals.
+        if (res.status === 404) {
+          const pend = (typeof loadPendingApplication === 'function') ? loadPendingApplication() : null;
+          if (pend) {
+            const post = await fetch('/api/application', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+              body: JSON.stringify(pend),
+            });
+            if (cancelled) return;
+            if (!post.ok) { setPhase('error'); setErrMsg('We couldn’t submit your application. Tap “Try again” to retry.'); return; }
+            if (typeof clearPendingApplication === 'function') clearPendingApplication();
+            res = await fetch('/api/application', { headers: { Authorization: `Bearer ${token}` } });
+            if (cancelled) return;
+          } else {
+            setApp(null); setPhase('none'); return;
+          }
+        }
         if (res.status === 404) { setApp(null); setPhase('none'); return; }
         if (!res.ok) { if (isFirst) { setPhase('error'); setErrMsg('Could not load your application. We’ll keep trying.'); } return; }
         const data = await res.json().catch(() => null);
@@ -177,7 +198,7 @@ function V1StatusPage({ user, onNavDashboard, onNavSupport, onApply }) {
       load(false);
     }, 10000);
     return () => { cancelled = true; if (timer) clearInterval(timer); };
-  }, []);
+  }, [reloadKey]);
 
   const enter = (delay) => ({
     opacity: mounted ? 1 : 0,
@@ -252,13 +273,20 @@ function V1StatusPage({ user, onNavDashboard, onNavSupport, onApply }) {
 
         {/* Error */}
         {phase === 'error' && (
-          <div role="alert" style={{
-            marginTop: 32, display: 'flex', alignItems: 'flex-start', gap: 10,
-            background: 'rgba(220,38,38,0.06)', border: '1px solid rgba(220,38,38,0.22)',
-            borderRadius: 10, padding: '14px 16px', maxWidth: 520,
-            fontFamily: V1.fontBody, fontSize: 14, lineHeight: 1.5, color: '#b91c1c', ...enter(420),
-          }}>
-            <span>{errMsg || 'Could not load your application.'}</span>
+          <div style={{ ...enter(420) }}>
+            <div role="alert" style={{
+              marginTop: 32, display: 'flex', alignItems: 'flex-start', gap: 10,
+              background: 'rgba(220,38,38,0.06)', border: '1px solid rgba(220,38,38,0.22)',
+              borderRadius: 10, padding: '14px 16px', maxWidth: 520,
+              fontFamily: V1.fontBody, fontSize: 14, lineHeight: 1.5, color: '#b91c1c',
+            }}>
+              <span>{errMsg || 'Could not load your application.'}</span>
+            </div>
+            <button type="button" onClick={() => { setErrMsg(''); setPhase('loading'); setReloadKey((k) => k + 1); }} style={{
+              marginTop: 16, display: 'inline-flex', alignItems: 'center', gap: 8, padding: '12px 20px',
+              borderRadius: 10, border: 'none', cursor: 'pointer', background: V1.blue, color: '#fff',
+              fontFamily: V1.fontDisplay, fontSize: 14.5, fontWeight: 700,
+            }}>Try again</button>
           </div>
         )}
 
