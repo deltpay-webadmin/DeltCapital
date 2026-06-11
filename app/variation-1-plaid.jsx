@@ -48,11 +48,15 @@ window.PlaidIntegration = window.PlaidIntegration || {
       return data;
     }),
 
-  createIDV: () =>
+  // `clientUserId` is optional — pass a fresh one (V1PlaidFreshClientUserId)
+  // on retry so a failed/terminal IDV session is never re-entered. `user` is
+  // optional PII (firstName/lastName/email/phone) forwarded so Plaid can
+  // pre-fill / streamline the identity + phone-verification steps.
+  createIDV: (clientUserId, user) =>
     fetch('/api/plaid-create-idv', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ clientUserId: V1PlaidGetClientUserId() }),
+      body: JSON.stringify({ clientUserId: clientUserId || V1PlaidGetClientUserId(), user }),
     }).then(async (r) => {
       const data = await r.json().catch(() => ({}));
       if (!r.ok) throw V1PlaidThrowFromResponse(data, 'createIDV failed');
@@ -63,6 +67,19 @@ window.PlaidIntegration = window.PlaidIntegration || {
     fetch(`/api/plaid-get-idv-status?id=${encodeURIComponent(id)}`).then(async (r) => {
       const data = await r.json().catch(() => ({}));
       if (!r.ok) throw V1PlaidThrowFromResponse(data, 'pollIDV failed');
+      return data;
+    }),
+
+  // Poll the hosted-link session so the desktop can detect when the user
+  // finishes connecting their bank on their phone (the QR handoff).
+  getLinkStatus: (linkToken) =>
+    fetch('/api/plaid-get-link-status', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ link_token: linkToken }),
+    }).then(async (r) => {
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) throw V1PlaidThrowFromResponse(data, 'getLinkStatus failed');
       return data;
     }),
 };
@@ -87,6 +104,106 @@ function V1PlaidGetClientUserId() {
     }
     return window.__deltPlaidUid;
   }
+}
+
+// A one-off client_user_id for a retry. Plaid keys identity verifications by
+// (client_user_id + template_id), so reusing the stable id can re-enter a
+// session that's already failed/expired. A fresh id guarantees a clean run.
+function V1PlaidFreshClientUserId() {
+  const rnd = (typeof crypto !== 'undefined' && crypto.randomUUID)
+    ? crypto.randomUUID()
+    : (Math.random().toString(36).slice(2) + Date.now().toString(36));
+  return 'delt-retry-' + rnd;
+}
+
+// Map Plaid's IDV `steps` object to a human reason for the step that failed,
+// so a failed verification says *what* went wrong (e.g. the selfie) instead of
+// a generic message. Each step value is a status string
+// ('success' | 'failed' | 'active' | 'expired' | 'canceled' | ...).
+function V1IDVFailedStepReason(steps) {
+  if (!steps || typeof steps !== 'object') return null;
+  const LABELS = {
+    selfie_check: 'the selfie / face match',
+    documentary_verification: 'the ID document scan',
+    kyc_check: 'the identity details (KYC)',
+    verify_sms: 'phone verification',
+    risk_check: 'the risk check',
+    accept_tos: 'the consent step',
+  };
+  const terminal = ['failed', 'expired', 'canceled'];
+  for (const key of Object.keys(LABELS)) {
+    const v = (steps[key] || '').toString().toLowerCase();
+    if (terminal.includes(v)) return LABELS[key];
+  }
+  return null;
+}
+
+// Turn a thrown create/poll error into friendly { title, body, code } copy so
+// the modal shows a human message instead of dumping Plaid's raw error string.
+function V1IDVErrorCopy(e) {
+  const code = (e && e.plaidCode) || null;
+  switch (code) {
+    case 'INVALID_FIELD':
+      // Should be handled by is_idempotent server-side; this is a safety net.
+      return { title: 'A verification is already in progress',
+               body: 'Tap “Begin verification” again to pick up where you left off.', code };
+    case 'INVALID_API_KEYS':
+    case 'INVALID_API_KEY':
+    case 'INVALID_SECRET':
+      return { title: 'Verification is temporarily unavailable',
+               body: 'Identity checks aren’t configured correctly right now. Please try again later or contact support.', code };
+    case 'PRODUCT_NOT_READY':
+    case 'INTERNAL_SERVER_ERROR':
+    case 'PLAID_ERROR':
+      return { title: 'Plaid had a brief hiccup',
+               body: 'The verification service is momentarily unavailable. Give it a few seconds and try again.', code };
+    case 'RATE_LIMIT_EXCEEDED':
+      return { title: 'Too many attempts',
+               body: 'Please wait a moment before starting another verification.', code };
+    default:
+      return { title: 'Could not start verification',
+               body: 'Something went wrong starting your ID check. Please try again.', code };
+  }
+}
+
+// Clean inline alert for IDV errors. Accepts a { title, body, code } object
+// (or a plain string for back-compat) and renders an icon + headline + concise
+// body, with the technical code tucked into a small "Ref:" line for support.
+function V1IDVAlert({ err }) {
+  if (!err) return null;
+  const title = typeof err === 'string' ? null : err.title;
+  const body  = typeof err === 'string' ? err  : err.body;
+  const code  = typeof err === 'string' ? null : err.code;
+  return (
+    <div role="alert" style={{
+      background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 10,
+      padding: '12px 14px', marginBottom: 14, textAlign: 'left',
+      display: 'flex', gap: 10, alignItems: 'flex-start',
+    }}>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#DC2626"
+           strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"
+           style={{ flexShrink: 0, marginTop: 1 }}>
+        <circle cx="8" cy="8" r="6.5" /><path d="M8 5v3.5M8 11h.01" />
+      </svg>
+      <div>
+        {title && (
+          <div style={{
+            fontFamily: V1.fontDisplay, fontSize: 13.5, fontWeight: 700,
+            color: '#991B1B', marginBottom: 2,
+          }}>{title}</div>
+        )}
+        <div style={{
+          fontFamily: V1.fontBody, fontSize: 12.5, lineHeight: 1.5, color: '#B91C1C',
+        }}>{body}</div>
+        {code && (
+          <div style={{
+            marginTop: 6, fontFamily: V1.fontMono, fontSize: 9.5, fontWeight: 600,
+            letterSpacing: '0.1em', textTransform: 'uppercase', color: '#D69A9A',
+          }}>Ref: {code}</div>
+        )}
+      </div>
+    </div>
+  );
 }
 
 // ─── Plaid logo (4-square grid mark) ─────────────────────────────
@@ -206,11 +323,71 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
   const [err, setErr] = React.useState(null);
   const [linkedSummary, setLinkedSummary] = React.useState(null); // { institution_name, accounts }
   const handlerRef = React.useRef(null);
+  const pollTimerRef = React.useRef(null);
+  const pollStoppedRef = React.useRef(false);
+
+  function stopLinkPolling() {
+    pollStoppedRef.current = true;
+    if (pollTimerRef.current) { clearTimeout(pollTimerRef.current); pollTimerRef.current = null; }
+  }
+
+  // Exchange a public_token and report success — shared by the desktop SDK
+  // callback and the mobile hosted-link poller so both paths advance the step.
+  const finishWithPublicToken = async (publicToken) => {
+    const result = await window.PlaidIntegration.exchangePublicToken(publicToken);
+    setLinkedSummary({
+      institution_name: result.institution_name || 'Your bank',
+      accounts: result.accounts || [],
+    });
+    setStage('success');
+    setTimeout(() => {
+      const accountStrs = (result.accounts || []).map((a) =>
+        a.mask ? `${a.name} ••${a.mask}` : a.name);
+      onSuccess && onSuccess({
+        institution: result.institution_name || 'Bank',
+        accounts: accountStrs,
+        item_id: result.item_id,
+      });
+    }, 900);
+  };
+
+  // Poll the hosted-link session until the phone finishes (or it expires), then
+  // finish exactly like the desktop SDK's onSuccess. Mirrors the IDV poller.
+  function startLinkPolling(linkToken) {
+    if (!linkToken) return;
+    pollStoppedRef.current = false;
+    const tick = async () => {
+      if (pollStoppedRef.current) return;
+      try {
+        const res = await window.PlaidIntegration.getLinkStatus(linkToken);
+        if (pollStoppedRef.current) return;
+        const status = (res.status || '').toLowerCase();
+        if (status === 'completed' && res.public_token) {
+          stopLinkPolling();
+          try { await finishWithPublicToken(res.public_token); }
+          catch (e) { console.error(e); setErr('Could not finish linking. Try again.'); setStage('intro'); }
+          return;
+        }
+        if (status === 'expired') {
+          stopLinkPolling();
+          setErr('That mobile link expired. Tap “Use my phone instead” for a fresh code.');
+          setStage('intro');
+          return;
+        }
+        // status === 'pending' → keep polling
+      } catch (e) {
+        console.warn('link status poll error:', e && e.message);
+      }
+      pollTimerRef.current = setTimeout(tick, 3000);
+    };
+    pollTimerRef.current = setTimeout(tick, 2000);
+  }
 
   // Reset on close. Tear down the Plaid SDK handler synchronously so its
   // document-level listeners can't swallow clicks on the page behind.
   React.useEffect(() => {
     if (!open) {
+      stopLinkPolling();
       if (handlerRef.current && handlerRef.current.destroy) {
         try { handlerRef.current.destroy(); } catch (_) {}
       }
@@ -221,6 +398,9 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
       return () => clearTimeout(t);
     }
   }, [open]);
+
+  // Hard cleanup: stop any poll timer if the component unmounts mid-handoff.
+  React.useEffect(() => () => stopLinkPolling(), []);
 
   // Mint a link_token whenever the modal opens.
   React.useEffect(() => {
@@ -233,10 +413,8 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
         setStage('intro');
       })
       .catch((e) => {
-        console.error(e);
-        const code = e && e.plaidCode ? ` (${e.plaidCode})` : '';
-        const msg = e && e.plaidMessage ? ` — ${e.plaidMessage}` : '';
-        setErr(`Could not reach Plaid${code}${msg}. Try again.`);
+        console.error('[v1-plaid] mintLinkToken failed:', e && (e.plaidCode || e.message), e && e.plaidMessage);
+        setErr('We couldn’t reach our secure bank-linking partner. Please try again in a moment.');
         setStage('intro');
       });
   }, [open]);
@@ -245,7 +423,8 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
 
   const launchHere = () => {
     if (!tokenData || !tokenData.link_token || !window.Plaid || !window.Plaid.create) {
-      setErr('Plaid Link SDK is not available.');
+      console.error('[v1-plaid] Plaid Link SDK or link_token unavailable');
+      setErr('We couldn’t open the secure bank connection. Please refresh the page and try again.');
       return;
     }
     setErr(null);
@@ -254,26 +433,10 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
       token: tokenData.link_token,
       onSuccess: async (publicToken /*, metadata */) => {
         try {
-          const result = await window.PlaidIntegration.exchangePublicToken(publicToken);
-          setLinkedSummary({
-            institution_name: result.institution_name || 'Your bank',
-            accounts: result.accounts || [],
-          });
-          setStage('success');
-          setTimeout(() => {
-            const accountStrs = (result.accounts || []).map((a) =>
-              a.mask ? `${a.name} ••${a.mask}` : a.name);
-            onSuccess && onSuccess({
-              institution: result.institution_name || 'Bank',
-              accounts: accountStrs,
-              item_id: result.item_id,
-            });
-          }, 900);
+          await finishWithPublicToken(publicToken);
         } catch (e) {
-          console.error(e);
-          const code = e && e.plaidCode ? ` (${e.plaidCode})` : '';
-          const msg = e && e.plaidMessage ? ` — ${e.plaidMessage}` : '';
-          setErr(`Could not finish linking${code}${msg}. Try again.`);
+          console.error('[v1-plaid] finishWithPublicToken failed:', e && (e.plaidCode || e.message), e && e.plaidMessage);
+          setErr('We couldn’t finish linking your bank. Please try again.');
           setStage('intro');
         }
       },
@@ -334,7 +497,7 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
             fontFamily: V1.fontBody, fontSize: 14.5, fontWeight: 600, letterSpacing: '-0.005em',
           }}>Continue with Plaid</button>
           {tokenData && tokenData.hosted_link_url && (
-            <button onClick={() => setStage('mobile')} style={{
+            <button onClick={() => { setErr(null); setStage('mobile'); startLinkPolling(tokenData.link_token); }} style={{
               width: '100%', marginTop: 10,
               background: 'transparent', color: '#0F0E17',
               border: '1px solid #E2E8F0', padding: '12px 16px', borderRadius: 10,
@@ -393,8 +556,23 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
               color: '#0F0E17', borderBottom: '1px dashed #94a3b8',
             }}
           >Or open the link here</a>
-          <button onClick={() => setStage('intro')} style={{
-            display: 'block', margin: '6px auto 0',
+          <div style={{
+            margin: '0 auto', padding: '10px 12px', maxWidth: 'max-content',
+            background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: 10,
+            display: 'inline-flex', alignItems: 'center', gap: 10,
+          }}>
+            <div style={{
+              width: 14, height: 14, borderRadius: 999,
+              border: '2px solid #E2E8F0', borderTopColor: '#0a0a0a',
+              animation: 'v1plaidSpin 700ms linear infinite',
+            }} />
+            <span style={{
+              fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 600,
+              letterSpacing: '0.14em', textTransform: 'uppercase', color: '#475569',
+            }}>Waiting for your phone…</span>
+          </div>
+          <button onClick={() => { stopLinkPolling(); setStage('intro'); }} style={{
+            display: 'block', margin: '14px auto 0',
             background: 'transparent', color: '#64748b', border: 'none',
             cursor: 'pointer', fontFamily: V1.fontBody, fontSize: 12.5,
           }}>← Back</button>
@@ -439,7 +617,7 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
 // Stages:
 //   intro → creating → choose-device → mobile-handoff (polling) → done
 //   any-stage → failed (with retry)
-function V1IDVerify({ open, onClose, onComplete }) {
+function V1IDVerify({ open, onClose, onComplete, user }) {
   const [stage, setStage] = React.useState('intro');
   const [idv, setIdv] = React.useState(null);     // { identity_verification_id, shareable_url, status }
   const [err, setErr] = React.useState(null);
@@ -493,9 +671,16 @@ function V1IDVerify({ open, onClose, onComplete }) {
         if (status === 'success') { stopPolling(); setStage('done'); return; }
         if (status === 'failed' || status === 'expired' || status === 'canceled') {
           stopPolling();
-          setErr(status === 'expired' ? 'Session expired. Start a new verification.' :
-                 status === 'canceled' ? 'Verification was canceled.' :
-                 'Verification could not be completed.');
+          const stepReason = V1IDVFailedStepReason(res.steps);
+          setErr({
+            title: status === 'expired'  ? 'Verification expired'
+                 : status === 'canceled' ? 'Verification canceled'
+                 : 'Verification didn’t pass',
+            body: status === 'expired'  ? 'The session timed out before it finished. Start a new verification.'
+                : status === 'canceled' ? 'The verification was canceled before it finished.'
+                : stepReason ? `Plaid couldn’t verify ${stepReason}.`
+                : 'Plaid couldn’t finish verifying your identity.',
+          });
           setStage('failed');
           return;
         }
@@ -510,21 +695,39 @@ function V1IDVerify({ open, onClose, onComplete }) {
     pollTimerRef.current = setTimeout(tick, 1500);
   }
 
-  async function beginVerification() {
+  async function beginVerification(clientUserId, isAutoFresh) {
+    // Guard against being called directly as an onClick handler (where the
+    // first arg is a SyntheticEvent, not an id).
+    const cuid = typeof clientUserId === 'string' ? clientUserId : undefined;
     setErr(null);
     setStage('creating');
     try {
-      const res = await window.PlaidIntegration.createIDV();
-      if (!res.shareable_url || !res.identity_verification_id) {
-        throw new Error('Missing shareable_url or id');
+      const res = await window.PlaidIntegration.createIDV(cuid, user);
+      if (!res.identity_verification_id) {
+        throw new Error('Missing identity_verification_id');
+      }
+      const status = (res.status || '').toLowerCase();
+      // Idempotent create can return an *existing* session — branch on state.
+      if (status === 'success') {
+        // Already verified earlier; short-circuit straight to done.
+        setIdv(res);
+        setStage('done');
+        return;
+      }
+      if ((status === 'failed' || status === 'expired' || status === 'canceled') && !isAutoFresh) {
+        // The existing session is terminal — transparently start a brand-new
+        // one with a fresh client_user_id so the user isn't stuck re-entering
+        // a dead session. Guarded by isAutoFresh to avoid looping.
+        return beginVerification(V1PlaidFreshClientUserId(), true);
+      }
+      if (!res.shareable_url) {
+        throw new Error('Missing shareable_url');
       }
       setIdv(res);
       setStage('choose-device');
     } catch (e) {
       console.error(e);
-      const code = e && e.plaidCode ? ` (${e.plaidCode})` : '';
-      const msg = e && e.plaidMessage ? ` — ${e.plaidMessage}` : '';
-      setErr(`Could not start verification${code}${msg}. Try again.`);
+      setErr(V1IDVErrorCopy(e));
       setStage('intro');
     }
   }
@@ -545,7 +748,8 @@ function V1IDVerify({ open, onClose, onComplete }) {
   function retry() {
     stopPolling();
     setIdv(null); setErr(null);
-    beginVerification();
+    // Fresh client_user_id so we never re-enter the failed/terminal session.
+    beginVerification(V1PlaidFreshClientUserId());
   }
 
   if (!open) return null;
@@ -602,13 +806,7 @@ function V1IDVerify({ open, onClose, onComplete }) {
             Two steps: (1) photo of a government ID, (2) a quick selfie. Plaid
             matches face geometry between the two and stores nothing afterward.
           </div>
-          {err && (
-            <div style={{
-              background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 8,
-              padding: '10px 12px', marginBottom: 14,
-              fontFamily: V1.fontBody, fontSize: 12.5, color: '#991B1B',
-            }}>{err}</div>
-          )}
+          <V1IDVAlert err={err} />
           <button onClick={beginVerification} style={{
             width: '100%', background: '#000', color: '#fff', border: 'none',
             padding: '13px 16px', borderRadius: 10, cursor: 'pointer',
@@ -759,12 +957,12 @@ function V1IDVerify({ open, onClose, onComplete }) {
           <div style={{
             fontFamily: V1.fontDisplay, fontSize: 18, fontWeight: 700,
             color: '#0F0E17', marginBottom: 8,
-          }}>Verification didn't complete</div>
+          }}>{(err && err.title) || 'Verification didn’t complete'}</div>
           <div style={{
             fontFamily: V1.fontBody, fontSize: 13, color: '#475569',
             lineHeight: 1.55, marginBottom: 18, maxWidth: 280, margin: '0 auto 18px',
           }}>
-            {err || 'Plaid couldn\'t finish verifying your identity.'} You can try again.
+            {((err && err.body) || 'Plaid couldn’t finish verifying your identity.') + ' You can try again.'}
           </div>
           <button onClick={retry} style={{
             width: '100%', background: '#000', color: '#fff', border: 'none',

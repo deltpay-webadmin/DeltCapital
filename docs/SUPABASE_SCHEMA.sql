@@ -42,6 +42,32 @@ create table if not exists public.apply_progress (
 create index if not exists apply_progress_lead_idx
   on public.apply_progress (lead_id, created_at desc);
 
+-- ─── Applications: one row per account that opts into approval tracking ───
+-- Created when an applicant finishes the apply flow and creates an account to
+-- track their approval status. Keyed by the Supabase auth user id (one row per
+-- user). Status starts at 'in_review'; the Approve/Deny transition is performed
+-- later from the admin view (server-side, service role). The status tracker page
+-- polls this row so an admin decision shows up "in real time".
+create table if not exists public.applications (
+  id             uuid primary key default gen_random_uuid(),
+  created_at     timestamptz not null default now(),
+  user_id        uuid not null,                 -- Supabase auth user id (the account)
+  email          text,
+  lead_id        uuid references public.leads(id) on delete set null,  -- when known
+  ref            text,                          -- display ref e.g. DLT-2026-xxxxxx
+  status         text not null default 'in_review'
+                 check (status in ('applied','in_review','approved','denied')),
+  business_name  text,
+  offer          jsonb,                         -- { amount, factor, term }
+  plaid          jsonb,                         -- { institution, accounts, idVerified }
+  dashboard      jsonb,                         -- admin-entered servicing data for the customer dashboard
+  decided_at     timestamptz,
+  decline_reason text
+);
+
+-- One application per account. createApplication upserts on this constraint.
+create unique index if not exists applications_user_idx on public.applications (user_id);
+
 -- ─── Row-level security ───
 -- We only ever talk to these tables from server-side code using the
 -- service role key (which bypasses RLS by design). Enabling RLS with no
@@ -49,3 +75,4 @@ create index if not exists apply_progress_lead_idx
 -- defense in depth in case the anon key leaks into client code.
 alter table public.leads          enable row level security;
 alter table public.apply_progress enable row level security;
+alter table public.applications   enable row level security;

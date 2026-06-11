@@ -18,7 +18,47 @@ const V1APPLY_BANKS = [
 
 const V1APPLY_STEPS = ['Business', 'Bank', 'Identity', 'Offer', 'Done'];
 
-function V1ApplyField({ label, hint, children }) {
+// All 50 states + DC, for the "State of operation" dropdown.
+const V1_US_STATES = [
+  'AL','AK','AZ','AR','CA','CO','CT','DE','DC','FL','GA','HI','ID','IL','IN','IA',
+  'KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM',
+  'NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA',
+  'WV','WI','WY',
+];
+
+// ── Field formatters / validators ──
+// EIN renders as XX-XXXXXXX (9 digits). Non-digits are dropped as typed.
+function v1FormatEIN(raw) {
+  const d = String(raw || '').replace(/\D/g, '').slice(0, 9);
+  return d.length > 2 ? `${d.slice(0, 2)}-${d.slice(2)}` : d;
+}
+// Phone renders progressively as (XXX) XXX-XXXX (10 digits).
+function v1FormatPhone(raw) {
+  const d = String(raw || '').replace(/\D/g, '').slice(0, 10);
+  if (d.length <= 3) return d;
+  if (d.length <= 6) return `(${d.slice(0, 3)}) ${d.slice(3)}`;
+  return `(${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6)}`;
+}
+function v1DigitsOnly(raw) { return String(raw || '').replace(/\D/g, ''); }
+function v1EmailValid(s) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(s || '').trim()); }
+
+// Per-field error messages for the Business step (and the SSN last-4). Returns
+// '' when a field is valid. Used both to gate the Continue button and to render
+// inline messages once a field is touched or the user attempts to advance.
+function v1FieldErrors(form) {
+  const f = form || {};
+  return {
+    businessName: f.businessName && f.businessName.trim() ? '' : 'Enter your legal business name.',
+    firstName:    f.firstName && f.firstName.trim() ? '' : 'Required.',
+    lastName:     f.lastName && f.lastName.trim() ? '' : 'Required.',
+    email:        v1EmailValid(f.email) ? '' : 'Enter a valid email address.',
+    phone:        v1DigitsOnly(f.phone).length === 10 ? '' : 'Enter a 10-digit phone number.',
+    ein:          v1DigitsOnly(f.ein).length === 9 ? '' : 'EIN must be 9 digits.',
+    ssn4:         (f.ssn4 || '').length === 4 ? '' : 'Enter the last 4 digits of your SSN.',
+  };
+}
+
+function V1ApplyField({ label, hint, error, children }) {
   return (
     <label style={{ display: 'block' }}>
       <div style={{
@@ -36,23 +76,31 @@ function V1ApplyField({ label, hint, children }) {
         )}
       </div>
       {children}
+      {error && (
+        <div style={{
+          marginTop: 6, fontFamily: V1.fontBody, fontSize: 12, color: '#dc2626', lineHeight: 1.4,
+        }}>{error}</div>
+      )}
     </label>
   );
 }
 
-function V1ApplyInput({ value, onChange, placeholder, type = 'text', accent }) {
+function V1ApplyInput({ value, onChange, placeholder, type = 'text', accent, inputMode, maxLength, invalid, onBlur }) {
+  const restColor = invalid ? '#dc2626' : V1.line;
   return (
     <input
       type={type}
+      inputMode={inputMode}
+      maxLength={maxLength}
       value={value || ''}
       placeholder={placeholder}
       onChange={(e) => onChange(e.target.value)}
       onFocus={(e) => { e.currentTarget.style.borderColor = accent; e.currentTarget.style.boxShadow = `0 0 0 3px ${accent}26`; }}
-      onBlur={(e) => { e.currentTarget.style.borderColor = V1.line; e.currentTarget.style.boxShadow = 'none'; }}
+      onBlur={(e) => { e.currentTarget.style.borderColor = restColor; e.currentTarget.style.boxShadow = 'none'; if (onBlur) onBlur(); }}
       style={{
         width: '100%', padding: '13px 14px',
         background: V1.white,
-        border: `1px solid ${V1.line}`, borderRadius: 10,
+        border: `1px solid ${restColor}`, borderRadius: 10,
         fontFamily: V1.fontBody, fontSize: 14.5, color: V1.ink,
         outline: 'none', transition: 'border-color .15s, box-shadow .15s',
       }}
@@ -88,7 +136,11 @@ function V1ApplySelect({ value, onChange, opts, accent }) {
 }
 
 // ─── Step 1: Business ───
-function V1StepBusiness({ form, setForm, accent }) {
+function V1StepBusiness({ form, setForm, accent, errors, showErrors }) {
+  const [touched, setTouched] = React.useState({});
+  const errs = errors || {};
+  const mark = (name) => () => setTouched((t) => ({ ...t, [name]: true }));
+  const err = (name) => ((touched[name] || showErrors) ? (errs[name] || '') : '');
   return (
     <div>
       <div style={{
@@ -111,29 +163,29 @@ function V1StepBusiness({ form, setForm, accent }) {
         marginTop: 30,
         display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 18,
       }}>
-        <V1ApplyField label="Legal business name">
-          <V1ApplyInput value={form.businessName} onChange={(v) => setForm({ ...form, businessName: v })} placeholder="La Rosa Restaurant LLC" accent={accent} />
+        <V1ApplyField label="Legal business name" error={err('businessName')}>
+          <V1ApplyInput value={form.businessName} onChange={(v) => setForm({ ...form, businessName: v })} placeholder="La Rosa Restaurant LLC" accent={accent} invalid={!!err('businessName')} onBlur={mark('businessName')} />
         </V1ApplyField>
-        <V1ApplyField label="EIN" hint="9 digits">
-          <V1ApplyInput value={form.ein} onChange={(v) => setForm({ ...form, ein: v })} placeholder="12-3456789" accent={accent} />
+        <V1ApplyField label="EIN" hint="9 digits" error={err('ein')}>
+          <V1ApplyInput value={form.ein} onChange={(v) => setForm({ ...form, ein: v1FormatEIN(v) })} placeholder="12-3456789" accent={accent} inputMode="numeric" maxLength={10} invalid={!!err('ein')} onBlur={mark('ein')} />
         </V1ApplyField>
         <V1ApplyField label="Entity type">
           <V1ApplySelect value={form.legalForm} onChange={(v) => setForm({ ...form, legalForm: v })} opts={['LLC', 'S-Corp', 'C-Corp', 'Sole Prop', 'Partnership']} accent={accent} />
         </V1ApplyField>
         <V1ApplyField label="State of operation">
-          <V1ApplySelect value={form.state} onChange={(v) => setForm({ ...form, state: v })} opts={['CA','TX','FL','NY','IL','GA','WA','CO','AZ','NJ','Other']} accent={accent} />
+          <V1ApplySelect value={form.state} onChange={(v) => setForm({ ...form, state: v })} opts={V1_US_STATES} accent={accent} />
         </V1ApplyField>
-        <V1ApplyField label="First name">
-          <V1ApplyInput value={form.firstName} onChange={(v) => setForm({ ...form, firstName: v })} placeholder="Maria" accent={accent} />
+        <V1ApplyField label="First name" error={err('firstName')}>
+          <V1ApplyInput value={form.firstName} onChange={(v) => setForm({ ...form, firstName: v })} placeholder="Maria" accent={accent} invalid={!!err('firstName')} onBlur={mark('firstName')} />
         </V1ApplyField>
-        <V1ApplyField label="Last name">
-          <V1ApplyInput value={form.lastName} onChange={(v) => setForm({ ...form, lastName: v })} placeholder="Rodriguez" accent={accent} />
+        <V1ApplyField label="Last name" error={err('lastName')}>
+          <V1ApplyInput value={form.lastName} onChange={(v) => setForm({ ...form, lastName: v })} placeholder="Rodriguez" accent={accent} invalid={!!err('lastName')} onBlur={mark('lastName')} />
         </V1ApplyField>
-        <V1ApplyField label="Email">
-          <V1ApplyInput type="email" value={form.email} onChange={(v) => setForm({ ...form, email: v })} placeholder="you@business.com" accent={accent} />
+        <V1ApplyField label="Email" error={err('email')}>
+          <V1ApplyInput type="email" value={form.email} onChange={(v) => setForm({ ...form, email: v })} placeholder="you@business.com" accent={accent} inputMode="email" invalid={!!err('email')} onBlur={mark('email')} />
         </V1ApplyField>
-        <V1ApplyField label="Phone">
-          <V1ApplyInput value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} placeholder="(555) 555-0199" accent={accent} />
+        <V1ApplyField label="Phone" error={err('phone')}>
+          <V1ApplyInput value={form.phone} onChange={(v) => setForm({ ...form, phone: v1FormatPhone(v) })} placeholder="(555) 555-0199" accent={accent} inputMode="tel" maxLength={14} invalid={!!err('phone')} onBlur={mark('phone')} />
         </V1ApplyField>
       </div>
     </div>
@@ -169,6 +221,7 @@ function V1StepBank({ form, setForm, accent, onAdvance, autoOpen }) {
       bankConnected: true,
       bankInstitution: data.institution,
       bankAccounts: data.accounts,
+      bankItemId: data.item_id || null,
     });
     setTimeout(() => { onAdvance && onAdvance(); }, 700);
   };
@@ -292,7 +345,9 @@ function V1StepBank({ form, setForm, accent, onAdvance, autoOpen }) {
 }
 
 // ─── Step 3: Identity ───
-function V1StepIdentity({ form, setForm, accent, onAdvance }) {
+function V1StepIdentity({ form, setForm, accent, onAdvance, showErrors }) {
+  const [ssnTouched, setSsnTouched] = React.useState(false);
+  const ssnError = ((ssnTouched || showErrors) && form.ssn4.length !== 4) ? 'Enter the last 4 digits of your SSN.' : '';
   const [idvOpen, setIdvOpen] = React.useState(false);
   const idvDone = !!form.idVerified;
   const handleIdvComplete = (data) => {
@@ -383,11 +438,12 @@ function V1StepIdentity({ form, setForm, accent, onAdvance }) {
         marginTop: 22,
         display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 18, maxWidth: 480,
       }}>
-        <V1ApplyField label="SSN (last 4)" hint="Masked on submit">
+        <V1ApplyField label="SSN (last 4)" hint="Masked on submit" error={ssnError}>
           <V1ApplyInput
             value={form.ssn4}
             onChange={(v) => setForm({ ...form, ssn4: v.replace(/[^0-9]/g, '').slice(0, 4) })}
-            placeholder="1234" accent={accent} />
+            placeholder="1234" accent={accent} inputMode="numeric" maxLength={4}
+            invalid={!!ssnError} onBlur={() => setSsnTouched(true)} />
         </V1ApplyField>
         <V1ApplyField label="Use of funds">
           <V1ApplySelect
@@ -398,7 +454,12 @@ function V1StepIdentity({ form, setForm, accent, onAdvance }) {
         </V1ApplyField>
       </div>
 
-      <V1IDVerify open={idvOpen} onClose={() => setIdvOpen(false)} onComplete={handleIdvComplete} />
+      <V1IDVerify
+        open={idvOpen}
+        onClose={() => setIdvOpen(false)}
+        onComplete={handleIdvComplete}
+        user={{ firstName: form.firstName, lastName: form.lastName, email: form.email, phone: form.phone }}
+      />
 
       <div style={{
         marginTop: 32, padding: '18px 20px',
@@ -577,8 +638,31 @@ function V1StepOffer({ form, prefill, accent }) {
 }
 
 // ─── Step 5: Done ───
-function V1StepDone({ form, accent }) {
+function V1StepDone({ form, prefill, accent, onTrackStatus }) {
   const ref = React.useMemo(() => `DLT-2026-${Math.floor(100000 + Math.random() * 900000)}`, []);
+  const [hoverCreate, setHoverCreate] = React.useState(false);
+
+  // Snapshot the application context the tracker/account needs. Mirrors the
+  // numbers shown on the Offer step so the status page and the offer agree.
+  const handleCreateAccount = () => {
+    if (typeof onTrackStatus !== 'function') return;
+    const amount = prefill?.high || form.amount || 75000;
+    const factor = prefill?.factor || 1.18;
+    onTrackStatus({
+      ref,
+      offer: { amount, factor, term: 8 },
+      plaid: {
+        institution: form.bankInstitution || null,
+        accounts: form.bankAccounts || null,
+        itemId: form.bankItemId || null,
+        idVerified: !!form.idVerified,
+      },
+      businessName: form.businessName || null,
+      email: form.email || null,
+      leadId: (prefill && prefill.leadId) || null,
+    });
+  };
+
   return (
     <div style={{ textAlign: 'center', padding: '24px 0 16px' }}>
       <div style={{
@@ -650,6 +734,63 @@ function V1StepDone({ form, accent }) {
           </div>
         ))}
       </div>
+
+      {/* Create-account CTA — track approval status in real time */}
+      <div style={{
+        maxWidth: 480, margin: '22px auto 0',
+        padding: '20px 22px', textAlign: 'left',
+        background: V1.white, border: `1px solid ${V1.line}`, borderRadius: 14,
+        boxShadow: '0 14px 36px -22px rgba(15,14,23,0.35)',
+        position: 'relative', overflow: 'hidden',
+      }}>
+        <div aria-hidden style={{
+          position: 'absolute', top: -90, right: -60, width: 220, height: 220,
+          background: `radial-gradient(circle, ${accent}1F, transparent 60%)`,
+          pointerEvents: 'none',
+        }} />
+        <div style={{
+          fontFamily: V1.fontMono, fontSize: 10, fontWeight: 600,
+          letterSpacing: '0.16em', textTransform: 'uppercase', color: accent,
+        }}>Real-time tracking</div>
+        <div style={{
+          marginTop: 8, fontFamily: V1.fontDisplay, fontSize: 19, fontWeight: 600,
+          letterSpacing: '-0.02em', color: V1.ink, lineHeight: 1.2,
+        }}>Want to track your approval status?</div>
+        <p style={{
+          margin: '8px 0 0', fontFamily: V1.fontBody, fontSize: 14,
+          color: V1.muted, lineHeight: 1.55,
+        }}>
+          Create an account and follow your application live — from
+          <b style={{ color: V1.ink }}> in review</b> to
+          <b style={{ color: V1.ink }}> approved</b> — plus payments, documents,
+          and statements once you're funded.
+        </p>
+        <button
+          type="button"
+          onClick={handleCreateAccount}
+          onMouseEnter={() => setHoverCreate(true)}
+          onMouseLeave={() => setHoverCreate(false)}
+          style={{
+            marginTop: 16, width: '100%',
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            padding: '13px 20px', borderRadius: 10, border: 'none', cursor: 'pointer',
+            background: `linear-gradient(135deg, ${accent}, #818CF8)`, color: V1.white,
+            fontFamily: V1.fontBody, fontSize: 14.5, fontWeight: 600,
+            boxShadow: `0 12px 30px -12px ${accent}aa`,
+            transform: hoverCreate ? 'translateY(-1px)' : 'translateY(0)',
+            transition: 'transform .15s, filter .15s',
+            filter: hoverCreate ? 'brightness(1.06)' : 'none',
+          }}
+        >
+          Create account &amp; track status
+          <svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round"/></svg>
+        </button>
+        <div style={{
+          marginTop: 10, fontFamily: V1.fontMono, fontSize: 9.5, fontWeight: 600,
+          letterSpacing: '0.14em', textTransform: 'uppercase', color: V1.muted,
+          textAlign: 'center',
+        }}>Takes 20 seconds · email + password</div>
+      </div>
     </div>
   );
 }
@@ -671,6 +812,10 @@ function V1ApplicationFlow({
   autoOpenPlaid = false,
   onDraftChange,
   onComplete,
+  // Fires from the Done step's "Create account & track status" CTA with the
+  // application payload. The host (variation-1.jsx) stashes it, closes the
+  // modal, and routes to account creation → the status tracker.
+  onTrackStatus,
 }) {
   const [step, setStep] = React.useState(startStep);
   const [form, setForm] = React.useState({
@@ -706,10 +851,16 @@ function V1ApplicationFlow({
     }));
   }, [open, prefill]);
   const [closing, setClosing] = React.useState(false);
+  // Set true when the user clicks Continue on an invalid step, so every field's
+  // inline error is revealed at once (not just the ones they've blurred).
+  const [triedNext, setTriedNext] = React.useState(false);
 
   React.useEffect(() => {
     if (open) { setStep(startStep); setClosing(false); }
   }, [open, startStep]);
+
+  // Reset the "tried to continue" flag whenever the step changes.
+  React.useEffect(() => { setTriedNext(false); }, [step]);
 
   // Persist every form mutation to the host (localStorage). We snapshot
   // the bits that pre-fill on the next visit: contact, calculator inputs,
@@ -816,12 +967,19 @@ function V1ApplicationFlow({
     setTimeout(() => { setClosing(false); onClose(); }, 200);
   };
 
+  const fieldErrors = v1FieldErrors(form);
   const canProceed = (() => {
-    if (step === 0) return form.businessName && form.email;
+    if (step === 0) return !(fieldErrors.businessName || fieldErrors.firstName || fieldErrors.lastName || fieldErrors.email || fieldErrors.phone || fieldErrors.ein);
     if (step === 1) return form.bankConnected;
     if (step === 2) return form.ssn4.length === 4 && form.idVerified;
     return true;
   })();
+  // Continue is always clickable; an invalid step reveals inline errors instead
+  // of advancing, so the user is never stuck on a dead grey button.
+  const handleContinue = () => {
+    if (canProceed) setStep(step + 1);
+    else setTriedNext(true);
+  };
 
   const modal = (
     <div
@@ -998,11 +1156,11 @@ function V1ApplicationFlow({
             flex: 1, overflowY: 'auto',
             padding: '38px 40px',
           }}>
-            {step === 0 && <V1StepBusiness form={form} setForm={setForm} accent={accent} />}
+            {step === 0 && <V1StepBusiness form={form} setForm={setForm} accent={accent} errors={fieldErrors} showErrors={triedNext} />}
             {step === 1 && <V1StepBank form={form} setForm={setForm} accent={accent} onAdvance={() => setStep(2)} autoOpen={autoOpenPlaid} />}
-            {step === 2 && <V1StepIdentity form={form} setForm={setForm} accent={accent} onAdvance={() => setStep(3)} />}
+            {step === 2 && <V1StepIdentity form={form} setForm={setForm} accent={accent} onAdvance={() => setStep(3)} showErrors={triedNext} />}
             {step === 3 && <V1StepOffer form={form} prefill={prefill} accent={accent} />}
-            {step === 4 && <V1StepDone form={form} accent={accent} />}
+            {step === 4 && <V1StepDone form={form} prefill={prefill} accent={accent} onTrackStatus={onTrackStatus} />}
           </div>
 
           {/* action bar */}
@@ -1018,29 +1176,22 @@ function V1ApplicationFlow({
               {step < 4 ? '🔒 Secured · Plaid · Soft-pull only' : 'Application received'}
             </div>
             <div style={{ display: 'flex', gap: 10 }}>
-              {/* TEMP: dev-only skip — remove once IDV is green */}
+              {/* Shortcut straight to the Identity step (no prefill). */}
               {step < 2 && (
                 <button
-                  onClick={() => {
-                    setForm((f) => ({
-                      ...f,
-                      businessName: f.businessName || 'Test Co',
-                      email: f.email || 'test@example.com',
-                      bankConnected: true,
-                      bankInstitution: f.bankInstitution || 'Test Bank',
-                    }));
-                    setStep(2);
-                  }}
+                  onClick={() => setStep(2)}
                   style={{
-                    padding: '7px 10px', borderRadius: 6,
+                    padding: '11px 14px', borderRadius: 10,
                     background: 'transparent', border: `1px dashed ${V1.muted}`,
                     color: V1.muted, cursor: 'pointer',
-                    fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 600,
+                    fontFamily: V1.fontMono, fontSize: 11, fontWeight: 600,
                     letterSpacing: '0.12em', textTransform: 'uppercase',
+                    transition: 'color .15s, border-color .15s',
                   }}
-                >Skip → Identity</button>
+                  onMouseEnter={(e) => { e.currentTarget.style.color = V1.ink; e.currentTarget.style.borderColor = V1.ink; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.color = V1.muted; e.currentTarget.style.borderColor = V1.muted; }}
+                >Skip to Identity</button>
               )}
-              {/* /TEMP */}
               {step > 0 && step < 4 && (
                 <button
                   onClick={() => setStep(step - 1)}
@@ -1056,27 +1207,34 @@ function V1ApplicationFlow({
                 >Back</button>
               )}
 
-              {step < 3 && (
+              {step < 3 && (() => {
+                // Steps 0 and 2 surface inline field errors, so keep Continue
+                // clickable there and reveal errors on click. The Bank step has
+                // no inline fields (action is connecting Plaid), so it stays
+                // disabled until the bank is linked.
+                const enabled = canProceed || step === 0 || step === 2;
+                return (
                 <button
-                  onClick={() => canProceed && setStep(step + 1)}
-                  disabled={!canProceed}
+                  onClick={handleContinue}
+                  disabled={!enabled}
                   style={{
                     padding: '11px 22px', borderRadius: 10, border: 'none',
-                    background: canProceed ? accent : V1.line,
-                    color: canProceed ? V1.white : V1.muted,
+                    background: enabled ? accent : V1.line,
+                    color: enabled ? V1.white : V1.muted,
                     fontFamily: V1.fontBody, fontSize: 14, fontWeight: 600,
-                    cursor: canProceed ? 'pointer' : 'not-allowed',
+                    cursor: enabled ? 'pointer' : 'not-allowed',
                     display: 'inline-flex', alignItems: 'center', gap: 8,
                     transition: 'filter .15s, transform .1s, box-shadow .15s',
-                    boxShadow: canProceed ? `0 8px 22px -10px ${accent}aa` : 'none',
+                    boxShadow: enabled ? `0 8px 22px -10px ${accent}aa` : 'none',
                   }}
-                  onMouseEnter={(e) => { if (canProceed) { e.currentTarget.style.filter = 'brightness(1.08)'; e.currentTarget.style.transform = 'translateY(-1px)'; } }}
-                  onMouseLeave={(e) => { if (canProceed) { e.currentTarget.style.filter = 'none'; e.currentTarget.style.transform = 'translateY(0)'; } }}
+                  onMouseEnter={(e) => { if (enabled) { e.currentTarget.style.filter = 'brightness(1.08)'; e.currentTarget.style.transform = 'translateY(-1px)'; } }}
+                  onMouseLeave={(e) => { if (enabled) { e.currentTarget.style.filter = 'none'; e.currentTarget.style.transform = 'translateY(0)'; } }}
                 >
                   Continue
                   <svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round"/></svg>
                 </button>
-              )}
+                );
+              })()}
 
               {step === 3 && (
                 <button

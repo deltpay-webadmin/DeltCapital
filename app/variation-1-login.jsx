@@ -4,6 +4,22 @@
 // Right: Pure White form column with hairline-underline inputs, sheen-sweep
 // submit, SSO chips, and a magic-link success state that crossfades in.
 
+// Map raw Supabase/auth error text to plain, reassuring language for end users.
+// The original message is left in the console (caller logs it) for debugging.
+function v1FriendlyAuthError(message, isSignup) {
+  const m = String(message || '').toLowerCase();
+  if (/invalid login credentials|invalid credentials/.test(m)) return 'The email or password you entered is incorrect. Please try again.';
+  if (/already registered|already been registered|user already exists|already exists/.test(m)) return 'An account with this email already exists. Try signing in instead.';
+  if (/password should be at least|password.*at least|weak password|password is too short/.test(m)) return 'Your password must be at least 6 characters.';
+  if (/rate limit|too many|over_email_send/.test(m)) return 'Too many attempts. Please wait a minute and try again.';
+  if (/invalid email|unable to validate email|email.*invalid/.test(m)) return 'Please enter a valid email address.';
+  if (/email not confirmed|not confirmed/.test(m)) return 'Please confirm your email first — check your inbox for the link.';
+  if (/network|failed to fetch|load failed|connection/.test(m)) return 'We couldn’t reach the server. Check your connection and try again.';
+  return isSignup
+    ? 'We couldn’t create your account just now. Please try again.'
+    : 'We couldn’t sign you in just now. Please try again.';
+}
+
 function V1LoginField({ id, label, type = 'text', value, onChange, icon, trailing, focused, onFocus, onBlur, autoComplete }) {
   const isActive = focused;
   return (
@@ -64,9 +80,9 @@ function V1LoginField({ id, label, type = 'text', value, onChange, icon, trailin
   );
 }
 
-function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
+function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal, initialMode, prefillEmail, intent }) {
   const mounted = useV1Mounted(60);
-  const [email, setEmail]                 = React.useState('');
+  const [email, setEmail]                 = React.useState(prefillEmail || '');
   const [password, setPassword]           = React.useState('');
   const [showPassword, setShowPassword]   = React.useState(false);
   const [rememberMe, setRememberMe]       = React.useState(false);
@@ -78,11 +94,44 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
   const [hoverApply, setHoverApply]       = React.useState(false);
   const [hoverBack, setHoverBack]         = React.useState(false);
   const [sent, setSent]                   = React.useState(false);
+  const [mode, setMode]                   = React.useState(initialMode === 'signup' ? 'signup' : 'signin'); // 'signin' | 'signup'
+  const isTrackIntent = intent === 'track-status';
+  const [error, setError]                 = React.useState('');
+  const [loading, setLoading]             = React.useState(false);
 
-  const handleSubmit = (e) => {
+  const isSignup = mode === 'signup';
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSent(true);
-    onSignIn && onSignIn(email || 'operator@delt.capital');
+    if (loading) return;
+    setError('');
+    if (!email || !password) {
+      setError('Enter your email and password to continue.');
+      return;
+    }
+    setLoading(true);
+    try {
+      if (isSignup) {
+        const { data, error: err } = await v1SignUp(email, password);
+        if (err) { console.error('[v1-login] signup failed:', err.message); setError(v1FriendlyAuthError(err.message, true)); return; }
+        // When email confirmation is on, signUp returns no session — show the
+        // "check your inbox" screen. Otherwise the user is signed in immediately.
+        if (data && data.session) {
+          onSignIn && onSignIn(data.user);
+        } else {
+          setSent(true);
+        }
+      } else {
+        const { data, error: err } = await v1SignIn(email, password);
+        if (err) { console.error('[v1-login] signin failed:', err.message); setError(v1FriendlyAuthError(err.message, false)); return; }
+        onSignIn && onSignIn(data.user);
+      }
+    } catch (err) {
+      console.error('[v1-login] unexpected error:', err);
+      setError('We couldn’t reach the server. Check your connection and try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const enter = (delay) => ({
@@ -268,7 +317,7 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
             letterSpacing: '0.2em', textTransform: 'uppercase', color: V1.muted,
           }}>
             <span style={{ width: 18, height: 1, background: V1.muted }} />
-            Sign in
+            {isSignup ? 'Create account' : 'Sign in'}
           </div>
         </div>
 
@@ -296,9 +345,20 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
               ...enter(140),
             }}>
               <V1LineMask ready={mounted} delay={200} duration={900}>
-                Sign in to your Delt account.
+                {isSignup ? 'Create your Delt account.' : 'Sign in to your Delt account.'}
               </V1LineMask>
             </h2>
+
+            {isTrackIntent && isSignup && (
+              <p style={{
+                margin: '16px 0 0', maxWidth: 460,
+                fontFamily: V1.fontBody, fontSize: 15, lineHeight: 1.5, color: V1.muted,
+                ...enter(220),
+              }}>
+                One account lets you track your approval status in real time and,
+                once you're funded, manage payments, documents, and statements.
+              </p>
+            )}
 
             {/* Hairline rule */}
             <div style={{
@@ -443,6 +503,7 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
               <div style={{ marginTop: 32, ...enter(760) }}>
                 <button
                   type="submit"
+                  disabled={loading}
                   onMouseEnter={() => setHoverSubmit(true)}
                   onMouseLeave={() => setHoverSubmit(false)}
                   style={{
@@ -450,7 +511,9 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
                     width: '100%',
                     display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 12,
                     background: V1.blue, color: '#fff', border: 'none',
-                    padding: '16px 26px', borderRadius: 10, cursor: 'pointer',
+                    padding: '16px 26px', borderRadius: 10,
+                    cursor: loading ? 'progress' : 'pointer',
+                    opacity: loading ? 0.7 : 1,
                     // Brand §4.3 — CTA: Codec Pro Bold, 15px, line-height 1
                     fontFamily: V1.fontDisplay, fontSize: 15, fontWeight: 700,
                     lineHeight: 1, letterSpacing: '-0.005em',
@@ -458,7 +521,7 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
                       ? `0 12px 28px -10px ${V1.blue}cc, 0 2px 6px ${V1.blue}44`
                       : `0 6px 18px -8px ${V1.blue}aa`,
                     transform: hoverSubmit ? 'translateY(-1px)' : 'translateY(0)',
-                    transition: 'box-shadow 240ms, transform 240ms',
+                    transition: 'box-shadow 240ms, transform 240ms, opacity 240ms',
                   }}
                 >
                   <span aria-hidden style={{
@@ -467,13 +530,55 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
                     transform: hoverSubmit ? 'translateX(120%)' : 'translateX(-120%)',
                     transition: 'transform 900ms cubic-bezier(0.22, 1, 0.36, 1)',
                   }} />
-                  Sign in
-                  <svg width="15" height="15" viewBox="0 0 14 14" style={{
-                    transform: hoverSubmit ? 'translateX(3px)' : 'translateX(0)',
-                    transition: 'transform 260ms cubic-bezier(0.22, 1, 0.36, 1)',
-                  }}>
-                    <path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                  {loading
+                    ? (isSignup ? 'Creating account…' : 'Signing in…')
+                    : (isSignup ? 'Create account' : 'Sign in')}
+                  {!loading && (
+                    <svg width="15" height="15" viewBox="0 0 14 14" style={{
+                      transform: hoverSubmit ? 'translateX(3px)' : 'translateX(0)',
+                      transition: 'transform 260ms cubic-bezier(0.22, 1, 0.36, 1)',
+                    }}>
+                      <path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  )}
+                </button>
+              </div>
+
+              {/* Inline error */}
+              {error && (
+                <div role="alert" style={{
+                  marginTop: 18,
+                  display: 'flex', alignItems: 'flex-start', gap: 10,
+                  background: 'rgba(220,38,38,0.06)',
+                  border: '1px solid rgba(220,38,38,0.22)',
+                  borderRadius: 10, padding: '12px 14px',
+                  fontFamily: V1.fontBody, fontSize: 13.5, lineHeight: 1.45,
+                  color: '#b91c1c',
+                }}>
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 1 }}>
+                    <circle cx="8" cy="8" r="6.5"/>
+                    <path d="M8 5v3.5M8 11h.01"/>
                   </svg>
+                  <span>{error}</span>
+                </div>
+              )}
+
+              {/* Sign in / Create account toggle */}
+              <div style={{
+                marginTop: 22, textAlign: 'center',
+                fontFamily: V1.fontBody, fontSize: 14, color: V1.text,
+              }}>
+                {isSignup ? 'Already have an account?' : "Don't have an account?"}{' '}
+                <button
+                  type="button"
+                  onClick={() => { setMode(isSignup ? 'signin' : 'signup'); setError(''); }}
+                  style={{
+                    background: 'transparent', border: 'none', padding: 0, cursor: 'pointer',
+                    fontFamily: 'inherit', fontSize: 'inherit', fontWeight: 600, color: V1.blue,
+                    textDecoration: 'underline', textUnderlineOffset: 3,
+                  }}
+                >
+                  {isSignup ? 'Sign in' : 'Create one'}
                 </button>
               </div>
             </form>
@@ -654,7 +759,7 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
                   letterSpacing: '-0.035em', lineHeight: 1.05, color: V1.ink,
                   margin: 0,
                 }}>
-                  Magic link sent.
+                  Check your inbox.
                 </h2>
 
                 <p style={{
@@ -662,9 +767,9 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
                   fontFamily: V1.fontBody, fontSize: 17, lineHeight: 1.55, color: V1.text,
                   maxWidth: 460,
                 }}>
-                  We emailed a sign-in link to{' '}
-                  <span style={{ color: V1.ink, fontWeight: 500 }}>{email || 'operator@delt.capital'}</span>.
-                  Open it on this device to finish signing in.
+                  We sent a confirmation link to{' '}
+                  <span style={{ color: V1.ink, fontWeight: 500 }}>{email}</span>.
+                  Click it to activate your account, then return here to sign in.
                 </p>
 
                 <div style={{
@@ -674,7 +779,7 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
                   letterSpacing: '0.18em', textTransform: 'uppercase', color: V1.muted,
                 }}>
                   <span style={{ width: 18, height: 1, background: V1.muted }} />
-                  Sent · {nowLabel} · expires in 10 min
+                  Confirmation sent · {nowLabel}
                 </div>
 
                 <div style={{
@@ -682,7 +787,7 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
                 }}>
                   <button
                     type="button"
-                    onClick={() => setSent(false)}
+                    onClick={() => { setSent(false); setMode('signin'); setError(''); setPassword(''); }}
                     style={{
                       display: 'inline-flex', alignItems: 'center', gap: 10,
                       background: 'transparent', border: `1px solid ${V1.line}`,
@@ -695,7 +800,7 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
                     onMouseEnter={(e) => { e.currentTarget.style.borderColor = V1.ink; e.currentTarget.style.background = V1.bg; }}
                     onMouseLeave={(e) => { e.currentTarget.style.borderColor = V1.line; e.currentTarget.style.background = 'transparent'; }}
                   >
-                    Resend link
+                    Back to sign in
                   </button>
                   <button
                     type="button"

@@ -36,7 +36,12 @@ function V1Ticker({ accent }) {
   );
 }
 
-function V1Chrome({ page, navTo, accent, openApp }) {
+function V1Chrome({ page, navTo, accent, openApp, currentUser }) {
+  // When signed in, the auth entry point becomes the dashboard (or the admin
+  // console for admins) instead of login.
+  const isAdminUser = currentUser && v1IsAdminEmail(currentUser.email);
+  const authKey   = currentUser ? (isAdminUser ? 'admin' : 'dashboard') : 'login';
+  const authLabel = currentUser ? (isAdminUser ? 'Admin' : 'Dashboard') : 'Login';
   const links = [
     { k: 'how',         l: 'How It Works' },
     { k: 'calc',        l: 'Calculator' },
@@ -82,7 +87,7 @@ function V1Chrome({ page, navTo, accent, openApp }) {
           ))}
         </nav>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-          <a data-v1-desktop-nav onClick={() => navTo('login')} style={{ fontFamily: DELT.font.body, fontSize: 13.5, color: page === 'login' ? '#F7F5F0' : 'rgba(247,245,240,0.75)', cursor: 'pointer' }}>Login</a>
+          <a data-v1-desktop-nav onClick={() => navTo(authKey)} style={{ fontFamily: DELT.font.body, fontSize: 13.5, color: page === authKey ? '#F7F5F0' : 'rgba(247,245,240,0.75)', cursor: 'pointer' }}>{authLabel}</a>
           <Btn variant="indigo" size="sm" onClick={openApp} style={{ background: accent, borderColor: accent }}>Get Funded</Btn>
           {/* Mobile hamburger — hidden on desktop via CSS, shown <= 768px */}
           <button
@@ -146,12 +151,12 @@ function V1Chrome({ page, navTo, accent, openApp }) {
             borderBottom: '1px solid rgba(247,245,240,0.08)',
           }}>{ln.l}</a>
         ))}
-        <a onClick={() => handleNav('login')} style={{
+        <a onClick={() => handleNav(authKey)} style={{
           fontFamily: DELT.font.display, fontSize: 28, fontWeight: 600,
-          color: page === 'login' ? '#F7F5F0' : 'rgba(247,245,240,0.78)',
+          color: page === authKey ? '#F7F5F0' : 'rgba(247,245,240,0.78)',
           cursor: 'pointer', padding: '12px 4px',
           borderBottom: '1px solid rgba(247,245,240,0.08)',
-        }}>Login</a>
+        }}>{authLabel}</a>
       </nav>
       <div style={{ marginTop: 'auto', paddingTop: 24 }}>
         <Btn variant="indigo" size="lg" onClick={() => { setMenuOpen(false); openApp(); }} style={{ background: accent, borderColor: accent, width: '100%' }}>Get Funded</Btn>
@@ -457,7 +462,7 @@ function V1Hero({ accent, onApply }) {
 // browser's Back/Forward buttons work and deep links resolve on reload. Every
 // navTo() fades the body out for ~200ms before swapping content so page
 // changes feel like a transition rather than a hard snap.
-const V1_PAGES = new Set(['home', 'about', 'how', 'reviews', 'calc', 'talk', 'support', 'faq', 'blog', 'login', 'terms', 'privacy', 'eca', 'funding-flow', 'processing']);
+const V1_PAGES = new Set(['home', 'about', 'how', 'reviews', 'calc', 'talk', 'support', 'faq', 'blog', 'login', 'dashboard', 'status', 'admin', 'terms', 'privacy', 'eca', 'funding-flow', 'processing']);
 function readPageFromHash() {
   if (typeof window === 'undefined') return 'home';
   // Apply is special-cased: it's a route that opens the modal rather than
@@ -541,6 +546,33 @@ function clearApplyDraft() {
   try { window.localStorage.removeItem(APPLY_LS_KEY); } catch (_) {}
 }
 
+// Pending application payload — captured when the user clicks "Create account &
+// track status" on the apply Done step, then POSTed to /api/application once the
+// account exists. Survives the sign-up → email-confirm → sign-in gap in
+// localStorage (mirrors the apply-draft helpers). 7-day TTL.
+const PENDING_APP_LS_KEY = 'deltcap:pendingApplication';
+function savePendingApplication(payload) {
+  if (typeof window === 'undefined' || !window.localStorage) return;
+  try { window.localStorage.setItem(PENDING_APP_LS_KEY, JSON.stringify({ t: Date.now(), payload })); } catch (_) {}
+}
+function loadPendingApplication() {
+  if (typeof window === 'undefined' || !window.localStorage) return null;
+  try {
+    const raw = window.localStorage.getItem(PENDING_APP_LS_KEY);
+    if (!raw) return null;
+    const obj = JSON.parse(raw);
+    if (!obj || !obj.t || (Date.now() - obj.t) > 7 * 24 * 60 * 60 * 1000) {
+      window.localStorage.removeItem(PENDING_APP_LS_KEY);
+      return null;
+    }
+    return obj.payload || null;
+  } catch (_) { return null; }
+}
+function clearPendingApplication() {
+  if (typeof window === 'undefined' || !window.localStorage) return;
+  try { window.localStorage.removeItem(PENDING_APP_LS_KEY); } catch (_) {}
+}
+
 function Variation1() {
   const accent = V1.blue; // Atlassian-preview blue for V1
   const [page, setPage] = React.useState(readPageFromHash);
@@ -552,6 +584,90 @@ function Variation1() {
   // signal to (a) jump past the business/contact step and (b) auto-open
   // Plaid Link so the user only sees the friction they haven't passed.
   const [appFromEmail, setAppFromEmail] = React.useState(false);
+  // Signed-in Supabase user (null when logged out). Drives the dashboard page
+  // and the nav account chrome; survives reloads via Supabase's
+  // localStorage-persisted session.
+  const [currentUser, setCurrentUser] = React.useState(null);
+  // False until we've checked for a persisted session, so the dashboard route
+  // doesn't flash the login page before the async hydrate resolves.
+  const [sessionChecked, setSessionChecked] = React.useState(false);
+  // The signed-in user's application: an object ({status,...}), the string
+  // 'none' (no row), or null (unknown / not loaded). Drives the dashboard
+  // gate (only an approved application reaches the funded dashboard).
+  const [currentApplication, setCurrentApplication] = React.useState(null);
+  // When an admin clicks "Preview" on an application, we render the customer
+  // dashboard populated with that application's data (read-only) for testing.
+  const [previewApp, setPreviewApp] = React.useState(null);
+
+  // Fetch (and optionally first POST the pending) application for the signed-in
+  // user. POST is idempotent server-side, so linking on every hydrate is safe.
+  const loadApplication = React.useCallback(async ({ submitPending } = {}) => {
+    const token = await v1GetAccessToken();
+    if (!token) { setCurrentApplication(null); return null; }
+    if (submitPending) {
+      const pend = loadPendingApplication();
+      if (pend) {
+        try {
+          await fetch('/api/application', {
+            method: 'POST', cache: 'no-store',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+            body: JSON.stringify(pend),
+          });
+          clearPendingApplication();
+        } catch (_) { /* keep the pending payload to retry next time */ }
+      }
+    }
+    try {
+      const res = await fetch('/api/application', { cache: 'no-store', headers: { Authorization: `Bearer ${token}` } });
+      if (res.status === 404) { setCurrentApplication('none'); return 'none'; }
+      if (!res.ok) { setCurrentApplication(null); return null; }
+      const data = await res.json().catch(() => null);
+      const appObj = (data && data.application) ? data.application : null;
+      setCurrentApplication(appObj || 'none');
+      return appObj || 'none';
+    } catch (_) { setCurrentApplication(null); return null; }
+  }, []);
+
+  // Hydrate the signed-in user from any persisted Supabase session on mount,
+  // then load their application so route gating has it.
+  React.useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data } = await v1GetSession();
+        if (!cancelled && data && data.session) {
+          setCurrentUser(data.session.user);
+          loadApplication({ submitPending: true });
+        }
+      } catch (_) { /* not configured / offline — stay logged out */ }
+      finally { if (!cancelled) setSessionChecked(true); }
+    })();
+    return () => { cancelled = true; };
+  }, [loadApplication]);
+
+  // After a successful sign-in/sign-up: link any pending application, then route
+  // to the tracker (or straight to the dashboard when already approved).
+  const handleSignedIn = React.useCallback(async (user) => {
+    setCurrentUser(user || null);
+    // Admins go straight to the operator console.
+    if (user && v1IsAdminEmail(user.email)) { navTo('admin'); return; }
+    const app = await loadApplication({ submitPending: true });
+    // Only an approved application opens the funded dashboard. Everything else —
+    // an in-review/denied row, no row yet, or a save that hasn't landed — goes to
+    // the status tracker, which shows the right state (and self-heals a pending
+    // submit) rather than dropping the user on an empty dashboard.
+    navTo(app && typeof app === 'object' && app.status === 'approved' ? 'dashboard' : 'status');
+  // navTo is stable (declared below via useCallback); referenced lazily.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loadApplication]);
+
+  // Clear the Supabase session, drop the in-memory user, and return home.
+  const handleSignOut = React.useCallback(async () => {
+    try { await v1SignOut(); } catch (_) { /* best effort */ }
+    setCurrentUser(null);
+    setCurrentApplication(null);
+    setPreviewApp(null);
+  }, []);
 
   // Core page swap: fade the body, swap page, scroll to top, fade back in.
   // `pushUrl` is false when we're responding to a popstate so we don't
@@ -657,6 +773,16 @@ function Variation1() {
     </>
   );
 
+  // Auth-aware view gating (computed before `body` since the routes use it).
+  // dashboardShowsApp: the funded dashboard renders only for an approved (or
+  // application-less) account; in-review accounts fall through to the tracker.
+  const dashboardShowsApp = currentUser &&
+    !(currentApplication && typeof currentApplication === 'object' && currentApplication.status !== 'approved');
+  const isAdmin = currentUser && v1IsAdminEmail(currentUser.email);
+  // The dashboard and admin console are signed-in app shells — they render their
+  // own header and own the viewport, so the marketing chrome + footer are hidden.
+  const isAppShell = (page === 'dashboard' && (dashboardShowsApp || (isAdmin && previewApp))) || (page === 'admin' && isAdmin);
+
   const body =
     page === 'about'   ? <V1AboutPage accent={accent} onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} /> :
     page === 'how'     ? <HowItWorksPage accent={accent} onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} /> :
@@ -666,7 +792,58 @@ function Variation1() {
     page === 'support' ? <V1SupportPage accent={accent} onTalk={() => navTo('talk')} onApply={() => openApp(null, null)} /> :
     page === 'faq'     ? <V1FAQPage accent={accent} onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} /> :
     page === 'blog'    ? <V1BlogPage accent={accent} onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} /> :
-    page === 'login'   ? <V1LoginPage onClose={() => navTo('home')} onApply={() => openApp(null, null)} onSignIn={() => {}} onNavLegal={navTo} /> :
+    page === 'login'   ? (
+      (() => {
+        // When the user arrived here via the apply "create account to track"
+        // CTA, a pending application is staged — open in signup mode.
+        const pend = loadPendingApplication();
+        return (
+          <V1LoginPage
+            onClose={() => navTo('home')}
+            onApply={() => openApp(null, null)}
+            onSignIn={handleSignedIn}
+            onNavLegal={navTo}
+            initialMode={pend ? 'signup' : 'signin'}
+            prefillEmail={pend ? (pend.email || '') : ''}
+            intent={pend ? 'track-status' : undefined}
+          />
+        );
+      })()
+    ) :
+    page === 'dashboard' ? (
+      currentUser
+        ? (isAdmin && previewApp
+            // Admin previewing a customer's dashboard (read-only) — bypasses the
+            // normal application gate so the admin's own (empty) row never diverts.
+            ? <V1DashboardPage user={currentUser} application={previewApp}
+                previewLabel={previewApp.email || previewApp.business_name || 'customer'}
+                onExitPreview={() => { setPreviewApp(null); navTo('admin'); }}
+                onApply={() => openApp(null, null)} onNavHome={() => navTo('home')} onSignOut={async () => { await handleSignOut(); navTo('home'); }} />
+            : (currentApplication && typeof currentApplication === 'object' && currentApplication.status !== 'approved')
+            // Signed in but not yet approved — show the tracker, not the funded dashboard.
+            ? <V1StatusPage user={currentUser} onNavDashboard={async () => { await loadApplication(); navTo('dashboard'); }} onNavSupport={() => navTo('support')} onApply={() => openApp(null, null)} />
+            : <V1DashboardPage user={currentUser} application={(typeof currentApplication === 'object') ? currentApplication : null} onApply={() => openApp(null, null)} onNavHome={() => navTo('home')} onSignOut={async () => { await handleSignOut(); navTo('home'); }} />)
+        : (sessionChecked
+            ? <V1LoginPage onClose={() => navTo('home')} onApply={() => openApp(null, null)} onSignIn={handleSignedIn} onNavLegal={navTo} />
+            : <div style={{ minHeight: 'calc(100vh - 96px)' }} />)
+    ) :
+    page === 'admin' ? (
+      currentUser
+        ? (isAdmin
+            ? <V1AdminPage user={currentUser} onNavHome={() => navTo('home')} onPreview={(app) => { setPreviewApp(app); navTo('dashboard'); }} onSignOut={async () => { await handleSignOut(); navTo('home'); }} />
+            // Signed-in non-admins never see the console.
+            : <V1DashboardPage user={currentUser} application={(typeof currentApplication === 'object') ? currentApplication : null} onApply={() => openApp(null, null)} onNavHome={() => navTo('home')} onSignOut={async () => { await handleSignOut(); navTo('home'); }} />)
+        : (sessionChecked
+            ? <V1LoginPage onClose={() => navTo('home')} onApply={() => openApp(null, null)} onSignIn={handleSignedIn} onNavLegal={navTo} />
+            : <div style={{ minHeight: 'calc(100vh - 96px)' }} />)
+    ) :
+    page === 'status' ? (
+      currentUser
+        ? <V1StatusPage user={currentUser} onNavDashboard={async () => { await loadApplication(); navTo('dashboard'); }} onNavSupport={() => navTo('support')} onApply={() => openApp(null, null)} />
+        : (sessionChecked
+            ? <V1LoginPage onClose={() => navTo('home')} onApply={() => openApp(null, null)} onSignIn={handleSignedIn} onNavLegal={navTo} />
+            : <div style={{ minHeight: 'calc(100vh - 96px)' }} />)
+    ) :
     page === 'terms'   ? <V1TermsOfUse onBack={() => navTo('home')} onNavPrivacy={() => navTo('privacy')} /> :
     page === 'privacy' ? <V1PrivacyPolicy onBack={() => navTo('home')} onNavTerms={() => navTo('terms')} /> :
     page === 'eca'     ? <V1ElectronicCommunications onBack={() => navTo('home')} /> :
@@ -676,7 +853,7 @@ function Variation1() {
 
   return (
     <>
-      <V1Chrome page={page} navTo={navTo} accent={accent} openApp={() => openApp(null, null)} />
+      {!isAppShell && <V1Chrome page={page} navTo={navTo} accent={accent} openApp={() => openApp(null, null)} currentUser={currentUser} />}
       <div style={{
         opacity: transitioning ? 0 : 1,
         transform: transitioning ? 'translateY(6px)' : 'translateY(0)',
@@ -684,7 +861,7 @@ function Variation1() {
       }}>
         {body}
       </div>
-      <FooterBlock accent={accent} brand={V1Chrome.brand} onNav={navTo} />
+      {!isAppShell && <FooterBlock accent={accent} brand={V1Chrome.brand} onNav={navTo} />}
       <V1ApplicationFlow
         open={appOpen}
         onClose={() => { setAppOpen(false); setAppFromEmail(false); }}
@@ -694,6 +871,18 @@ function Variation1() {
         autoOpenPlaid={appFromEmail}
         onDraftChange={saveApplyDraft}
         onComplete={clearApplyDraft}
+        onTrackStatus={async (payload) => {
+          // Stash the application context, close the modal, then route the user
+          // to account creation (or straight to the tracker if already signed in).
+          savePendingApplication(payload);
+          setAppOpen(false); setAppFromEmail(false);
+          if (currentUser) {
+            await loadApplication({ submitPending: true });
+            navTo('status');
+          } else {
+            navTo('login');
+          }
+        }}
       />
     </>
   );
