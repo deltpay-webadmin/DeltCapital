@@ -343,20 +343,18 @@ function V1StepIdentity({ form, setForm, accent, onAdvance }) {
     setForm({ ...form, idVerified: !!data.idVerified });
   };
 
-  // Auto-advance once IDV + SSN are both satisfied. Critically this also
-  // fires when the *phone* finishes IDV — V1IDVerify polls the IDV status
-  // and calls handleIdvComplete, which flips idVerified true here.
-  // Skip the auto-advance if the user landed back on this step with both
-  // already filled (e.g. via Back from Offer).
-  const [armed] = React.useState(() =>
-    !(form.idVerified && form.ssn4.length === 4)
-  );
+  // Auto-advance once IDV is satisfied. Critically this also fires when the
+  // *phone* finishes IDV — V1IDVerify polls the IDV status and calls
+  // handleIdvComplete, which flips idVerified true here. Skip the
+  // auto-advance if the user landed back on this step already verified
+  // (e.g. via Back from Offer).
+  const [armed] = React.useState(() => !form.idVerified);
   React.useEffect(() => {
-    if (armed && form.idVerified && form.ssn4.length === 4) {
+    if (armed && form.idVerified) {
       const t = setTimeout(() => { onAdvance && onAdvance(); }, 700);
       return () => clearTimeout(t);
     }
-  }, [armed, form.idVerified, form.ssn4.length, onAdvance]);
+  }, [armed, form.idVerified, onAdvance]);
   return (
     <div>
       <div style={{
@@ -371,8 +369,8 @@ function V1StepIdentity({ form, setForm, accent, onAdvance }) {
         fontFamily: V1.fontBody, fontSize: 15, color: V1.muted,
         lineHeight: 1.55, margin: 0, maxWidth: 520,
       }}>
-        ID + selfie via Plaid IDV, plus the last 4 of SSN for KYC. Soft-pull on
-        the guarantor. No impact to your personal credit.
+        ID + selfie via Plaid IDV for KYC. Soft-pull on the guarantor. No
+        impact to your personal credit.
       </p>
 
       {/* Plaid IDV launcher / verified state */}
@@ -420,25 +418,6 @@ function V1StepIdentity({ form, setForm, accent, onAdvance }) {
             }}
           >Begin verification</button>
         )}
-      </div>
-
-      <div data-v1-form-grid style={{
-        marginTop: 22,
-        display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 18, maxWidth: 480,
-      }}>
-        <V1ApplyField label="SSN (last 4)" hint="Masked on submit">
-          <V1ApplyInput
-            value={form.ssn4}
-            onChange={(v) => setForm({ ...form, ssn4: v.replace(/[^0-9]/g, '').slice(0, 4) })}
-            placeholder="1234" accent={accent} />
-        </V1ApplyField>
-        <V1ApplyField label="Use of funds">
-          <V1ApplySelect
-            value={form.useOfFunds}
-            onChange={(v) => setForm({ ...form, useOfFunds: v })}
-            opts={['Inventory', 'Equipment', 'Hiring', 'Renovation', 'Marketing', 'Bridge A/R', 'Other']}
-            accent={accent} />
-        </V1ApplyField>
       </div>
 
       <V1IDVerify open={idvOpen} onClose={() => setIdvOpen(false)} onComplete={handleIdvComplete} />
@@ -724,9 +703,9 @@ function V1ApplicationFlow({
     lastName: '',
     email: prefill?.lead?.email || '',
     phone: prefill?.lead?.phone || '',
-    state: '', useOfFunds: 'Inventory',
+    state: '',
     bankConnected: false, bankInstitution: '', bankAccounts: null,
-    ssn4: '', idVerified: false,
+    idVerified: false,
     // Offer amount defaults to the *high end* of the calculator estimate
     // so the slider starts where the email said the user pre-qualified.
     // The previous default of 75000 was a regression — it threw away the
@@ -862,7 +841,7 @@ function V1ApplicationFlow({
   const canProceed = (() => {
     if (step === 0) return v1BusinessComplete(form);
     if (step === 1) return form.bankConnected;
-    if (step === 2) return form.ssn4.length === 4 && form.idVerified;
+    if (step === 2) return form.idVerified;
     return true;
   })();
 
