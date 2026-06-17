@@ -18,6 +18,40 @@ const V1APPLY_BANKS = [
 
 const V1APPLY_STEPS = ['Business', 'Bank', 'Identity', 'Offer', 'Done'];
 
+// ─── Field formatters & validators ───
+// EIN auto-formats to XX-XXXXXXX and phone to (555) 555-0199 as the user
+// types; the validators below gate the Continue button so every Business
+// field must be present and well-formed before advancing.
+function formatEIN(v) {
+  const d = (v || '').replace(/\D/g, '').slice(0, 9);
+  return d.length <= 2 ? d : `${d.slice(0, 2)}-${d.slice(2)}`;
+}
+function formatPhone(v) {
+  const d = (v || '').replace(/\D/g, '').slice(0, 10);
+  if (d.length === 0) return '';
+  if (d.length < 4) return `(${d}`;
+  if (d.length < 7) return `(${d.slice(0, 3)}) ${d.slice(3)}`;
+  return `(${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6)}`;
+}
+const v1IsEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((v || '').trim());
+const v1IsEIN   = (v) => (v || '').replace(/\D/g, '').length === 9;
+const v1IsPhone = (v) => (v || '').replace(/\D/g, '').length === 10;
+const v1NotBlank = (v) => !!(v && v.trim());
+
+// Every Business-step field must be filled and well-formed to proceed.
+function v1BusinessComplete(form) {
+  return (
+    v1NotBlank(form.businessName) &&
+    v1IsEIN(form.ein) &&
+    v1NotBlank(form.legalForm) &&
+    v1NotBlank(form.state) &&
+    v1NotBlank(form.firstName) &&
+    v1NotBlank(form.lastName) &&
+    v1IsEmail(form.email) &&
+    v1IsPhone(form.phone)
+  );
+}
+
 function V1ApplyField({ label, hint, children }) {
   return (
     <label style={{ display: 'block' }}>
@@ -40,19 +74,21 @@ function V1ApplyField({ label, hint, children }) {
   );
 }
 
-function V1ApplyInput({ value, onChange, placeholder, type = 'text', accent }) {
+function V1ApplyInput({ value, onChange, placeholder, type = 'text', accent, inputMode, invalid }) {
   return (
     <input
       type={type}
+      inputMode={inputMode}
       value={value || ''}
       placeholder={placeholder}
+      aria-invalid={invalid ? 'true' : undefined}
       onChange={(e) => onChange(e.target.value)}
-      onFocus={(e) => { e.currentTarget.style.borderColor = accent; e.currentTarget.style.boxShadow = `0 0 0 3px ${accent}26`; }}
-      onBlur={(e) => { e.currentTarget.style.borderColor = V1.line; e.currentTarget.style.boxShadow = 'none'; }}
+      onFocus={(e) => { e.currentTarget.style.borderColor = invalid ? V1.red : accent; e.currentTarget.style.boxShadow = `0 0 0 3px ${(invalid ? V1.red : accent)}26`; }}
+      onBlur={(e) => { e.currentTarget.style.borderColor = invalid ? V1.red : V1.line; e.currentTarget.style.boxShadow = 'none'; }}
       style={{
         width: '100%', padding: '13px 14px',
         background: V1.white,
-        border: `1px solid ${V1.line}`, borderRadius: 10,
+        border: `1px solid ${invalid ? V1.red : V1.line}`, borderRadius: 10,
         fontFamily: V1.fontBody, fontSize: 14.5, color: V1.ink,
         outline: 'none', transition: 'border-color .15s, box-shadow .15s',
       }}
@@ -115,7 +151,7 @@ function V1StepBusiness({ form, setForm, accent }) {
           <V1ApplyInput value={form.businessName} onChange={(v) => setForm({ ...form, businessName: v })} placeholder="La Rosa Restaurant LLC" accent={accent} />
         </V1ApplyField>
         <V1ApplyField label="EIN" hint="9 digits">
-          <V1ApplyInput value={form.ein} onChange={(v) => setForm({ ...form, ein: v })} placeholder="12-3456789" accent={accent} />
+          <V1ApplyInput value={form.ein} onChange={(v) => setForm({ ...form, ein: formatEIN(v) })} placeholder="12-3456789" accent={accent} inputMode="numeric" invalid={!!form.ein && !v1IsEIN(form.ein)} />
         </V1ApplyField>
         <V1ApplyField label="Entity type">
           <V1ApplySelect value={form.legalForm} onChange={(v) => setForm({ ...form, legalForm: v })} opts={['LLC', 'S-Corp', 'C-Corp', 'Sole Prop', 'Partnership']} accent={accent} />
@@ -130,10 +166,10 @@ function V1StepBusiness({ form, setForm, accent }) {
           <V1ApplyInput value={form.lastName} onChange={(v) => setForm({ ...form, lastName: v })} placeholder="Rodriguez" accent={accent} />
         </V1ApplyField>
         <V1ApplyField label="Email">
-          <V1ApplyInput type="email" value={form.email} onChange={(v) => setForm({ ...form, email: v })} placeholder="you@business.com" accent={accent} />
+          <V1ApplyInput type="email" value={form.email} onChange={(v) => setForm({ ...form, email: v })} placeholder="you@business.com" accent={accent} inputMode="email" invalid={!!form.email && !v1IsEmail(form.email)} />
         </V1ApplyField>
         <V1ApplyField label="Phone">
-          <V1ApplyInput value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} placeholder="(555) 555-0199" accent={accent} />
+          <V1ApplyInput value={form.phone} onChange={(v) => setForm({ ...form, phone: formatPhone(v) })} placeholder="(555) 555-0199" accent={accent} inputMode="tel" invalid={!!form.phone && !v1IsPhone(form.phone)} />
         </V1ApplyField>
       </div>
     </div>
@@ -817,7 +853,7 @@ function V1ApplicationFlow({
   };
 
   const canProceed = (() => {
-    if (step === 0) return form.businessName && form.email;
+    if (step === 0) return v1BusinessComplete(form);
     if (step === 1) return form.bankConnected;
     if (step === 2) return form.ssn4.length === 4 && form.idVerified;
     return true;
