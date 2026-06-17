@@ -39,12 +39,39 @@ module.exports = async function handler(req, res) {
   );
 
   try {
-    const data = await plaidFetch('/identity_verification/create', {
+    // We send a stable client_user_id per browser, so a session for this
+    // (client_user_id, template_id) pair often already exists from a prior
+    // attempt or page load. Without is_idempotent Plaid rejects the second
+    // create with INVALID_FIELD ("session already exists"); is_idempotent
+    // makes Plaid return the existing session instead of erroring.
+    let data = await plaidFetch('/identity_verification/create', {
       is_shareable: true,
       template_id: templateId,
       gave_consent: true,
+      is_idempotent: true,
       user: { client_user_id: clientUserId },
     });
+
+    // If the existing session is in a terminal state (e.g. the applicant
+    // failed a prior attempt and tapped "Try again"), the idempotent create
+    // just hands back that dead session. Start a fresh attempt via /retry so
+    // the user actually gets a new shareable_url to scan.
+    const terminal = ['failed', 'expired', 'canceled'];
+    if (data && terminal.includes(String(data.status || '').toLowerCase())) {
+      try {
+        data = await plaidFetch('/identity_verification/retry', {
+          client_user_id: clientUserId,
+          template_id: templateId,
+          strategy: 'reset',
+          is_shareable: true,
+          gave_consent: true,
+        });
+      } catch (retryErr) {
+        // Non-fatal — fall back to the (terminal) session we already have so
+        // we never regress to a 500. The frontend surfaces the failed state.
+        console.warn('plaid-create-idv retry failed:', retryErr && retryErr.message);
+      }
+    }
     // Render the QR server-side so the IDV shareable_url stays inside our
     // infrastructure (mirrors api/plaid-create-link-token.js — see the
     // matching comment there for rationale). Non-fatal on failure.
