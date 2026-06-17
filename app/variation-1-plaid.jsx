@@ -219,7 +219,6 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
   const [stage, setStage] = React.useState('loading');
   const [tokenData, setTokenData] = React.useState(null);  // { link_token, hosted_link_url }
   const [err, setErr] = React.useState(null);
-  const [linkedSummary, setLinkedSummary] = React.useState(null); // { institution_name, accounts }
   const handlerRef = React.useRef(null);
   // Hosted-link (QR/phone) polling lives here so the desktop can detect when
   // the applicant finishes on their phone and auto-advance.
@@ -235,24 +234,18 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
   }
 
   // Exchange a public_token (from either the SDK or the hosted phone handoff)
-  // for account metadata, then flip to success and hand back to the apply flow.
+  // for account metadata, then hand straight back to the apply flow. No
+  // success-flash screen — the apply flow takes over and advances.
   const completeWithPublicToken = React.useCallback(async (publicToken, instHint) => {
     try {
       const result = await window.PlaidIntegration.exchangePublicToken(publicToken);
-      setLinkedSummary({
-        institution_name: result.institution_name || instHint || 'Your bank',
-        accounts: result.accounts || [],
+      const accountStrs = (result.accounts || []).map((a) =>
+        a.mask ? `${a.name} ••${a.mask}` : a.name);
+      onSuccess && onSuccess({
+        institution: result.institution_name || instHint || 'Bank',
+        accounts: accountStrs,
+        item_id: result.item_id,
       });
-      setStage('success');
-      setTimeout(() => {
-        const accountStrs = (result.accounts || []).map((a) =>
-          a.mask ? `${a.name} ••${a.mask}` : a.name);
-        onSuccess && onSuccess({
-          institution: result.institution_name || instHint || 'Bank',
-          accounts: accountStrs,
-          item_id: result.item_id,
-        });
-      }, 900);
     } catch (e) {
       console.error(e);
       const code = e && e.plaidCode ? ` (${e.plaidCode})` : '';
@@ -272,7 +265,7 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
       handlerRef.current = null;
       stopLinkPolling();
       const t = setTimeout(() => {
-        setStage('loading'); setTokenData(null); setErr(null); setLinkedSummary(null);
+        setStage('loading'); setTokenData(null); setErr(null);
       }, 260);
       return () => clearTimeout(t);
     }
@@ -478,37 +471,6 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
             background: 'transparent', color: '#64748b', border: 'none',
             cursor: 'pointer', fontFamily: V1.fontBody, fontSize: 12.5,
           }}>← Back</button>
-        </div>
-      )}
-
-      {stage === 'success' && (
-        <div style={{ padding: '34px 24px 36px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-          <div style={{
-            width: 56, height: 56, borderRadius: 999,
-            background: 'rgba(31,132,90,0.12)',
-            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            <div style={{
-              width: 40, height: 40, borderRadius: 999,
-              background: '#fff', border: '2px solid #1F845A',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              animation: 'v1plaidCheckPop 480ms cubic-bezier(0.22,1,0.36,1) both',
-            }}>
-              <svg width="20" height="20" viewBox="0 0 16 16" style={{ color: '#1F845A' }}>
-                <path d="M3 8.2L6.5 11.5 13 5" stroke="currentColor" strokeWidth="2.2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-          </div>
-          <div style={{
-            fontFamily: V1.fontDisplay, fontSize: 20, fontWeight: 700,
-            letterSpacing: '-0.02em', color: '#0F0E17',
-          }}>You're all set</div>
-          <div style={{
-            fontFamily: V1.fontBody, fontSize: 13.5, color: '#64748b',
-            textAlign: 'center', maxWidth: 280, lineHeight: 1.5,
-          }}>
-            {(linkedSummary && linkedSummary.institution_name) || 'Your bank'} is connected. Returning to Delt…
-          </div>
         </div>
       )}
     </V1PlaidShell>
