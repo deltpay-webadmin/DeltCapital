@@ -96,23 +96,30 @@ function V1ApplyInput({ value, onChange, placeholder, type = 'text', accent, inp
   );
 }
 
-function V1ApplySelect({ value, onChange, opts, accent }) {
+function V1ApplySelect({ value, onChange, opts, accent, placeholder }) {
+  const isPlaceholder = !value;
   return (
     <div style={{ position: 'relative' }}>
       <select
-        value={value}
+        value={value || ''}
         onChange={(e) => onChange(e.target.value)}
         onFocus={(e) => { e.currentTarget.style.borderColor = accent; e.currentTarget.style.boxShadow = `0 0 0 3px ${accent}26`; }}
         onBlur={(e) => { e.currentTarget.style.borderColor = V1.line; e.currentTarget.style.boxShadow = 'none'; }}
         style={{
           width: '100%', padding: '13px 40px 13px 14px',
           background: V1.white, border: `1px solid ${V1.line}`, borderRadius: 10,
-          fontFamily: V1.fontBody, fontSize: 14.5, color: V1.ink,
+          fontFamily: V1.fontBody, fontSize: 14.5,
+          // Match the muted tone of text inputs' placeholders until a real
+          // option is chosen.
+          color: isPlaceholder ? V1.muted : V1.ink,
           outline: 'none', cursor: 'pointer', appearance: 'none',
           transition: 'border-color .15s, box-shadow .15s',
         }}
       >
-        {opts.map((o) => <option key={o} value={o}>{o}</option>)}
+        {placeholder && (
+          <option value="" disabled hidden>{placeholder}</option>
+        )}
+        {opts.map((o) => <option key={o} value={o} style={{ color: V1.ink }}>{o}</option>)}
       </select>
       <svg width="12" height="12" viewBox="0 0 12 12"
         style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}
@@ -154,10 +161,10 @@ function V1StepBusiness({ form, setForm, accent }) {
           <V1ApplyInput value={form.ein} onChange={(v) => setForm({ ...form, ein: formatEIN(v) })} placeholder="12-3456789" accent={accent} inputMode="numeric" invalid={!!form.ein && !v1IsEIN(form.ein)} />
         </V1ApplyField>
         <V1ApplyField label="Entity type">
-          <V1ApplySelect value={form.legalForm} onChange={(v) => setForm({ ...form, legalForm: v })} opts={['LLC', 'S-Corp', 'C-Corp', 'Sole Prop', 'Partnership']} accent={accent} />
+          <V1ApplySelect value={form.legalForm} onChange={(v) => setForm({ ...form, legalForm: v })} opts={['LLC', 'S-Corp', 'C-Corp', 'Sole Prop', 'Partnership']} accent={accent} placeholder="Select entity type" />
         </V1ApplyField>
         <V1ApplyField label="State of operation">
-          <V1ApplySelect value={form.state} onChange={(v) => setForm({ ...form, state: v })} opts={['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','DC','Other']} accent={accent} />
+          <V1ApplySelect value={form.state} onChange={(v) => setForm({ ...form, state: v })} opts={['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','DC','Other']} accent={accent} placeholder="Select state" />
         </V1ApplyField>
         <V1ApplyField label="First name">
           <V1ApplyInput value={form.firstName} onChange={(v) => setForm({ ...form, firstName: v })} placeholder="Maria" accent={accent} />
@@ -712,12 +719,12 @@ function V1ApplicationFlow({
   const [form, setForm] = React.useState({
     // Contact fields are pre-filled from the calculator lead-gate when present
     businessName: prefill?.lead?.businessName || '',
-    ein: '', legalForm: 'LLC',
+    ein: '', legalForm: '',
     firstName: prefill?.lead?.firstName || '',
     lastName: '',
     email: prefill?.lead?.email || '',
     phone: prefill?.lead?.phone || '',
-    state: 'CA', useOfFunds: 'Inventory',
+    state: '', useOfFunds: 'Inventory',
     bankConnected: false, bankInstitution: '', bankAccounts: null,
     ssn4: '', idVerified: false,
     // Offer amount defaults to the *high end* of the calculator estimate
