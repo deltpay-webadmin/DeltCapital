@@ -65,6 +65,20 @@ window.PlaidIntegration = window.PlaidIntegration || {
       if (!r.ok) throw V1PlaidThrowFromResponse(data, 'pollIDV failed');
       return data;
     }),
+
+  // Poll the hosted-link session so the desktop can tell when the applicant
+  // finished the bank connection on their phone (the QR handoff). Returns
+  // { status: 'pending' | 'success', public_token? }.
+  pollLinkStatus: (linkToken) =>
+    fetch('/api/plaid-get-link-status', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ link_token: linkToken }),
+    }).then(async (r) => {
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) throw V1PlaidThrowFromResponse(data, 'pollLinkStatus failed');
+      return data;
+    }),
 };
 
 // Stable client_user_id per browser so repeat IDV/Link sessions tie back to
@@ -199,13 +213,47 @@ function V1PlaidQR({ dataUrl, size = 196 }) {
 // ─── V1PlaidLink ─────────────────────────────────────────────────
 // Real Plaid Link SDK. Stages:
 //   intro → opening (SDK overlays our modal) → success
-//   intro → mobile (QR of hosted_link_url, polling deferred to manual confirm)
+//   intro → mobile (QR of hosted_link_url; desktop polls the hosted-link
+//           session and auto-advances to success once the phone finishes)
 function V1PlaidLink({ open, onClose, onSuccess }) {
   const [stage, setStage] = React.useState('loading');
   const [tokenData, setTokenData] = React.useState(null);  // { link_token, hosted_link_url }
   const [err, setErr] = React.useState(null);
-  const [linkedSummary, setLinkedSummary] = React.useState(null); // { institution_name, accounts }
   const handlerRef = React.useRef(null);
+  // Hosted-link (QR/phone) polling lives here so the desktop can detect when
+  // the applicant finishes on their phone and auto-advance.
+  const pollTimerRef = React.useRef(null);
+  const pollStoppedRef = React.useRef(false);
+
+  function stopLinkPolling() {
+    pollStoppedRef.current = true;
+    if (pollTimerRef.current) {
+      clearTimeout(pollTimerRef.current);
+      pollTimerRef.current = null;
+    }
+  }
+
+  // Exchange a public_token (from either the SDK or the hosted phone handoff)
+  // for account metadata, then hand straight back to the apply flow. No
+  // success-flash screen — the apply flow takes over and advances.
+  const completeWithPublicToken = React.useCallback(async (publicToken, instHint) => {
+    try {
+      const result = await window.PlaidIntegration.exchangePublicToken(publicToken);
+      const accountStrs = (result.accounts || []).map((a) =>
+        a.mask ? `${a.name} ••${a.mask}` : a.name);
+      onSuccess && onSuccess({
+        institution: result.institution_name || instHint || 'Bank',
+        accounts: accountStrs,
+        item_id: result.item_id,
+      });
+    } catch (e) {
+      console.error(e);
+      const code = e && e.plaidCode ? ` (${e.plaidCode})` : '';
+      const msg = e && e.plaidMessage ? ` — ${e.plaidMessage}` : '';
+      setErr(`Could not finish linking${code}${msg}. Try again.`);
+      setStage('intro');
+    }
+  }, [onSuccess]);
 
   // Reset on close. Tear down the Plaid SDK handler synchronously so its
   // document-level listeners can't swallow clicks on the page behind.
@@ -215,12 +263,44 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
         try { handlerRef.current.destroy(); } catch (_) {}
       }
       handlerRef.current = null;
+      stopLinkPolling();
       const t = setTimeout(() => {
-        setStage('loading'); setTokenData(null); setErr(null); setLinkedSummary(null);
+        setStage('loading'); setTokenData(null); setErr(null);
       }, 260);
       return () => clearTimeout(t);
     }
   }, [open]);
+
+  // Kill any pending poll if the component unmounts mid-handoff.
+  React.useEffect(() => () => stopLinkPolling(), []);
+
+  // While the phone-handoff (QR) screen is showing, poll the hosted-link
+  // session. When the applicant completes Link on their phone, Plaid surfaces
+  // a public_token we exchange — then success + auto-advance, no manual step.
+  React.useEffect(() => {
+    if (stage !== 'mobile') return;
+    if (!tokenData || !tokenData.link_token) return;
+    pollStoppedRef.current = false;
+    const linkToken = tokenData.link_token;
+    const tick = async () => {
+      if (pollStoppedRef.current) return;
+      try {
+        const res = await window.PlaidIntegration.pollLinkStatus(linkToken);
+        if (pollStoppedRef.current) return;
+        if (res && res.status === 'success' && res.public_token) {
+          stopLinkPolling();
+          completeWithPublicToken(res.public_token, res.institution_name);
+          return;
+        }
+      } catch (e) {
+        // Transient network blips shouldn't kill the loop — keep polling.
+        console.warn('link status poll error:', e && e.message);
+      }
+      pollTimerRef.current = setTimeout(tick, 3000);
+    };
+    pollTimerRef.current = setTimeout(tick, 1500);
+    return () => stopLinkPolling();
+  }, [stage, tokenData, completeWithPublicToken]);
 
   // Mint a link_token whenever the modal opens.
   React.useEffect(() => {
@@ -252,30 +332,8 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
     setStage('opening');
     handlerRef.current = window.Plaid.create({
       token: tokenData.link_token,
-      onSuccess: async (publicToken /*, metadata */) => {
-        try {
-          const result = await window.PlaidIntegration.exchangePublicToken(publicToken);
-          setLinkedSummary({
-            institution_name: result.institution_name || 'Your bank',
-            accounts: result.accounts || [],
-          });
-          setStage('success');
-          setTimeout(() => {
-            const accountStrs = (result.accounts || []).map((a) =>
-              a.mask ? `${a.name} ••${a.mask}` : a.name);
-            onSuccess && onSuccess({
-              institution: result.institution_name || 'Bank',
-              accounts: accountStrs,
-              item_id: result.item_id,
-            });
-          }, 900);
-        } catch (e) {
-          console.error(e);
-          const code = e && e.plaidCode ? ` (${e.plaidCode})` : '';
-          const msg = e && e.plaidMessage ? ` — ${e.plaidMessage}` : '';
-          setErr(`Could not finish linking${code}${msg}. Try again.`);
-          setStage('intro');
-        }
+      onSuccess: (publicToken /*, metadata */) => {
+        completeWithPublicToken(publicToken);
       },
       onExit: (exitErr /*, metadata */) => {
         // User closed Plaid Link. Drop back to our intro so they can retry
@@ -393,42 +451,26 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
               color: '#0F0E17', borderBottom: '1px dashed #94a3b8',
             }}
           >Or open the link here</a>
-          <button onClick={() => setStage('intro')} style={{
-            display: 'block', margin: '6px auto 0',
+          <div style={{
+            margin: '0 auto', padding: '10px 12px',
+            background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: 10,
+            display: 'inline-flex', alignItems: 'center', gap: 10,
+          }}>
+            <div style={{
+              width: 14, height: 14, borderRadius: 999,
+              border: '2px solid #E2E8F0', borderTopColor: '#0a0a0a',
+              animation: 'v1plaidSpin 700ms linear infinite',
+            }} />
+            <span style={{
+              fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 600,
+              letterSpacing: '0.14em', textTransform: 'uppercase', color: '#475569',
+            }}>Waiting for connection…</span>
+          </div>
+          <button onClick={() => { stopLinkPolling(); setStage('intro'); }} style={{
+            display: 'block', margin: '12px auto 0',
             background: 'transparent', color: '#64748b', border: 'none',
             cursor: 'pointer', fontFamily: V1.fontBody, fontSize: 12.5,
           }}>← Back</button>
-        </div>
-      )}
-
-      {stage === 'success' && (
-        <div style={{ padding: '34px 24px 36px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-          <div style={{
-            width: 56, height: 56, borderRadius: 999,
-            background: 'rgba(31,132,90,0.12)',
-            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            <div style={{
-              width: 40, height: 40, borderRadius: 999,
-              background: '#fff', border: '2px solid #1F845A',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              animation: 'v1plaidCheckPop 480ms cubic-bezier(0.22,1,0.36,1) both',
-            }}>
-              <svg width="20" height="20" viewBox="0 0 16 16" style={{ color: '#1F845A' }}>
-                <path d="M3 8.2L6.5 11.5 13 5" stroke="currentColor" strokeWidth="2.2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-          </div>
-          <div style={{
-            fontFamily: V1.fontDisplay, fontSize: 20, fontWeight: 700,
-            letterSpacing: '-0.02em', color: '#0F0E17',
-          }}>You're all set</div>
-          <div style={{
-            fontFamily: V1.fontBody, fontSize: 13.5, color: '#64748b',
-            textAlign: 'center', maxWidth: 280, lineHeight: 1.5,
-          }}>
-            {(linkedSummary && linkedSummary.institution_name) || 'Your bank'} is connected. Returning to Delt…
-          </div>
         </div>
       )}
     </V1PlaidShell>

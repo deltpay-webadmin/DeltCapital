@@ -18,6 +18,40 @@ const V1APPLY_BANKS = [
 
 const V1APPLY_STEPS = ['Business', 'Bank', 'Identity', 'Offer', 'Done'];
 
+// ─── Field formatters & validators ───
+// EIN auto-formats to XX-XXXXXXX and phone to (555) 555-0199 as the user
+// types; the validators below gate the Continue button so every Business
+// field must be present and well-formed before advancing.
+function formatEIN(v) {
+  const d = (v || '').replace(/\D/g, '').slice(0, 9);
+  return d.length <= 2 ? d : `${d.slice(0, 2)}-${d.slice(2)}`;
+}
+function formatPhone(v) {
+  const d = (v || '').replace(/\D/g, '').slice(0, 10);
+  if (d.length === 0) return '';
+  if (d.length < 4) return `(${d}`;
+  if (d.length < 7) return `(${d.slice(0, 3)}) ${d.slice(3)}`;
+  return `(${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6)}`;
+}
+const v1IsEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((v || '').trim());
+const v1IsEIN   = (v) => (v || '').replace(/\D/g, '').length === 9;
+const v1IsPhone = (v) => (v || '').replace(/\D/g, '').length === 10;
+const v1NotBlank = (v) => !!(v && v.trim());
+
+// Every Business-step field must be filled and well-formed to proceed.
+function v1BusinessComplete(form) {
+  return (
+    v1NotBlank(form.businessName) &&
+    v1IsEIN(form.ein) &&
+    v1NotBlank(form.legalForm) &&
+    v1NotBlank(form.state) &&
+    v1NotBlank(form.firstName) &&
+    v1NotBlank(form.lastName) &&
+    v1IsEmail(form.email) &&
+    v1IsPhone(form.phone)
+  );
+}
+
 function V1ApplyField({ label, hint, children }) {
   return (
     <label style={{ display: 'block' }}>
@@ -40,19 +74,21 @@ function V1ApplyField({ label, hint, children }) {
   );
 }
 
-function V1ApplyInput({ value, onChange, placeholder, type = 'text', accent }) {
+function V1ApplyInput({ value, onChange, placeholder, type = 'text', accent, inputMode, invalid }) {
   return (
     <input
       type={type}
+      inputMode={inputMode}
       value={value || ''}
       placeholder={placeholder}
+      aria-invalid={invalid ? 'true' : undefined}
       onChange={(e) => onChange(e.target.value)}
-      onFocus={(e) => { e.currentTarget.style.borderColor = accent; e.currentTarget.style.boxShadow = `0 0 0 3px ${accent}26`; }}
-      onBlur={(e) => { e.currentTarget.style.borderColor = V1.line; e.currentTarget.style.boxShadow = 'none'; }}
+      onFocus={(e) => { e.currentTarget.style.borderColor = invalid ? V1.red : accent; e.currentTarget.style.boxShadow = `0 0 0 3px ${(invalid ? V1.red : accent)}26`; }}
+      onBlur={(e) => { e.currentTarget.style.borderColor = invalid ? V1.red : V1.line; e.currentTarget.style.boxShadow = 'none'; }}
       style={{
         width: '100%', padding: '13px 14px',
         background: V1.white,
-        border: `1px solid ${V1.line}`, borderRadius: 10,
+        border: `1px solid ${invalid ? V1.red : V1.line}`, borderRadius: 10,
         fontFamily: V1.fontBody, fontSize: 14.5, color: V1.ink,
         outline: 'none', transition: 'border-color .15s, box-shadow .15s',
       }}
@@ -60,23 +96,30 @@ function V1ApplyInput({ value, onChange, placeholder, type = 'text', accent }) {
   );
 }
 
-function V1ApplySelect({ value, onChange, opts, accent }) {
+function V1ApplySelect({ value, onChange, opts, accent, placeholder }) {
+  const isPlaceholder = !value;
   return (
     <div style={{ position: 'relative' }}>
       <select
-        value={value}
+        value={value || ''}
         onChange={(e) => onChange(e.target.value)}
         onFocus={(e) => { e.currentTarget.style.borderColor = accent; e.currentTarget.style.boxShadow = `0 0 0 3px ${accent}26`; }}
         onBlur={(e) => { e.currentTarget.style.borderColor = V1.line; e.currentTarget.style.boxShadow = 'none'; }}
         style={{
           width: '100%', padding: '13px 40px 13px 14px',
           background: V1.white, border: `1px solid ${V1.line}`, borderRadius: 10,
-          fontFamily: V1.fontBody, fontSize: 14.5, color: V1.ink,
+          fontFamily: V1.fontBody, fontSize: 14.5,
+          // Match the muted tone of text inputs' placeholders until a real
+          // option is chosen.
+          color: isPlaceholder ? V1.muted : V1.ink,
           outline: 'none', cursor: 'pointer', appearance: 'none',
           transition: 'border-color .15s, box-shadow .15s',
         }}
       >
-        {opts.map((o) => <option key={o} value={o}>{o}</option>)}
+        {placeholder && (
+          <option value="" disabled hidden>{placeholder}</option>
+        )}
+        {opts.map((o) => <option key={o} value={o} style={{ color: V1.ink }}>{o}</option>)}
       </select>
       <svg width="12" height="12" viewBox="0 0 12 12"
         style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}
@@ -115,13 +158,13 @@ function V1StepBusiness({ form, setForm, accent }) {
           <V1ApplyInput value={form.businessName} onChange={(v) => setForm({ ...form, businessName: v })} placeholder="La Rosa Restaurant LLC" accent={accent} />
         </V1ApplyField>
         <V1ApplyField label="EIN" hint="9 digits">
-          <V1ApplyInput value={form.ein} onChange={(v) => setForm({ ...form, ein: v })} placeholder="12-3456789" accent={accent} />
+          <V1ApplyInput value={form.ein} onChange={(v) => setForm({ ...form, ein: formatEIN(v) })} placeholder="12-3456789" accent={accent} inputMode="numeric" invalid={!!form.ein && !v1IsEIN(form.ein)} />
         </V1ApplyField>
         <V1ApplyField label="Entity type">
-          <V1ApplySelect value={form.legalForm} onChange={(v) => setForm({ ...form, legalForm: v })} opts={['LLC', 'S-Corp', 'C-Corp', 'Sole Prop', 'Partnership']} accent={accent} />
+          <V1ApplySelect value={form.legalForm} onChange={(v) => setForm({ ...form, legalForm: v })} opts={['LLC', 'S-Corp', 'C-Corp', 'Sole Prop', 'Partnership']} accent={accent} placeholder="Select entity type" />
         </V1ApplyField>
         <V1ApplyField label="State of operation">
-          <V1ApplySelect value={form.state} onChange={(v) => setForm({ ...form, state: v })} opts={['CA','TX','FL','NY','IL','GA','WA','CO','AZ','NJ','Other']} accent={accent} />
+          <V1ApplySelect value={form.state} onChange={(v) => setForm({ ...form, state: v })} opts={['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','DC','Other']} accent={accent} placeholder="Select state" />
         </V1ApplyField>
         <V1ApplyField label="First name">
           <V1ApplyInput value={form.firstName} onChange={(v) => setForm({ ...form, firstName: v })} placeholder="Maria" accent={accent} />
@@ -130,10 +173,10 @@ function V1StepBusiness({ form, setForm, accent }) {
           <V1ApplyInput value={form.lastName} onChange={(v) => setForm({ ...form, lastName: v })} placeholder="Rodriguez" accent={accent} />
         </V1ApplyField>
         <V1ApplyField label="Email">
-          <V1ApplyInput type="email" value={form.email} onChange={(v) => setForm({ ...form, email: v })} placeholder="you@business.com" accent={accent} />
+          <V1ApplyInput type="email" value={form.email} onChange={(v) => setForm({ ...form, email: v })} placeholder="you@business.com" accent={accent} inputMode="email" invalid={!!form.email && !v1IsEmail(form.email)} />
         </V1ApplyField>
         <V1ApplyField label="Phone">
-          <V1ApplyInput value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} placeholder="(555) 555-0199" accent={accent} />
+          <V1ApplyInput value={form.phone} onChange={(v) => setForm({ ...form, phone: formatPhone(v) })} placeholder="(555) 555-0199" accent={accent} inputMode="tel" invalid={!!form.phone && !v1IsPhone(form.phone)} />
         </V1ApplyField>
       </div>
     </div>
@@ -300,20 +343,18 @@ function V1StepIdentity({ form, setForm, accent, onAdvance }) {
     setForm({ ...form, idVerified: !!data.idVerified });
   };
 
-  // Auto-advance once IDV + SSN are both satisfied. Critically this also
-  // fires when the *phone* finishes IDV — V1IDVerify polls the IDV status
-  // and calls handleIdvComplete, which flips idVerified true here.
-  // Skip the auto-advance if the user landed back on this step with both
-  // already filled (e.g. via Back from Offer).
-  const [armed] = React.useState(() =>
-    !(form.idVerified && form.ssn4.length === 4)
-  );
+  // Auto-advance once IDV is satisfied. Critically this also fires when the
+  // *phone* finishes IDV — V1IDVerify polls the IDV status and calls
+  // handleIdvComplete, which flips idVerified true here. Skip the
+  // auto-advance if the user landed back on this step already verified
+  // (e.g. via Back from Offer).
+  const [armed] = React.useState(() => !form.idVerified);
   React.useEffect(() => {
-    if (armed && form.idVerified && form.ssn4.length === 4) {
+    if (armed && form.idVerified) {
       const t = setTimeout(() => { onAdvance && onAdvance(); }, 700);
       return () => clearTimeout(t);
     }
-  }, [armed, form.idVerified, form.ssn4.length, onAdvance]);
+  }, [armed, form.idVerified, onAdvance]);
   return (
     <div>
       <div style={{
@@ -328,8 +369,8 @@ function V1StepIdentity({ form, setForm, accent, onAdvance }) {
         fontFamily: V1.fontBody, fontSize: 15, color: V1.muted,
         lineHeight: 1.55, margin: 0, maxWidth: 520,
       }}>
-        ID + selfie via Plaid IDV, plus the last 4 of SSN for KYC. Soft-pull on
-        the guarantor. No impact to your personal credit.
+        ID + selfie via Plaid IDV for KYC. Soft-pull on the guarantor. No
+        impact to your personal credit.
       </p>
 
       {/* Plaid IDV launcher / verified state */}
@@ -377,25 +418,6 @@ function V1StepIdentity({ form, setForm, accent, onAdvance }) {
             }}
           >Begin verification</button>
         )}
-      </div>
-
-      <div data-v1-form-grid style={{
-        marginTop: 22,
-        display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 18, maxWidth: 480,
-      }}>
-        <V1ApplyField label="SSN (last 4)" hint="Masked on submit">
-          <V1ApplyInput
-            value={form.ssn4}
-            onChange={(v) => setForm({ ...form, ssn4: v.replace(/[^0-9]/g, '').slice(0, 4) })}
-            placeholder="1234" accent={accent} />
-        </V1ApplyField>
-        <V1ApplyField label="Use of funds">
-          <V1ApplySelect
-            value={form.useOfFunds}
-            onChange={(v) => setForm({ ...form, useOfFunds: v })}
-            opts={['Inventory', 'Equipment', 'Hiring', 'Renovation', 'Marketing', 'Bridge A/R', 'Other']}
-            accent={accent} />
-        </V1ApplyField>
       </div>
 
       <V1IDVerify open={idvOpen} onClose={() => setIdvOpen(false)} onComplete={handleIdvComplete} />
@@ -676,14 +698,14 @@ function V1ApplicationFlow({
   const [form, setForm] = React.useState({
     // Contact fields are pre-filled from the calculator lead-gate when present
     businessName: prefill?.lead?.businessName || '',
-    ein: '', legalForm: 'LLC',
+    ein: '', legalForm: '',
     firstName: prefill?.lead?.firstName || '',
     lastName: '',
     email: prefill?.lead?.email || '',
     phone: prefill?.lead?.phone || '',
-    state: 'CA', useOfFunds: 'Inventory',
+    state: '',
     bankConnected: false, bankInstitution: '', bankAccounts: null,
-    ssn4: '', idVerified: false,
+    idVerified: false,
     // Offer amount defaults to the *high end* of the calculator estimate
     // so the slider starts where the email said the user pre-qualified.
     // The previous default of 75000 was a regression — it threw away the
@@ -817,9 +839,9 @@ function V1ApplicationFlow({
   };
 
   const canProceed = (() => {
-    if (step === 0) return form.businessName && form.email;
+    if (step === 0) return v1BusinessComplete(form);
     if (step === 1) return form.bankConnected;
-    if (step === 2) return form.ssn4.length === 4 && form.idVerified;
+    if (step === 2) return form.idVerified;
     return true;
   })();
 
