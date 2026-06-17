@@ -157,7 +157,7 @@ function V1StepBusiness({ form, setForm, accent }) {
           <V1ApplySelect value={form.legalForm} onChange={(v) => setForm({ ...form, legalForm: v })} opts={['LLC', 'S-Corp', 'C-Corp', 'Sole Prop', 'Partnership']} accent={accent} />
         </V1ApplyField>
         <V1ApplyField label="State of operation">
-          <V1ApplySelect value={form.state} onChange={(v) => setForm({ ...form, state: v })} opts={['CA','TX','FL','NY','IL','GA','WA','CO','AZ','NJ','Other']} accent={accent} />
+          <V1ApplySelect value={form.state} onChange={(v) => setForm({ ...form, state: v })} opts={['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','DC','Other']} accent={accent} />
         </V1ApplyField>
         <V1ApplyField label="First name">
           <V1ApplyInput value={form.firstName} onChange={(v) => setForm({ ...form, firstName: v })} placeholder="Maria" accent={accent} />
