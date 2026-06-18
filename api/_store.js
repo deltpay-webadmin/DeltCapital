@@ -1,39 +1,22 @@
 // Shared Supabase store. Underscore prefix keeps Vercel from exposing this
 // file as an HTTP endpoint — it's importable from sibling api/ functions.
 //
-// Two tables back this module:
+// Delt Capital runs on the SHARED "Delt Pay Database" Supabase project so
+// that platform users (Supabase Auth, auth.users) are shared with Delt Pay.
+// Delt Capital's own data lives in a dedicated `delt_capital` schema and is
+// reached through views in `public`:
 //   leads             — one row per calculator lead-gate submission
 //   apply_progress    — append-only event log keyed by lead_id
+//   platform_users    — shared Delt Pay ↔ Delt Capital user directory (read-only)
 //
-// Schema (run once in Supabase SQL editor — see /docs/SUPABASE_SCHEMA.sql
-// in this repo for the exact DDL):
+// PostgREST only exposes `public`, so these public views (which carry the
+// same names this module already used) are the API surface; the base tables
+// stay in `delt_capital`. The views are auto-updatable, so the inserts/
+// patches below work unchanged. See /docs/SUPABASE_SCHEMA.sql for the full,
+// idempotent DDL (source of truth).
 //
-//   create table leads (
-//     id            uuid primary key default gen_random_uuid(),
-//     created_at    timestamptz not null default now(),
-//     first_name    text,
-//     business_name text,
-//     email         text not null,
-//     phone         text,
-//     source        text,
-//     estimate      jsonb,
-//     nudged_at     timestamptz,        -- set by api/sms-nudge cron
-//     completed_at  timestamptz         -- set when apply-progress sees 'submitted'
-//   );
-//   create index on leads (created_at);
-//   create index on leads (completed_at) where completed_at is null;
-//
-//   create table apply_progress (
-//     id         bigserial primary key,
-//     lead_id    uuid not null references leads(id) on delete cascade,
-//     event      text not null,        -- modal_opened | plaid_connected | idv_done | submitted
-//     created_at timestamptz not null default now(),
-//     meta       jsonb
-//   );
-//   create index on apply_progress (lead_id, created_at desc);
-//
-// Required env vars:
-//   SUPABASE_URL                  — https://<project>.supabase.co
+// Required env vars (point these at the Delt Pay Database project):
+//   SUPABASE_URL                  — https://ytemrmpnwmzqeradbeoa.supabase.co
 //   SUPABASE_SERVICE_ROLE_KEY     — service role key (server-only, NEVER expose to client)
 //
 // We use the REST endpoint directly (PostgREST) instead of @supabase/supabase-js

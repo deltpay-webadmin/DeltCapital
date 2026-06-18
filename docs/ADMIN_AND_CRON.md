@@ -23,8 +23,8 @@ America/New_York and weekends are skipped.
 
 | Var | Where it comes from | Required for |
 |-----|---------------------|--------------|
-| `SUPABASE_URL`                 | Supabase → Project Settings → Data API | All lead persistence, admin, cron |
-| `SUPABASE_SERVICE_ROLE_KEY`    | Supabase → Project Settings → API Keys → service_role | Same |
+| `SUPABASE_URL`                 | **Delt Pay Database** project → Project Settings → Data API (`https://ytemrmpnwmzqeradbeoa.supabase.co`) | All lead persistence, admin, cron |
+| `SUPABASE_SERVICE_ROLE_KEY`    | **Delt Pay Database** project → Project Settings → API Keys → service_role | Same |
 | `OUTLOOK_TENANT_ID`            | Existing — already set for `/api/book` | Magic-link email, cron nudge |
 | `OUTLOOK_CLIENT_ID`            | Existing                              | Same |
 | `OUTLOOK_CLIENT_SECRET`        | Existing                              | Same |
@@ -51,8 +51,13 @@ A lead that completes (`submitted` beacon fires) is marked
 
 ## Schema
 
-Already applied to the live Supabase project. SQL source of truth lives
-at `docs/SUPABASE_SCHEMA.sql` if you ever need to re-apply.
+Delt Capital shares the **Delt Pay Database** Supabase project
+(`ytemrmpnwmzqeradbeoa`) so that platform users (Supabase Auth,
+`auth.users`) are shared with Delt Pay. Delt Capital's own tables live in a
+dedicated `delt_capital` schema and are reached through views in `public`
+(`leads`, `apply_progress`), with `public.platform_users` as the shared
+cross-product user directory. The schema is already applied; SQL source of
+truth lives at `docs/SUPABASE_SCHEMA.sql` if you ever need to re-apply.
 
 ## How to test
 
