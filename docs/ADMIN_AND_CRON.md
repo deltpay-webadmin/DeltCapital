@@ -8,10 +8,10 @@ nudge cron, and the magic-link gated `/admin/leads` console.
 
 | Endpoint / page          | Purpose |
 |--------------------------|---------|
-| `/admin`                 | Login form. Enter your email → magic link is mailed to you. |
+| `/admin`                 | Login form. Email + password (verified against the shared Supabase Auth). |
 | `/admin/leads`           | Server-rendered lead list with status, range, and one-click GV SMS. |
-| `/api/admin-login`       | POST `{ email }`; emails a one-time link. |
-| `/api/admin-callback`    | Verifies the link, sets a session cookie, redirects. |
+| `/api/admin-login`       | POST `{ email, password }` → verifies vs. shared Supabase Auth, sets session cookie. POST `{ email }` only → falls back to emailing a magic link. |
+| `/api/admin-callback`    | Verifies a magic link, sets a session cookie, redirects. |
 | `/api/admin-logout`      | Clears the cookie. |
 | `/api/apply-progress`    | Fire-and-forget beacon the apply modal pings on milestones. |
 | `/api/sms-nudge`         | Cron-driven T+45min reactivation. Emails the lead and emails the operator with a ready-to-send SMS body. |
@@ -29,10 +29,24 @@ America/New_York and weekends are skipped.
 | `OUTLOOK_CLIENT_ID`            | Existing                              | Same |
 | `OUTLOOK_CLIENT_SECRET`        | Existing                              | Same |
 | `OUTLOOK_FROM_EMAIL`           | Existing — your licensed mailbox      | Same |
-| `ADMIN_ALLOWED_EMAILS`         | Comma-separated. e.g. `david@deltpay.com` | Admin login |
+| `ADMIN_ALLOWED_EMAILS`         | Comma-separated allow-list, e.g. `david@deltpay.com,carlos@activateswag.com` | Admin login (authorization gate) |
 | `ADMIN_SESSION_SECRET`         | Any random 32+ char string (run `openssl rand -hex 32`) | Admin session cookies |
 | `CRON_SECRET`                  | Random string. Optional but lets you manually trigger `/api/sms-nudge?token=...` for testing | Manual cron test |
 | `PUBLIC_SITE_ORIGIN`           | e.g. `https://deltcapital.com`. Optional — falls back to Vercel's bare host. | Deep-link URL building |
+
+## Admin login (password)
+
+`/admin` signs in with **email + password**, verified against the shared
+Supabase Auth (`auth.users`) in the Delt Pay Database — the same platform
+credentials used across Delt Pay and Delt Capital. To grant someone access:
+
+1. They must exist as a Supabase Auth user in the Delt Pay Database project
+   (with `email_confirmed_at` set so login isn't blocked by confirmation).
+2. Their email must be on `ADMIN_ALLOWED_EMAILS` — this is the authorization
+   gate, so ordinary platform users can't reach the admin dash.
+
+No email is sent for password login. The magic-link flow still works as a
+fallback if you POST only `{ email }` to `/api/admin-login`.
 
 ## SMS workflow (the hybrid part)
 

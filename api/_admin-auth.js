@@ -1,15 +1,20 @@
-// Magic-link auth for /admin pages.
+// Session + login helpers for /admin pages.
 //
-// Flow:
-//   1. Operator hits /admin or /api/admin-* without a session cookie.
-//      They get a tiny "enter your email" form.
-//   2. POST /api/admin-login with { email } → if the email is in
-//      ADMIN_ALLOWED_EMAILS (comma-separated env var), we email them
-//      a one-time link with a signed HMAC token good for 15 minutes.
-//   3. Operator clicks link → /api/admin-callback?t=<token> → we verify
-//      the token, set an HttpOnly cookie (signed JWT-ish), redirect to
-//      /admin/leads.
-//   4. Server pages check the cookie via verifySession().
+// Primary flow — password (against the shared Supabase Auth):
+//   1. Operator hits /admin without a session cookie → email+password form.
+//   2. POST /api/admin-login with { email, password } → if the email is on
+//      ADMIN_ALLOWED_EMAILS and the password checks out against the shared
+//      Supabase Auth (see api/_supabase-auth.js), we set the session cookie
+//      and the client redirects to /admin/leads. No email round-trip.
+//
+// Fallback flow — magic link (kept for convenience):
+//   POST /api/admin-login with { email } only → if allow-listed, we email a
+//   one-time HMAC link → /api/admin-callback?t=<token> verifies it and sets
+//   the same session cookie.
+//
+// Server pages check the cookie via verifySession(). ADMIN_ALLOWED_EMAILS is
+// the authorization gate in both modes: shared Supabase users not on it
+// can't reach the admin dash.
 //
 // We don't use a third-party auth library here \u2014 the surface area is
 // tiny (one admin user) and bringing in NextAuth/Lucia would dwarf the

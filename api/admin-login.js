@@ -1,11 +1,24 @@
 // POST /api/admin-login
-//   body: { email: string }
-// Emails a magic link to the address if it's in ADMIN_ALLOWED_EMAILS.
-// Returns the same { ok: true } shape whether or not the email matches \u2014
-// no enumeration. The real signal of success is whether a magic link
-// actually shows up in the inbox.
+//   body: { email: string, password?: string }
+//
+// Two login modes share this endpoint:
+//   \u2022 Password \u2014 when `password` is supplied we verify it against the SHARED
+//     Supabase Auth (the same auth.users that back Delt Pay), require the
+//     email to be on ADMIN_ALLOWED_EMAILS (authorization gate, so Delt Pay
+//     end-users can't reach the admin dash), then set the session cookie
+//     directly and return { ok: true, redirect }. No email round-trip.
+//   \u2022 Magic link \u2014 when no password is supplied we fall back to emailing a
+//     one-time sign-in link (the original flow). Always returns { ok: true }
+//     regardless of whether the email matches \u2014 no enumeration.
 
-const { isEmailAllowed, issueMagicToken } = require('./_admin-auth');
+const {
+  isEmailAllowed,
+  issueMagicToken,
+  issueSession,
+  sessionCookieHeader,
+  SESSION_TTL_HOURS,
+} = require('./_admin-auth');
+const { verifyPassword } = require('./_supabase-auth');
 const { getAccessToken, sendMail } = require('./_email');
 
 const FROM_MAILBOX = process.env.OUTLOOK_FROM_EMAIL;
@@ -37,7 +50,38 @@ module.exports = async function handler(req, res) {
   if (typeof body === 'string') { try { body = JSON.parse(body); } catch (_) { body = {}; } }
   body = body || {};
   const email = String(body.email || '').trim().toLowerCase();
+  const password = body.password ? String(body.password) : '';
 
+  // \u2500\u2500\u2500 Password mode: verify against shared Supabase Auth, no email \u2500\u2500\u2500
+  if (password) {
+    // Authorization gate first: only allow-listed emails may reach the
+    // admin dash, even with otherwise-valid platform credentials. Generic
+    // error so we don't reveal whether the email or the password was wrong.
+    if (!email || !isEmailAllowed(email)) {
+      res.status(401).json({ error: 'invalid_credentials' });
+      return;
+    }
+    const user = await verifyPassword(email, password);
+    if (!user) {
+      res.status(401).json({ error: 'invalid_credentials' });
+      return;
+    }
+    let session;
+    try {
+      session = issueSession(email);
+    } catch (err) {
+      console.error('[admin-login] issueSession failed:', err && err.message);
+      res.status(500).json({ error: 'config_error', detail: String(err && err.message) });
+      return;
+    }
+    res.setHeader('Set-Cookie', sessionCookieHeader(session, {
+      maxAgeSeconds: SESSION_TTL_HOURS * 3600,
+    }));
+    res.status(200).json({ ok: true, redirect: '/admin/leads' });
+    return;
+  }
+
+  // \u2500\u2500\u2500 Magic-link mode (fallback) \u2500\u2500\u2500
   // Always 200 \u2014 don't leak which emails are on the allow-list.
   if (!email || !isEmailAllowed(email)) {
     res.status(200).json({ ok: true });
