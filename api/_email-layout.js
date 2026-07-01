@@ -53,21 +53,21 @@ function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => E
 // Outlook (which respects attributes more than CSS) and Gmail (vice
 // versa) both render at the same size.
 function trustStrip() {
-  const cell = (src, alt, h = 44) => `
-    <td align="center" valign="middle" style="padding:0 14px;">
+  const cell = (src, alt, h = 32) => `
+    <td align="center" valign="middle" style="padding:0 18px;">
       <img src="${src}" alt="${alt}" height="${h}"
-           style="height:${h}px;width:auto;display:block;border:0;outline:none;text-decoration:none;" />
+           style="height:${h}px;width:auto;display:block;border:0;outline:none;text-decoration:none;opacity:0.85;" />
     </td>`;
   return `
-    <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:32px auto 4px;">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:28px auto 4px;border-top:1px solid #E7E3DA;padding-top:20px;">
       <tr>
         ${cell(ASSETS.badges.bbb,   'BBB Accredited Business — A+ Rating')}
         ${cell(ASSETS.badges.pci,   'PCI DSS Compliant')}
         ${cell(ASSETS.badges.plaid, 'Bank verification powered by Plaid')}
       </tr>
       <tr>
-        <td colspan="3" align="center" style="padding:14px 0 0;">
-          <p style="margin:0;font-size:11px;line-height:1.5;color:#8A8693;letter-spacing:0.02em;">
+        <td colspan="3" align="center" style="padding:12px 0 0;">
+          <p style="margin:0;font-size:10.5px;line-height:1.5;color:#A4A0B0;letter-spacing:0.01em;">
             Accredited, compliant, and bank-grade secure. All connections encrypted with 256-bit TLS.
           </p>
         </td>
@@ -150,12 +150,12 @@ function renderEmail({ body, includeTrustStrip = true, audience = 'lead', recipi
   ${preheaderHtml}
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F8F7FB;">
     <tr><td align="center" style="padding:32px 16px;">
-      <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background:#FFFFFF;border-radius:14px;box-shadow:0 8px 24px -12px rgba(31,28,80,0.18);">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background:#FFFFFF;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
         <tr><td style="padding:36px 40px 24px;">
-          <div style="margin:0 0 28px;">
+          <div style="margin:0 0 28px;padding-bottom:24px;border-bottom:2px solid #0A1133;">
             <a href="${esc(COMPANY.siteUrl)}" style="text-decoration:none;border:0;outline:none;">
               <img src="${ASSETS.logoWordmark}" alt="${esc(COMPANY.name)}" width="119"
-                   style="height:40px;width:auto;display:block;border:0;outline:none;text-decoration:none;" />
+                   style="height:36px;width:auto;display:block;border:0;outline:none;text-decoration:none;" />
             </a>
           </div>
           ${body}
