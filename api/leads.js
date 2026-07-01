@@ -139,31 +139,31 @@ function leadEmailBody({ firstName, businessName, email, phone, estimate, applyU
         takes about 2 minutes — we'll skip the questions you already answered and
         take you straight to the bank-link step:
       </p>
-      <p style="margin:0 0 18px;">
+      <p style="margin:0 0 28px;">
         <a href="${esc(ctaUrl)}"
-           style="display:inline-block;background:linear-gradient(135deg,#5B5BD6 0%,#6366F1 50%,#5B5BD6 100%);color:#FFFFFF;text-decoration:none;
-                  padding:14px 28px;border-radius:10px;font-family:Arial,sans-serif;
-                  font-size:15px;font-weight:700;letter-spacing:0.01em;">
+           style="display:inline-block;background:#0A1133;color:#FFFFFF;text-decoration:none;
+                  padding:13px 28px;border-radius:6px;font-family:Arial,sans-serif;
+                  font-size:15px;font-weight:600;letter-spacing:0.01em;">
           Continue my application &rarr;
         </a>
       </p>
-      <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:18px 0 4px;">
-        <tr>
-          <td valign="top" style="padding:0 10px 0 0;font-size:13px;color:#5A6577;line-height:1.55;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 24px;border-top:1px solid #E7E3DA;">
+        <tr><td style="padding:14px 0 0;">
+          <p style="margin:0 0 8px;font-size:13.5px;color:#5A6577;line-height:1.55;">
             <strong style="color:#0A1133;">No credit pull</strong> until you accept terms.
-          </td>
-          <td valign="top" style="padding:0 10px;font-size:13px;color:#5A6577;line-height:1.55;">
+          </p>
+          <p style="margin:0 0 8px;font-size:13.5px;color:#5A6577;line-height:1.55;">
             <strong style="color:#0A1133;">Bank-grade verification</strong> via Plaid.
-          </td>
-          <td valign="top" style="padding:0 0 0 10px;font-size:13px;color:#5A6577;line-height:1.55;">
+          </p>
+          <p style="margin:0;font-size:13.5px;color:#5A6577;line-height:1.55;">
             <strong style="color:#0A1133;">Funded as fast as 24h</strong> after acceptance.
-          </td>
-        </tr>
+          </p>
+        </td></tr>
       </table>
-      <p style="margin:22px 0 0;color:#5A6577;font-size:13.5px;line-height:1.55;">
+      <p style="margin:0 0 4px;color:#5A6577;font-size:13.5px;line-height:1.55;">
         Questions? Just reply to this email — it goes straight to my inbox.
       </p>
-      <p style="margin:14px 0 0;color:#0A1133;font-size:13.5px;line-height:1.55;">
+      <p style="margin:16px 0 0;color:#0A1133;font-size:13.5px;line-height:1.55;">
         — David Hazday<br/>
         <span style="color:#6B6877;font-weight:500;">Founder, Delt Capital</span>
       </p>
