@@ -194,34 +194,9 @@ function V1Hero({ accent, onApply }) {
     return () => clearInterval(iv);
   }, [mounted]);
 
-  // Hero video — seamless loop via two stacked <video>s that crossfade.
-  // The mp4's first/last frame don't match, so native `loop` snaps. We track
-  // which video is "front" and, when it nears its end, start the back one
-  // from t=0 and swap them with a CSS opacity transition.
-  const videoA = React.useRef(null);
-  const videoB = React.useRef(null);
-  const [videoFront, setVideoFront] = React.useState(0);
-  const VIDEO_CROSSFADE_S = 0.7;
-  React.useEffect(() => {
-    const cur = videoFront === 0 ? videoA.current : videoB.current;
-    const nxt = videoFront === 0 ? videoB.current : videoA.current;
-    if (!cur || !nxt) return undefined;
-    let scheduled = false;
-    const onTime = () => {
-      if (scheduled) return;
-      const dur = cur.duration;
-      if (!dur || isNaN(dur)) return;
-      if (dur - cur.currentTime <= VIDEO_CROSSFADE_S) {
-        scheduled = true;
-        try { nxt.currentTime = 0; } catch (e) { /* not ready yet */ }
-        const p = nxt.play();
-        if (p && typeof p.catch === 'function') p.catch(() => {});
-        setVideoFront((f) => 1 - f);
-      }
-    };
-    cur.addEventListener('timeupdate', onTime);
-    return () => cur.removeEventListener('timeupdate', onTime);
-  }, [videoFront]);
+  // Hero graphic — static George Washington cutout (transparent PNG).
+  // Kept the parallax shift/scale variables so subtle scroll motion still
+  // animates the image the same way the previous hero video did.
 
   return (
     <section style={{
@@ -329,10 +304,13 @@ function V1Hero({ accent, onApply }) {
           </div>
         </div>
 
-        {/* Right: video, bleeding to the right edge */}
+        {/* Right: George Washington hero graphic (transparent PNG). */}
         <div data-v1-hero-media style={{
           position: 'relative',
           alignSelf: 'stretch',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
           marginRight: -32,
           marginTop: -32,
           marginBottom: -32,
@@ -341,80 +319,41 @@ function V1Hero({ accent, onApply }) {
           transition: 'clip-path 1100ms cubic-bezier(0.76, 0, 0.24, 1) 160ms',
           willChange: mounted ? 'auto' : 'clip-path',
         }}>
-          {/* Two stacked videos that crossfade at loop boundary — see the
-              videoFront effect above. No `loop` attribute: looping is manual
-              so we can overlap a fade between copies. */}
-          {[videoA, videoB].map((ref, idx) => (
-            <video
-              key={idx}
-              ref={ref}
-              src="app/assets/hero.mp4"
-              autoPlay={idx === 0}
-              muted playsInline
-              style={{
-                position: 'absolute', inset: 0,
-                width: '100%', height: '100%',
-                objectFit: 'cover',
-                display: 'block',
-                opacity: idx === videoFront ? 1 : 0,
-                transition: `opacity ${VIDEO_CROSSFADE_S * 1000}ms ease-in-out`,
-                transform: `translate3d(0, ${videoShift}px, 0) scale(${videoScale})`,
-                transformOrigin: 'center center',
-                willChange: 'transform, opacity',
-                // Brand tint (step 1 of 2): rotate the baked-in violet ~25° back
-                // toward Electric Indigo, with a gentle saturation/brightness
-                // lift so the shift doesn't flatten the scene.
-                filter: 'hue-rotate(-25deg) saturate(1.08) brightness(1.02)',
-              }}
-            />
-          ))}
-          {/* Brand tint (step 2 of 2): Electric Indigo `mix-blend-mode: color`
-              overlay at ~14% pulls any remaining chroma toward #4945FF while
-              preserving luminance (motion, highlights, shadows intact). */}
+          {/* Soft indigo glow behind the subject to lift it off Midnight Steel */}
           <div aria-hidden style={{
-            position: 'absolute', inset: 0,
-            background: '#4945FF',
-            mixBlendMode: 'color',
-            opacity: 0.14,
+            position: 'absolute',
+            inset: '10% 6%',
+            background: 'radial-gradient(60% 55% at 50% 45%, rgba(73,69,255,0.28) 0%, rgba(73,69,255,0.12) 40%, rgba(4,30,66,0) 72%)',
+            filter: 'blur(6px)',
             pointerEvents: 'none',
           }} />
-          {/* Midnight Steel soft-light pass for overall brand cohesion with
-              the Midnight Steel hero background. */}
-          <div aria-hidden style={{
-            position: 'absolute', inset: 0,
-            background: '#041E42',
-            mixBlendMode: 'soft-light',
-            opacity: 0.35,
-            pointerEvents: 'none',
-          }} />
-          {/* Left-edge fade so video melts into the copy column */}
+          <img
+            src="app/assets/washington.png"
+            alt="George Washington, modernized — holding an iPhone with an AirPod in his ear"
+            style={{
+              position: 'relative',
+              maxWidth: '100%',
+              maxHeight: '92%',
+              width: 'auto',
+              height: 'auto',
+              objectFit: 'contain',
+              display: 'block',
+              transform: `translate3d(0, ${videoShift}px, 0) scale(${videoScale})`,
+              transformOrigin: 'center center',
+              willChange: 'transform',
+              filter: 'drop-shadow(0 24px 48px rgba(0,0,0,0.45))',
+            }}
+          />
+          {/* Left-edge fade so the subject melts into the copy column */}
           <div style={{
             position: 'absolute', inset: 0,
-            background: 'linear-gradient(90deg, #041E42 0%, rgba(4,30,66,0.6) 12%, rgba(4,30,66,0) 32%)',
+            background: 'linear-gradient(90deg, #041E42 0%, rgba(4,30,66,0.5) 8%, rgba(4,30,66,0) 22%)',
             pointerEvents: 'none',
           }} />
-          {/* Right-edge fade so video melts into the section background */}
+          {/* Right-edge fade so the subject melts into the section background */}
           <div style={{
             position: 'absolute', inset: 0,
-            background: 'linear-gradient(270deg, #041E42 0%, rgba(4,30,66,0.55) 8%, rgba(4,30,66,0) 22%)',
-            pointerEvents: 'none',
-          }} />
-          {/* Top-edge fade so video melts down from the dateline */}
-          <div style={{
-            position: 'absolute', inset: 0,
-            background: 'linear-gradient(180deg, #041E42 0%, rgba(4,30,66,0.6) 10%, rgba(4,30,66,0) 26%)',
-            pointerEvents: 'none',
-          }} />
-          {/* Bottom-edge fade so video melts into the section bottom rule */}
-          <div style={{
-            position: 'absolute', inset: 0,
-            background: 'linear-gradient(0deg, #041E42 0%, rgba(4,30,66,0.6) 10%, rgba(4,30,66,0) 26%)',
-            pointerEvents: 'none',
-          }} />
-          {/* Top/bottom subtle fades to help the band read as a hero */}
-          <div style={{
-            position: 'absolute', inset: 0,
-            background: 'linear-gradient(180deg, rgba(4,30,66,0.25) 0%, transparent 15%, transparent 85%, rgba(4,30,66,0.4) 100%)',
+            background: 'linear-gradient(270deg, #041E42 0%, rgba(4,30,66,0.4) 6%, rgba(4,30,66,0) 18%)',
             pointerEvents: 'none',
           }} />
 
