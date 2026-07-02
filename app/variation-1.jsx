@@ -658,11 +658,19 @@ function Variation1() {
 
   const home = (
     <>
+      {/* Plaid-structured homepage flow — Delt-skinned. Hero stays untouched;
+          new sections mirror Plaid.com's rhythm (marquee → product grid →
+          dark engine banner → network stats → product tabs → case studies),
+          keep V1CompareSection as a final skeptic's look before the lead form. */}
       <V1Hero accent={accent} onApply={() => openApp(null, null)} />
+      <V1LogoMarquee />
+      <V1ProductGrid />
+      <V1IntelligentBanner />
+      <V1NetworkStats />
+      <V1ProductTabs />
+      <V1CaseStudyStrip />
       <V1CompareSection />
-      <V1UseCasesSection />
-      <V1CalcSection calcState={calcState} setCalcState={setCalcState} onApply={openApp} onNavHow={() => navTo('funding-flow')} onNavProcessing={() => navTo('processing')} />
-      <V1CTASection onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} />
+      <V1LeadFormSection onApply={openApp} />
     </>
   );
 
