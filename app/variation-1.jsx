@@ -200,9 +200,10 @@ function V1Hero({ accent, onApply }) {
 
   return (
     <section style={{
-      // Rich Plaid-style gradient: Midnight Steel top-left → deep indigo mid →
-      // subtle teal bleed bottom-right where the portrait glows.
-      background: 'radial-gradient(120% 90% at 85% 65%, rgba(20, 184, 166, 0.18) 0%, rgba(4, 30, 66, 0) 55%), radial-gradient(80% 70% at 15% 20%, rgba(73, 69, 255, 0.22) 0%, rgba(4, 30, 66, 0) 55%), linear-gradient(160deg, #041E42 0%, #062852 45%, #073A5A 100%)',
+      // Delt indigo gradient: violet/cyan glows over a deep navy → indigo
+      // base. The colors echo the tones in the Washington duotone so the
+      // portrait dissolves into the background instead of sitting on top.
+      background: 'radial-gradient(120% 90% at 85% 65%, rgba(125, 211, 252, 0.18) 0%, rgba(4, 30, 66, 0) 55%), radial-gradient(80% 70% at 15% 20%, rgba(73, 69, 255, 0.28) 0%, rgba(4, 30, 66, 0) 55%), linear-gradient(160deg, #041E42 0%, #0A1A6E 60%, #1E1B7A 100%)',
       color: '#F7F5F0',
       position: 'relative',
       overflow: 'hidden',
@@ -218,14 +219,14 @@ function V1Hero({ accent, onApply }) {
       }}>
         <defs>
           <radialGradient id="v1heroTopoFade" cx="30%" cy="40%" r="65%">
-            <stop offset="0%" stopColor="rgba(129, 140, 248, 0.55)" />
+            <stop offset="0%" stopColor="rgba(125, 211, 252, 0.6)" />
             <stop offset="100%" stopColor="rgba(4, 30, 66, 0)" />
           </radialGradient>
           <mask id="v1heroTopoMask">
             <rect width="720" height="720" fill="url(#v1heroTopoFade)" />
           </mask>
         </defs>
-        <g mask="url(#v1heroTopoMask)" fill="none" stroke="#9BB4FF" strokeWidth="1">
+        <g mask="url(#v1heroTopoMask)" fill="none" stroke="#7DD3FC" strokeWidth="1">
           {Array.from({ length: 22 }, (_, i) => {
             const r = 40 + i * 22;
             return <circle key={i} cx="220" cy="300" r={r} />;
@@ -258,7 +259,8 @@ function V1Hero({ accent, onApply }) {
             <V1LineMask ready={mounted} delay={120}>You built the</V1LineMask>
             <V1LineMask ready={mounted} delay={230}>
               <span style={{
-                background: 'linear-gradient(90deg, #7DF9C6 0%, #52D6D4 60%, #4CC9F0 100%)',
+                // Delt indigo→cyan accent, no mint.
+                background: 'linear-gradient(90deg, #4945FF 0%, #7C6BFF 55%, #7DD3FC 100%)',
                 WebkitBackgroundClip: 'text', backgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
               }}>business.</span>
@@ -354,7 +356,7 @@ function V1Hero({ accent, onApply }) {
           <div aria-hidden style={{
             position: 'absolute',
             inset: '6% 4%',
-            background: 'radial-gradient(55% 50% at 55% 55%, rgba(76, 201, 240, 0.32) 0%, rgba(76, 201, 240, 0) 70%), radial-gradient(45% 40% at 45% 65%, rgba(168, 85, 247, 0.22) 0%, rgba(168, 85, 247, 0) 70%)',
+            background: 'radial-gradient(55% 50% at 55% 55%, rgba(125, 211, 252, 0.32) 0%, rgba(125, 211, 252, 0) 70%), radial-gradient(45% 40% at 45% 65%, rgba(73, 69, 255, 0.28) 0%, rgba(73, 69, 255, 0) 70%)',
             filter: 'blur(10px)',
             pointerEvents: 'none',
           }} />
@@ -416,7 +418,7 @@ function V1Hero({ accent, onApply }) {
                   width: '100%', textAlign: 'center',
                   fontFamily: DELT.font.body, fontSize: 12.5, fontWeight: 600,
                   color: '#0A2540',
-                  background: 'rgba(196, 246, 234, 0.94)',
+                  background: 'rgba(199, 210, 254, 0.94)',
                   border: 'none', borderRadius: 999,
                   padding: '8px 12px', cursor: 'pointer',
                   letterSpacing: '-0.005em',
