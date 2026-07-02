@@ -203,7 +203,7 @@ function V1Hero({ accent, onApply }) {
       // Delt indigo gradient: violet/cyan glows over a deep navy → indigo
       // base. The colors echo the tones in the Washington duotone so the
       // portrait dissolves into the background instead of sitting on top.
-      background: 'radial-gradient(120% 90% at 85% 65%, rgba(125, 211, 252, 0.18) 0%, rgba(4, 30, 66, 0) 55%), radial-gradient(80% 70% at 15% 20%, rgba(73, 69, 255, 0.28) 0%, rgba(4, 30, 66, 0) 55%), linear-gradient(160deg, #041E42 0%, #0A1A6E 60%, #1E1B7A 100%)',
+      background: 'linear-gradient(160deg, #041E42 0%, #0A1A6E 55%, #041E42 100%)',
       color: '#F7F5F0',
       position: 'relative',
       overflow: 'hidden',
@@ -212,28 +212,6 @@ function V1Hero({ accent, onApply }) {
       display: 'flex',
       flexDirection: 'column',
     }}>
-      {/* Decorative topography lines on the left, echoing Plaid's hero. */}
-      <svg aria-hidden width="720" height="720" viewBox="0 0 720 720" style={{
-        position: 'absolute', left: -120, top: -80, opacity: 0.35,
-        pointerEvents: 'none', zIndex: 0,
-      }}>
-        <defs>
-          <radialGradient id="v1heroTopoFade" cx="30%" cy="40%" r="65%">
-            <stop offset="0%" stopColor="rgba(125, 211, 252, 0.6)" />
-            <stop offset="100%" stopColor="rgba(4, 30, 66, 0)" />
-          </radialGradient>
-          <mask id="v1heroTopoMask">
-            <rect width="720" height="720" fill="url(#v1heroTopoFade)" />
-          </mask>
-        </defs>
-        <g mask="url(#v1heroTopoMask)" fill="none" stroke="#7DD3FC" strokeWidth="1">
-          {Array.from({ length: 22 }, (_, i) => {
-            const r = 40 + i * 22;
-            return <circle key={i} cx="220" cy="300" r={r} />;
-          })}
-        </g>
-      </svg>
-
       <style>{`
         @keyframes v1heroPulse { 0% { transform: translate(-50%,-50%) scale(1); opacity: 0.55; } 70% { transform: translate(-50%,-50%) scale(2.6); opacity: 0; } 100% { transform: translate(-50%,-50%) scale(2.6); opacity: 0; } }
         @keyframes v1heroBob { 0%, 100% { transform: translateY(0); opacity: 0.55; } 50% { transform: translateY(5px); opacity: 1; } }
@@ -250,7 +228,7 @@ function V1Hero({ accent, onApply }) {
         minHeight: 680, flex: 1,
       }}>
         {/* Left: copy */}
-        <div>
+        <div style={{ position: 'relative', zIndex: 3 }}>
           <h1 data-v1-hero-title style={{
             fontFamily: DELT.font.display, fontSize: 92, fontWeight: 600,
             letterSpacing: '-0.045em', color: '#F7F5F0', lineHeight: 0.95,
@@ -336,103 +314,45 @@ function V1Hero({ accent, onApply }) {
           </div>
         </div>
 
-        {/* Right: George Washington hero graphic (transparent PNG). */}
-        <div data-v1-hero-media style={{
-          position: 'relative',
-          alignSelf: 'stretch',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginRight: -32,
-          marginTop: -32,
-          marginBottom: -32,
-          overflow: 'hidden',
-          clipPath: mounted ? 'inset(0 0 0 0)' : 'inset(0 100% 0 0)',
-          transition: 'clip-path 1100ms cubic-bezier(0.76, 0, 0.24, 1) 160ms',
-          willChange: mounted ? 'auto' : 'clip-path',
-        }}>
-          {/* Cyan/indigo glow behind the flat-blue engraving — enhances the
-              screen-blend so the engraving reads as luminous line-art on the
-              dark navy hero bg. */}
-          <div aria-hidden style={{
-            position: 'absolute',
-            inset: '6% 4%',
-            background: 'radial-gradient(55% 50% at 55% 55%, rgba(125, 211, 252, 0.34) 0%, rgba(125, 211, 252, 0) 70%), radial-gradient(45% 40% at 45% 65%, rgba(73, 69, 255, 0.24) 0%, rgba(73, 69, 255, 0) 70%)',
-            filter: 'blur(10px)',
-            pointerEvents: 'none',
-          }} />
-          <img
-            src="app/assets/washington-blue.jpg"
-            alt="George Washington, modernized — holding an iPhone with an AirPod in his ear"
-            style={{
-              position: 'relative',
-              maxWidth: '100%',
-              maxHeight: '92%',
-              width: 'auto',
-              height: 'auto',
-              objectFit: 'contain',
-              display: 'block',
-              transform: `translate3d(0, ${videoShift}px, 0) scale(${videoScale})`,
-              transformOrigin: 'center center',
-              willChange: 'transform',
-              // Lighten blend: only pixels brighter than the dark navy bg
-              // show through, so the light-blue engraving reads as luminous
-              // line-art without leaving a visible rectangular plate.
-              mixBlendMode: 'lighten',
-              filter: 'brightness(1.02) contrast(1.10) drop-shadow(0 24px 48px rgba(0,0,0,0.35))',
-            }}
-          />
-          {/* Light left-edge feather so the portrait ties into the copy column
-              without a hard cutout edge — tuned for the gradient bg. */}
-          <div style={{
-            position: 'absolute', inset: 0,
-            background: 'linear-gradient(90deg, rgba(4,30,66,0.35) 0%, rgba(4,30,66,0) 14%)',
-            pointerEvents: 'none',
-          }} />
+        {/* Right column spacer — Washington image is absolutely positioned
+            on the section so it can bleed edge-to-edge, Plaid-style. */}
+        <div aria-hidden />
+      </div>
 
-          {/* Bottom-right anchor card — Plaid-style quick-action panel. */}
-          <div data-v1-decorative style={{
+      {/* Right: Washington engraving — Plaid-parity edge-to-edge visual */}
+      <div data-v1-hero-media style={{
+        position: 'absolute',
+        right: 0, top: 0, bottom: 0,
+        width: '58%',
+        overflow: 'hidden',
+        clipPath: mounted ? 'inset(0 0 0 0)' : 'inset(0 100% 0 0)',
+        transition: 'clip-path 1100ms cubic-bezier(0.76, 0, 0.24, 1) 160ms',
+        willChange: mounted ? 'auto' : 'clip-path',
+        zIndex: 1,
+        pointerEvents: 'none',
+      }}>
+        <img
+          src="app/assets/washington-plaid.jpg"
+          alt="George Washington cross-hatch engraving in navy, indigo and cyan with a magenta color-shift band, holding an iPhone that shows a Delt Capital offer"
+          style={{
             position: 'absolute',
-            right: 0, bottom: 24,
-            width: 280,
-            background: 'rgba(6, 22, 48, 0.72)',
-            backdropFilter: 'blur(14px)',
-            WebkitBackdropFilter: 'blur(14px)',
-            border: '1px solid rgba(255,255,255,0.09)',
-            borderRadius: 18,
-            padding: '18px 18px 14px',
-            boxShadow: '0 24px 60px rgba(0,0,0,0.35)',
-            zIndex: 3,
-            ...enter(1080),
-          }}>
-            <div style={{
-              fontFamily: DELT.font.display, fontSize: 15, fontWeight: 600,
-              color: '#F7F5F0', letterSpacing: '-0.01em', lineHeight: 1.25,
-            }}>Funding built for every operator</div>
-            <div style={{
-              fontFamily: DELT.font.body, fontSize: 12.5, lineHeight: 1.45,
-              color: 'rgba(247,245,240,0.62)', marginTop: 6,
-            }}>Get funded in 24 hours, or route deals as an agent.</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 12 }}>
-              {[
-                { label: 'Get funded', click: onApply },
-                { label: 'See how pricing works' },
-                { label: 'Become an agent' },
-              ].map((b) => (
-                <button key={b.label} onClick={b.click} style={{
-                  width: '100%', textAlign: 'center',
-                  fontFamily: DELT.font.body, fontSize: 12.5, fontWeight: 600,
-                  color: '#0A2540',
-                  background: 'rgba(199, 210, 254, 0.94)',
-                  border: 'none', borderRadius: 999,
-                  padding: '8px 12px', cursor: 'pointer',
-                  letterSpacing: '-0.005em',
-                }}>{b.label}</button>
-              ))}
-            </div>
-          </div>
-
-        </div>
+            inset: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition: 'center right',
+            transform: `translate3d(0, ${videoShift}px, 0) scale(${videoScale})`,
+            transformOrigin: 'center right',
+            willChange: 'transform',
+            display: 'block',
+          }}
+        />
+        {/* Left-edge feather ties the image into the navy copy column. */}
+        <div aria-hidden style={{
+          position: 'absolute', inset: 0,
+          background: 'linear-gradient(90deg, #041E42 0%, rgba(4,30,66,0.6) 8%, rgba(4,30,66,0) 22%)',
+          pointerEvents: 'none',
+        }} />
       </div>
 
     </section>
