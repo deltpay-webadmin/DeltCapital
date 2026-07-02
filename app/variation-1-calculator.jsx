@@ -419,6 +419,13 @@ function V1CalcAnalyzer({ onApply, onNavHow, onNavProcessing, hideHeader }) {
         }
       } catch (_) { /* swallow — we still reveal */ }
       setLeadStage('captured');
+
+      // Meta Pixel: capital estimate lead captured. Uses the high-end
+      // estimate as value so Meta can run Value Optimization on
+      // prospecting campaigns targeting this specific funnel step.
+      if (window.DeltPixel) {
+        window.DeltPixel.calculatorLead(displayHigh);
+      }
     } catch (err) {
       setLeadError('Something went wrong. Try once more?');
     } finally {

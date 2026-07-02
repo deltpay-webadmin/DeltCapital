@@ -898,6 +898,13 @@ function V1ConfirmPanel({ specialist, date, time, accent, onReset }) {
       }
       setBookingResult(data);
       setPhase('done');
+
+      // Meta Pixel: booking confirmed — Contact standard event.
+      // Fires only on the success branch, so failed API calls don't
+      // pollute the pixel with phantom conversions.
+      if (typeof window !== 'undefined' && window.DeltPixel) {
+        window.DeltPixel.contactBooked();
+      }
     } catch (err) {
       setErrorMsg(err && err.message ? err.message : 'Booking failed. Please try again.');
       setPhase('form');

@@ -267,12 +267,14 @@
   fbq('init', '3142121879304554');
   fbq('track', 'PageView');
 </script>
-<noscript><img height="1" width="1" style="display:none"
-  src="https://www.facebook.com/tr?id=3142121879304554&ev=PageView&noscript=1"
-/></noscript>
 <!-- End Meta Pixel Code -->
 </head>
 <body>
+  <!-- Meta Pixel fallback for no-JS visitors. Must live in <body>
+       because HTML5 disallows <noscript><img> inside <head>. -->
+  <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=3142121879304554&ev=PageView&noscript=1"
+  /></noscript>
   <div id="app-splash" aria-hidden="true"><div class="spinner"></div></div>
   <div id="root"></div>
 
@@ -303,6 +305,10 @@
   <!-- Plaid Link SDK (bank connect). The mobile-handoff QR is rendered
        via api.qrserver.com directly in <img>, so no QR JS lib is loaded. -->
   <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+
+  <!-- Meta Pixel event helpers. Plain <script> so window.DeltPixel is
+       attached before any Babel-JSX module tries to use it below. -->
+  <script src="app/pixel.js"></script>
 
   <script type="text/babel" src="app/shared.jsx"></script>
   <script type="text/babel" src="app/app.jsx"></script>

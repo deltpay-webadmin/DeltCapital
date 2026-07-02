@@ -795,11 +795,23 @@ function V1ApplicationFlow({
     } catch (_) { /* analytics must never throw into the UI */ }
   }, [beaconLeadId]);
 
+  // Track modal-open state so pixel events fire exactly once per open
+  // session, mirroring the fireBeacon dedupe semantics.
+  const pixelFiredRef = React.useRef({});
+
   // modal_opened — fire once per open per leadId. Reset the fired-state
   // when the modal closes so re-opening (e.g. after a refresh) re-pings.
   React.useEffect(() => {
-    if (!open) { beaconFiredRef.current = {}; return; }
+    if (!open) { beaconFiredRef.current = {}; pixelFiredRef.current = {}; return; }
     fireBeacon('modal_opened', { fromEmail: !!(prefill && prefill.fromEmail) });
+
+    // Meta Pixel: apply flow started — InitiateCheckout. Mid-funnel
+    // conversion signal. Value carries the requested amount so Meta
+    // can run Value Optimization on the campaign.
+    if (!pixelFiredRef.current.opened && window.DeltPixel) {
+      pixelFiredRef.current.opened = true;
+      window.DeltPixel.applyStarted(form.amount, !!(prefill && prefill.fromEmail));
+    }
   }, [open, fireBeacon]);
 
   // plaid_connected — fire when Plaid Link returns success.
@@ -807,6 +819,13 @@ function V1ApplicationFlow({
     if (!open) return;
     if (form.bankConnected) {
       fireBeacon('plaid_connected', { institution: form.bankInstitution || null });
+
+      // Meta Pixel: bank verified via Plaid — AddPaymentInfo. Fires
+      // once even if the effect re-runs; dedupe via ref.
+      if (!pixelFiredRef.current.plaid && window.DeltPixel) {
+        pixelFiredRef.current.plaid = true;
+        window.DeltPixel.bankConnected(form.amount, form.bankInstitution);
+      }
     }
   }, [open, form.bankConnected, form.bankInstitution, fireBeacon]);
 
@@ -820,7 +839,17 @@ function V1ApplicationFlow({
   // gated on completing every prior step and clicking Accept offer).
   React.useEffect(() => {
     if (!open) return;
-    if (step >= 4) fireBeacon('submitted', { amount: form.amount });
+    if (step >= 4) {
+      fireBeacon('submitted', { amount: form.amount });
+
+      // Meta Pixel: capital application submitted — SubmitApplication.
+      // Primary DeltCapital conversion event. Dedupe so re-renders on
+      // the Done step don't fire twice.
+      if (!pixelFiredRef.current.submitted && window.DeltPixel) {
+        pixelFiredRef.current.submitted = true;
+        window.DeltPixel.applicationSubmitted(form.amount);
+      }
+    }
   }, [open, step, form.amount, fireBeacon]);
 
   // Prevent body scroll while open
