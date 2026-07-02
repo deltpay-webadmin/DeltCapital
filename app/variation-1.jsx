@@ -351,17 +351,18 @@ function V1Hero({ accent, onApply }) {
           transition: 'clip-path 1100ms cubic-bezier(0.76, 0, 0.24, 1) 160ms',
           willChange: mounted ? 'auto' : 'clip-path',
         }}>
-          {/* Dual-tint glow behind the subject — teal + magenta — mirrors the
-              duotone in the portrait and lifts it off the gradient bg. */}
+          {/* Cyan/indigo glow behind the flat-blue engraving — enhances the
+              screen-blend so the engraving reads as luminous line-art on the
+              dark navy hero bg. */}
           <div aria-hidden style={{
             position: 'absolute',
             inset: '6% 4%',
-            background: 'radial-gradient(55% 50% at 55% 55%, rgba(125, 211, 252, 0.32) 0%, rgba(125, 211, 252, 0) 70%), radial-gradient(45% 40% at 45% 65%, rgba(73, 69, 255, 0.28) 0%, rgba(73, 69, 255, 0) 70%)',
+            background: 'radial-gradient(55% 50% at 55% 55%, rgba(125, 211, 252, 0.34) 0%, rgba(125, 211, 252, 0) 70%), radial-gradient(45% 40% at 45% 65%, rgba(73, 69, 255, 0.24) 0%, rgba(73, 69, 255, 0) 70%)',
             filter: 'blur(10px)',
             pointerEvents: 'none',
           }} />
           <img
-            src="app/assets/washington.png"
+            src="app/assets/washington-blue.jpg"
             alt="George Washington, modernized — holding an iPhone with an AirPod in his ear"
             style={{
               position: 'relative',
@@ -374,7 +375,11 @@ function V1Hero({ accent, onApply }) {
               transform: `translate3d(0, ${videoShift}px, 0) scale(${videoScale})`,
               transformOrigin: 'center center',
               willChange: 'transform',
-              filter: 'drop-shadow(0 24px 48px rgba(0,0,0,0.45))',
+              // Lighten blend: only pixels brighter than the dark navy bg
+              // show through, so the light-blue engraving reads as luminous
+              // line-art without leaving a visible rectangular plate.
+              mixBlendMode: 'lighten',
+              filter: 'brightness(1.02) contrast(1.10) drop-shadow(0 24px 48px rgba(0,0,0,0.35))',
             }}
           />
           {/* Light left-edge feather so the portrait ties into the copy column
