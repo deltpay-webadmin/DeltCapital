@@ -478,76 +478,97 @@ function PlxNetworkGlobe({ size = 380 }) {
 function V1IntelligentBanner() {
   const mobile = useIsMobile();
   return (
-    <section style={{ background: DELT.colors.paper, padding: mobile ? '20px 0 64px' : '40px 0 120px' }}>
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: mobile ? '0 20px' : '0 32px' }}>
+    <section style={{ background: DELT.colors.paper, padding: mobile ? '40px 0 64px' : '80px 0 120px' }}>
+      <div style={{ maxWidth: 1240, margin: '0 auto', padding: mobile ? '0 20px' : '0 32px' }}>
         <div style={{
-          position: 'relative', overflow: 'hidden', borderRadius: 24, minHeight: mobile ? 'auto' : 460,
-          background: `radial-gradient(70% 100% at 100% 50%, rgba(125,211,252,0.28) 0%, rgba(4,30,66,0) 55%), radial-gradient(45% 70% at 5% 100%, rgba(139,92,246,0.22) 0%, rgba(4,30,66,0) 60%), linear-gradient(120deg, ${PLX.navy} 0%, ${PLX.navyMid} 55%, ${PLX.indigoDeep} 100%)`,
-          border: '1px solid rgba(125,211,252,0.10)',
-          boxShadow: '0 40px 100px rgba(4,30,66,0.35)',
+          position: 'relative', overflow: 'hidden', borderRadius: 28, minHeight: mobile ? 'auto' : 480,
+          background: `radial-gradient(100% 120% at 100% 50%, #2FA9E6 0%, #1F6CB8 30%, #123A82 60%, #0B2C5C 100%)`,
+          border: '1px solid rgba(125,211,252,0.14)',
+          boxShadow: '0 60px 120px rgba(4,30,66,0.30), 0 0 0 1px rgba(125,211,252,0.08)',
         }}>
           <style>{`
             @keyframes plxGlobeSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
             .plx-globe-spin { animation: plxGlobeSpin 90s linear infinite; transform-origin: center; }
-            @keyframes plxGeorgeFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-            .plx-george-float { animation: plxGeorgeFloat 8s ease-in-out infinite; }
+            @keyframes plxGeorgeFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+            .plx-george-float { animation: plxGeorgeFloat 9s ease-in-out infinite; }
+            @keyframes plxTopoDrift { 0% { transform: translateX(0); } 100% { transform: translateX(-24px); } }
+            .plx-topo-drift { animation: plxTopoDrift 24s ease-in-out infinite alternate; }
             @media (prefers-reduced-motion: reduce) {
-              .plx-globe-spin, .plx-george-float { animation: none !important; }
+              .plx-globe-spin, .plx-george-float, .plx-topo-drift { animation: none !important; }
             }
           `}</style>
 
-          {/* George portrait — anchored to the right, bleeding off the bottom
-             like Plaid's Lincoln. */}
+          {/* Wispy left-side topography lines — Plaid uses these to fill negative
+             space on the copy side of the banner. Very subtle, cyan on navy. */}
+          {!mobile && (
+            <svg aria-hidden viewBox="0 0 600 480" width="600" height="480" preserveAspectRatio="none"
+              className="plx-topo-drift"
+              style={{ position: 'absolute', left: 0, top: 0, opacity: 0.28, pointerEvents: 'none' }}>
+              {Array.from({ length: 22 }, (_, i) => (
+                <path key={i}
+                  d={`M ${-40 + i*4} 0 Q ${140 + i*8} ${140 + i*6}, ${80 + i*6} ${320 - i*4} T ${-20 + i*2} 480`}
+                  fill="none" stroke="rgba(125,211,252,0.55)" strokeWidth="0.6" />
+              ))}
+            </svg>
+          )}
+
+          {/* George portrait — blue engraving on the right, no purple.
+             The image itself carries the navy fade on its left edge so it
+             blends directly into the banner background. */}
           {!mobile && (
             <div className="plx-george-float" style={{
-              position: 'absolute', right: -20, bottom: 0, top: 0,
-              width: '55%', pointerEvents: 'none',
+              position: 'absolute', right: 0, bottom: 0, top: 0,
+              width: '60%', pointerEvents: 'none',
               display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-end',
             }}>
-              <img src="app/assets/washington.png" alt="" aria-hidden
+              <img src="app/assets/washington-blue.jpg" alt="" aria-hidden
                 style={{
-                  height: '115%', width: 'auto', maxWidth: '100%',
-                  objectFit: 'contain', objectPosition: 'right bottom',
-                  opacity: 0.92,
-                  filter: 'drop-shadow(0 20px 40px rgba(4,30,66,0.5))',
+                  height: '108%', width: 'auto', maxWidth: '100%',
+                  objectFit: 'cover', objectPosition: 'right bottom',
+                  mixBlendMode: 'screen', opacity: 0.95,
                 }} />
+              {/* Left-edge fade so George dissolves into the banner instead of hard-cutting. */}
+              <div aria-hidden style={{
+                position: 'absolute', inset: 0,
+                background: 'linear-gradient(90deg, rgba(11,44,92,1) 0%, rgba(11,44,92,0.35) 22%, rgba(11,44,92,0) 45%)',
+              }} />
+              {/* Right-side cyan bloom, matches Plaid's Lincoln edge glow. */}
+              <div aria-hidden style={{
+                position: 'absolute', right: 0, top: 0, bottom: 0, width: '18%',
+                background: 'linear-gradient(90deg, rgba(47,169,230,0) 0%, rgba(47,169,230,0.35) 100%)',
+                mixBlendMode: 'screen',
+              }} />
             </div>
           )}
 
-          {/* Network globe — floats between the copy and George. */}
+          {/* Network globe — sits IN FRONT of George, on his chest area,
+             like Plaid's Lincoln composition. */}
           {!mobile && (
             <div style={{
-              position: 'absolute', right: '32%', top: '50%',
-              transform: 'translate(50%, -50%)', pointerEvents: 'none', opacity: 0.9,
+              position: 'absolute', left: '52%', top: '50%',
+              transform: 'translate(-50%, -50%)', pointerEvents: 'none', opacity: 0.9,
+              zIndex: 2, mixBlendMode: 'screen',
             }}>
-              <PlxNetworkGlobe size={340} />
+              <PlxNetworkGlobe size={360} />
             </div>
           )}
 
           {/* Left — copy */}
           <div style={{
-            position: 'relative', zIndex: 2, maxWidth: mobile ? '100%' : '52%',
-            padding: mobile ? '48px 24px 40px' : '96px 64px',
+            position: 'relative', zIndex: 3, maxWidth: mobile ? '100%' : '50%',
+            padding: mobile ? '48px 24px 40px' : '110px 64px',
           }}>
-            <div style={{
-              fontFamily: DELT.font.mono, fontSize: 11, letterSpacing: '0.2em',
-              textTransform: 'uppercase', color: PLX.cyan, marginBottom: 20,
-            }}>The Delt Engine</div>
             <h2 style={{
               margin: 0, fontFamily: DELT.font.display, fontWeight: 600,
-              fontSize: mobile ? 32 : 52, letterSpacing: '-0.025em',
-              lineHeight: 1.05, color: '#fff',
-            }}>The AI infrastructure behind smarter capital.</h2>
-            <p style={{
-              margin: '20px 0 0', fontFamily: DELT.font.body, fontSize: 17,
-              lineHeight: 1.55, color: 'rgba(247,245,240,0.75)', maxWidth: 440,
-            }}>Real-time deposit signals, pattern-of-life scoring, and merchant risk models — running on every application, every renewal, every draw.</p>
+              fontSize: mobile ? 34 : 56, letterSpacing: '-0.028em',
+              lineHeight: 1.02, color: '#fff',
+            }}>The AI infrastructure behind smarter capital</h2>
             <a href="#how" style={{
-              marginTop: 32, display: 'inline-flex', alignItems: 'center', gap: 10,
+              marginTop: 36, display: 'inline-flex', alignItems: 'center', gap: 10,
               fontFamily: DELT.font.body, fontSize: 15, fontWeight: 500, color: DELT.colors.ink,
-              background: '#fff', borderRadius: 999, padding: '13px 24px',
-              boxShadow: `0 0 0 4px rgba(125,211,252,0.25), 0 10px 24px rgba(4,30,66,0.35)`,
-            }}>Explore intelligent capital <Arr /></a>
+              background: '#fff', borderRadius: 999, padding: '13px 26px',
+              boxShadow: `0 0 0 3px rgba(125,211,252,0.35), 0 0 0 6px rgba(47,169,230,0.15), 0 10px 24px rgba(4,30,66,0.35)`,
+            }}>Explore intelligent finance</a>
           </div>
 
           {/* Mobile fallback — stacked DNA. */}
@@ -568,20 +589,53 @@ function V1IntelligentBanner() {
 // grid on the right. Numbers animate in via the shared V1CountUp helper.
 // ============================================================================
 
-// A single funded-event notification card. Sizing is uniform; the offset comes
-// from an absolute-positioned wrapper so we can pin the card to a spine anchor.
-function PlxFundedCard({ name, detail, ago }) {
+// A single funded-event notification card, styled like a real mobile app push:
+// colored rounded-square icon, brand name, short message, timestamp on the right.
+// This mirrors Plaid's floating Venmo/Robinhood/Carvana notification chips.
+function PlxFundedCard({ icon, iconBg, iconFg, name, msg, ago }) {
   return (
     <div style={{
-      background: '#fff', borderRadius: 14, padding: '14px 20px', width: 300, maxWidth: '100%',
-      boxShadow: '0 14px 34px rgba(15,14,23,0.10)', border: `1px solid ${DELT.colors.line}`,
+      background: '#fff', borderRadius: 16, padding: '12px 14px 12px 12px', width: 300, maxWidth: '100%',
+      boxShadow: '0 20px 44px rgba(15,14,23,0.10), 0 2px 6px rgba(15,14,23,0.05)',
+      border: `1px solid ${DELT.colors.line}`,
+      display: 'flex', alignItems: 'center', gap: 12,
     }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-        <span style={{ width: 9, height: 9, borderRadius: 999, background: DELT.colors.ok, flexShrink: 0, boxShadow: '0 0 0 3px rgba(15,122,90,0.12)' }} />
-        <span style={{ fontFamily: DELT.font.display, fontWeight: 600, fontSize: 15, color: DELT.colors.ink }}>{name}</span>
-        <span style={{ marginLeft: 'auto', fontFamily: DELT.font.mono, fontSize: 11, color: DELT.colors.inkMute }}>{ago}</span>
+      <div style={{
+        flexShrink: 0, width: 40, height: 40, borderRadius: 11, background: iconBg,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        color: iconFg, fontFamily: DELT.font.display, fontWeight: 700, fontSize: 18,
+        boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.15)',
+      }}>{icon}</div>
+      <div style={{ minWidth: 0, flex: 1 }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+          <span style={{ fontFamily: DELT.font.display, fontWeight: 600, fontSize: 13, color: DELT.colors.ink, letterSpacing: '-0.005em' }}>{name}</span>
+          <span style={{ marginLeft: 'auto', fontFamily: DELT.font.body, fontSize: 11, color: DELT.colors.inkMute }}>{ago}</span>
+        </div>
+        <div style={{ marginTop: 2, fontFamily: DELT.font.body, fontSize: 14, color: DELT.colors.ink, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{msg}</div>
       </div>
-      <div style={{ fontFamily: DELT.font.body, fontSize: 13.5, color: DELT.colors.inkSoft, paddingLeft: 19 }}>{detail}</div>
+    </div>
+  );
+}
+
+// A colored "story pill" — wider, holds a small hero-image thumb + brand tag.
+// Used to break up the notification cards along the spine (Plaid does this too).
+function PlxStoryPill({ img, tag, tagBg }) {
+  return (
+    <div style={{
+      width: 208, borderRadius: 14, overflow: 'hidden',
+      boxShadow: '0 20px 44px rgba(15,14,23,0.10)',
+      background: tagBg, position: 'relative',
+    }}>
+      <div style={{ aspectRatio: '16 / 8', position: 'relative', overflow: 'hidden' }}>
+        <img src={img} alt="" aria-hidden loading="lazy"
+          style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }} />
+        <div aria-hidden style={{ position: 'absolute', inset: 0, background: `linear-gradient(180deg, rgba(0,0,0,0) 40%, ${tagBg} 100%)` }} />
+        <span style={{
+          position: 'absolute', bottom: 8, left: 10, fontFamily: DELT.font.display,
+          fontWeight: 700, fontSize: 11, letterSpacing: '0.04em', color: '#fff',
+          textTransform: 'uppercase', textShadow: '0 1px 4px rgba(0,0,0,0.3)',
+        }}>{tag}</span>
+      </div>
     </div>
   );
 }
@@ -590,27 +644,46 @@ function PlxFundedCard({ name, detail, ago }) {
 // wavy-line motif. Rendered as a single SVG cubic path with a gradient stroke;
 // a subtler mirrored path adds the "double ribbon" feel.
 function PlxNetworkSpine() {
-  // Three braided ribbons of variable opacity for a Plaid-style flowing spine.
-  // A wide viewBox lets the spine sweep left-right across the whole left column.
+  // A wide braid of thin lines, Plaid-style. We render ~14 offset copies of a
+  // single serpentine path so the spine reads as a soft "waterfall" ribbon
+  // instead of two lonely lines. Colors cycle indigo → violet → cyan
+  // (Delt palette — no mint/teal).
+  const lines = [];
+  const N = 16;
+  for (let i = 0; i < N; i++) {
+    const t = i / (N - 1);
+    // Interpolate between three brand colors as a smooth ramp.
+    const stops = [
+      [125, 211, 252],   // cyan
+      [124, 107, 255],   // softIndigo
+      [139,  92, 246],   // violet
+    ];
+    const seg = t * (stops.length - 1);
+    const idx = Math.min(Math.floor(seg), stops.length - 2);
+    const f = seg - idx;
+    const a = stops[idx], b = stops[idx + 1];
+    const rgb = [
+      Math.round(a[0] + (b[0] - a[0]) * f),
+      Math.round(a[1] + (b[1] - a[1]) * f),
+      Math.round(a[2] + (b[2] - a[2]) * f),
+    ];
+    const dx = -30 + i * 4;
+    lines.push({ dx, rgb, alpha: 0.42 + 0.12 * Math.sin(i * 0.9) });
+  }
   return (
-    <svg aria-hidden viewBox="0 0 480 560" width="100%" preserveAspectRatio="none" style={{ position: 'absolute', inset: 0, height: '100%', width: '100%', pointerEvents: 'none' }}>
-      <defs>
-        <linearGradient id="plxSpineGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="rgba(125,211,252,0.95)" />
-          <stop offset="45%" stopColor="rgba(139,92,246,0.85)" />
-          <stop offset="100%" stopColor="rgba(73,69,255,0.65)" />
-        </linearGradient>
-        <linearGradient id="plxSpineGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="rgba(139,92,246,0.70)" />
-          <stop offset="100%" stopColor="rgba(125,211,252,0.45)" />
-        </linearGradient>
-      </defs>
-      <path d="M 80 10 C 320 100, 100 180, 340 260 S 60 380, 380 460 S 140 560, 320 560"
-        fill="none" stroke="url(#plxSpineGrad)" strokeWidth="1.6" strokeLinecap="round" />
-      <path d="M 110 10 C 340 100, 130 180, 360 260 S 80 380, 400 460 S 160 560, 340 560"
-        fill="none" stroke="url(#plxSpineGrad2)" strokeWidth="1" strokeLinecap="round" opacity="0.75" />
-      <path d="M 50 10 C 290 100, 70 180, 310 260 S 30 380, 350 460 S 110 560, 290 560"
-        fill="none" stroke="url(#plxSpineGrad2)" strokeWidth="1" strokeLinecap="round" opacity="0.65" />
+    <svg aria-hidden viewBox="0 0 480 600" width="100%" preserveAspectRatio="none"
+      style={{ position: 'absolute', inset: 0, height: '100%', width: '100%', pointerEvents: 'none' }}>
+      {lines.map((l, i) => (
+        <path key={i}
+          d={`M ${80 + l.dx} 0
+              C ${340 + l.dx} 120, ${110 + l.dx} 220, ${360 + l.dx} 320
+              S ${70 + l.dx} 460, ${350 + l.dx} 560
+              S ${140 + l.dx} 620, ${320 + l.dx} 620`}
+          fill="none"
+          stroke={`rgba(${l.rgb[0]},${l.rgb[1]},${l.rgb[2]},${l.alpha.toFixed(2)})`}
+          strokeWidth="1"
+          strokeLinecap="round" />
+      ))}
     </svg>
   );
 }
@@ -619,38 +692,50 @@ function V1NetworkStats() {
   const mobile = useIsMobile();
   const [ref, inView] = useV1InView(0.3);
 
-  // Card anchors along the spine, laid out visually top→bottom to trace it.
-  // Each card is ~62px tall, so we space them ~140px apart within a 560px column.
-  const cards = [
-    { top: 10,  left: 10,  name: 'Bloom Beauty',         detail: 'Funded $65,000 · 1.19× · 24h', ago: '2 min ago' },
-    { top: 160, left: 70,  name: 'La Rosa Restaurant',   detail: 'Funded $110,000 · 1.16×',       ago: '1h ago'    },
-    { top: 310, left: 30,  name: 'Rosario Construction', detail: 'Wired $180,000 · 1.14×',        ago: 'Now'       },
-    { top: 460, left: 90,  name: 'Ward Market',          detail: 'Funded $50,000 · 1.18×',        ago: 'Now'       },
+  // A mix of push-notification cards (Plaid uses Venmo/Robinhood/Carvana pills)
+  // and small "story pill" thumbnails. Each anchors to a point along the spine.
+  const items = [
+    { kind: 'card', top:  10, left:  50,
+      icon: 'D',  iconBg: '#4945FF', iconFg: '#fff',
+      name: 'Delt Capital', ago: '2m ago', msg: 'Bloom Beauty funded · $65K' },
+    { kind: 'pill', top: 130, left: 130,
+      img: 'app/assets/cases/04_larosa.jpg', tag: 'La Rosa', tagBg: '#0B2C5C' },
+    { kind: 'card', top: 250, left:  30,
+      icon: 'R',  iconBg: '#0F7A5A', iconFg: '#fff',
+      name: 'Rosario Const.', ago: 'now',   msg: 'Wired $180,000 · 1.14×' },
+    { kind: 'pill', top: 370, left: 170,
+      img: 'app/assets/cases/03_bloom.jpg', tag: 'Bloom Beauty', tagBg: '#4945FF' },
+    { kind: 'card', top: 490, left:  60,
+      icon: 'W',  iconBg: '#7DD3FC', iconFg: '#041E42',
+      name: 'Ward Market',    ago: '1h ago', msg: 'Funded $50,000 · 1.18×' },
   ];
 
   return (
-    <section data-v1-section ref={ref} style={{ background: DELT.colors.card, padding: mobile ? '64px 0' : '120px 0' }}>
+    <section data-v1-section ref={ref} style={{ background: '#F5F7FB', padding: mobile ? '64px 0' : '120px 0' }}>
       <div data-v1-grid-2col style={{
         maxWidth: 1200, margin: '0 auto', padding: mobile ? '0 20px' : '0 32px',
         display: 'grid', gridTemplateColumns: mobile ? '1fr' : '45% 55%',
         gap: mobile ? 40 : 64, alignItems: 'center',
       }}>
-        {/* Left — spine + threaded notification cards. */}
+        {/* Left — spine + threaded notification cards + story pills. */}
         {mobile ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-            {cards.map((c) => (
-              <PlxFundedCard key={c.name} name={c.name} detail={c.detail} ago={c.ago} />
+            {items.filter(i => i.kind === 'card').map((c) => (
+              <PlxFundedCard key={c.name} icon={c.icon} iconBg={c.iconBg} iconFg={c.iconFg}
+                name={c.name} msg={c.msg} ago={c.ago} />
             ))}
           </div>
         ) : (
-          <div style={{ position: 'relative', height: 560, width: '100%' }}>
+          <div style={{ position: 'relative', height: 620, width: '100%' }}>
             <PlxNetworkSpine />
-            {cards.map((c) => (
-              <div key={c.name} style={{
-                position: 'absolute', top: c.top, left: c.left,
-                filter: 'drop-shadow(0 6px 14px rgba(15,14,23,0.04))',
+            {items.map((it, i) => (
+              <div key={i} style={{
+                position: 'absolute', top: it.top, left: it.left,
+                filter: 'drop-shadow(0 6px 14px rgba(15,14,23,0.06))',
               }}>
-                <PlxFundedCard name={c.name} detail={c.detail} ago={c.ago} />
+                {it.kind === 'card'
+                  ? <PlxFundedCard icon={it.icon} iconBg={it.iconBg} iconFg={it.iconFg} name={it.name} msg={it.msg} ago={it.ago} />
+                  : <PlxStoryPill img={it.img} tag={it.tag} tagBg={it.tagBg} />}
               </div>
             ))}
           </div>
@@ -973,45 +1058,55 @@ function V1LeadFormSection({ onApply }) {
   const labelStyle = { display: 'block', fontFamily: DELT.font.mono, fontSize: 10.5, letterSpacing: '0.08em', textTransform: 'uppercase', color: DELT.colors.inkMute, marginBottom: 7 };
 
   return (
-    <section data-v1-section style={{ background: DELT.colors.paper, padding: 0 }}>
+    <section data-v1-section style={{
+      position: 'relative', overflow: 'hidden',
+      background: `radial-gradient(80% 100% at 100% 50%, #1FA9E6 0%, #1F6CB8 30%, #123A82 60%, #0B2C5C 90%, #041E42 100%)`,
+      padding: mobile ? '72px 0 96px' : '140px 0 180px',
+    }}>
+      {/* Ambient topography lines on the left half, echoes the AI banner. */}
+      {!mobile && (
+        <svg aria-hidden viewBox="0 0 700 700" width="700" height="700" preserveAspectRatio="none"
+          style={{ position: 'absolute', left: -80, top: 40, opacity: 0.28, pointerEvents: 'none' }}>
+          {Array.from({ length: 26 }, (_, i) => (
+            <path key={i}
+              d={`M ${-40 + i*4} 0 Q ${180 + i*8} ${160 + i*6}, ${100 + i*6} ${380 - i*4} T ${-20 + i*2} 700`}
+              fill="none" stroke="rgba(125,211,252,0.55)" strokeWidth="0.6" />
+          ))}
+        </svg>
+      )}
+
       <div style={{
-        display: 'grid', gridTemplateColumns: mobile ? '1fr' : '1fr 1fr', minHeight: mobile ? 'auto' : 640,
+        position: 'relative', zIndex: 1, maxWidth: 1200, margin: '0 auto',
+        padding: mobile ? '0 20px' : '0 32px',
+        display: 'grid', gridTemplateColumns: mobile ? '1fr' : '1fr 1fr',
+        gap: mobile ? 40 : 56, alignItems: 'center',
       }}>
-        {/* Left — dark gradient + topography rings (echoes the hero). */}
-        <div style={{
-          position: 'relative', overflow: 'hidden',
-          background: `linear-gradient(135deg, ${PLX.navy} 0%, ${PLX.navyMid} 60%, ${PLX.indigoDeep} 100%)`,
-          padding: mobile ? '56px 24px' : '96px 64px', display: 'flex', flexDirection: 'column', justifyContent: 'center',
-        }}>
-          {/* Decorative concentric rings, same motif as the hero's top-left. */}
-          <svg aria-hidden width="620" height="620" viewBox="0 0 620 620" style={{ position: 'absolute', right: -160, bottom: -160, opacity: 0.3, pointerEvents: 'none' }}>
-            <defs>
-              <radialGradient id="plxLeadFade" cx="50%" cy="50%" r="60%">
-                <stop offset="0%" stopColor="rgba(125,211,252,0.55)" />
-                <stop offset="100%" stopColor="rgba(4,30,66,0)" />
-              </radialGradient>
-              <mask id="plxLeadMask"><rect width="620" height="620" fill="url(#plxLeadFade)" /></mask>
-            </defs>
-            <g mask="url(#plxLeadMask)" fill="none" stroke="#7DD3FC" strokeWidth="1">
-              {Array.from({ length: 20 }, (_, i) => <circle key={i} cx="360" cy="300" r={40 + i * 22} />)}
-            </g>
-          </svg>
-          <div style={{ position: 'relative', zIndex: 1 }}>
-            <h2 style={{
-              margin: 0, fontFamily: DELT.font.display, fontWeight: 600,
-              fontSize: mobile ? 40 : 96, letterSpacing: '-0.035em', lineHeight: 0.95, color: '#fff',
-            }}>Start building better working capital.</h2>
-            <p style={{ margin: '24px 0 0', fontFamily: DELT.font.body, fontSize: 18, lineHeight: 1.55, color: 'rgba(247,245,240,0.72)', maxWidth: 420 }}>
-              Get a real range in 60 seconds. Talk to an underwriter, not a call center.
-            </p>
-          </div>
+        {/* Left — large white headline over the gradient. */}
+        <div>
+          <h2 style={{
+            margin: 0, fontFamily: DELT.font.display, fontWeight: 600,
+            fontSize: mobile ? 44 : 88, letterSpacing: '-0.035em',
+            lineHeight: 0.95, color: '#fff',
+          }}>
+            <span style={{ color: '#7DD3FC' }}>Start building</span><br/>
+            <span style={{ color: '#B6E9FF' }}>better working</span><br/>
+            <span style={{ color: '#DBF3FF' }}>capital</span>
+          </h2>
         </div>
 
-        {/* Right — form card */}
-        <div style={{ background: DELT.colors.paper, display: 'flex', alignItems: 'center', padding: mobile ? '40px 20px' : '64px 56px' }}>
+        {/* Right — white floating form card with rainbow-glow border. */}
+        <div style={{ position: 'relative' }}>
+          {/* Rainbow glow border — a slightly larger blurred rounded rect behind the card. */}
+          <div aria-hidden style={{
+            position: 'absolute', inset: -6, borderRadius: 26,
+            background: 'conic-gradient(from 200deg at 50% 50%, #7DD3FC, #7C6BFF, #8B5CF6, #DBF3FF, #7DD3FC)',
+            filter: 'blur(14px)', opacity: 0.55, pointerEvents: 'none',
+          }} />
           <form onSubmit={submit} style={{
-            width: '100%', maxWidth: 460, background: '#fff', borderRadius: 20,
-            padding: mobile ? 28 : 40, boxShadow: '0 24px 60px rgba(15,14,23,0.10)', border: `1px solid ${DELT.colors.line}`,
+            position: 'relative',
+            width: '100%', background: '#fff', borderRadius: 22,
+            padding: mobile ? 28 : 40,
+            boxShadow: '0 40px 80px rgba(4,30,66,0.35), 0 0 0 1px rgba(125,211,252,0.4)',
           }}>
             <h3 style={{ margin: '0 0 24px', fontFamily: DELT.font.display, fontWeight: 600, fontSize: 28, letterSpacing: '-0.02em', color: DELT.colors.ink }}>Let's get started</h3>
 
@@ -1047,12 +1142,37 @@ function V1LeadFormSection({ onApply }) {
             </p>
             <button type="submit" style={{
               width: '100%', border: 'none', cursor: 'pointer', borderRadius: 999,
-              background: DELT.colors.indigo, color: '#fff', padding: '14px 0',
-              fontFamily: DELT.font.body, fontSize: 15, fontWeight: 600,
+              background: 'linear-gradient(90deg, #7DD3FC 0%, #7C6BFF 100%)', color: '#041E42',
+              padding: '14px 0',
+              fontFamily: DELT.font.body, fontSize: 15, fontWeight: 700,
               display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-            }}>Get my range <Arr /></button>
+            }}>Talk with our team</button>
           </form>
         </div>
+      </div>
+
+      {/* Bottom pill — Plaid's "Manage your connections" style callout. */}
+      <div style={{
+        position: 'relative', zIndex: 1, maxWidth: 1136, margin: mobile ? '48px 20px 0' : '80px auto 0',
+        background: '#F0E8FF', borderRadius: 999,
+        padding: mobile ? '14px 18px' : '18px 28px',
+        display: 'flex', alignItems: 'center', gap: mobile ? 12 : 24, flexWrap: 'wrap',
+        boxShadow: '0 10px 32px rgba(4,30,66,0.20)',
+      }}>
+        <span aria-hidden style={{
+          display: 'inline-flex', width: 32, height: 32, borderRadius: 8,
+          background: '#4945FF', color: '#fff',
+          alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+          fontFamily: DELT.font.display, fontWeight: 700, fontSize: 15,
+        }}>🔒</span>
+        <span style={{ fontFamily: DELT.font.body, fontSize: mobile ? 13 : 15, color: '#041E42', flex: 1, minWidth: 200 }}>
+          When you fund with Delt, you keep control of the deposits, the terminals, and the customer list.
+        </span>
+        <a href="#about" style={{
+          fontFamily: DELT.font.body, fontSize: mobile ? 13 : 15, fontWeight: 600,
+          color: '#4945FF', textDecoration: 'none',
+          display: 'inline-flex', alignItems: 'center', gap: 6,
+        }}>Read our operator promise &raquo;</a>
       </div>
     </section>
   );
