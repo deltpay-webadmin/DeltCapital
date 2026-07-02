@@ -58,18 +58,22 @@ const PLX_REDUCED = typeof window !== 'undefined' && window.matchMedia
   && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // A small circular "→" affordance shared by the product cards (top-right of
-// each card in Plaid's grid). Kept local so cards stay self-contained.
+// each card in Plaid's grid). Two variants: default is a dark filled circle
+// (Plaid's actual case-study style), `dark=true` inverts to a light outline
+// on the dark AI banner.
 function PlxArrowCircle({ dark = false }) {
   return (
     <span style={{
-      width: 34, height: 34, borderRadius: 999, flexShrink: 0,
+      width: 40, height: 40, borderRadius: 999, flexShrink: 0,
       display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-      border: `1px solid ${dark ? 'rgba(247,245,240,0.25)' : DELT.colors.line}`,
-      color: dark ? '#F7F5F0' : DELT.colors.ink,
-      transition: 'background .15s, transform .15s',
+      background: dark ? 'transparent' : '#0F0E17',
+      border: dark ? '1px solid rgba(247,245,240,0.25)' : 'none',
+      color: dark ? '#F7F5F0' : '#FFFFFF',
+      transition: 'background .2s, transform .2s',
+      boxShadow: dark ? 'none' : '0 4px 10px rgba(15,14,23,0.15)',
     }}>
-      <svg width="14" height="14" viewBox="0 0 14 14">
-        <path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" strokeWidth="1.6"
+      <svg width="16" height="16" viewBox="0 0 14 14">
+        <path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" strokeWidth="1.8"
           fill="none" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     </span>
@@ -136,105 +140,134 @@ function V1LogoMarquee() {
 // marketing filler.
 // ============================================================================
 
-// A generic hoverable card shell — the lift/shadow on hover is the Plaid tell.
-// Plaid-parity v2: much bigger cards, tinted interior, hero visual dominates.
+// The Plaid hover signature: on hover, a rainbow conic-gradient "glow border"
+// appears just outside the card, matching the lead-form treatment. This lives
+// as an absolutely-positioned aria-hidden div behind the card content, fading
+// opacity from 0 → ~0.55 over 240ms. Cards themselves keep their solid tinted
+// background and elevate slightly.
 function PlxProductCard({ title, desc, children, large, mobile, tint }) {
   const [hover, setHover] = React.useState(false);
   return (
     <div
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      style={{
+      style={{ position: 'relative', display: 'flex' }}
+    >
+      {/* Rainbow conic-glow border, revealed on hover. Slightly larger than
+          the card so it blooms outward. */}
+      <div aria-hidden style={{
+        position: 'absolute', inset: -6, borderRadius: 26,
+        background: 'conic-gradient(from 200deg at 50% 50%, #7DD3FC, #7C6BFF, #8B5CF6, #DBF3FF, #7DD3FC)',
+        filter: 'blur(16px)',
+        opacity: hover && !mobile ? 0.55 : 0,
+        transition: 'opacity .28s ease-out',
+        pointerEvents: 'none',
+      }} />
+      {/* The card itself. */}
+      <div style={{
+        position: 'relative', width: '100%',
         background: tint || DELT.colors.card,
-        border: `1px solid ${DELT.colors.line}`,
-        borderRadius: 20, padding: 32, display: 'flex', flexDirection: 'column',
-        // Plaid-parity: significantly larger card canvases (large=460, med=380).
+        borderRadius: 20,
+        // On hover we swap the flat border for a thin cyan-tinted one to
+        // reinforce the glow border reveal.
+        border: hover && !mobile
+          ? '1px solid rgba(125,211,252,0.55)'
+          : `1px solid ${DELT.colors.line}`,
+        padding: mobile ? 24 : 32,
+        display: 'flex', flexDirection: 'column',
+        // Plaid-scale card canvases (large=460, medium=380).
         minHeight: large ? (mobile ? 380 : 460) : (mobile ? 320 : 380),
         transform: hover && !mobile ? 'translateY(-3px)' : 'translateY(0)',
         boxShadow: hover && !mobile
           ? '0 28px 56px rgba(15,14,23,0.10), 0 4px 10px rgba(15,14,23,0.04)'
           : '0 1px 2px rgba(15,14,23,0.04)',
-        transition: 'transform .2s cubic-bezier(0.22,1,0.36,1), box-shadow .2s',
-        overflow: 'hidden', position: 'relative',
+        transition: 'transform .22s cubic-bezier(0.22,1,0.36,1), box-shadow .22s, border-color .22s',
+        overflow: 'hidden',
       }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16, alignItems: 'flex-start' }}>
-        <div>
-          <h3 style={{
-            margin: 0, fontFamily: DELT.font.display, fontWeight: 600,
-            fontSize: large ? 28 : 22, letterSpacing: '-0.02em', color: DELT.colors.ink, lineHeight: 1.15,
-          }}>{title}</h3>
-          <p style={{
-            margin: '10px 0 0', fontFamily: DELT.font.body, fontSize: 15,
-            lineHeight: 1.5, color: DELT.colors.inkMute, maxWidth: 360,
-          }}>{desc}</p>
+        {/* Subtle radial fade inside the card so the mock sits on a soft
+            atmosphere instead of a flat panel. */}
+        <div aria-hidden style={{
+          position: 'absolute', inset: 0, pointerEvents: 'none',
+          background: 'radial-gradient(80% 60% at 50% 100%, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0) 60%)',
+        }} />
+        <div style={{ position: 'relative', display: 'flex', justifyContent: 'space-between', gap: 16, alignItems: 'flex-start' }}>
+          <div>
+            <h3 style={{
+              margin: 0, fontFamily: DELT.font.display, fontWeight: 600,
+              fontSize: large ? 28 : 22, letterSpacing: '-0.02em', color: DELT.colors.ink, lineHeight: 1.15,
+            }}>{title}</h3>
+            <p style={{
+              margin: '10px 0 0', fontFamily: DELT.font.body, fontSize: 15,
+              lineHeight: 1.5, color: DELT.colors.inkMute, maxWidth: 360,
+            }}>{desc}</p>
+          </div>
+          <PlxArrowCircle />
         </div>
-        <PlxArrowCircle />
+        {/* Hero visual — floats large in the bottom half, no bordered sub-tile. */}
+        <div style={{ position: 'relative', marginTop: 'auto', paddingTop: 26, display: 'flex', justifyContent: 'center' }}>
+          {children}
+        </div>
       </div>
-      {/* Hero visual dominates the bottom half of the card — no more thin strip. */}
-      <div style={{ marginTop: 'auto', paddingTop: 26 }}>{children}</div>
     </div>
   );
 }
 
 // ---- Card mocks (pure SVG/HTML) --------------------------------------------
 // Each mock is a rich, Plaid-scale hero visual — phone mockup, gauge, chart,
-// etc. — sized to fill the bottom half of the enlarged card canvas.
+// etc. — that floats directly on the card's tinted gradient background.
 
 // 1. Revenue-based funding — phone mockup showing the "Offer ready" screen.
+// No bordered sub-tile — the phone floats on the card's gradient background.
 function PlxMockOffer() {
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 4 }}>
-      {/* Phone shell */}
+    <div style={{
+      width: 240, height: 320, borderRadius: 34, background: '#0F0E17',
+      padding: 9, boxShadow: '0 30px 60px rgba(15,14,23,0.25), 0 4px 12px rgba(15,14,23,0.12)',
+      position: 'relative',
+    }}>
+      {/* Screen */}
       <div style={{
-        width: 220, height: 300, borderRadius: 30, background: '#0F0E17',
-        padding: 8, boxShadow: '0 20px 40px rgba(15,14,23,0.20), 0 2px 6px rgba(15,14,23,0.10)',
-        position: 'relative',
+        width: '100%', height: '100%', borderRadius: 26, background: '#FFFFFF',
+        overflow: 'hidden', position: 'relative', display: 'flex', flexDirection: 'column',
       }}>
-        {/* Screen */}
-        <div style={{
-          width: '100%', height: '100%', borderRadius: 24, background: '#FFFFFF',
-          overflow: 'hidden', position: 'relative', display: 'flex', flexDirection: 'column',
-        }}>
-          {/* Notch */}
-          <div style={{ position: 'absolute', top: 8, left: '50%', transform: 'translateX(-50%)', width: 60, height: 6, borderRadius: 999, background: '#0F0E17' }} />
-          {/* Header */}
-          <div style={{ padding: '26px 18px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontFamily: DELT.font.display, fontWeight: 700, fontSize: 13, color: DELT.colors.indigo, letterSpacing: '-0.01em' }}>DELT</span>
-            <span style={{ fontFamily: DELT.font.mono, fontSize: 9, letterSpacing: '0.14em', color: DELT.colors.inkMute, textTransform: 'uppercase' }}>Offer</span>
+        {/* Notch */}
+        <div style={{ position: 'absolute', top: 8, left: '50%', transform: 'translateX(-50%)', width: 66, height: 6, borderRadius: 999, background: '#0F0E17' }} />
+        {/* Header */}
+        <div style={{ padding: '30px 20px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span style={{ fontFamily: DELT.font.display, fontWeight: 700, fontSize: 14, color: DELT.colors.indigo, letterSpacing: '-0.01em' }}>DELT</span>
+          <span style={{ fontFamily: DELT.font.mono, fontSize: 9.5, letterSpacing: '0.14em', color: DELT.colors.inkMute, textTransform: 'uppercase' }}>Offer</span>
+        </div>
+        {/* Big amount */}
+        <div style={{ padding: '4px 20px 0' }}>
+          <div style={{ fontFamily: DELT.font.mono, fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: DELT.colors.inkMute }}>Ready to fund</div>
+          <div style={{ fontFamily: DELT.font.display, fontSize: 38, fontWeight: 700, color: DELT.colors.ink, letterSpacing: '-0.03em', marginTop: 6 }}>$95,000</div>
+          <div style={{ fontFamily: DELT.font.body, fontSize: 12.5, color: DELT.colors.inkMute, marginTop: 2 }}>1.16× · 8 months</div>
+        </div>
+        {/* Progress rail */}
+        <div style={{ padding: '18px 20px 0' }}>
+          <div style={{ height: 7, borderRadius: 999, background: 'rgba(73,69,255,0.10)', overflow: 'hidden' }}>
+            <div style={{ width: '82%', height: '100%', borderRadius: 999, background: `linear-gradient(90deg, ${DELT.colors.indigo}, ${PLX.softIndigo})` }} />
           </div>
-          {/* Big amount */}
-          <div style={{ padding: '4px 18px 0' }}>
-            <div style={{ fontFamily: DELT.font.mono, fontSize: 9.5, letterSpacing: '0.14em', textTransform: 'uppercase', color: DELT.colors.inkMute }}>Ready to fund</div>
-            <div style={{ fontFamily: DELT.font.display, fontSize: 34, fontWeight: 700, color: DELT.colors.ink, letterSpacing: '-0.03em', marginTop: 4 }}>$95,000</div>
-            <div style={{ fontFamily: DELT.font.body, fontSize: 12, color: DELT.colors.inkMute, marginTop: 2 }}>1.16× · 8 months</div>
-          </div>
-          {/* Progress rail */}
-          <div style={{ padding: '16px 18px 0' }}>
-            <div style={{ height: 6, borderRadius: 999, background: 'rgba(73,69,255,0.10)', overflow: 'hidden' }}>
-              <div style={{ width: '82%', height: '100%', borderRadius: 999, background: `linear-gradient(90deg, ${DELT.colors.indigo}, ${PLX.softIndigo})` }} />
-            </div>
-            <div style={{ marginTop: 8, fontFamily: DELT.font.mono, fontSize: 10, color: DELT.colors.ok }}>Approved · 24h to wire</div>
-          </div>
-          {/* CTA */}
-          <div style={{ marginTop: 'auto', padding: 16 }}>
-            <div style={{
-              width: '100%', height: 40, borderRadius: 12, background: DELT.colors.indigo,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontFamily: DELT.font.body, fontSize: 12.5, fontWeight: 600, color: '#fff',
-            }}>Accept offer</div>
-          </div>
+          <div style={{ marginTop: 9, fontFamily: DELT.font.mono, fontSize: 10.5, color: DELT.colors.ok }}>Approved · 24h to wire</div>
+        </div>
+        {/* CTA */}
+        <div style={{ marginTop: 'auto', padding: 18 }}>
+          <div style={{
+            width: '100%', height: 44, borderRadius: 12, background: DELT.colors.indigo,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontFamily: DELT.font.body, fontSize: 13, fontWeight: 600, color: '#fff',
+          }}>Accept offer</div>
         </div>
       </div>
     </div>
   );
 }
 
-// 2. Instant approvals — the classic Plaid credit-score-style gauge (arc + big number).
+// 2. Instant approvals — floating credit-score-style gauge (Plaid signature).
+// No bordered tile — the gauge IS the mock. Larger and centered.
 function PlxMockApprovals() {
-  // Arc geometry: 220° sweep starting at 160° (bottom-left) → 380° (bottom-right).
-  // We render a background arc + a foreground arc animated to ~82% fill.
   const start = 160; const end = 380; const pct = 0.82;
-  const R = 90; const cx = 110; const cy = 105;
+  const R = 108; const cx = 130; const cy = 125;
   const rad = (a) => (a * Math.PI) / 180;
   const arcPath = (a0, a1) => {
     const x0 = cx + R * Math.cos(rad(a0));
@@ -246,43 +279,49 @@ function PlxMockApprovals() {
   };
   const fillEnd = start + (end - start) * pct;
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 8 }}>
-      <div style={{ position: 'relative', width: 220, height: 200 }}>
-        <svg viewBox="0 0 220 200" width="100%" height="100%">
-          <defs>
-            <linearGradient id="plxGaugeGrad" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor={PLX.cyan} />
-              <stop offset="55%" stopColor={DELT.colors.indigo} />
-              <stop offset="100%" stopColor={PLX.violet} />
-            </linearGradient>
-          </defs>
-          <path d={arcPath(start, end)} stroke="rgba(73,69,255,0.10)" strokeWidth="18" strokeLinecap="round" fill="none" />
-          <path d={arcPath(start, fillEnd)} stroke="url(#plxGaugeGrad)" strokeWidth="18" strokeLinecap="round" fill="none" />
-        </svg>
-        {/* Center label */}
-        <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingTop: 4 }}>
-          <div style={{ fontFamily: DELT.font.mono, fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: DELT.colors.inkMute }}>Approved</div>
-          <div style={{ fontFamily: DELT.font.display, fontSize: 56, fontWeight: 700, color: DELT.colors.ink, letterSpacing: '-0.04em', lineHeight: 1 }}>82</div>
-          <div style={{ fontFamily: DELT.font.body, fontSize: 12, color: DELT.colors.inkMute, marginTop: 4 }}>Soft pull · 60s</div>
-        </div>
-        {/* Corner range chip */}
-        <div style={{ position: 'absolute', top: 12, right: 0, fontFamily: DELT.font.mono, fontSize: 10.5, color: DELT.colors.indigo, background: 'rgba(73,69,255,0.10)', padding: '4px 9px', borderRadius: 999 }}>
-          $85k – $110k
-        </div>
+    <div style={{ position: 'relative', width: 260, height: 240 }}>
+      {/* Soft radial halo behind the gauge — pastel rainbow, Plaid style. */}
+      <div aria-hidden style={{
+        position: 'absolute', inset: -20, borderRadius: '50%',
+        background: 'conic-gradient(from 220deg at 50% 50%, rgba(125,211,252,0.35), rgba(139,92,246,0.30), rgba(219,243,255,0.35), rgba(124,107,255,0.30), rgba(125,211,252,0.35))',
+        filter: 'blur(24px)', opacity: 0.7,
+      }} />
+      <svg viewBox="0 0 260 240" width="100%" height="100%" style={{ position: 'relative' }}>
+        <defs>
+          <linearGradient id="plxGaugeGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor={PLX.cyan} />
+            <stop offset="55%" stopColor={DELT.colors.indigo} />
+            <stop offset="100%" stopColor={PLX.violet} />
+          </linearGradient>
+        </defs>
+        <path d={arcPath(start, end)} stroke="rgba(73,69,255,0.10)" strokeWidth="20" strokeLinecap="round" fill="none" />
+        <path d={arcPath(start, fillEnd)} stroke="url(#plxGaugeGrad)" strokeWidth="20" strokeLinecap="round" fill="none" />
+      </svg>
+      {/* Center label */}
+      <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingTop: 12 }}>
+        <div style={{ fontFamily: DELT.font.mono, fontSize: 10.5, letterSpacing: '0.16em', textTransform: 'uppercase', color: DELT.colors.inkMute, fontWeight: 500 }}>Approved</div>
+        <div style={{ fontFamily: DELT.font.display, fontSize: 72, fontWeight: 700, color: DELT.colors.ink, letterSpacing: '-0.045em', lineHeight: 1, marginTop: 4 }}>82</div>
+        <div style={{ fontFamily: DELT.font.body, fontSize: 12.5, color: DELT.colors.inkMute, marginTop: 8 }}>Soft pull · 60s</div>
+      </div>
+      {/* Range chip anchored bottom */}
+      <div style={{ position: 'absolute', left: '50%', bottom: 4, transform: 'translateX(-50%)', fontFamily: DELT.font.mono, fontSize: 10.5, color: DELT.colors.indigo, background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(4px)', padding: '5px 12px', borderRadius: 999, border: `1px solid rgba(73,69,255,0.15)` }}>
+        $85k – $110k
       </div>
     </div>
   );
 }
 
-// 3. Agent portal — commissions dashboard with big number + real chart.
+// 3. Agent portal — commissions dashboard as a floating card mock.
+// This one keeps a card container because it IS a dashboard UI screenshot,
+// not a floating widget. Plaid does this for their app-mock cards too.
 function PlxMockCommissions() {
-  // Hand-plotted bar chart — 6 months trending up.
   const bars = [42, 55, 48, 68, 78, 92];
   const max = 100;
   return (
     <div style={{
-      background: '#FFFFFF', border: `1px solid ${DELT.colors.line}`,
-      borderRadius: 14, padding: 20, boxShadow: '0 4px 12px rgba(15,14,23,0.04)',
+      width: '100%', maxWidth: 280,
+      background: '#FFFFFF', borderRadius: 14, padding: 22,
+      boxShadow: '0 20px 44px rgba(15,14,23,0.12), 0 2px 6px rgba(15,14,23,0.04)',
     }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 14 }}>
         <div>
@@ -293,7 +332,7 @@ function PlxMockCommissions() {
         <span style={{ fontFamily: DELT.font.mono, fontSize: 10.5, color: DELT.colors.indigo, background: 'rgba(73,69,255,0.10)', padding: '4px 9px', borderRadius: 999 }}>100% residual</span>
       </div>
       {/* Chart */}
-      <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, height: 78 }}>
+      <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, height: 84 }}>
         {bars.map((v, i) => (
           <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
             <div style={{
@@ -311,7 +350,7 @@ function PlxMockCommissions() {
   );
 }
 
-// 4. Merchant processing — processor logo pills + settlement widget.
+// 4. Merchant processing — floating processor pills + settlement widget.
 function PlxMockProcessors() {
   const procs = [
     { n: 'Paysafe',  c: '#0057B7' },
@@ -321,8 +360,9 @@ function PlxMockProcessors() {
   ];
   return (
     <div style={{
-      background: '#FFFFFF', border: `1px solid ${DELT.colors.line}`,
-      borderRadius: 14, padding: 20, boxShadow: '0 4px 12px rgba(15,14,23,0.04)',
+      width: '100%', maxWidth: 280,
+      background: '#FFFFFF', borderRadius: 14, padding: 22,
+      boxShadow: '0 20px 44px rgba(15,14,23,0.12), 0 2px 6px rgba(15,14,23,0.04)',
     }}>
       <div style={{ fontFamily: DELT.font.mono, fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: DELT.colors.inkMute, marginBottom: 12 }}>Board across processors</div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
@@ -336,7 +376,6 @@ function PlxMockProcessors() {
           </div>
         ))}
       </div>
-      {/* Settlement rail */}
       <div style={{ marginTop: 14, padding: '10px 12px', borderRadius: 10, background: 'rgba(73,69,255,0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <span style={{ fontFamily: DELT.font.mono, fontSize: 10.5, color: DELT.colors.inkSoft, letterSpacing: '0.06em' }}>Settlement · T+1</span>
         <span style={{ fontFamily: DELT.font.mono, fontSize: 11, fontWeight: 600, color: DELT.colors.indigo }}>Board in 48h</span>
@@ -345,33 +384,30 @@ function PlxMockProcessors() {
   );
 }
 
-// 5. Terminal financing — three terminal glyphs + $0 down banner.
+// 5. Terminal financing — floating trio, no bordered container.
 function PlxMockTerminals() {
-  const Term = ({ label, accent }) => (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-      <svg width="60" height="80" viewBox="0 0 60 80" fill="none">
-        <rect x="3" y="3" width="54" height="74" rx="8" stroke={DELT.colors.inkSoft} strokeWidth="1.6" fill="#fff" />
-        <rect x="10" y="10" width="40" height="22" rx="3" fill={`${accent}22`} stroke={accent} strokeWidth="1.2" />
+  const Term = ({ label, accent, tilt }) => (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, transform: `rotate(${tilt}deg)` }}>
+      <svg width="72" height="96" viewBox="0 0 72 96" fill="none" style={{ filter: 'drop-shadow(0 12px 20px rgba(15,14,23,0.15))' }}>
+        <rect x="3" y="3" width="66" height="90" rx="9" fill="#fff" stroke={DELT.colors.inkSoft} strokeWidth="1.6" />
+        <rect x="10" y="10" width="52" height="26" rx="4" fill={`${accent}22`} stroke={accent} strokeWidth="1.2" />
         {[0, 1, 2, 3].map((r) => [0, 1, 2].map((c) => (
-          <circle key={`${r}-${c}`} cx={18 + c * 12} cy={44 + r * 8} r="2.2" fill={DELT.colors.inkMute} />
+          <circle key={`${r}-${c}`} cx={20 + c * 16} cy={52 + r * 10} r="2.8" fill={DELT.colors.inkMute} />
         )))}
       </svg>
       <span style={{ fontFamily: DELT.font.mono, fontSize: 10, color: DELT.colors.inkSoft }}>{label}</span>
     </div>
   );
   return (
-    <div style={{
-      background: '#FFFFFF', border: `1px solid ${DELT.colors.line}`,
-      borderRadius: 14, padding: 20, boxShadow: '0 4px 12px rgba(15,14,23,0.04)',
-    }}>
-      <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'flex-end', marginBottom: 12 }}>
-        <Term label="PAX A920" accent={DELT.colors.indigo} />
-        <Term label="Verifone" accent={PLX.violet} />
-        <Term label="Landi" accent={PLX.cyan} />
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 18 }}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-end', gap: 6 }}>
+        <Term label="PAX A920" accent={DELT.colors.indigo} tilt={-6} />
+        <Term label="Verifone" accent={PLX.violet} tilt={0} />
+        <Term label="Landi" accent={PLX.cyan} tilt={6} />
       </div>
-      <div style={{ padding: '10px 12px', borderRadius: 10, background: `linear-gradient(90deg, ${DELT.colors.indigo}, ${PLX.softIndigo})`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span style={{ fontFamily: DELT.font.body, fontSize: 12.5, fontWeight: 500, color: '#fff', letterSpacing: '-0.005em' }}>Own or lease — $0 down</span>
-        <span style={{ fontFamily: DELT.font.mono, fontSize: 11, fontWeight: 600, color: '#fff' }}>→</span>
+      <div style={{ padding: '10px 18px', borderRadius: 999, background: `linear-gradient(90deg, ${DELT.colors.indigo}, ${PLX.softIndigo})`, display: 'inline-flex', alignItems: 'center', gap: 8, boxShadow: '0 8px 20px rgba(73,69,255,0.30)' }}>
+        <span style={{ fontFamily: DELT.font.body, fontSize: 13, fontWeight: 600, color: '#fff', letterSpacing: '-0.005em' }}>$0 down</span>
+        <span style={{ fontFamily: DELT.font.mono, fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.8)' }}>Own or lease</span>
       </div>
     </div>
   );
@@ -1075,34 +1111,50 @@ function V1ProductTabs() {
 // A single operator-story card: hero photo (with subject-right composition),
 // wordmark overlay at top-left, headline + "Read the story" below.
 function PlxStoryCard({ img, wordmark, headline }) {
+  const [hover, setHover] = React.useState(false);
   return (
-    <div style={{
-      width: 320, flexShrink: 0, borderRadius: 18, overflow: 'hidden',
-      background: '#fff', border: `1px solid ${DELT.colors.line}`,
-      boxShadow: '0 18px 40px rgba(15,14,23,0.06)',
-      display: 'flex', flexDirection: 'column',
-    }}>
-      {/* Photo panel with subtle indigo gradient overlay for the wordmark. */}
-      <div style={{ position: 'relative', aspectRatio: '16 / 10', overflow: 'hidden' }}>
-        <img src={img} alt="" loading="lazy"
-          style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }} />
-        {/* Left-side ink gradient so the white wordmark stays legible on any subject. */}
+    <div
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{ width: 340, flexShrink: 0, display: 'flex', flexDirection: 'column' }}
+    >
+      {/* Image panel with rainbow-glow hover border (Plaid's signature). */}
+      <div style={{ position: 'relative' }}>
+        {/* Glow border — appears only on hover. */}
         <div aria-hidden style={{
-          position: 'absolute', inset: 0,
-          background: 'linear-gradient(90deg, rgba(15,14,23,0.55) 0%, rgba(15,14,23,0.15) 45%, rgba(15,14,23,0) 65%)',
+          position: 'absolute', inset: -6, borderRadius: 22,
+          background: 'conic-gradient(from 200deg at 50% 50%, #7DD3FC, #7C6BFF, #8B5CF6, #DBF3FF, #7DD3FC)',
+          filter: 'blur(16px)',
+          opacity: hover ? 0.6 : 0,
+          transition: 'opacity .28s ease-out',
+          pointerEvents: 'none',
         }} />
         <div style={{
-          position: 'absolute', top: 18, left: 18,
-          fontFamily: DELT.font.display, fontWeight: 700, fontSize: 20, letterSpacing: '-0.01em',
-          color: '#fff', textShadow: '0 2px 12px rgba(0,0,0,0.35)',
-        }}>{wordmark}</div>
+          position: 'relative', aspectRatio: '4 / 3', overflow: 'hidden',
+          borderRadius: 16, background: '#fff',
+          border: hover ? '1px solid rgba(125,211,252,0.55)' : `1px solid ${DELT.colors.line}`,
+          transition: 'border-color .28s',
+        }}>
+          <img src={img} alt="" loading="lazy"
+            style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }} />
+          {/* Left-side ink gradient for the white wordmark. */}
+          <div aria-hidden style={{
+            position: 'absolute', inset: 0,
+            background: 'linear-gradient(90deg, rgba(15,14,23,0.55) 0%, rgba(15,14,23,0.15) 45%, rgba(15,14,23,0) 65%)',
+          }} />
+          <div style={{
+            position: 'absolute', top: 20, left: 22,
+            fontFamily: DELT.font.display, fontWeight: 700, fontSize: 22, letterSpacing: '-0.01em',
+            color: '#fff', textShadow: '0 2px 12px rgba(0,0,0,0.35)',
+          }}>{wordmark}</div>
+        </div>
       </div>
-      {/* Copy panel */}
-      <div style={{ padding: '22px 22px 26px' }}>
-        <p style={{ margin: 0, fontFamily: DELT.font.display, fontWeight: 600, fontSize: 19, lineHeight: 1.28, letterSpacing: '-0.015em', color: DELT.colors.ink }}>{headline}</p>
-        <div style={{ marginTop: 18, display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: DELT.font.body, fontSize: 14, fontWeight: 500, color: DELT.colors.indigo }}>
-          <span style={{ display: 'inline-flex', width: 20, height: 20, borderRadius: 999, border: `1px solid ${DELT.colors.indigo}`, alignItems: 'center', justifyContent: 'center' }}>
-            <svg width="9" height="9" viewBox="0 0 14 14"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>
+      {/* Copy — sits directly on the section bg (NO wrapping card). */}
+      <div style={{ padding: '22px 2px 4px' }}>
+        <p style={{ margin: 0, fontFamily: DELT.font.display, fontWeight: 600, fontSize: 22, lineHeight: 1.25, letterSpacing: '-0.02em', color: DELT.colors.ink }}>{headline}</p>
+        <div style={{ marginTop: 18, display: 'inline-flex', alignItems: 'center', gap: 8, fontFamily: DELT.font.body, fontSize: 15, fontWeight: 500, color: DELT.colors.indigo }}>
+          <span style={{ display: 'inline-flex', width: 24, height: 24, borderRadius: 999, border: `1px solid ${DELT.colors.indigo}`, alignItems: 'center', justifyContent: 'center' }}>
+            <svg width="10" height="10" viewBox="0 0 14 14"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </span>
           Read the story
         </div>
