@@ -216,9 +216,8 @@ function PlxProductCard({ title, desc, children, large, mobile, tint }) {
 // Each mock is a rich, Plaid-scale hero visual — phone mockup, gauge, chart,
 // etc. — that floats directly on the card's tinted gradient background.
 
-// 1. Revenue-based funding — phone mockup showing the "Offer ready" screen.
-// No bordered sub-tile — the phone floats on the card's gradient background.
-function PlxMockOffer() {
+// 1. Revenue-based funding — polished Nano Banana Pro phone mockup.
+function PlxMockOffer_OLD() {
   return (
     <div style={{
       width: 240, height: 320, borderRadius: 34, background: '#0F0E17',
@@ -263,9 +262,7 @@ function PlxMockOffer() {
   );
 }
 
-// 2. Instant approvals — floating credit-score-style gauge (Plaid signature).
-// No bordered tile — the gauge IS the mock. Larger and centered.
-function PlxMockApprovals() {
+function PlxMockApprovals_OLD() {
   const start = 160; const end = 380; const pct = 0.82;
   const R = 108; const cx = 130; const cy = 125;
   const rad = (a) => (a * Math.PI) / 180;
@@ -311,10 +308,7 @@ function PlxMockApprovals() {
   );
 }
 
-// 3. Agent portal — commissions dashboard as a floating card mock.
-// This one keeps a card container because it IS a dashboard UI screenshot,
-// not a floating widget. Plaid does this for their app-mock cards too.
-function PlxMockCommissions() {
+function PlxMockCommissions_OLD() {
   const bars = [42, 55, 48, 68, 78, 92];
   const max = 100;
   return (
@@ -350,8 +344,7 @@ function PlxMockCommissions() {
   );
 }
 
-// 4. Merchant processing — floating processor pills + settlement widget.
-function PlxMockProcessors() {
+function PlxMockProcessors_OLD() {
   const procs = [
     { n: 'Paysafe',  c: '#0057B7' },
     { n: 'NMI',      c: '#00A651' },
@@ -384,8 +377,7 @@ function PlxMockProcessors() {
   );
 }
 
-// 5. Terminal financing — floating trio, no bordered container.
-function PlxMockTerminals() {
+function PlxMockTerminals_OLD() {
   const Term = ({ label, accent, tilt }) => (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, transform: `rotate(${tilt}deg)` }}>
       <svg width="72" height="96" viewBox="0 0 72 96" fill="none" style={{ filter: 'drop-shadow(0 12px 20px rgba(15,14,23,0.15))' }}>
@@ -408,6 +400,80 @@ function PlxMockTerminals() {
       <div style={{ padding: '10px 18px', borderRadius: 999, background: `linear-gradient(90deg, ${DELT.colors.indigo}, ${PLX.softIndigo})`, display: 'inline-flex', alignItems: 'center', gap: 8, boxShadow: '0 8px 20px rgba(73,69,255,0.30)' }}>
         <span style={{ fontFamily: DELT.font.body, fontSize: 13, fontWeight: 600, color: '#fff', letterSpacing: '-0.005em' }}>$0 down</span>
         <span style={{ fontFamily: DELT.font.mono, fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.8)' }}>Own or lease</span>
+      </div>
+    </div>
+  );
+}
+
+// ---- New polished image-based mocks (Nano Banana Pro) ---------------------
+function PlxMockOffer() {
+  return (
+    <img
+      src="app/assets/mocks/delt_mock_capital_phone.jpg"
+      alt="Delt Capital offer on phone"
+      style={{
+        width: 320, maxWidth: '100%', height: 'auto', objectFit: 'contain',
+        display: 'block', borderRadius: 20,
+        filter: 'drop-shadow(0 30px 60px rgba(15,14,23,0.18))',
+      }}
+    />
+  );
+}
+
+function PlxMockApprovals() {
+  return (
+    <img
+      src="app/assets/mocks/delt_mock_approval_gauge.jpg"
+      alt="Delt approval gauge, 82 approved"
+      style={{
+        width: 340, maxWidth: '100%', height: 'auto', objectFit: 'contain',
+        display: 'block', borderRadius: 20,
+      }}
+    />
+  );
+}
+
+function PlxMockCommissions() {
+  return (
+    <img
+      src="app/assets/mocks/delt_mock_agent_commissions.jpg"
+      alt="Delt commissions YTD dashboard"
+      style={{
+        width: 300, maxWidth: '100%', height: 'auto', objectFit: 'contain',
+        display: 'block', borderRadius: 14,
+        filter: 'drop-shadow(0 20px 40px rgba(73,69,255,0.15))',
+      }}
+    />
+  );
+}
+
+function PlxMockProcessors() {
+  return (
+    <img
+      src="app/assets/mocks/delt_mock_processors.jpg"
+      alt="Delt board across Paysafe, NMI, Global, Goat"
+      style={{
+        width: 300, maxWidth: '100%', height: 'auto', objectFit: 'contain',
+        display: 'block',
+      }}
+    />
+  );
+}
+
+function PlxMockTerminals() {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+      <img
+        src="app/assets/mocks/delt_mock_terminals.jpg"
+        alt="PAX A920, Verifone, Landi terminals"
+        style={{
+          width: 320, maxWidth: '100%', height: 'auto', objectFit: 'contain',
+          display: 'block',
+        }}
+      />
+      <div style={{ padding: '9px 16px', borderRadius: 999, background: `linear-gradient(90deg, ${DELT.colors.indigo}, ${PLX.softIndigo})`, display: 'inline-flex', alignItems: 'center', gap: 8, boxShadow: '0 8px 20px rgba(73,69,255,0.30)' }}>
+        <span style={{ fontFamily: DELT.font.body, fontSize: 12.5, fontWeight: 600, color: '#fff', letterSpacing: '-0.005em' }}>$0 down</span>
+        <span style={{ fontFamily: DELT.font.mono, fontSize: 10.5, fontWeight: 600, color: 'rgba(255,255,255,0.8)' }}>Own or lease</span>
       </div>
     </div>
   );
@@ -950,8 +1016,17 @@ function V1NetworkStats() {
 
 // --- Tab mocks --------------------------------------------------------------
 
-// Capital: an offer screen.
+// Capital: polished offer screen image (Nano Banana Pro).
 function PlxTabCapital() {
+  return (
+    <img
+      src="app/assets/mocks/delt_tabs_capital_offer_polished.jpg"
+      alt="Delt Capital offer $125,000 at 1.16x"
+      style={{ width: '100%', height: 'auto', display: 'block' }}
+    />
+  );
+}
+function PlxTabCapital_OLD() {
   const rows = [
     { d: 'Weeks 1–8', amt: '$1,240 / wk' },
     { d: 'Weeks 9–16', amt: '$1,240 / wk' },
@@ -988,8 +1063,16 @@ function PlxTabCapital() {
   );
 }
 
-// Payments: a processing dashboard with a 7-day volume line chart.
 function PlxTabPayments() {
+  return (
+    <img
+      src="app/assets/mocks/delt_tabs_payments_polished.jpg"
+      alt="Delt Payments live volume dashboard"
+      style={{ width: '100%', height: 'auto', display: 'block' }}
+    />
+  );
+}
+function PlxTabPayments_OLD() {
   // Daily volume (relative heights 0..40) for a rising week.
   const vol = [22, 26, 20, 30, 28, 36, 34];
   const pts = vol.map((v, i) => `${(i / (vol.length - 1)) * 100},${44 - v}`).join(' ');
@@ -1014,8 +1097,16 @@ function PlxTabPayments() {
   );
 }
 
-// Portal: agent commission table.
 function PlxTabPortal() {
+  return (
+    <img
+      src="app/assets/mocks/delt_tabs_portal_polished.jpg"
+      alt="Delt Portal agent commissions and merchants"
+      style={{ width: '100%', height: 'auto', display: 'block' }}
+    />
+  );
+}
+function PlxTabPortal_OLD() {
   const rows = [
     { m: 'Bloom Beauty', f: '$65,000', r: '1.19×', res: '$1,430' },
     { m: 'La Rosa Restaurant', f: '$110,000', r: '1.16×', res: '$2,640' },
