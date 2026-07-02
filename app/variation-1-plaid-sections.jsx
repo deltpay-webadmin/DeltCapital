@@ -1088,9 +1088,9 @@ function V1LeadFormSection({ onApply }) {
             fontSize: mobile ? 44 : 88, letterSpacing: '-0.035em',
             lineHeight: 0.95, color: '#fff',
           }}>
-            <span style={{ color: '#7DD3FC' }}>Start building</span><br/>
-            <span style={{ color: '#B6E9FF' }}>better working</span><br/>
-            <span style={{ color: '#DBF3FF' }}>capital</span>
+            <span style={{ color: '#7DD3FC' }}>Built for the</span><br/>
+            <span style={{ color: '#B6E9FF' }}>business you</span><br/>
+            <span style={{ color: '#DBF3FF' }}>built.</span>
           </h2>
         </div>
 
