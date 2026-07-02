@@ -200,7 +200,9 @@ function V1Hero({ accent, onApply }) {
 
   return (
     <section style={{
-      background: '#041E42',
+      // Rich Plaid-style gradient: Midnight Steel top-left → deep indigo mid →
+      // subtle teal bleed bottom-right where the portrait glows.
+      background: 'radial-gradient(120% 90% at 85% 65%, rgba(20, 184, 166, 0.18) 0%, rgba(4, 30, 66, 0) 55%), radial-gradient(80% 70% at 15% 20%, rgba(73, 69, 255, 0.22) 0%, rgba(4, 30, 66, 0) 55%), linear-gradient(160deg, #041E42 0%, #062852 45%, #073A5A 100%)',
       color: '#F7F5F0',
       position: 'relative',
       overflow: 'hidden',
@@ -209,6 +211,28 @@ function V1Hero({ accent, onApply }) {
       display: 'flex',
       flexDirection: 'column',
     }}>
+      {/* Decorative topography lines on the left, echoing Plaid's hero. */}
+      <svg aria-hidden width="720" height="720" viewBox="0 0 720 720" style={{
+        position: 'absolute', left: -120, top: -80, opacity: 0.35,
+        pointerEvents: 'none', zIndex: 0,
+      }}>
+        <defs>
+          <radialGradient id="v1heroTopoFade" cx="30%" cy="40%" r="65%">
+            <stop offset="0%" stopColor="rgba(129, 140, 248, 0.55)" />
+            <stop offset="100%" stopColor="rgba(4, 30, 66, 0)" />
+          </radialGradient>
+          <mask id="v1heroTopoMask">
+            <rect width="720" height="720" fill="url(#v1heroTopoFade)" />
+          </mask>
+        </defs>
+        <g mask="url(#v1heroTopoMask)" fill="none" stroke="#9BB4FF" strokeWidth="1">
+          {Array.from({ length: 22 }, (_, i) => {
+            const r = 40 + i * 22;
+            return <circle key={i} cx="220" cy="300" r={r} />;
+          })}
+        </g>
+      </svg>
+
       <style>{`
         @keyframes v1heroPulse { 0% { transform: translate(-50%,-50%) scale(1); opacity: 0.55; } 70% { transform: translate(-50%,-50%) scale(2.6); opacity: 0; } 100% { transform: translate(-50%,-50%) scale(2.6); opacity: 0; } }
         @keyframes v1heroBob { 0%, 100% { transform: translateY(0); opacity: 0.55; } 50% { transform: translateY(5px); opacity: 1; } }
@@ -232,7 +256,13 @@ function V1Hero({ accent, onApply }) {
             margin: 0,
           }}>
             <V1LineMask ready={mounted} delay={120}>You built the</V1LineMask>
-            <V1LineMask ready={mounted} delay={230}>business.</V1LineMask>
+            <V1LineMask ready={mounted} delay={230}>
+              <span style={{
+                background: 'linear-gradient(90deg, #7DF9C6 0%, #52D6D4 60%, #4CC9F0 100%)',
+                WebkitBackgroundClip: 'text', backgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}>business.</span>
+            </V1LineMask>
             <V1LineMask ready={mounted} delay={340}>
               We{' '}
               <em style={{
@@ -319,12 +349,13 @@ function V1Hero({ accent, onApply }) {
           transition: 'clip-path 1100ms cubic-bezier(0.76, 0, 0.24, 1) 160ms',
           willChange: mounted ? 'auto' : 'clip-path',
         }}>
-          {/* Soft indigo glow behind the subject to lift it off Midnight Steel */}
+          {/* Dual-tint glow behind the subject — teal + magenta — mirrors the
+              duotone in the portrait and lifts it off the gradient bg. */}
           <div aria-hidden style={{
             position: 'absolute',
-            inset: '10% 6%',
-            background: 'radial-gradient(60% 55% at 50% 45%, rgba(73,69,255,0.28) 0%, rgba(73,69,255,0.12) 40%, rgba(4,30,66,0) 72%)',
-            filter: 'blur(6px)',
+            inset: '6% 4%',
+            background: 'radial-gradient(55% 50% at 55% 55%, rgba(76, 201, 240, 0.32) 0%, rgba(76, 201, 240, 0) 70%), radial-gradient(45% 40% at 45% 65%, rgba(168, 85, 247, 0.22) 0%, rgba(168, 85, 247, 0) 70%)',
+            filter: 'blur(10px)',
             pointerEvents: 'none',
           }} />
           <img
@@ -344,18 +375,55 @@ function V1Hero({ accent, onApply }) {
               filter: 'drop-shadow(0 24px 48px rgba(0,0,0,0.45))',
             }}
           />
-          {/* Left-edge fade so the subject melts into the copy column */}
+          {/* Light left-edge feather so the portrait ties into the copy column
+              without a hard cutout edge — tuned for the gradient bg. */}
           <div style={{
             position: 'absolute', inset: 0,
-            background: 'linear-gradient(90deg, #041E42 0%, rgba(4,30,66,0.5) 8%, rgba(4,30,66,0) 22%)',
+            background: 'linear-gradient(90deg, rgba(4,30,66,0.35) 0%, rgba(4,30,66,0) 14%)',
             pointerEvents: 'none',
           }} />
-          {/* Right-edge fade so the subject melts into the section background */}
-          <div style={{
-            position: 'absolute', inset: 0,
-            background: 'linear-gradient(270deg, #041E42 0%, rgba(4,30,66,0.4) 6%, rgba(4,30,66,0) 18%)',
-            pointerEvents: 'none',
-          }} />
+
+          {/* Bottom-right anchor card — Plaid-style quick-action panel. */}
+          <div data-v1-decorative style={{
+            position: 'absolute',
+            right: 0, bottom: 24,
+            width: 280,
+            background: 'rgba(6, 22, 48, 0.72)',
+            backdropFilter: 'blur(14px)',
+            WebkitBackdropFilter: 'blur(14px)',
+            border: '1px solid rgba(255,255,255,0.09)',
+            borderRadius: 18,
+            padding: '18px 18px 14px',
+            boxShadow: '0 24px 60px rgba(0,0,0,0.35)',
+            zIndex: 3,
+            ...enter(1080),
+          }}>
+            <div style={{
+              fontFamily: DELT.font.display, fontSize: 15, fontWeight: 600,
+              color: '#F7F5F0', letterSpacing: '-0.01em', lineHeight: 1.25,
+            }}>Funding built for every operator</div>
+            <div style={{
+              fontFamily: DELT.font.body, fontSize: 12.5, lineHeight: 1.45,
+              color: 'rgba(247,245,240,0.62)', marginTop: 6,
+            }}>Get funded in 24 hours, or route deals as an agent.</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 12 }}>
+              {[
+                { label: 'Get funded', click: onApply },
+                { label: 'See how pricing works' },
+                { label: 'Become an agent' },
+              ].map((b) => (
+                <button key={b.label} onClick={b.click} style={{
+                  width: '100%', textAlign: 'center',
+                  fontFamily: DELT.font.body, fontSize: 12.5, fontWeight: 600,
+                  color: '#0A2540',
+                  background: 'rgba(196, 246, 234, 0.94)',
+                  border: 'none', borderRadius: 999,
+                  padding: '8px 12px', cursor: 'pointer',
+                  letterSpacing: '-0.005em',
+                }}>{b.label}</button>
+              ))}
+            </div>
+          </div>
 
         </div>
       </div>
