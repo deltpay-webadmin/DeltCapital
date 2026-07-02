@@ -430,31 +430,6 @@ function V1Hero({ accent, onApply }) {
         </div>
       </div>
 
-      {/* Bottom rule with scroll cue */}
-      <div data-v1-decorative style={{
-        width: '100%',
-        maxWidth: 1280, margin: '32px auto 0', padding: '48px 32px 28px',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        borderTop: '1px solid rgba(247,245,240,0.08)',
-        fontFamily: DELT.font.mono, fontSize: 11, color: 'rgba(247,245,240,0.45)',
-        letterSpacing: '0.14em', textTransform: 'uppercase',
-        position: 'relative', zIndex: 2,
-        ...enter(1000),
-      }}>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10 }}>
-          Scroll — the numbers
-          <span className="v1hero-bob" style={{
-            display: 'inline-block',
-            animation: 'v1heroBob 1.8s cubic-bezier(0.22, 1, 0.36, 1) infinite',
-            willChange: 'transform, opacity',
-          }}>
-            <svg width="10" height="12" viewBox="0 0 10 12" aria-hidden="true">
-              <path d="M5 1v9M1.5 7.5 5 11l3.5-3.5" stroke="currentColor" strokeWidth="1.3" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </span>
-        </span>
-        <span>$200M+ deployed · 2,850+ funded · since 2019</span>
-      </div>
     </section>
   );
 }

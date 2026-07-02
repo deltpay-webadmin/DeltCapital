@@ -417,47 +417,145 @@ function PlxDnaHelix({ size = 400 }) {
   );
 }
 
+// A network-globe on the left of the banner, echoing Plaid's Lincoln composition.
+// Wireframe latitude/longitude lines + orbiting nodes. Static SVG, cheap.
+function PlxNetworkGlobe({ size = 380 }) {
+  const R = 160;
+  const lats = [ -0.9, -0.6, -0.3, 0, 0.3, 0.6, 0.9 ];
+  const lons = [ -60, -30, 0, 30, 60 ];
+  const nodes = [
+    { x: -0.55, y: -0.40 }, { x:  0.20, y: -0.55 }, { x:  0.60, y: -0.15 },
+    { x: -0.30, y:  0.10 }, { x:  0.45, y:  0.30 }, { x: -0.65, y:  0.35 },
+    { x:  0.05, y:  0.55 }, { x: -0.10, y: -0.20 }, { x:  0.35, y: -0.05 },
+  ];
+  return (
+    <svg aria-hidden viewBox={`-${R + 40} -${R + 40} ${(R + 40) * 2} ${(R + 40) * 2}`} width={size} style={{ display: 'block', overflow: 'visible' }}>
+      <defs>
+        <radialGradient id="plxGlobeFade" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stopColor="rgba(125,211,252,0.28)" />
+          <stop offset="70%" stopColor="rgba(125,211,252,0.05)" />
+          <stop offset="100%" stopColor="rgba(4,30,66,0)" />
+        </radialGradient>
+        <filter id="plxGlobeGlow" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="3" />
+        </filter>
+      </defs>
+      <circle cx="0" cy="0" r={R + 30} fill="url(#plxGlobeFade)" />
+      <g className="plx-globe-spin" style={{ transformOrigin: '0 0' }}>
+        {lats.map((y, i) => (
+          <ellipse key={`lat-${i}`} cx="0" cy={y * R} rx={Math.sqrt(1 - y * y) * R} ry={4}
+            fill="none" stroke="rgba(125,211,252,0.30)" strokeWidth="1" />
+        ))}
+        {lons.map((a) => (
+          <ellipse key={`lon-${a}`} cx="0" cy="0" rx={Math.abs(Math.sin(a * Math.PI / 180)) * R || 1} ry={R}
+            fill="none" stroke="rgba(125,211,252,0.25)" strokeWidth="1" />
+        ))}
+        <circle cx="0" cy="0" r={R} fill="none" stroke="rgba(125,211,252,0.50)" strokeWidth="1.25" />
+        <g filter="url(#plxGlobeGlow)">
+          {nodes.map((n, i) => (
+            <circle key={`nGlow-${i}`} cx={n.x * R} cy={n.y * R} r="6" fill={PLX.cyan} opacity="0.55" />
+          ))}
+        </g>
+        {nodes.map((n, i) => (
+          <circle key={`n-${i}`} cx={n.x * R} cy={n.y * R} r="3" fill={PLX.cyan}
+            className="plx-dna-node" style={{ animationDelay: `${(i % 5) * 0.4}s` }} />
+        ))}
+        {[[0,4],[1,7],[3,6],[2,8]].map(([a,b], i) => {
+          const A = nodes[a], B = nodes[b];
+          const mx = (A.x + B.x) / 2 * R;
+          const my = (A.y + B.y) / 2 * R - 30;
+          return (
+            <path key={`link-${i}`}
+              d={`M ${A.x*R} ${A.y*R} Q ${mx} ${my} ${B.x*R} ${B.y*R}`}
+              fill="none" stroke="rgba(125,211,252,0.45)" strokeWidth="1" strokeDasharray="2 4" />
+          );
+        })}
+      </g>
+    </svg>
+  );
+}
+
 function V1IntelligentBanner() {
   const mobile = useIsMobile();
   return (
     <section style={{ background: DELT.colors.paper, padding: mobile ? '20px 0 64px' : '40px 0 120px' }}>
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: mobile ? '0 20px' : '0 32px' }}>
         <div style={{
-          position: 'relative', overflow: 'hidden', borderRadius: 24,
-          // Deep indigo→navy base with an indigo radial glow at top-right.
-          background: `radial-gradient(60% 70% at 90% 0%, rgba(73,69,255,0.30) 0%, rgba(4,30,66,0) 60%), linear-gradient(135deg, ${PLX.navyMid} 0%, ${PLX.navy} 100%)`,
-          display: 'grid',
-          gridTemplateColumns: mobile ? '1fr' : '55% 45%',
-          alignItems: 'center', gap: mobile ? 24 : 0,
-          padding: mobile ? '40px 24px' : '72px 64px',
+          position: 'relative', overflow: 'hidden', borderRadius: 24, minHeight: mobile ? 'auto' : 460,
+          background: `radial-gradient(70% 100% at 100% 50%, rgba(125,211,252,0.28) 0%, rgba(4,30,66,0) 55%), radial-gradient(45% 70% at 5% 100%, rgba(139,92,246,0.22) 0%, rgba(4,30,66,0) 60%), linear-gradient(120deg, ${PLX.navy} 0%, ${PLX.navyMid} 55%, ${PLX.indigoDeep} 100%)`,
+          border: '1px solid rgba(125,211,252,0.10)',
+          boxShadow: '0 40px 100px rgba(4,30,66,0.35)',
         }}>
+          <style>{`
+            @keyframes plxGlobeSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+            .plx-globe-spin { animation: plxGlobeSpin 90s linear infinite; transform-origin: center; }
+            @keyframes plxGeorgeFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+            .plx-george-float { animation: plxGeorgeFloat 8s ease-in-out infinite; }
+            @media (prefers-reduced-motion: reduce) {
+              .plx-globe-spin, .plx-george-float { animation: none !important; }
+            }
+          `}</style>
+
+          {/* George portrait — anchored to the right, bleeding off the bottom
+             like Plaid's Lincoln. */}
+          {!mobile && (
+            <div className="plx-george-float" style={{
+              position: 'absolute', right: -20, bottom: 0, top: 0,
+              width: '55%', pointerEvents: 'none',
+              display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-end',
+            }}>
+              <img src="app/assets/washington.png" alt="" aria-hidden
+                style={{
+                  height: '115%', width: 'auto', maxWidth: '100%',
+                  objectFit: 'contain', objectPosition: 'right bottom',
+                  opacity: 0.92,
+                  filter: 'drop-shadow(0 20px 40px rgba(4,30,66,0.5))',
+                }} />
+            </div>
+          )}
+
+          {/* Network globe — floats between the copy and George. */}
+          {!mobile && (
+            <div style={{
+              position: 'absolute', right: '32%', top: '50%',
+              transform: 'translate(50%, -50%)', pointerEvents: 'none', opacity: 0.9,
+            }}>
+              <PlxNetworkGlobe size={340} />
+            </div>
+          )}
+
           {/* Left — copy */}
-          <div>
+          <div style={{
+            position: 'relative', zIndex: 2, maxWidth: mobile ? '100%' : '52%',
+            padding: mobile ? '48px 24px 40px' : '96px 64px',
+          }}>
             <div style={{
               fontFamily: DELT.font.mono, fontSize: 11, letterSpacing: '0.2em',
               textTransform: 'uppercase', color: PLX.cyan, marginBottom: 20,
             }}>The Delt Engine</div>
             <h2 style={{
               margin: 0, fontFamily: DELT.font.display, fontWeight: 600,
-              fontSize: mobile ? 32 : 56, letterSpacing: '-0.025em',
+              fontSize: mobile ? 32 : 52, letterSpacing: '-0.025em',
               lineHeight: 1.05, color: '#fff',
-            }}>The underwriting engine behind faster capital.</h2>
+            }}>The AI infrastructure behind smarter capital.</h2>
             <p style={{
               margin: '20px 0 0', fontFamily: DELT.font.body, fontSize: 17,
-              lineHeight: 1.6, color: 'rgba(247,245,240,0.72)', maxWidth: 460,
+              lineHeight: 1.55, color: 'rgba(247,245,240,0.75)', maxWidth: 440,
             }}>Real-time deposit signals, pattern-of-life scoring, and merchant risk models — running on every application, every renewal, every draw.</p>
             <a href="#how" style={{
-              marginTop: 28, display: 'inline-flex', alignItems: 'center', gap: 8,
-              fontFamily: DELT.font.body, fontSize: 15, fontWeight: 500, color: '#fff',
-              border: '1px solid rgba(247,245,240,0.4)', borderRadius: 999,
-              padding: '12px 22px',
-            }}>Explore how we underwrite <Arr /></a>
+              marginTop: 32, display: 'inline-flex', alignItems: 'center', gap: 10,
+              fontFamily: DELT.font.body, fontSize: 15, fontWeight: 500, color: DELT.colors.ink,
+              background: '#fff', borderRadius: 999, padding: '13px 24px',
+              boxShadow: `0 0 0 4px rgba(125,211,252,0.25), 0 10px 24px rgba(4,30,66,0.35)`,
+            }}>Explore intelligent capital <Arr /></a>
           </div>
 
-          {/* Right — animated DNA */}
-          <div className="plx-dna-float" style={{ display: 'flex', justifyContent: 'center' }}>
-            <PlxDnaHelix size={mobile ? 260 : 400} />
-          </div>
+          {/* Mobile fallback — stacked DNA. */}
+          {mobile && (
+            <div style={{ position: 'relative', zIndex: 1, padding: '0 20px 40px', display: 'flex', justifyContent: 'center' }}>
+              <PlxDnaHelix size={220} />
+            </div>
+          )}
         </div>
       </div>
     </section>
@@ -470,18 +568,15 @@ function V1IntelligentBanner() {
 // grid on the right. Numbers animate in via the shared V1CountUp helper.
 // ============================================================================
 
-// A single layered notification card. Rotation + horizontal offset give the
-// casual stacked feel from the brief.
-function PlxFundedCard({ name, detail, ago, rotate, offset, mobile }) {
+// A single funded-event notification card. Sizing is uniform; the offset comes
+// from an absolute-positioned wrapper so we can pin the card to a spine anchor.
+function PlxFundedCard({ name, detail, ago }) {
   return (
     <div style={{
       background: '#fff', borderRadius: 14, padding: '14px 20px', width: 300, maxWidth: '100%',
       boxShadow: '0 14px 34px rgba(15,14,23,0.10)', border: `1px solid ${DELT.colors.line}`,
-      transform: mobile ? 'none' : `rotate(${rotate}deg) translateX(${offset}px)`,
-      marginTop: mobile ? 12 : -14, position: 'relative', zIndex: 1,
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-        {/* green "funded" dot */}
         <span style={{ width: 9, height: 9, borderRadius: 999, background: DELT.colors.ok, flexShrink: 0, boxShadow: '0 0 0 3px rgba(15,122,90,0.12)' }} />
         <span style={{ fontFamily: DELT.font.display, fontWeight: 600, fontSize: 15, color: DELT.colors.ink }}>{name}</span>
         <span style={{ marginLeft: 'auto', fontFamily: DELT.font.mono, fontSize: 11, color: DELT.colors.inkMute }}>{ago}</span>
@@ -491,10 +586,47 @@ function PlxFundedCard({ name, detail, ago, rotate, offset, mobile }) {
   );
 }
 
+// The flowing spine that threads the notification cards — Plaid's signature
+// wavy-line motif. Rendered as a single SVG cubic path with a gradient stroke;
+// a subtler mirrored path adds the "double ribbon" feel.
+function PlxNetworkSpine() {
+  // Three braided ribbons of variable opacity for a Plaid-style flowing spine.
+  // A wide viewBox lets the spine sweep left-right across the whole left column.
+  return (
+    <svg aria-hidden viewBox="0 0 480 560" width="100%" preserveAspectRatio="none" style={{ position: 'absolute', inset: 0, height: '100%', width: '100%', pointerEvents: 'none' }}>
+      <defs>
+        <linearGradient id="plxSpineGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="rgba(125,211,252,0.95)" />
+          <stop offset="45%" stopColor="rgba(139,92,246,0.85)" />
+          <stop offset="100%" stopColor="rgba(73,69,255,0.65)" />
+        </linearGradient>
+        <linearGradient id="plxSpineGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="rgba(139,92,246,0.70)" />
+          <stop offset="100%" stopColor="rgba(125,211,252,0.45)" />
+        </linearGradient>
+      </defs>
+      <path d="M 80 10 C 320 100, 100 180, 340 260 S 60 380, 380 460 S 140 560, 320 560"
+        fill="none" stroke="url(#plxSpineGrad)" strokeWidth="1.6" strokeLinecap="round" />
+      <path d="M 110 10 C 340 100, 130 180, 360 260 S 80 380, 400 460 S 160 560, 340 560"
+        fill="none" stroke="url(#plxSpineGrad2)" strokeWidth="1" strokeLinecap="round" opacity="0.75" />
+      <path d="M 50 10 C 290 100, 70 180, 310 260 S 30 380, 350 460 S 110 560, 290 560"
+        fill="none" stroke="url(#plxSpineGrad2)" strokeWidth="1" strokeLinecap="round" opacity="0.65" />
+    </svg>
+  );
+}
+
 function V1NetworkStats() {
   const mobile = useIsMobile();
-  // Fire the count-up only once the block scrolls into view.
   const [ref, inView] = useV1InView(0.3);
+
+  // Card anchors along the spine, laid out visually top→bottom to trace it.
+  // Each card is ~62px tall, so we space them ~140px apart within a 560px column.
+  const cards = [
+    { top: 10,  left: 10,  name: 'Bloom Beauty',         detail: 'Funded $65,000 · 1.19× · 24h', ago: '2 min ago' },
+    { top: 160, left: 70,  name: 'La Rosa Restaurant',   detail: 'Funded $110,000 · 1.16×',       ago: '1h ago'    },
+    { top: 310, left: 30,  name: 'Rosario Construction', detail: 'Wired $180,000 · 1.14×',        ago: 'Now'       },
+    { top: 460, left: 90,  name: 'Ward Market',          detail: 'Funded $50,000 · 1.18×',        ago: 'Now'       },
+  ];
 
   return (
     <section data-v1-section ref={ref} style={{ background: DELT.colors.card, padding: mobile ? '64px 0' : '120px 0' }}>
@@ -503,12 +635,26 @@ function V1NetworkStats() {
         display: 'grid', gridTemplateColumns: mobile ? '1fr' : '45% 55%',
         gap: mobile ? 40 : 64, alignItems: 'center',
       }}>
-        {/* Left — stacked notification cards */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: mobile ? 'stretch' : 'flex-start' }}>
-          <PlxFundedCard mobile={mobile} name="Bloom Beauty" detail="Funded $65,000 · 1.19× · 24h" ago="2 min ago" rotate={-1.5} offset={0} />
-          <PlxFundedCard mobile={mobile} name="La Rosa Restaurant" detail="Funded $110,000 · 1.16×" ago="1h ago" rotate={1.2} offset={30} />
-          <PlxFundedCard mobile={mobile} name="Rosario Construction" detail="Wired $180,000 · 1.14×" ago="Now" rotate={-0.5} offset={-10} />
-        </div>
+        {/* Left — spine + threaded notification cards. */}
+        {mobile ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            {cards.map((c) => (
+              <PlxFundedCard key={c.name} name={c.name} detail={c.detail} ago={c.ago} />
+            ))}
+          </div>
+        ) : (
+          <div style={{ position: 'relative', height: 560, width: '100%' }}>
+            <PlxNetworkSpine />
+            {cards.map((c) => (
+              <div key={c.name} style={{
+                position: 'absolute', top: c.top, left: c.left,
+                filter: 'drop-shadow(0 6px 14px rgba(15,14,23,0.04))',
+              }}>
+                <PlxFundedCard name={c.name} detail={c.detail} ago={c.ago} />
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Right — headline + stat grid */}
         <div>
@@ -520,7 +666,6 @@ function V1NetworkStats() {
           <p style={{ margin: '20px 0 0', fontFamily: DELT.font.body, fontSize: 17, lineHeight: 1.6, color: DELT.colors.inkSoft, maxWidth: 460 }}>
             2,850+ businesses. $200M+ deployed. Every offer we make today is priced on data we've been collecting since 2019.
           </p>
-          {/* 2×2 stat grid — alternate indigo / violet on the big numbers. */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: mobile ? 24 : 36, marginTop: 40 }}>
             {DeltContent.stats.map((s, i) => (
               <div key={s.l}>
@@ -707,27 +852,39 @@ function V1ProductTabs() {
 // SECTION 8 — V1CaseStudyStrip (auto-scrolling operator-story cards)
 // ============================================================================
 
-// Portrait story card. Background rotates through 4 palette variants; text
-// color flips to keep contrast on light vs dark backgrounds.
-function PlxStoryCard({ headline, wordmark, variant }) {
-  const variants = [
-    { bg: `linear-gradient(160deg, ${PLX.indigo} 0%, ${PLX.indigoDeep} 100%)`, fg: '#fff', sub: 'rgba(255,255,255,0.7)' },
-    { bg: `linear-gradient(160deg, ${PLX.navyMid} 0%, ${PLX.navy} 100%)`, fg: '#fff', sub: 'rgba(255,255,255,0.65)' },
-    { bg: `linear-gradient(160deg, ${PLX.violet} 0%, ${PLX.indigo} 100%)`, fg: '#fff', sub: 'rgba(255,255,255,0.7)' },
-    { bg: DELT.colors.paper, fg: DELT.colors.ink, sub: DELT.colors.inkMute },
-  ];
-  const v = variants[variant % variants.length];
+// A single operator-story card: hero photo (with subject-right composition),
+// wordmark overlay at top-left, headline + "Read the story" below.
+function PlxStoryCard({ img, wordmark, headline }) {
   return (
     <div style={{
-      width: 280, height: 360, flexShrink: 0, borderRadius: 18, overflow: 'hidden',
-      background: v.bg, border: variant % 4 === 3 ? `1px solid ${DELT.colors.line}` : 'none',
-      padding: 26, display: 'flex', flexDirection: 'column',
+      width: 320, flexShrink: 0, borderRadius: 18, overflow: 'hidden',
+      background: '#fff', border: `1px solid ${DELT.colors.line}`,
+      boxShadow: '0 18px 40px rgba(15,14,23,0.06)',
+      display: 'flex', flexDirection: 'column',
     }}>
-      <div style={{ fontFamily: DELT.font.mono, fontSize: 13, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: v.fg, opacity: 0.9, textAlign: 'right' }}>{wordmark}</div>
-      <div style={{ marginTop: 'auto' }}>
-        <p style={{ margin: 0, fontFamily: DELT.font.display, fontWeight: 600, fontSize: 22, lineHeight: 1.2, letterSpacing: '-0.02em', color: v.fg }}>{headline}</p>
-        <div style={{ marginTop: 16, display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: DELT.font.body, fontSize: 13, fontWeight: 500, color: v.fg, opacity: 0.85 }}>
-          Read the story <Arr />
+      {/* Photo panel with subtle indigo gradient overlay for the wordmark. */}
+      <div style={{ position: 'relative', aspectRatio: '16 / 10', overflow: 'hidden' }}>
+        <img src={img} alt="" loading="lazy"
+          style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }} />
+        {/* Left-side ink gradient so the white wordmark stays legible on any subject. */}
+        <div aria-hidden style={{
+          position: 'absolute', inset: 0,
+          background: 'linear-gradient(90deg, rgba(15,14,23,0.55) 0%, rgba(15,14,23,0.15) 45%, rgba(15,14,23,0) 65%)',
+        }} />
+        <div style={{
+          position: 'absolute', top: 18, left: 18,
+          fontFamily: DELT.font.display, fontWeight: 700, fontSize: 20, letterSpacing: '-0.01em',
+          color: '#fff', textShadow: '0 2px 12px rgba(0,0,0,0.35)',
+        }}>{wordmark}</div>
+      </div>
+      {/* Copy panel */}
+      <div style={{ padding: '22px 22px 26px' }}>
+        <p style={{ margin: 0, fontFamily: DELT.font.display, fontWeight: 600, fontSize: 19, lineHeight: 1.28, letterSpacing: '-0.015em', color: DELT.colors.ink }}>{headline}</p>
+        <div style={{ marginTop: 18, display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: DELT.font.body, fontSize: 14, fontWeight: 500, color: DELT.colors.indigo }}>
+          <span style={{ display: 'inline-flex', width: 20, height: 20, borderRadius: 999, border: `1px solid ${DELT.colors.indigo}`, alignItems: 'center', justifyContent: 'center' }}>
+            <svg width="9" height="9" viewBox="0 0 14 14"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          </span>
+          Read the story
         </div>
       </div>
     </div>
@@ -736,27 +893,28 @@ function PlxStoryCard({ headline, wordmark, variant }) {
 
 function V1CaseStudyStrip() {
   const mobile = useIsMobile();
-  // Story headlines (drawn from DeltContent.testimonials, brief-specified copy).
   const stories = [
-    { h: 'Bloom Beauty grew revenue 40% with $65K working capital', w: 'Bloom' },
-    { h: 'La Rosa Restaurant closed in 19 hours', w: 'La Rosa' },
-    { h: 'Rosario Construction on their 3rd draw — each rate lower than the last', w: 'Rosario' },
-    { h: 'Williams Logistics paid early — Delt rebated the unearned factor', w: 'Williams' },
-    { h: "Ward Market's CFO said: 'take it, I can't beat that.'", w: 'Ward' },
-    { h: "Roberts Auto: 'underwriter knew my book — not a call center'", w: 'Roberts' },
+    { img: 'app/assets/cases/01_ward.jpg',     wordmark: 'Ward Market',          headline: "Ward Market's CFO said: \u2018take it, I can\u2019t beat that.\u2019" },
+    { img: 'app/assets/cases/02_roberts.jpg',  wordmark: 'Roberts Auto',         headline: 'Roberts Auto: our underwriter knew the book, not a call center.' },
+    { img: 'app/assets/cases/03_bloom.jpg',    wordmark: 'Bloom Beauty',         headline: 'Bloom Beauty grew revenue 40% on $65K of working capital.' },
+    { img: 'app/assets/cases/04_larosa.jpg',   wordmark: 'La Rosa Restaurant',   headline: 'La Rosa Restaurant closed in 19 hours — not 19 days.' },
+    { img: 'app/assets/cases/05_rosario.jpg',  wordmark: 'Rosario Construction', headline: 'Rosario’s 3rd draw — each rate lower than the last.' },
+    { img: 'app/assets/cases/06_williams.jpg', wordmark: 'Williams Logistics',   headline: 'Williams paid early — Delt rebated the unearned factor.' },
   ];
   const loop = [...stories, ...stories];
 
   return (
     <section data-v1-section style={{ background: DELT.colors.paperWarm, padding: mobile ? '64px 0' : '120px 0', overflow: 'hidden' }}>
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: mobile ? '0 20px' : '0 32px', marginBottom: mobile ? 32 : 48 }}>
-        <div style={{ fontFamily: DELT.font.mono, fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', color: DELT.colors.indigo, marginBottom: 16 }}>Operator Stories</div>
-        <h2 data-v1-section-title style={{ margin: 0, fontFamily: DELT.font.display, fontWeight: 600, fontSize: mobile ? 30 : 56, letterSpacing: '-0.025em', color: DELT.colors.ink }}>See what's possible with Delt.</h2>
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: mobile ? '0 20px' : '0 32px', marginBottom: mobile ? 32 : 56, display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 24, flexWrap: 'wrap' }}>
+        <div>
+          <div style={{ fontFamily: DELT.font.mono, fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', color: DELT.colors.indigo, marginBottom: 16 }}>Operator Stories</div>
+          <h2 data-v1-section-title style={{ margin: 0, fontFamily: DELT.font.display, fontWeight: 600, fontSize: mobile ? 30 : 48, letterSpacing: '-0.025em', color: DELT.colors.ink }}>See what’s possible with Delt.</h2>
+        </div>
       </div>
 
       <style>{`
         @keyframes plxStoryScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-        .plx-story-track { animation: plxStoryScroll 60s linear infinite; }
+        .plx-story-track { animation: plxStoryScroll 80s linear infinite; }
         .plx-story-track:hover { animation-play-state: paused; }
         @media (prefers-reduced-motion: reduce) { .plx-story-track { animation: none; } }
       `}</style>
@@ -764,9 +922,9 @@ function V1CaseStudyStrip() {
         WebkitMaskImage: 'linear-gradient(90deg, transparent 0, black 5%, black 95%, transparent 100%)',
         maskImage: 'linear-gradient(90deg, transparent 0, black 5%, black 95%, transparent 100%)',
       }}>
-        <div className="plx-story-track" style={{ display: 'flex', gap: 20, width: 'max-content', padding: '4px 20px' }}>
+        <div className="plx-story-track" style={{ display: 'flex', gap: 24, width: 'max-content', padding: '4px 24px' }}>
           {loop.map((s, i) => (
-            <PlxStoryCard key={i} headline={s.h} wordmark={s.w} variant={i} />
+            <PlxStoryCard key={i} img={s.img} wordmark={s.wordmark} headline={s.headline} />
           ))}
         </div>
       </div>
