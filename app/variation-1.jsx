@@ -203,7 +203,11 @@ function V1Hero({ accent, onApply }) {
       // Delt indigo gradient: violet/cyan glows over a deep navy → indigo
       // base. The colors echo the tones in the Washington duotone so the
       // portrait dissolves into the background instead of sitting on top.
-      background: 'linear-gradient(160deg, #041E42 0%, #0A1A6E 55%, #041E42 100%)',
+      backgroundColor: '#041E42',
+      backgroundImage: 'url(app/assets/washington-plaid.jpg)',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center right',
+      backgroundRepeat: 'no-repeat',
       color: '#F7F5F0',
       position: 'relative',
       overflow: 'hidden',
@@ -319,41 +323,7 @@ function V1Hero({ accent, onApply }) {
         <div aria-hidden />
       </div>
 
-      {/* Right: Washington engraving — Plaid-parity edge-to-edge visual */}
-      <div data-v1-hero-media style={{
-        position: 'absolute',
-        right: 0, top: 0, bottom: 0,
-        width: '58%',
-        overflow: 'hidden',
-        clipPath: mounted ? 'inset(0 0 0 0)' : 'inset(0 100% 0 0)',
-        transition: 'clip-path 1100ms cubic-bezier(0.76, 0, 0.24, 1) 160ms',
-        willChange: mounted ? 'auto' : 'clip-path',
-        zIndex: 1,
-        pointerEvents: 'none',
-      }}>
-        <img
-          src="app/assets/washington-plaid.jpg"
-          alt="George Washington cross-hatch engraving in navy, indigo and cyan with a magenta color-shift band, holding an iPhone that shows a Delt Capital offer"
-          style={{
-            position: 'absolute',
-            inset: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            objectPosition: 'center right',
-            transform: `translate3d(0, ${videoShift}px, 0) scale(${videoScale})`,
-            transformOrigin: 'center right',
-            willChange: 'transform',
-            display: 'block',
-          }}
-        />
-        {/* Left-edge feather ties the image into the navy copy column. */}
-        <div aria-hidden style={{
-          position: 'absolute', inset: 0,
-          background: 'linear-gradient(90deg, #041E42 0%, rgba(4,30,66,0.6) 8%, rgba(4,30,66,0) 22%)',
-          pointerEvents: 'none',
-        }} />
-      </div>
+
 
     </section>
   );
