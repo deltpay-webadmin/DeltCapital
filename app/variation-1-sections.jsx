@@ -5,12 +5,15 @@
 //             horizontal rule prefix before every eyebrow label.
 
 const V1 = {
-  bg:       '#f6f9fc',
-  bgWarm:   '#f1f2f4',
+  // Warm cream canvas — matches the hero's bottom gradient stop, so the
+  // marketing body reads as a continuation of the hero rather than a hard
+  // section break. The prior cold #f6f9fc snapped visually.
+  bg:       '#F3EEE3',
+  bgWarm:   '#EEE7D6',
   ink:      '#041E42',
   muted:    '#697386',
   text:     '#425466',
-  line:     '#dcdfe4',
+  line:     'rgba(4,30,66,0.10)',
   // Indigo family
   blue:     '#4945FF', // Electric Indigo (brand §3.1)
   blueSoft: '#A5B4FC', // on-dark soft accent (derived)
@@ -76,8 +79,54 @@ function V1CompareSection() {
   ];
 
   return (
-    <section data-v1-section data-v1-comparison-section ref={sectionRef} style={{ background: V1.bg, padding: '120px 0', borderTop: `1px solid ${V1.line}`, borderBottom: `1px solid ${V1.line}` }}>
-      <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 40px' }}>
+    <section data-v1-section data-v1-comparison-section ref={sectionRef} style={{
+      // Continuation of the hero — the top edge holds a lingering echo of
+      // the indigo gradient so the transition feels intentional, not hard.
+      background: `
+        linear-gradient(180deg, rgba(4,30,66,0.06) 0%, rgba(4,30,66,0) 22%),
+        linear-gradient(180deg, ${V1.bg} 0%, ${V1.bg} 100%)
+      `,
+      padding: '160px 0 120px', position: 'relative', overflow: 'hidden',
+      borderBottom: `1px solid ${V1.line}`,
+    }}>
+      {/* Ambient wave pattern echoing the hero — threads visual DNA */}
+      <svg aria-hidden viewBox="0 0 1600 300" preserveAspectRatio="xMidYMin slice" style={{
+        position: 'absolute', top: 0, left: 0, width: '100%', height: 300,
+        opacity: 0.55, pointerEvents: 'none',
+      }}>
+        <defs>
+          <linearGradient id="v1compareWave" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%"   stopColor="#4945FF" stopOpacity="0" />
+            <stop offset="40%"  stopColor="#4945FF" stopOpacity="0.22" />
+            <stop offset="75%"  stopColor="#22D3EE" stopOpacity="0.20" />
+            <stop offset="100%" stopColor="#22D3EE" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        {Array.from({ length: 10 }).map((_, i) => {
+          const y = 8 + i * 22;
+          const amp = 24 + i * 4;
+          return (
+            <path key={i}
+              d={`M -50 ${y} C 400 ${y - amp}, 900 ${y + amp}, 1650 ${y - amp/2}`}
+              fill="none" stroke="url(#v1compareWave)" strokeWidth={0.7} opacity={0.7 - i * 0.05} />
+          );
+        })}
+      </svg>
+      {/* Watermark echo of Washington — large, near-transparent, off to the right.
+         Ties this section back to the hero without repeating the full figure. */}
+      <div aria-hidden style={{
+        position: 'absolute',
+        right: -140, top: 40, width: 620, height: 620,
+        opacity: 0.055,
+        pointerEvents: 'none',
+        backgroundImage: 'url(app/assets/washington.png)',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'contain',
+        backgroundPosition: 'center',
+        filter: 'grayscale(1) contrast(1.4)',
+        transform: 'rotate(-4deg)',
+      }} />
+      <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 40px', position: 'relative', zIndex: 2 }}>
         {/* Heading */}
         <div data-v1-grid-2col style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'end', marginBottom: 56 }}>
           <div>
@@ -549,14 +598,33 @@ function V1CTASection({ onApply, onTalk }) {
 
   return (
     <section data-v1-section ref={secRef} style={{
-      background: V1.ink, color: '#fff',
-      padding: '100px 0 96px',
+      // Soft cream→indigo→ink gradient so the CTA emerges out of the page
+      // above it — no hard color cut between marketing body and closing.
+      background: `
+        linear-gradient(180deg, ${V1.bg} 0%, #E6DAC1 6%, #274171 22%, #0B2650 46%, ${V1.ink} 72%)
+      `,
+      color: '#fff',
+      padding: '160px 0 96px',
       position: 'relative', overflow: 'hidden',
     }}>
+      {/* Washington watermark echoing the hero — low-opacity on the left,
+         balances the bloom on the right, and threads the same figure through
+         the page like Ben Franklin does on Plaid. */}
+      <div aria-hidden style={{
+        position: 'absolute', left: -180, bottom: -120, width: 620, height: 620,
+        opacity: 0.10, pointerEvents: 'none',
+        backgroundImage: 'url(app/assets/washington.png)',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'contain',
+        backgroundPosition: 'center',
+        filter: 'grayscale(1) brightness(0.6) contrast(1.6)',
+        mixBlendMode: 'screen',
+        transform: 'scaleX(-1) rotate(6deg)',
+      }} />
       {/* Ambient indigo bloom — subtle, decorative */}
       <div aria-hidden style={{
         position: 'absolute', top: -240, right: -200, width: 640, height: 640,
-        background: `radial-gradient(circle, ${V1.blue}22 0%, transparent 60%)`,
+        background: `radial-gradient(circle, ${V1.blue}44 0%, transparent 60%)`,
         filter: 'blur(24px)', pointerEvents: 'none',
         opacity: inView ? 1 : 0,
         transition: 'opacity 1400ms ease-out 200ms',
