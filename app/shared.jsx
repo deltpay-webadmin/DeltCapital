@@ -36,8 +36,8 @@ const DeltContent = {
   stats: [
     { v: '$200M+', l: 'Deployed since 2019' },
     { v: '2,850+', l: 'Businesses funded' },
-    { v: '24h', l: 'Median time to funds' },
-    { v: '1.18x', l: 'Median factor rate' },
+    { v: '24h', l: 'Typical time to funds' },
+    { v: 'Soft', l: 'Credit pull only' },
   ],
   compare: [
     { k: 'Speed to funds',      delt: '24 hours',               bank: '2–6 weeks' },

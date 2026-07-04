@@ -286,7 +286,7 @@ function V1Hero({ accent, onApply }) {
             color: 'rgba(247,245,240,0.75)', margin: '32px 0 0', maxWidth: 520,
             ...enter(560),
           }}>
-            Revenue-based funding from <span style={{ color: '#F7F5F0', fontWeight: 500 }}>$5,000 to $500,000</span>, underwritten off deposits — not your FICO, not your collateral, not a call center's script. Median factor <span style={{ color: '#F7F5F0', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>1.18×</span>. Median time to funds, <span style={{ color: '#F7F5F0', fontWeight: 500 }}>24 hours</span>.
+            Revenue-based funding from <span style={{ color: '#F7F5F0', fontWeight: 500 }}>$5,000 to $500,000</span>, underwritten off your deposits — not your FICO, not your collateral, not a call center's script. Most offers are wired in <span style={{ color: '#F7F5F0', fontWeight: 500 }}>24 hours</span> with a <span style={{ color: '#F7F5F0', fontWeight: 500 }}>soft-pull only</span>.
           </p>
 
           <div style={{
@@ -303,9 +303,9 @@ function V1Hero({ accent, onApply }) {
             display: 'flex', gap: 36, flexWrap: 'wrap',
           }}>
             {[
-              ['Today\'s median', '1.18×', 'factor'],
-              ['Time to funds', '24h', 'median'],
-              ['Soft-pull', 'Yes', 'only'],
+              ['Funding range', '$5K–$500K', 'per draw'],
+              ['Time to funds', '24h', 'typical'],
+              ['Credit pull', 'Soft', 'only'],
             ].map(([l, v, s], i) => (
               <div key={l} style={enter(820 + i * 90)}>
                 <div style={{ fontFamily: DELT.font.body, fontSize: 10.5, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(247,245,240,0.45)' }}>{l}</div>
@@ -533,7 +533,6 @@ function Variation1() {
           dark engine banner → network stats → product tabs → case studies),
           keep V1CompareSection as a final skeptic's look before the lead form. */}
       <V1Hero accent={accent} onApply={() => openApp(null, null)} />
-      <V1LogoMarquee />
       <V1ProductGrid />
       <V1IntelligentBanner />
       <V1NetworkStats />

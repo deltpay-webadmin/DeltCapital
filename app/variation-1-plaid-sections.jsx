@@ -447,6 +447,54 @@ function PlxMockCommissions() {
   );
 }
 
+// Line-of-credit mock — a clean card showing available credit, a usage bar,
+// and today's cost of capital. Built entirely from HTML/CSS so it renders
+// crisp at any size and matches the light bento tint of the other cards.
+function PlxMockLineOfCredit() {
+  const limit = 250000;
+  const drawn = 92500;
+  const available = limit - drawn;
+  const pct = (drawn / limit) * 100;
+  const fmt = (n) => `$${n.toLocaleString('en-US')}`;
+  return (
+    <div style={{
+      width: 300, maxWidth: '100%', borderRadius: 18, padding: 20,
+      background: '#FFFFFF',
+      border: '1px solid rgba(15,14,23,0.06)',
+      boxShadow: '0 20px 40px rgba(73,69,255,0.15), 0 2px 6px rgba(15,14,23,0.04)',
+      fontFamily: DELT.font.body,
+    }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+        <span style={{ fontFamily: DELT.font.display, fontWeight: 600, fontSize: 13, color: DELT.colors.indigo, letterSpacing: '-0.005em' }}>Delt Credit Line</span>
+        <span style={{ fontFamily: DELT.font.mono, fontSize: 9.5, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#0FA968', background: 'rgba(15,169,104,0.10)', padding: '4px 8px', borderRadius: 999 }}>Open</span>
+      </div>
+      <div style={{ fontFamily: DELT.font.mono, fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: DELT.colors.inkMute }}>Available to draw</div>
+      <div style={{ fontFamily: DELT.font.display, fontSize: 30, fontWeight: 600, color: DELT.colors.ink, letterSpacing: '-0.03em', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>{fmt(available)}</div>
+      <div style={{ marginTop: 14, height: 7, borderRadius: 999, background: 'rgba(73,69,255,0.10)', overflow: 'hidden' }}>
+        <div style={{ width: `${pct}%`, height: '100%', borderRadius: 999, background: `linear-gradient(90deg, ${DELT.colors.indigo}, ${PLX.softIndigo})` }} />
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8, fontFamily: DELT.font.mono, fontSize: 10.5, color: DELT.colors.inkMute, fontVariantNumeric: 'tabular-nums' }}>
+        <span>{fmt(drawn)} drawn</span>
+        <span>{fmt(limit)} limit</span>
+      </div>
+      <div style={{
+        marginTop: 16, paddingTop: 14,
+        borderTop: '1px solid rgba(15,14,23,0.06)',
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+      }}>
+        <div>
+          <div style={{ fontFamily: DELT.font.mono, fontSize: 9.5, letterSpacing: '0.12em', textTransform: 'uppercase', color: DELT.colors.inkMute }}>Bank line</div>
+          <div style={{ fontFamily: DELT.font.display, fontSize: 14, fontWeight: 600, color: DELT.colors.inkMute, textDecoration: 'line-through' }}>Prime + 6.5%</div>
+        </div>
+        <div style={{ textAlign: 'right' }}>
+          <div style={{ fontFamily: DELT.font.mono, fontSize: 9.5, letterSpacing: '0.12em', textTransform: 'uppercase', color: DELT.colors.indigo }}>Your rate</div>
+          <div style={{ fontFamily: DELT.font.display, fontSize: 18, fontWeight: 700, color: DELT.colors.ink }}>Prime + 2.9%</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function PlxMockProcessors() {
   return (
     <img
@@ -530,9 +578,9 @@ function V1ProductGrid() {
         }}>
           <PlxProductCard mobile={mobile}
             tint="#F5F1FF"
-            title="Agent portal"
-            desc="Route your book, keep 100% of the residual.">
-            <PlxMockCommissions />
+            title="Lines of credit that beat the bank"
+            desc="Revolving capital you can draw on demand — lower rates, no covenants, funded off your deposits.">
+            <PlxMockLineOfCredit />
           </PlxProductCard>
           <PlxProductCard mobile={mobile}
             tint="#FFFFFF"
@@ -778,18 +826,6 @@ function V1IntelligentBanner() {
             </div>
           )}
 
-          {/* Network globe — sits IN FRONT of George, on his chest area,
-             like Plaid's Lincoln composition. */}
-          {!mobile && (
-            <div style={{
-              position: 'absolute', left: '52%', top: '50%',
-              transform: 'translate(-50%, -50%)', pointerEvents: 'none', opacity: 0.9,
-              zIndex: 2, mixBlendMode: 'screen',
-            }}>
-              <PlxNetworkGlobe size={360} />
-            </div>
-          )}
-
           {/* Left — copy */}
           <div style={{
             position: 'relative', zIndex: 3, maxWidth: mobile ? '100%' : '50%',
@@ -1016,14 +1052,37 @@ function V1NetworkStats() {
 
 // --- Tab mocks --------------------------------------------------------------
 
-// Capital: polished offer screen image (Nano Banana Pro).
+// Capital: a simple, plain-English offer card. Big amount, clear repayment,
+// obvious CTA — nothing that requires industry knowledge to understand.
 function PlxTabCapital() {
   return (
-    <img
-      src="app/assets/mocks/delt_tabs_capital_offer_polished.jpg"
-      alt="Delt Capital offer $125,000 at 1.16x"
-      style={{ width: '100%', height: 'auto', display: 'block' }}
-    />
+    <div style={{ background: '#fff', color: DELT.colors.ink, width: '100%', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ padding: '22px 28px', borderBottom: `1px solid ${DELT.colors.line}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span style={{ fontFamily: DELT.font.display, fontWeight: 600, fontSize: 15, color: DELT.colors.indigo }}>Your funding offer</span>
+        <span style={{ fontFamily: DELT.font.mono, fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#0FA968', background: 'rgba(15,169,104,0.10)', padding: '5px 12px', borderRadius: 999 }}>Ready to fund</span>
+      </div>
+      <div style={{ padding: '36px 28px 12px', textAlign: 'center' }}>
+        <div style={{ fontFamily: DELT.font.mono, fontSize: 11, letterSpacing: '0.14em', textTransform: 'uppercase', color: DELT.colors.inkMute }}>You get today</div>
+        <div style={{ fontFamily: DELT.font.display, fontSize: 68, fontWeight: 700, letterSpacing: '-0.035em', lineHeight: 1, marginTop: 8, background: `linear-gradient(90deg, ${DELT.colors.indigo}, ${PLX.softIndigo})`, WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>$125,000</div>
+        <div style={{ fontFamily: DELT.font.body, fontSize: 15, color: DELT.colors.inkSoft, marginTop: 14 }}>Wired to your account within 24 hours.</div>
+      </div>
+      <div style={{ padding: '28px 28px 0', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+        {[
+          ['You pay back', '$1,240 / week'],
+          ['For', '24 weeks'],
+          ['Total repaid', '$145,000'],
+        ].map(([l, v]) => (
+          <div key={l} style={{ textAlign: 'center', padding: 14, borderRadius: 12, background: 'rgba(73,69,255,0.04)', border: `1px solid ${DELT.colors.lineSoft}` }}>
+            <div style={{ fontFamily: DELT.font.mono, fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: DELT.colors.inkMute }}>{l}</div>
+            <div style={{ fontFamily: DELT.font.display, fontSize: 18, fontWeight: 700, color: DELT.colors.ink, marginTop: 6, letterSpacing: '-0.015em', fontVariantNumeric: 'tabular-nums' }}>{v}</div>
+          </div>
+        ))}
+      </div>
+      <div style={{ padding: 28, marginTop: 'auto' }}>
+        <div style={{ background: `linear-gradient(90deg, ${DELT.colors.indigo}, ${PLX.softIndigo})`, color: '#fff', textAlign: 'center', borderRadius: 12, padding: '15px 0', fontFamily: DELT.font.body, fontWeight: 600, fontSize: 16, boxShadow: '0 12px 24px rgba(73,69,255,0.25)' }}>Accept offer →</div>
+        <div style={{ marginTop: 14, textAlign: 'center', fontFamily: DELT.font.body, fontSize: 12.5, color: DELT.colors.inkMute }}>No collateral. No hidden fees. Pay early, pay less.</div>
+      </div>
+    </div>
   );
 }
 function PlxTabCapital_OLD() {
@@ -1063,13 +1122,41 @@ function PlxTabCapital_OLD() {
   );
 }
 
+// Payments: a clean rate-card layout. "You pay less. You get paid faster."
+// Two big numbers with a supporting proof point — no jargon.
 function PlxTabPayments() {
   return (
-    <img
-      src="app/assets/mocks/delt_tabs_payments_polished.jpg"
-      alt="Delt Payments live volume dashboard"
-      style={{ width: '100%', height: 'auto', display: 'block' }}
-    />
+    <div style={{ background: '#fff', color: DELT.colors.ink, width: '100%', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ padding: '22px 28px', borderBottom: `1px solid ${DELT.colors.line}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span style={{ fontFamily: DELT.font.display, fontWeight: 600, fontSize: 15, color: DELT.colors.indigo }}>Your processing rate</span>
+        <span style={{ fontFamily: DELT.font.mono, fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', color: DELT.colors.inkMute }}>Monthly savings</span>
+      </div>
+      <div style={{ padding: '30px 28px 24px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+        <div style={{ padding: 22, borderRadius: 14, border: `1px solid ${DELT.colors.lineSoft}`, background: 'rgba(15,14,23,0.02)' }}>
+          <div style={{ fontFamily: DELT.font.mono, fontSize: 10.5, letterSpacing: '0.12em', textTransform: 'uppercase', color: DELT.colors.inkMute }}>Old processor</div>
+          <div style={{ fontFamily: DELT.font.display, fontSize: 40, fontWeight: 700, color: DELT.colors.inkMute, marginTop: 8, letterSpacing: '-0.025em', textDecoration: 'line-through', fontVariantNumeric: 'tabular-nums' }}>2.90%</div>
+          <div style={{ fontFamily: DELT.font.body, fontSize: 13, color: DELT.colors.inkMute, marginTop: 4 }}>+ $0.30 per swipe</div>
+        </div>
+        <div style={{ padding: 22, borderRadius: 14, border: `1px solid ${DELT.colors.indigo}`, background: 'rgba(73,69,255,0.06)', position: 'relative' }}>
+          <div style={{ fontFamily: DELT.font.mono, fontSize: 10.5, letterSpacing: '0.12em', textTransform: 'uppercase', color: DELT.colors.indigo }}>With Delt</div>
+          <div style={{ fontFamily: DELT.font.display, fontSize: 40, fontWeight: 700, marginTop: 8, letterSpacing: '-0.025em', background: `linear-gradient(90deg, ${DELT.colors.indigo}, ${PLX.softIndigo})`, WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent', fontVariantNumeric: 'tabular-nums' }}>1.79%</div>
+          <div style={{ fontFamily: DELT.font.body, fontSize: 13, color: DELT.colors.ink, marginTop: 4 }}>+ $0.10 per swipe</div>
+        </div>
+      </div>
+      <div style={{ margin: '4px 28px 0', padding: 18, borderRadius: 14, background: `linear-gradient(90deg, rgba(73,69,255,0.08), rgba(125,211,252,0.10))`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <div style={{ fontFamily: DELT.font.mono, fontSize: 10.5, letterSpacing: '0.12em', textTransform: 'uppercase', color: DELT.colors.inkMute }}>You save every month</div>
+          <div style={{ fontFamily: DELT.font.display, fontSize: 28, fontWeight: 700, color: DELT.colors.ink, letterSpacing: '-0.02em', marginTop: 2, fontVariantNumeric: 'tabular-nums' }}>$1,240</div>
+        </div>
+        <div style={{ textAlign: 'right' }}>
+          <div style={{ fontFamily: DELT.font.mono, fontSize: 10.5, letterSpacing: '0.12em', textTransform: 'uppercase', color: DELT.colors.inkMute }}>Deposits arrive</div>
+          <div style={{ fontFamily: DELT.font.display, fontSize: 22, fontWeight: 700, color: DELT.colors.indigo, letterSpacing: '-0.02em', marginTop: 2 }}>Next day</div>
+        </div>
+      </div>
+      <div style={{ padding: 28, marginTop: 'auto', textAlign: 'center', fontFamily: DELT.font.body, fontSize: 13, color: DELT.colors.inkMute }}>
+        Works with your existing terminals. We’ll beat any rate in writing.
+      </div>
+    </div>
   );
 }
 function PlxTabPayments_OLD() {
@@ -1139,9 +1226,9 @@ function PlxTabPortal_OLD() {
 function V1ProductTabs() {
   const mobile = useIsMobile();
   const [tab, setTab] = React.useState('Capital');
-  const tabs = ['Capital', 'Payments', 'Portal'];
+  const tabs = ['Capital', 'Payments'];
   // Wrap each mock so it stretches to fill the 800px card (flex child).
-  const mockInner = tab === 'Capital' ? <PlxTabCapital /> : tab === 'Payments' ? <PlxTabPayments /> : <PlxTabPortal />;
+  const mockInner = tab === 'Capital' ? <PlxTabCapital /> : <PlxTabPayments />;
   const mock = <div style={{ width: '100%' }}>{mockInner}</div>;
 
   return (
@@ -1151,9 +1238,9 @@ function V1ProductTabs() {
           <h2 data-v1-section-title style={{
             margin: 0, fontFamily: DELT.font.display, fontWeight: 600,
             fontSize: mobile ? 32 : 72, letterSpacing: '-0.03em', lineHeight: 1.02, color: '#fff',
-          }}>One platform. Three products. Zero busywork.</h2>
+          }}>Capital and payments, working together.</h2>
           <p style={{ margin: '20px auto 0', fontFamily: DELT.font.body, fontSize: mobile ? 16 : 18, color: 'rgba(247,245,240,0.65)', maxWidth: 560 }}>
-            Capital, payments, and a portal your agents actually use.
+            Get the money you need. Keep more of every sale. That’s it.
           </p>
         </V1Reveal>
 
