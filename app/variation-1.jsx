@@ -185,13 +185,9 @@ V1Chrome.brand = (
 
 function V1Hero({ accent, onApply }) {
   const mounted = useV1Mounted(80);
-  const scrollY = useV1ScrollY();
   // Subscribe to language changes so the hero copy swaps on toggle.
   useLang();
-  // Parallax: only active while the hero is on screen (roughly first 900px).
-  const py = Math.min(scrollY, 900);
-  const videoShift = -py * 0.12;
-  const videoScale = 1 + Math.min(py, 600) * 0.00018;
+  // Hero portrait is static — no parallax / scroll animation, per stakeholder.
   const enter = (base) => ({
     opacity: mounted ? 1 : 0,
     transform: mounted ? 'translate3d(0,0,0)' : 'translate3d(0, 14px, 0)',
@@ -205,8 +201,8 @@ function V1Hero({ accent, onApply }) {
   // so line-height:0.95 on the h1 no longer clips it.
 
   // Hero graphic — static George Washington cutout (transparent PNG).
-  // Kept the parallax shift/scale variables so subtle scroll motion still
-  // animates the image the same way the previous hero video did.
+  // No parallax; the portrait is anchored at the right edge and stays put
+  // as the page scrolls.
 
   return (
     <section style={{
@@ -252,17 +248,20 @@ function V1Hero({ accent, onApply }) {
       </svg>
 
       {/* Washington cutout — transparent PNG, absolutely positioned on the right.
-          Bleeds off the right edge so it reads like a portrait floating in space.
-          On narrow viewports we push it further off-screen and dim it so the
-          copy stays readable (media query in <style> below). */}
+          Anchored to the section's right edge (right:0) with a small inner
+          pad so the full portrait — including the phone — stays on screen.
+          On narrow viewports we push it partially off-screen and dim it so
+          the copy stays readable (media query in <style> below).
+          No parallax / scroll transform — the portrait sits static, per
+          stakeholder direction. */}
       <style>{`
-        .v1hero-washington { position: absolute; right: -4%; bottom: 0; height: 96%; max-height: 820px; width: auto; z-index: 2; pointer-events: none;
-          filter: drop-shadow(0 20px 60px rgba(4,15,40,0.55)); transform-origin: right bottom; transition: transform 40ms linear; }
+        .v1hero-washington { position: absolute; right: 0; bottom: 0; height: 96%; max-height: 820px; width: auto; z-index: 2; pointer-events: none;
+          filter: drop-shadow(0 20px 60px rgba(4,15,40,0.55)); transform-origin: right bottom; }
         @media (max-width: 900px) {
-          .v1hero-washington { right: -35%; height: 70%; max-height: 520px; opacity: 0.35; }
+          .v1hero-washington { right: -25%; height: 70%; max-height: 520px; opacity: 0.35; }
         }
         @media (max-width: 560px) {
-          .v1hero-washington { right: -50%; height: 60%; opacity: 0.22; }
+          .v1hero-washington { right: -40%; height: 60%; opacity: 0.22; }
         }
       `}</style>
       <img
@@ -270,9 +269,6 @@ function V1Hero({ accent, onApply }) {
         src="app/assets/washington-cutout.png"
         alt=""
         aria-hidden
-        style={{
-          transform: `translate3d(0, ${videoShift}px, 0) scale(${videoScale})`,
-        }}
       />
 
       <div data-v1-grid-2col style={{
