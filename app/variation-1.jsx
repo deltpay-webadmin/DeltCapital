@@ -201,9 +201,10 @@ function V1Hero({ accent, onApply }) {
   // Hero background tuning knobs — every visible layer is separate so we can
   // dial it up/down independently. Change these to iterate.
   const HERO_BG        = '#041E42';       // matches V1.ink and the CTA base
-  const HERO_LINE_OPAC = 0.14;            // Plaid-style waves — subtle
-  const HERO_LINE_COUNT = 42;             // dense horizontal flow like Plaid
-  const HERO_WASH_OPAC = 0.55;            // transparent, less bold Washington
+  const HERO_LINE_OPAC = 0.18;            // Plaid-style waves — subtle but visible
+  const HERO_LINE_COUNT = 52;             // dense parallel flow like Plaid
+  const HERO_WASH_OPAC = 0.42;            // ghostlier Washington
+  const HERO_WASH_BLUR = 0.4;             // subtle softening (px)
 
   return (
     <section style={{
@@ -246,11 +247,12 @@ function V1Hero({ accent, onApply }) {
         zIndex: 0,
       }} />
 
-      {/* Plaid-style dense wavy line pattern. Each path is a wide, slowly
-         undulating horizontal curve; stacking many of them at slightly
-         different phases produces the flowing topographic look on
-         plaid.com. Stroke is a horizontal cyan→indigo→cyan gradient with
-         alpha-fade endpoints so the lines don't slam into the edges. */}
+      {/* Plaid-style dense wavy line pattern. All lines share the same
+         underlying sine — one long "S" that flows across the width — with
+         each row offset by a fixed step. That yields the tightly parallel,
+         topographic look on plaid.com instead of the random tangle a
+         per-line-phase approach produces. Path is sampled at 32 points and
+         stitched with a smooth Catmull-Rom-style cubic. */}
       <svg aria-hidden viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" style={{
         position: 'absolute', inset: 0, width: '100%', height: '100%',
         opacity: HERO_LINE_OPAC, pointerEvents: 'none', zIndex: 1,
@@ -258,30 +260,50 @@ function V1Hero({ accent, onApply }) {
         <defs>
           <linearGradient id="v1heroLineStroke" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0%"   stopColor="#60A5FA" stopOpacity="0" />
-            <stop offset="18%"  stopColor="#60A5FA" stopOpacity="1" />
-            <stop offset="50%"  stopColor="#22D3EE" stopOpacity="1" />
-            <stop offset="82%"  stopColor="#60A5FA" stopOpacity="1" />
-            <stop offset="100%" stopColor="#60A5FA" stopOpacity="0" />
+            <stop offset="22%"  stopColor="#60A5FA" stopOpacity="1" />
+            <stop offset="55%"  stopColor="#22D3EE" stopOpacity="1" />
+            <stop offset="82%"  stopColor="#818CF8" stopOpacity="1" />
+            <stop offset="100%" stopColor="#818CF8" stopOpacity="0" />
           </linearGradient>
         </defs>
-        {Array.from({ length: HERO_LINE_COUNT }).map((_, i) => {
-          // Baseline y for each line, evenly spaced across the viewBox
-          const y = -20 + i * (940 / HERO_LINE_COUNT);
-          // Amplitude varies gently so the stack looks organic, not ruled
-          const amp = 34 + ((i * 7) % 5) * 6;
-          // Phase offset per line — small drift, keeps them roughly parallel
-          const p1 = -50 + ((i * 37) % 60);
-          const p2 = 60 + ((i * 53) % 90);
-          return (
-            <path
-              key={i}
-              d={`M -80 ${y} C 320 ${y - amp + p1}, 780 ${y + amp - p2}, 1180 ${y - amp * 0.7}, 1700 ${y + amp * 0.4}`}
-              fill="none"
-              stroke="url(#v1heroLineStroke)"
-              strokeWidth={0.9}
-            />
-          );
-        })}
+        {(() => {
+          // Shared sine profile — one gentle "S" from 0..1600. Amplitude
+          // ramps up in the middle so the flow feels stronger at the
+          // center and settles at the edges (Plaid-like).
+          const SAMPLES = 40;
+          const sampleX = (t) => t * 1600;
+          const sampleY = (t, baseY) => {
+            const envelope = Math.sin(Math.PI * t);      // 0..1..0
+            const primary  = Math.sin(t * Math.PI * 1.6);
+            const secondary = Math.sin(t * Math.PI * 3.2) * 0.28;
+            return baseY + (primary + secondary) * 46 * envelope;
+          };
+          const buildPath = (baseY) => {
+            let d = '';
+            for (let s = 0; s <= SAMPLES; s += 1) {
+              const t = s / SAMPLES;
+              const x = sampleX(t);
+              const y = sampleY(t, baseY);
+              d += s === 0 ? `M ${x.toFixed(1)} ${y.toFixed(1)}`
+                           : ` L ${x.toFixed(1)} ${y.toFixed(1)}`;
+            }
+            return d;
+          };
+          const spacing = 940 / HERO_LINE_COUNT;
+          return Array.from({ length: HERO_LINE_COUNT }).map((_, i) => {
+            const baseY = -20 + i * spacing;
+            return (
+              <path
+                key={i}
+                d={buildPath(baseY)}
+                fill="none"
+                stroke="url(#v1heroLineStroke)"
+                strokeWidth={0.75}
+                strokeLinecap="round"
+              />
+            );
+          });
+        })()}
       </svg>
 
       <div data-v1-grid-2col style={{
@@ -394,10 +416,11 @@ function V1Hero({ accent, onApply }) {
             filter: 'blur(6px)',
             pointerEvents: 'none',
           }} />
-          {/* Washington — transparent PNG kept as a single layer (no duotone
-             stack). Opacity + softened brightness/contrast make him read as
-             a subtle background presence rather than a bold foreground
-             character, matching the Plaid Franklin treatment. */}
+          {/* Washington — transparent PNG, monochrome + indigo-tinted so he
+             reads as an on-bill engraving rather than a photo. Simple filter
+             stack: full desaturation, contrast pulled down, a soft blur, and
+             a very slight sepia→hue-rotate to nudge the grays toward navy.
+             No overlay divs, no multi-layer stack — one image, one filter. */}
           <img
             src="app/assets/washington.png"
             alt="George Washington, modernized — holding an iPhone with an AirPod in his ear"
@@ -413,9 +436,7 @@ function V1Hero({ accent, onApply }) {
               transform: `translate3d(0, ${videoShift}px, 0) scale(${videoScale})`,
               transformOrigin: 'center center',
               willChange: 'transform',
-              // Slight contrast/brightness lift keeps mid-tones legible at
-              // the reduced opacity without pushing highlights to pure white.
-              filter: 'contrast(0.92) brightness(1.02) drop-shadow(0 18px 36px rgba(0,0,0,0.35))',
+              filter: `grayscale(1) sepia(0.55) hue-rotate(190deg) saturate(1.4) brightness(1.08) contrast(0.85) blur(${HERO_WASH_BLUR}px) drop-shadow(0 14px 28px rgba(0,0,0,0.28))`,
             }}
           />
           {/* Left-edge fade so the subject melts into the copy column */}
