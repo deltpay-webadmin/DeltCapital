@@ -540,11 +540,14 @@ function PlxMockOffer() {
           boxShadow: '0 1px 2px rgba(15,14,23,0.03)',
           fontVariantNumeric: 'tabular-nums',
         }}>
+          {/* MCAs are revenue-tied — no fixed term. Payback is expressed as the
+              factor × total repay + a holdback (percentage of daily card
+              settlements), never as a duration. */}
           {[
-            ['Weekly',      '$1,240'],
-            ['Term',        '24 weeks'],
+            ['Advance',     '$95,000'],
             ['Factor',      '1.16×'],
             ['Total repay', '$110,200'],
+            ['Holdback',    '9% of sales'],
           ].map((row, i, arr) => (
             <div key={row[0]} style={{
               display: 'flex', justifyContent: 'space-between', alignItems: 'center',
@@ -574,7 +577,7 @@ function PlxMockOffer() {
             fontWeight: 600, letterSpacing: '0.02em',
           }}>
             <span style={{ width: 5, height: 5, borderRadius: 999, background: '#0FA968' }} />
-            Approved · 24h to wire
+            Approved · funds in 24h
           </div>
         </div>
         {/* CTA */}
@@ -603,7 +606,9 @@ function PlxMockOffer() {
 //    happens during the soft-pull, with three timestamped checks below.
 function PlxMockApprovals() {
   // Arc geometry — sweeps ~270° from 135° (bottom-left) to 45° (bottom-right).
-  const start = 135; const end = 405; const pct = 0.88; // 53s of 60s
+  // Fill = 68% of the way through underwriting (softened from instant/60s
+  // framing — MCAs are faster than banks but not literally instant).
+  const start = 135; const end = 405; const pct = 0.68;
   const R = 68; const cx = 90; const cy = 90;
   const rad = (a) => (a * Math.PI) / 180;
   const arcPath = (a0, a1) => {
@@ -641,20 +646,22 @@ function PlxMockApprovals() {
             fontFamily: DELT.font.display, fontSize: 40, fontWeight: 700,
             color: DELT.colors.ink, letterSpacing: '-0.045em', lineHeight: 1,
             fontVariantNumeric: 'tabular-nums',
-          }}>0:53</div>
+          }}>Live</div>
           <div style={{
             marginTop: 6, fontFamily: DELT.font.mono, fontSize: 9.5,
             letterSpacing: '0.14em', textTransform: 'uppercase', color: DELT.colors.inkMute,
-          }}>of 60 seconds</div>
+          }}>underwriting</div>
         </div>
       </div>
       {/* Live checklist */}
       <div style={{ marginTop: 14, display: 'flex', flexDirection: 'column', gap: 8 }}>
         {[
-          ['Deposits verified',   '0:22'],
-          ['Ownership matched',   '0:38'],
-          ['Offer ranged',        '0:53'],
+          ['Deposits verified',   'Done'],
+          ['Ownership matched',   'Done'],
+          ['Offer ranged',        'Done'],
         ].map((row) => (
+          /* Steps not stopwatch times — Delt underwrites in minutes to hours,
+             not seconds. Signal the process, not a false clock. */
           <div key={row[0]} style={{
             display: 'flex', justifyContent: 'space-between', alignItems: 'center',
             padding: '8px 12px', background: 'rgba(15,169,104,0.06)',
@@ -770,11 +777,11 @@ function PlxMockLineOfCredit() {
       }}>
         <div>
           <div style={{ fontFamily: DELT.font.mono, fontSize: 9.5, letterSpacing: '0.12em', textTransform: 'uppercase', color: DELT.colors.inkMute }}>Bank line</div>
-          <div style={{ fontFamily: DELT.font.display, fontSize: 14, fontWeight: 600, color: DELT.colors.inkMute, textDecoration: 'line-through' }}>Prime + 6.5%</div>
+          <div style={{ fontFamily: DELT.font.display, fontSize: 14, fontWeight: 600, color: DELT.colors.inkMute, textDecoration: 'line-through' }}>12.5% APR</div>
         </div>
         <div style={{ textAlign: 'right' }}>
           <div style={{ fontFamily: DELT.font.mono, fontSize: 9.5, letterSpacing: '0.12em', textTransform: 'uppercase', color: DELT.colors.indigo }}>Your rate</div>
-          <div style={{ fontFamily: DELT.font.display, fontSize: 18, fontWeight: 700, color: DELT.colors.ink, fontVariantNumeric: 'tabular-nums' }}>Prime + 2.9%</div>
+          <div style={{ fontFamily: DELT.font.display, fontSize: 18, fontWeight: 700, color: DELT.colors.ink, fontVariantNumeric: 'tabular-nums' }}>8.9% APR</div>
         </div>
       </div>
     </PlxSurface>
@@ -793,7 +800,11 @@ function PlxMockProcessors() {
         <PlxPill tone="green">Live quote</PlxPill>
       </div>
 
-      {/* Current processor row */}
+      {/* Current processor row — Square as the reference merchant is on now.
+          Square in-person is 2.6% + $0.15 per transaction (Free plan, verified
+          against Square's published pricing). On $100K/month volume with a
+          typical ~$50 avg ticket (≈2,000 txns), that's an effective ~2.9%
+          all-in — or roughly $2,900/mo in processing fees. */}
       <div style={{
         padding: '12px 14px', borderRadius: 12,
         background: 'rgba(15,14,23,0.03)',
@@ -801,18 +812,20 @@ function PlxMockProcessors() {
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
       }}>
         <div>
-          <div style={{ fontFamily: DELT.font.mono, fontSize: 9.5, letterSpacing: '0.12em', textTransform: 'uppercase', color: DELT.colors.inkMute }}>Current · Paysafe</div>
-          <div style={{ fontFamily: DELT.font.body, fontSize: 11, color: DELT.colors.inkMute, marginTop: 2 }}>Effective rate</div>
+          <div style={{ fontFamily: DELT.font.mono, fontSize: 9.5, letterSpacing: '0.12em', textTransform: 'uppercase', color: DELT.colors.inkMute }}>Current · Square</div>
+          <div style={{ fontFamily: DELT.font.body, fontSize: 11, color: DELT.colors.inkMute, marginTop: 2 }}>2.6% + $0.15 per swipe</div>
         </div>
         <div style={{
           fontFamily: DELT.font.display, fontSize: 22, fontWeight: 600,
           color: DELT.colors.inkMute, letterSpacing: '-0.02em',
           textDecoration: 'line-through', textDecorationThickness: '1px',
           fontVariantNumeric: 'tabular-nums',
-        }}>2.90%</div>
+        }}>~2.9%</div>
       </div>
 
-      {/* Delt row — primary, gradient number */}
+      {/* Delt row — cash discount program. Merchant nets 0% because the
+          non-cash adjustment is passed to the cardholder. Fits retail,
+          service, QSR — the categories David flagged. */}
       <div style={{
         marginTop: 8, padding: '14px',
         borderRadius: 12,
@@ -821,8 +834,8 @@ function PlxMockProcessors() {
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
       }}>
         <div>
-          <div style={{ fontFamily: DELT.font.mono, fontSize: 9.5, letterSpacing: '0.12em', textTransform: 'uppercase', color: DELT.colors.indigo, fontWeight: 600 }}>Delt · boarded</div>
-          <div style={{ fontFamily: DELT.font.body, fontSize: 11, color: DELT.colors.inkSoft, marginTop: 2 }}>Same terminals, next-day funds</div>
+          <div style={{ fontFamily: DELT.font.mono, fontSize: 9.5, letterSpacing: '0.12em', textTransform: 'uppercase', color: DELT.colors.indigo, fontWeight: 600 }}>Delt · cash discount</div>
+          <div style={{ fontFamily: DELT.font.body, fontSize: 11, color: DELT.colors.inkSoft, marginTop: 2 }}>Retail, service, QSR</div>
         </div>
         <div style={{
           fontFamily: DELT.font.display, fontSize: 28, fontWeight: 700,
@@ -830,10 +843,13 @@ function PlxMockProcessors() {
           background: `linear-gradient(90deg, ${DELT.colors.indigo}, ${PLX.softIndigo})`,
           WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent',
           fontVariantNumeric: 'tabular-nums',
-        }}>1.79%</div>
+        }}>0% net</div>
       </div>
 
-      {/* Savings summary */}
+      {/* Savings summary — Square math on $100K/mo, ~$50 avg ticket:
+          2.6% × $100K + $0.15 × 2,000 txns = $2,600 + $300 = $2,900/mo.
+          With cash discount the customer covers the fee, so the merchant
+          keeps essentially the full $2,900. */}
       <div style={{
         marginTop: 14, paddingTop: 14, borderTop: '1px solid rgba(15,14,23,0.06)',
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
@@ -848,7 +864,7 @@ function PlxMockProcessors() {
             fontFamily: DELT.font.display, fontSize: 22, fontWeight: 700,
             color: '#0FA968', letterSpacing: '-0.02em',
             fontVariantNumeric: 'tabular-nums',
-          }}>$1,110</span>
+          }}>$2,900</span>
           <span style={{ fontFamily: DELT.font.mono, fontSize: 10.5, color: DELT.colors.inkMute, marginLeft: 2 }}>/mo</span>
         </div>
       </div>
@@ -869,24 +885,22 @@ function PlxMockTerminals() {
     }}>
       <img
         src="app/assets/mocks/delt_mock_terminals.jpg"
-        alt="PAX A920, Verifone V400m, and Landi A8 payment terminals"
+        alt="Delt payment terminals"
         style={{
           width: 320, maxWidth: '100%', height: 'auto', objectFit: 'contain',
           display: 'block',
           filter: 'drop-shadow(0 12px 24px rgba(15,14,23,0.08))',
         }}
       />
-      {/* Model labels row — small centered mono caps, three terminals aligned
-          under the photograph. Restores the brand-name signal that the old
-          baked-in labels tried to convey, but at legible size + in-brand type. */}
+      {/* Terminal-agnostic caption — no manufacturer names. Delt boards any
+          major terminal, so lock-in to specific brands would misrepresent the
+          product. */}
       <div style={{
-        display: 'flex', justifyContent: 'space-between', width: 260, maxWidth: '80%',
         fontFamily: DELT.font.mono, fontSize: 9.5, letterSpacing: '0.14em',
         textTransform: 'uppercase', color: DELT.colors.inkMute, fontWeight: 500,
+        textAlign: 'center',
       }}>
-        <span>PAX A920</span>
-        <span>Verifone V400m</span>
-        <span>Landi A8</span>
+        Countertop · handheld · mobile
       </div>
       {/* Spec strip — same visual language as the other mocks. Two facts,
           separated by a divider dot. "Certified" chip on the right signals
@@ -952,8 +966,8 @@ function V1ProductGrid() {
           </PlxProductCard>
           <PlxProductCard large mobile={mobile}
             tint="#F0F7FE"
-            title="Instant approvals"
-            desc="Ranged offers in 60 seconds. Soft pull, no callbacks.">
+            title="Faster than the bank"
+            desc="Ranged offers in minutes. Soft pull, no callbacks.">
             <PlxMockApprovals />
           </PlxProductCard>
         </div>
@@ -978,7 +992,7 @@ function V1ProductGrid() {
           <PlxProductCard mobile={mobile}
             tint="#EEF7FB"
             title="Terminal financing"
-            desc="PAX, Verifone, Landi. Own or lease.">
+            desc="Own or lease. Same-day board.">
             <PlxMockTerminals />
           </PlxProductCard>
         </div>
@@ -1454,10 +1468,13 @@ function PlxTabCapital() {
         <div style={{ fontFamily: DELT.font.body, fontSize: 15, color: DELT.colors.inkSoft, marginTop: 14 }}>Wired to your account within 24 hours.</div>
       </div>
       <div style={{ padding: '28px 28px 0', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+        {/* MCA framing — no fixed term. Holdback (percentage of daily card
+            settlements) replaces a weekly duration; total repaid is factor
+            × advance. Payback duration flexes with revenue. */}
         {[
-          ['You pay back', '$1,240 / week'],
-          ['For', '24 weeks'],
-          ['Total repaid', '$145,000'],
+          ['Holdback',    '9% of sales'],
+          ['Factor',      '1.16×'],
+          ['Total repaid','$145,000'],
         ].map(([l, v]) => (
           <div key={l} style={{ textAlign: 'center', padding: 14, borderRadius: 12, background: 'rgba(73,69,255,0.04)', border: `1px solid ${DELT.colors.lineSoft}` }}>
             <div style={{ fontFamily: DELT.font.mono, fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: DELT.colors.inkMute }}>{l}</div>
