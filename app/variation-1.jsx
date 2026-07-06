@@ -83,7 +83,7 @@ function V1Chrome({ page, navTo, accent, openApp }) {
         </nav>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           <a data-v1-desktop-nav onClick={() => navTo('login')} style={{ fontFamily: DELT.font.body, fontSize: 13.5, color: page === 'login' ? '#F7F5F0' : 'rgba(247,245,240,0.75)', cursor: 'pointer' }}>Login</a>
-          <Btn variant="indigo" size="sm" onClick={openApp} style={{ background: accent, borderColor: accent }}>Get Funded</Btn>
+          <Btn variant="ghost" size="sm" onClick={openApp} style={{ background: 'transparent', color: '#F7F5F0', borderColor: 'rgba(247,245,240,0.2)' }}>Get Funded</Btn>
           {/* Mobile hamburger — hidden on desktop via CSS, shown <= 768px */}
           <button
             data-v1-mobile-nav-toggle
@@ -240,12 +240,7 @@ function V1Hero({ accent, onApply }) {
           }}>
             <V1LineMask ready={mounted} delay={120}>You built the</V1LineMask>
             <V1LineMask ready={mounted} delay={230}>
-              <span style={{
-                // Delt indigo→cyan accent, no mint.
-                background: 'linear-gradient(90deg, #4945FF 0%, #7C6BFF 55%, #7DD3FC 100%)',
-                WebkitBackgroundClip: 'text', backgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-              }}>business.</span>
+              <span style={{ color: '#F7F5F0' }}>business.</span>
             </V1LineMask>
             <V1LineMask ready={mounted} delay={340}>
               We{' '}
@@ -270,14 +265,16 @@ function V1Hero({ accent, onApply }) {
                     background: `linear-gradient(90deg, ${accent}, #818CF8)`,
                     WebkitBackgroundClip: 'text', backgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
-                    paddingInlineEnd: '0.12em',
+                    // No trailing padding — the italic "l" already leans right,
+                    // and any extra inline-end space visually detaches "it.".
+                    paddingInlineEnd: 0,
                     opacity: i === fundIdx ? 1 : 0,
                     transform: i === fundIdx ? 'translateY(0)' : 'translateY(6px)',
                     transition: 'opacity 480ms cubic-bezier(0.22, 1, 0.36, 1), transform 480ms cubic-bezier(0.22, 1, 0.36, 1)',
                     whiteSpace: 'nowrap',
                   }}>{w}</span>
                 ))}
-              </em>{' '}it.
+              </em><span style={{ marginInlineStart: '0.12em' }}>it.</span>
             </V1LineMask>
           </h1>
 
@@ -286,7 +283,7 @@ function V1Hero({ accent, onApply }) {
             color: 'rgba(247,245,240,0.75)', margin: '32px 0 0', maxWidth: 520,
             ...enter(560),
           }}>
-            Revenue-based funding from <span style={{ color: '#F7F5F0', fontWeight: 500 }}>$5,000 to $500,000</span>, underwritten off your deposits — not your FICO, not your collateral, not a call center's script. Most offers are wired in <span style={{ color: '#F7F5F0', fontWeight: 500 }}>24 hours</span> with a <span style={{ color: '#F7F5F0', fontWeight: 500 }}>soft-pull only</span>.
+            Funding from <span style={{ color: '#F7F5F0', fontWeight: 500 }}>$5K–$500K</span>, underwritten off your deposits — not only FICO. Wired in <span style={{ color: '#F7F5F0', fontWeight: 500 }}>24 hours</span>.
           </p>
 
           <div style={{
