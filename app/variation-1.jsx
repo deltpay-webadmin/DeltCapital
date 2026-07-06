@@ -14,11 +14,20 @@ function V1Ticker({ accent }) {
     ['SILVER FORK', '$220K', '1.13×', 'WIRED'],
   ];
   const all = [...rows, ...rows];
+  // Status color map — tuned for the black ticker background. The global
+  // DELT.colors.ok/warn are calibrated for light paper and read muddy on #000,
+  // so we use brighter ticker-specific values instead. FUNDED/WIRED = green,
+  // APPRVD = amber, CLOSED = neutral gray.
+  const statusColor = (s) => {
+    if (s === 'FUNDED' || s === 'WIRED') return '#22C55E';
+    if (s === 'APPRVD') return '#F59E0B';
+    return '#8B8A94'; // CLOSED + anything else
+  };
   return (
-    <div data-v1-ticker data-v1-ticker-bar style={{ background: '#000', color: '#E9E7DF', padding: '6px 0', overflow: 'hidden', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+    <div data-v1-ticker data-v1-ticker-bar style={{ background: '#000', color: '#E9E7DF', padding: '10px 0 14px', overflow: 'hidden', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
       <div style={{
         display: 'flex', whiteSpace: 'nowrap',
-        animation: 'v1ticker 40s linear infinite', fontFamily: DELT.font.mono, fontSize: 11.5,
+        animation: 'v1ticker 48s linear infinite', fontFamily: DELT.font.mono, fontSize: 11.5,
       }}>
         {/* marginRight on every row (incl. last) so total width = 2× one copy
             exactly. translateX(-50%) then lines up pixel-perfect at loop. */}
@@ -27,7 +36,7 @@ function V1Ticker({ accent }) {
             <span style={{ color: 'rgba(233,231,223,0.5)' }}>{row[0]}</span>
             <span>{row[1]}</span>
             <span style={{ color: accent }}>{row[2]}</span>
-            <span style={{ color: DELT.colors.ok, fontSize: 10 }}>● {row[3]}</span>
+            <span style={{ color: statusColor(row[3]), fontSize: 10 }}>● {row[3]}</span>
           </span>
         ))}
       </div>
