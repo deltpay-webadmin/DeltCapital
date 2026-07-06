@@ -24,7 +24,7 @@ function V1Ticker({ accent }) {
     return '#8B8A94'; // CLOSED + anything else
   };
   return (
-    <div data-v1-ticker data-v1-ticker-bar style={{ background: '#000', color: '#E9E7DF', padding: '10px 0 14px', overflow: 'hidden', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+    <div data-v1-ticker data-v1-ticker-bar data-no-i18n style={{ background: '#000', color: '#E9E7DF', padding: '10px 0 14px', overflow: 'hidden', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
       <div style={{
         display: 'flex', whiteSpace: 'nowrap',
         animation: 'v1ticker 48s linear infinite', fontFamily: DELT.font.mono, fontSize: 11.5,
