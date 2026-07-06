@@ -419,71 +419,325 @@ function PlxMockTerminals_OLD() {
   );
 }
 
-// ---- New polished image-based mocks (Nano Banana Pro) ---------------------
+// ============================================================================
+// PREMIUM BENTO MOCKS — unified design language
+// ============================================================================
+// All product-surface mocks share:
+//   • White canvas, 18px radius, 1px hairline border, layered soft shadow
+//   • DELT.font.display for hero numbers (tabular-nums, tight tracking)
+//   • DELT.font.mono uppercase 10px/0.14em label style
+//   • Green status pill: bg rgba(15,169,104,0.10), text #0FA968
+//   • One indigo→softIndigo gradient accent per mock (never two competing)
+//
+// Card frame primitive — identical chrome across every product surface so the
+// section reads as one design system instead of five separate illustrations.
+function PlxSurface({ width = 300, children, style }) {
+  return (
+    <div style={{
+      width, maxWidth: '100%', borderRadius: 18, padding: 20,
+      background: '#FFFFFF',
+      border: '1px solid rgba(15,14,23,0.06)',
+      boxShadow: '0 24px 48px rgba(15,14,23,0.10), 0 2px 6px rgba(15,14,23,0.04)',
+      fontFamily: DELT.font.body,
+      ...style,
+    }}>{children}</div>
+  );
+}
+
+// Small helpers to keep type consistent across mocks.
+const PlxLabel = ({ children, color }) => (
+  <div style={{
+    fontFamily: DELT.font.mono, fontSize: 10, letterSpacing: '0.14em',
+    textTransform: 'uppercase', color: color || DELT.colors.inkMute,
+  }}>{children}</div>
+);
+
+const PlxPill = ({ children, tone = 'green' }) => {
+  const tones = {
+    green:  { bg: 'rgba(15,169,104,0.10)',  fg: '#0FA968' },
+    indigo: { bg: 'rgba(73,69,255,0.10)',   fg: DELT.colors.indigo },
+  };
+  const t = tones[tone];
+  return (
+    <span style={{
+      fontFamily: DELT.font.mono, fontSize: 9.5, letterSpacing: '0.14em',
+      textTransform: 'uppercase', color: t.fg, background: t.bg,
+      padding: '4px 9px', borderRadius: 999, fontWeight: 600,
+    }}>{children}</span>
+  );
+};
+
+// 1. Revenue-based funding — iPhone-frame with fully-designed Delt Capital
+//    offer UI. No JPG; everything is a coded surface so it stays razor-sharp
+//    on retina and can be tweaked without re-rendering an image.
 function PlxMockOffer() {
   return (
-    <img
-      src="app/assets/mocks/delt_mock_capital_phone.jpg"
-      alt="Delt Capital offer on phone"
-      style={{
-        width: 320, maxWidth: '100%', height: 'auto', objectFit: 'contain',
-        display: 'block', borderRadius: 20,
-        filter: 'drop-shadow(0 30px 60px rgba(15,14,23,0.18))',
-      }}
-    />
+    <div style={{
+      // Outer phone frame — 220×450 chosen so the mock's total height stays
+      // in line with the neighbor gauge card, keeping the top-row grid rows
+      // visually balanced instead of one card ballooning past the other.
+      width: 220, height: 450, borderRadius: 40, padding: 7,
+      background: 'linear-gradient(160deg, #1B1A24 0%, #0F0E17 60%, #1B1A24 100%)',
+      boxShadow: '0 40px 70px rgba(15,14,23,0.28), 0 6px 14px rgba(15,14,23,0.14), inset 0 0 0 1px rgba(255,255,255,0.06)',
+      position: 'relative',
+    }}>
+      {/* Side buttons — tiny detail that sells the "real device" read */}
+      <div style={{ position: 'absolute', left: -2, top: 98, width: 3, height: 26, borderRadius: 2, background: '#2A2933' }} />
+      <div style={{ position: 'absolute', left: -2, top: 138, width: 3, height: 48, borderRadius: 2, background: '#2A2933' }} />
+      <div style={{ position: 'absolute', left: -2, top: 195, width: 3, height: 48, borderRadius: 2, background: '#2A2933' }} />
+      <div style={{ position: 'absolute', right: -2, top: 158, width: 3, height: 72, borderRadius: 2, background: '#2A2933' }} />
+      {/* Screen */}
+      <div style={{
+        width: '100%', height: '100%', borderRadius: 33,
+        background: 'linear-gradient(180deg, #FAFAFB 0%, #F4F4F8 100%)',
+        overflow: 'hidden', position: 'relative',
+        display: 'flex', flexDirection: 'column',
+      }}>
+        {/* Dynamic Island */}
+        <div style={{
+          position: 'absolute', top: 9, left: '50%', transform: 'translateX(-50%)',
+          width: 76, height: 22, borderRadius: 999, background: '#0F0E17',
+        }} />
+        {/* Status bar */}
+        <div style={{
+          padding: '16px 22px 0', display: 'flex', justifyContent: 'space-between',
+          fontFamily: DELT.font.mono, fontSize: 9.5, fontWeight: 600, color: '#0F0E17',
+        }}>
+          <span>9:41</span>
+          <span style={{ display: 'inline-flex', gap: 4, alignItems: 'center' }}>
+            <svg width="14" height="9" viewBox="0 0 14 9"><path d="M0 8h2V6H0v2zm4 0h2V4H4v4zm4 0h2V2H8v6zm4 0h2V0h-2v8z" fill="#0F0E17"/></svg>
+            <svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5a6 6 0 0112 0M3 6a4 4 0 018 0M5 7a2 2 0 014 0" stroke="#0F0E17" strokeWidth="1.2" strokeLinecap="round"/></svg>
+            <span style={{ position: 'relative', display: 'inline-block', width: 20, height: 9 }}>
+              <span style={{ position: 'absolute', inset: 0, border: '1px solid #0F0E17', borderRadius: 2, opacity: 0.4 }} />
+              <span style={{ position: 'absolute', top: 1.5, left: 1.5, width: 14, height: 6, background: '#0F0E17', borderRadius: 1 }} />
+            </span>
+          </span>
+        </div>
+        {/* App header */}
+        <div style={{ padding: '44px 18px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span style={{
+            fontFamily: DELT.font.display, fontWeight: 700, fontSize: 13,
+            letterSpacing: '-0.02em',
+            background: `linear-gradient(90deg, ${DELT.colors.indigo}, ${PLX.softIndigo})`,
+            WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent',
+          }}>DELT</span>
+          <PlxPill tone="indigo">Offer</PlxPill>
+        </div>
+        {/* Ready-to-fund block */}
+        <div style={{ padding: '14px 18px 0' }}>
+          <PlxLabel>Ready to fund</PlxLabel>
+          <div style={{
+            fontFamily: DELT.font.display, fontSize: 36, fontWeight: 700,
+            color: DELT.colors.ink, letterSpacing: '-0.035em',
+            marginTop: 4, lineHeight: 1, fontVariantNumeric: 'tabular-nums',
+          }}>$95,000</div>
+        </div>
+        {/* Offer breakdown — 4 rows, tabular for clean alignment */}
+        <div style={{
+          margin: '14px 14px 0', padding: '10px 14px',
+          background: '#FFFFFF', borderRadius: 12,
+          border: '1px solid rgba(15,14,23,0.05)',
+          boxShadow: '0 1px 2px rgba(15,14,23,0.03)',
+          fontVariantNumeric: 'tabular-nums',
+        }}>
+          {[
+            ['Weekly',      '$1,240'],
+            ['Term',        '24 weeks'],
+            ['Factor',      '1.16×'],
+            ['Total repay', '$110,200'],
+          ].map((row, i, arr) => (
+            <div key={row[0]} style={{
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+              padding: '5px 0',
+              borderBottom: i < arr.length - 1 ? '1px solid rgba(15,14,23,0.04)' : 'none',
+              fontFamily: DELT.font.body, fontSize: 11,
+            }}>
+              <span style={{ color: DELT.colors.inkMute }}>{row[0]}</span>
+              <span style={{ color: DELT.colors.ink, fontWeight: 600 }}>{row[1]}</span>
+            </div>
+          ))}
+        </div>
+        {/* Progress + status */}
+        <div style={{ padding: '12px 18px 0' }}>
+          <div style={{
+            height: 5, borderRadius: 999, background: 'rgba(73,69,255,0.10)',
+            overflow: 'hidden',
+          }}>
+            <div style={{
+              width: '82%', height: '100%', borderRadius: 999,
+              background: `linear-gradient(90deg, ${DELT.colors.indigo}, ${PLX.softIndigo})`,
+            }} />
+          </div>
+          <div style={{
+            marginTop: 7, display: 'inline-flex', alignItems: 'center', gap: 5,
+            fontFamily: DELT.font.mono, fontSize: 9.5, color: '#0FA968',
+            fontWeight: 600, letterSpacing: '0.02em',
+          }}>
+            <span style={{ width: 5, height: 5, borderRadius: 999, background: '#0FA968' }} />
+            Approved · 24h to wire
+          </div>
+        </div>
+        {/* CTA */}
+        <div style={{ marginTop: 'auto', padding: '0 14px 16px' }}>
+          <div style={{
+            width: '100%', height: 40, borderRadius: 12,
+            background: `linear-gradient(90deg, ${DELT.colors.indigo}, ${PLX.softIndigo})`,
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+            fontFamily: DELT.font.body, fontSize: 12.5, fontWeight: 600, color: '#fff',
+            letterSpacing: '-0.005em',
+            boxShadow: '0 8px 18px rgba(73,69,255,0.30)',
+          }}>Accept offer →</div>
+          {/* Home indicator */}
+          <div style={{
+            width: 88, height: 4, borderRadius: 999, background: '#0F0E17',
+            opacity: 0.3, margin: '8px auto 0',
+          }} />
+        </div>
+      </div>
+    </div>
   );
 }
 
+// 2. Instant approvals — replaces the arbitrary "82" gauge with a coherent
+//    60-second countdown story: circular progress arc showing what actually
+//    happens during the soft-pull, with three timestamped checks below.
 function PlxMockApprovals() {
+  // Arc geometry — sweeps ~270° from 135° (bottom-left) to 45° (bottom-right).
+  const start = 135; const end = 405; const pct = 0.88; // 53s of 60s
+  const R = 68; const cx = 90; const cy = 90;
+  const rad = (a) => (a * Math.PI) / 180;
+  const arcPath = (a0, a1) => {
+    const x0 = cx + R * Math.cos(rad(a0));
+    const y0 = cy + R * Math.sin(rad(a0));
+    const x1 = cx + R * Math.cos(rad(a1));
+    const y1 = cy + R * Math.sin(rad(a1));
+    const large = a1 - a0 > 180 ? 1 : 0;
+    return `M ${x0} ${y0} A ${R} ${R} 0 ${large} 1 ${x1} ${y1}`;
+  };
+  const fillEnd = start + (end - start) * pct;
   return (
-    <img
-      src="app/assets/mocks/delt_mock_approval_gauge.jpg"
-      alt="Delt approval gauge, 82 approved"
-      style={{
-        width: 340, maxWidth: '100%', height: 'auto', objectFit: 'contain',
-        display: 'block', borderRadius: 20,
-      }}
-    />
+    <PlxSurface width={300}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+        <span style={{ fontFamily: DELT.font.display, fontWeight: 600, fontSize: 13, color: DELT.colors.indigo, letterSpacing: '-0.005em' }}>Approval · live</span>
+        <PlxPill tone="green">Soft pull</PlxPill>
+      </div>
+      {/* Ring + center timer */}
+      <div style={{ position: 'relative', width: 180, height: 180, margin: '4px auto 0' }}>
+        <svg viewBox="0 0 180 180" width="100%" height="100%">
+          <defs>
+            <linearGradient id="plxApprovalGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor={DELT.colors.indigo} />
+              <stop offset="100%" stopColor={PLX.softIndigo} />
+            </linearGradient>
+          </defs>
+          <path d={arcPath(start, end)} stroke="rgba(73,69,255,0.10)" strokeWidth="10" strokeLinecap="round" fill="none" />
+          <path d={arcPath(start, fillEnd)} stroke="url(#plxApprovalGrad)" strokeWidth="10" strokeLinecap="round" fill="none" />
+        </svg>
+        <div style={{
+          position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center',
+        }}>
+          <div style={{
+            fontFamily: DELT.font.display, fontSize: 40, fontWeight: 700,
+            color: DELT.colors.ink, letterSpacing: '-0.045em', lineHeight: 1,
+            fontVariantNumeric: 'tabular-nums',
+          }}>0:53</div>
+          <div style={{
+            marginTop: 6, fontFamily: DELT.font.mono, fontSize: 9.5,
+            letterSpacing: '0.14em', textTransform: 'uppercase', color: DELT.colors.inkMute,
+          }}>of 60 seconds</div>
+        </div>
+      </div>
+      {/* Live checklist */}
+      <div style={{ marginTop: 14, display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {[
+          ['Deposits verified',   '0:22'],
+          ['Ownership matched',   '0:38'],
+          ['Offer ranged',        '0:53'],
+        ].map((row) => (
+          <div key={row[0]} style={{
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            padding: '8px 12px', background: 'rgba(15,169,104,0.06)',
+            border: '1px solid rgba(15,169,104,0.15)', borderRadius: 10,
+            fontFamily: DELT.font.body, fontSize: 12,
+          }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, color: DELT.colors.ink }}>
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <circle cx="6" cy="6" r="5.5" fill="#0FA968" />
+                <path d="M3.5 6.2l1.7 1.7L8.7 4.3" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+              </svg>
+              {row[0]}
+            </span>
+            <span style={{
+              fontFamily: DELT.font.mono, fontSize: 11, color: '#0FA968', fontWeight: 600,
+              fontVariantNumeric: 'tabular-nums',
+            }}>{row[1]}</span>
+          </div>
+        ))}
+      </div>
+    </PlxSurface>
   );
 }
 
+// (Legacy) Commissions mock — unused since the "Agent portal" bento was
+// replaced with Lines-of-credit. Kept here for reference in case an
+// agent-only variant is spun up later.
 function PlxMockCommissions() {
+  const bars = [42, 55, 48, 68, 78, 92];
+  const max = 100;
   return (
-    <img
-      src="app/assets/mocks/delt_mock_agent_commissions.jpg"
-      alt="Delt commissions YTD dashboard"
-      style={{
-        width: 300, maxWidth: '100%', height: 'auto', objectFit: 'contain',
-        display: 'block', borderRadius: 14,
-        filter: 'drop-shadow(0 20px 40px rgba(73,69,255,0.15))',
-      }}
-    />
+    <PlxSurface width={280}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 14 }}>
+        <div>
+          <PlxLabel>Commissions · YTD</PlxLabel>
+          <div style={{ fontFamily: DELT.font.display, fontSize: 30, fontWeight: 700, color: DELT.colors.ink, letterSpacing: '-0.03em', margin: '4px 0 2px', fontVariantNumeric: 'tabular-nums' }}>$74,820</div>
+          <div style={{ fontFamily: DELT.font.mono, fontSize: 11, color: '#0FA968' }}>▲ 34% vs last year</div>
+        </div>
+        <PlxPill tone="indigo">100% residual</PlxPill>
+      </div>
+      <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, height: 84 }}>
+        {bars.map((v, i) => (
+          <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+            <div style={{
+              width: '100%', height: `${(v / max) * 100}%`, minHeight: 8, borderRadius: 6,
+              background: i === bars.length - 1
+                ? `linear-gradient(180deg, ${DELT.colors.indigo}, ${PLX.softIndigo})`
+                : 'rgba(73,69,255,0.20)',
+            }} />
+            <span style={{ fontFamily: DELT.font.mono, fontSize: 9, color: DELT.colors.inkMute }}>{['J','F','M','A','M','J'][i]}</span>
+          </div>
+        ))}
+      </div>
+    </PlxSurface>
   );
 }
 
-// Line-of-credit mock — a clean card showing available credit, a usage bar,
-// and today's cost of capital. Built entirely from HTML/CSS so it renders
-// crisp at any size and matches the light bento tint of the other cards.
+// 3. Line of credit — already the strongest mock in the section; small
+//    refinements to match the new shared surface primitive and add a subtle
+//    12-week draw sparkline so the card has one more micro-detail without
+//    getting noisy.
 function PlxMockLineOfCredit() {
   const limit = 250000;
   const drawn = 92500;
   const available = limit - drawn;
   const pct = (drawn / limit) * 100;
   const fmt = (n) => `$${n.toLocaleString('en-US')}`;
+  // Deterministic sparkline shape — 12 weekly draw touches ranging 0.15–0.90.
+  const spark = [0.20, 0.35, 0.28, 0.52, 0.44, 0.60, 0.55, 0.72, 0.68, 0.80, 0.75, 0.90];
+  const sparkW = 260; const sparkH = 24;
+  const points = spark.map((v, i) => {
+    const x = (i / (spark.length - 1)) * sparkW;
+    const y = sparkH - v * sparkH;
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ');
   return (
-    <div style={{
-      width: 300, maxWidth: '100%', borderRadius: 18, padding: 20,
-      background: '#FFFFFF',
-      border: '1px solid rgba(15,14,23,0.06)',
-      boxShadow: '0 20px 40px rgba(73,69,255,0.15), 0 2px 6px rgba(15,14,23,0.04)',
-      fontFamily: DELT.font.body,
-    }}>
+    <PlxSurface width={300}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
         <span style={{ fontFamily: DELT.font.display, fontWeight: 600, fontSize: 13, color: DELT.colors.indigo, letterSpacing: '-0.005em' }}>Delt Credit Line</span>
-        <span style={{ fontFamily: DELT.font.mono, fontSize: 9.5, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#0FA968', background: 'rgba(15,169,104,0.10)', padding: '4px 8px', borderRadius: 999 }}>Open</span>
+        <PlxPill tone="green">Open</PlxPill>
       </div>
-      <div style={{ fontFamily: DELT.font.mono, fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: DELT.colors.inkMute }}>Available to draw</div>
-      <div style={{ fontFamily: DELT.font.display, fontSize: 30, fontWeight: 600, color: DELT.colors.ink, letterSpacing: '-0.03em', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>{fmt(available)}</div>
+      <PlxLabel>Available to draw</PlxLabel>
+      <div style={{ fontFamily: DELT.font.display, fontSize: 32, fontWeight: 700, color: DELT.colors.ink, letterSpacing: '-0.035em', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>{fmt(available)}</div>
       <div style={{ marginTop: 14, height: 7, borderRadius: 999, background: 'rgba(73,69,255,0.10)', overflow: 'hidden' }}>
         <div style={{ width: `${pct}%`, height: '100%', borderRadius: 999, background: `linear-gradient(90deg, ${DELT.colors.indigo}, ${PLX.softIndigo})` }} />
       </div>
@@ -491,9 +745,27 @@ function PlxMockLineOfCredit() {
         <span>{fmt(drawn)} drawn</span>
         <span>{fmt(limit)} limit</span>
       </div>
+      {/* Sparkline — last 12 weeks of draw activity, indigo→cyan gradient */}
+      <div style={{ marginTop: 14 }}>
+        <div style={{
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+          marginBottom: 4,
+        }}>
+          <span style={{ fontFamily: DELT.font.mono, fontSize: 9.5, letterSpacing: '0.14em', textTransform: 'uppercase', color: DELT.colors.inkMute }}>Draws · 12wk</span>
+          <span style={{ fontFamily: DELT.font.mono, fontSize: 10, color: '#0FA968', fontWeight: 600 }}>▲ 22%</span>
+        </div>
+        <svg viewBox={`0 0 ${sparkW} ${sparkH}`} width="100%" height={sparkH} preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="plxLocSpark" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%"   stopColor={DELT.colors.indigo} />
+              <stop offset="100%" stopColor={PLX.softIndigo} />
+            </linearGradient>
+          </defs>
+          <polyline points={points} fill="none" stroke="url(#plxLocSpark)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </div>
       <div style={{
-        marginTop: 16, paddingTop: 14,
-        borderTop: '1px solid rgba(15,14,23,0.06)',
+        marginTop: 14, paddingTop: 14, borderTop: '1px solid rgba(15,14,23,0.06)',
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
       }}>
         <div>
@@ -502,50 +774,141 @@ function PlxMockLineOfCredit() {
         </div>
         <div style={{ textAlign: 'right' }}>
           <div style={{ fontFamily: DELT.font.mono, fontSize: 9.5, letterSpacing: '0.12em', textTransform: 'uppercase', color: DELT.colors.indigo }}>Your rate</div>
-          <div style={{ fontFamily: DELT.font.display, fontSize: 18, fontWeight: 700, color: DELT.colors.ink }}>Prime + 2.9%</div>
+          <div style={{ fontFamily: DELT.font.display, fontSize: 18, fontWeight: 700, color: DELT.colors.ink, fontVariantNumeric: 'tabular-nums' }}>Prime + 2.9%</div>
         </div>
       </div>
-    </div>
+    </PlxSurface>
   );
 }
 
+// 4. Merchant processing — rebuilt from scratch. The old floating-chip
+//    diagram carried no information. New mock is a rate-comparison stack:
+//    current processor rate vs Delt rate, with the monthly savings computed
+//    prominently in the same visual family as the credit-line card.
 function PlxMockProcessors() {
   return (
-    <img
-      src="app/assets/mocks/delt_mock_processors.jpg"
-      alt="Delt board across Paysafe, NMI, Global, Goat"
-      style={{
-        width: 300, maxWidth: '100%', height: 'auto', objectFit: 'contain',
-        display: 'block',
-      }}
-    />
+    <PlxSurface width={300}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+        <span style={{ fontFamily: DELT.font.display, fontWeight: 600, fontSize: 13, color: DELT.colors.indigo, letterSpacing: '-0.005em' }}>Rate comparison</span>
+        <PlxPill tone="green">Live quote</PlxPill>
+      </div>
+
+      {/* Current processor row */}
+      <div style={{
+        padding: '12px 14px', borderRadius: 12,
+        background: 'rgba(15,14,23,0.03)',
+        border: '1px solid rgba(15,14,23,0.05)',
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+      }}>
+        <div>
+          <div style={{ fontFamily: DELT.font.mono, fontSize: 9.5, letterSpacing: '0.12em', textTransform: 'uppercase', color: DELT.colors.inkMute }}>Current · Paysafe</div>
+          <div style={{ fontFamily: DELT.font.body, fontSize: 11, color: DELT.colors.inkMute, marginTop: 2 }}>Effective rate</div>
+        </div>
+        <div style={{
+          fontFamily: DELT.font.display, fontSize: 22, fontWeight: 600,
+          color: DELT.colors.inkMute, letterSpacing: '-0.02em',
+          textDecoration: 'line-through', textDecorationThickness: '1px',
+          fontVariantNumeric: 'tabular-nums',
+        }}>2.90%</div>
+      </div>
+
+      {/* Delt row — primary, gradient number */}
+      <div style={{
+        marginTop: 8, padding: '14px',
+        borderRadius: 12,
+        background: 'linear-gradient(135deg, rgba(73,69,255,0.08), rgba(124,107,255,0.05))',
+        border: '1px solid rgba(73,69,255,0.20)',
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+      }}>
+        <div>
+          <div style={{ fontFamily: DELT.font.mono, fontSize: 9.5, letterSpacing: '0.12em', textTransform: 'uppercase', color: DELT.colors.indigo, fontWeight: 600 }}>Delt · boarded</div>
+          <div style={{ fontFamily: DELT.font.body, fontSize: 11, color: DELT.colors.inkSoft, marginTop: 2 }}>Same terminals, next-day funds</div>
+        </div>
+        <div style={{
+          fontFamily: DELT.font.display, fontSize: 28, fontWeight: 700,
+          letterSpacing: '-0.03em',
+          background: `linear-gradient(90deg, ${DELT.colors.indigo}, ${PLX.softIndigo})`,
+          WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent',
+          fontVariantNumeric: 'tabular-nums',
+        }}>1.79%</div>
+      </div>
+
+      {/* Savings summary */}
+      <div style={{
+        marginTop: 14, paddingTop: 14, borderTop: '1px solid rgba(15,14,23,0.06)',
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+      }}>
+        <div>
+          <div style={{ fontFamily: DELT.font.mono, fontSize: 9.5, letterSpacing: '0.12em', textTransform: 'uppercase', color: DELT.colors.inkMute }}>You keep</div>
+          <div style={{ fontFamily: DELT.font.body, fontSize: 11, color: DELT.colors.inkMute, marginTop: 2 }}>on $100K/month volume</div>
+        </div>
+        <div style={{ display: 'inline-flex', alignItems: 'baseline', gap: 4 }}>
+          <span style={{ fontFamily: DELT.font.mono, fontSize: 12, color: '#0FA968', fontWeight: 700 }}>▲</span>
+          <span style={{
+            fontFamily: DELT.font.display, fontSize: 22, fontWeight: 700,
+            color: '#0FA968', letterSpacing: '-0.02em',
+            fontVariantNumeric: 'tabular-nums',
+          }}>$1,110</span>
+          <span style={{ fontFamily: DELT.font.mono, fontSize: 10.5, color: DELT.colors.inkMute, marginLeft: 2 }}>/mo</span>
+        </div>
+      </div>
+    </PlxSurface>
   );
 }
 
+// 5. Terminal financing — hero photograph (Nano Banana Pro editorial render:
+//    three POS terminals on a soft lavender studio background matching the
+//    #F5F1FF card tint). Below the image: a compact spec strip in the same
+//    mono-caps style used across the section, plus a small "Certified" chip
+//    to signal the terminals are pre-boarded and ready.
 function PlxMockTerminals() {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
+    <div style={{
+      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14,
+      width: '100%',
+    }}>
       <img
         src="app/assets/mocks/delt_mock_terminals.jpg"
-        alt="PAX A920, Verifone, Landi terminals"
+        alt="PAX A920, Verifone V400m, and Landi A8 payment terminals"
         style={{
           width: 320, maxWidth: '100%', height: 'auto', objectFit: 'contain',
           display: 'block',
+          filter: 'drop-shadow(0 12px 24px rgba(15,14,23,0.08))',
         }}
       />
-      {/* Caption row — replaces the old solid-purple pill CTA. The whole card
-          is already clickable via the arrow affordance, so this reads as a
-          spec line rather than a competing button. Tabular numerals keep
-          "$0" and "$25/mo" on the same optical baseline. */}
+      {/* Model labels row — small centered mono caps, three terminals aligned
+          under the photograph. Restores the brand-name signal that the old
+          baked-in labels tried to convey, but at legible size + in-brand type. */}
+      <div style={{
+        display: 'flex', justifyContent: 'space-between', width: 260, maxWidth: '80%',
+        fontFamily: DELT.font.mono, fontSize: 9.5, letterSpacing: '0.14em',
+        textTransform: 'uppercase', color: DELT.colors.inkMute, fontWeight: 500,
+      }}>
+        <span>PAX A920</span>
+        <span>Verifone V400m</span>
+        <span>Landi A8</span>
+      </div>
+      {/* Spec strip — same visual language as the other mocks. Two facts,
+          separated by a divider dot. "Certified" chip on the right signals
+          the whole line is pre-boarded / no compatibility risk. */}
       <div style={{
         display: 'inline-flex', alignItems: 'center', gap: 10,
+        marginTop: 2,
         fontFamily: DELT.font.mono, fontSize: 11, letterSpacing: '0.08em',
         textTransform: 'uppercase', color: DELT.colors.inkMute,
         fontVariantNumeric: 'tabular-nums',
       }}>
-        <span><span style={{ color: DELT.colors.ink, fontWeight: 600 }}>$0</span> down</span>
+        <span><span style={{ color: DELT.colors.ink, fontWeight: 700 }}>$0</span> down</span>
         <span style={{ opacity: 0.3 }}>•</span>
         <span>Own or lease</span>
+        <span style={{ opacity: 0.3 }}>•</span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, color: '#0FA968', fontWeight: 700 }}>
+          <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+            <circle cx="6" cy="6" r="5.5" fill="#0FA968" />
+            <path d="M3.5 6.2l1.7 1.7L8.7 4.3" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+          </svg>
+          Same-day board
+        </span>
       </div>
     </div>
   );
