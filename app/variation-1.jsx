@@ -198,9 +198,19 @@ function V1Hero({ accent, onApply }) {
   // Kept the parallax shift/scale variables so subtle scroll motion still
   // animates the image the same way the previous hero video did.
 
+  // Hero background tuning knobs — every visible layer is separate so we can
+  // dial it up/down independently. Change these to iterate.
+  const HERO_BG        = '#041E42';       // matches V1.ink and the CTA base
+  const HERO_LINE_OPAC = 0.14;            // Plaid-style waves — subtle
+  const HERO_LINE_COUNT = 42;             // dense horizontal flow like Plaid
+  const HERO_WASH_OPAC = 0.55;            // transparent, less bold Washington
+
   return (
     <section style={{
-      background: '#041E42',
+      // Same treatment as V1CTASection: solid ink base + two radial indigo
+      // blooms (top-right + bottom-left). The blooms are drawn as absolutely
+      // positioned divs below so opacity can animate on inView.
+      background: HERO_BG,
       color: '#F7F5F0',
       position: 'relative',
       overflow: 'hidden',
@@ -217,11 +227,68 @@ function V1Hero({ accent, onApply }) {
         }
       `}</style>
 
+      {/* Ambient indigo bloom — top-right. Mirrors V1CTASection. */}
+      <div aria-hidden style={{
+        position: 'absolute', top: -240, right: -200, width: 640, height: 640,
+        background: 'radial-gradient(circle, #4945FF22 0%, transparent 60%)',
+        filter: 'blur(24px)', pointerEvents: 'none',
+        opacity: mounted ? 1 : 0,
+        transition: 'opacity 1400ms ease-out 200ms',
+        zIndex: 0,
+      }} />
+      {/* Ambient soft-indigo bloom — bottom-left. Mirrors V1CTASection. */}
+      <div aria-hidden style={{
+        position: 'absolute', bottom: -280, left: -180, width: 520, height: 520,
+        background: 'radial-gradient(circle, #818CF81A 0%, transparent 60%)',
+        filter: 'blur(24px)', pointerEvents: 'none',
+        opacity: mounted ? 1 : 0,
+        transition: 'opacity 1400ms ease-out 400ms',
+        zIndex: 0,
+      }} />
+
+      {/* Plaid-style dense wavy line pattern. Each path is a wide, slowly
+         undulating horizontal curve; stacking many of them at slightly
+         different phases produces the flowing topographic look on
+         plaid.com. Stroke is a horizontal cyan→indigo→cyan gradient with
+         alpha-fade endpoints so the lines don't slam into the edges. */}
+      <svg aria-hidden viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" style={{
+        position: 'absolute', inset: 0, width: '100%', height: '100%',
+        opacity: HERO_LINE_OPAC, pointerEvents: 'none', zIndex: 1,
+      }}>
+        <defs>
+          <linearGradient id="v1heroLineStroke" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%"   stopColor="#60A5FA" stopOpacity="0" />
+            <stop offset="18%"  stopColor="#60A5FA" stopOpacity="1" />
+            <stop offset="50%"  stopColor="#22D3EE" stopOpacity="1" />
+            <stop offset="82%"  stopColor="#60A5FA" stopOpacity="1" />
+            <stop offset="100%" stopColor="#60A5FA" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        {Array.from({ length: HERO_LINE_COUNT }).map((_, i) => {
+          // Baseline y for each line, evenly spaced across the viewBox
+          const y = -20 + i * (940 / HERO_LINE_COUNT);
+          // Amplitude varies gently so the stack looks organic, not ruled
+          const amp = 34 + ((i * 7) % 5) * 6;
+          // Phase offset per line — small drift, keeps them roughly parallel
+          const p1 = -50 + ((i * 37) % 60);
+          const p2 = 60 + ((i * 53) % 90);
+          return (
+            <path
+              key={i}
+              d={`M -80 ${y} C 320 ${y - amp + p1}, 780 ${y + amp - p2}, 1180 ${y - amp * 0.7}, 1700 ${y + amp * 0.4}`}
+              fill="none"
+              stroke="url(#v1heroLineStroke)"
+              strokeWidth={0.9}
+            />
+          );
+        })}
+      </svg>
+
       <div data-v1-grid-2col style={{
         width: '100%',
         maxWidth: 1280, margin: '0 auto', padding: '76px 32px 0',
         display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48,
-        alignItems: 'center', position: 'relative', zIndex: 2,
+        alignItems: 'center', position: 'relative', zIndex: 3,
         minHeight: 680, flex: 1,
       }}>
         {/* Left: copy */}
@@ -323,10 +390,14 @@ function V1Hero({ accent, onApply }) {
           <div aria-hidden style={{
             position: 'absolute',
             inset: '10% 6%',
-            background: 'radial-gradient(60% 55% at 50% 45%, rgba(73,69,255,0.28) 0%, rgba(73,69,255,0.12) 40%, rgba(4,30,66,0) 72%)',
+            background: 'radial-gradient(60% 55% at 50% 45%, rgba(73,69,255,0.22) 0%, rgba(73,69,255,0.10) 40%, rgba(4,30,66,0) 72%)',
             filter: 'blur(6px)',
             pointerEvents: 'none',
           }} />
+          {/* Washington — transparent PNG kept as a single layer (no duotone
+             stack). Opacity + softened brightness/contrast make him read as
+             a subtle background presence rather than a bold foreground
+             character, matching the Plaid Franklin treatment. */}
           <img
             src="app/assets/washington.png"
             alt="George Washington, modernized — holding an iPhone with an AirPod in his ear"
@@ -338,10 +409,13 @@ function V1Hero({ accent, onApply }) {
               height: 'auto',
               objectFit: 'contain',
               display: 'block',
+              opacity: HERO_WASH_OPAC,
               transform: `translate3d(0, ${videoShift}px, 0) scale(${videoScale})`,
               transformOrigin: 'center center',
               willChange: 'transform',
-              filter: 'drop-shadow(0 24px 48px rgba(0,0,0,0.45))',
+              // Slight contrast/brightness lift keeps mid-tones legible at
+              // the reduced opacity without pushing highlights to pure white.
+              filter: 'contrast(0.92) brightness(1.02) drop-shadow(0 18px 36px rgba(0,0,0,0.35))',
             }}
           />
           {/* Left-edge fade so the subject melts into the copy column */}
