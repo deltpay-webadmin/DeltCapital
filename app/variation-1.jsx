@@ -265,10 +265,10 @@ function V1Hero({ accent, onApply }) {
 
   return (
     <section style={{
-      // Diagonal light-blue gradient — sky at top-left, mid indigo at
-      // center, deeper blue at bottom-right. Replaces the prior navy
-      // background and warm-cream bleed for a lighter, airier hero.
-      background: 'linear-gradient(135deg, #8FD0F0 0%, #4E8FDB 50%, #3B6FD4 100%)',
+      // Diagonal light-blue gradient — softer mid-tone stops so the hero
+      // reads lighter and airier. Sky at top-left, mid-blue at center,
+      // brand indigo at bottom-right.
+      background: 'linear-gradient(135deg, #A8D5F5 0%, #6FA8E3 50%, #4E8FDB 100%)',
       color: '#F7F5F0',
       position: 'relative',
       overflow: 'hidden',
@@ -391,50 +391,56 @@ function V1Hero({ accent, onApply }) {
           </div>
         </div>
 
-        {/* Right: George Washington — engraved on-bill treatment.
-           The transparent PNG sits inside a duotone stack:
-           1) desaturated grayscale base (base tones for engraving)
-           2) cyan→indigo blend layer (multiply) that colors the shadows
-           3) magenta stripe overlay across the eyes (Plaid's Franklin band)
-           4) soft screen highlight along the hair for a printed feel
-           The whole cluster bleeds below the section so Washington's coat
-           carries into the next section — no hard hero cut. */}
+        {/* Right: Washington — multi-hue gradient duotone.
+           The photorealistic PNG is masked with a 4-stop vertical linear
+           gradient (blue → violet → magenta → teal) applied via multiply,
+           so the subject picks up those hues from head → shoulders →
+           collar → bottom. Scaled up ~17% and pushed toward the top-right
+           so it bleeds off the section edges (which crop it via overflow:
+           hidden). A separate light phone-screen overlay sits above the
+           duotone layers so the offer copy renders in its native colors. */}
         <div data-v1-hero-media style={{
           position: 'relative',
           alignSelf: 'stretch',
           display: 'flex',
           alignItems: 'flex-end',
           justifyContent: 'center',
-          marginRight: -80,
-          marginLeft: -40,
-          marginTop: -80,
+          marginRight: -180,
+          marginLeft: -20,
+          marginTop: -180,
           marginBottom: -160,
           overflow: 'visible',
-          clipPath: mounted ? 'inset(-200px -200px -400px -200px)' : 'inset(-200px -200px -400px 100%)',
+          clipPath: mounted ? 'inset(-260px -260px -400px -200px)' : 'inset(-260px -260px -400px 100%)',
           transition: 'clip-path 1100ms cubic-bezier(0.76, 0, 0.24, 1) 160ms',
           willChange: mounted ? 'auto' : 'clip-path',
         }}>
-          {/* Ambient cyan glow behind the subject */}
+          {/* Ambient soft glow behind the subject — tuned to the new palette */}
           <div aria-hidden style={{
             position: 'absolute',
-            inset: '8% -6% 0 -6%',
-            background: 'radial-gradient(55% 55% at 50% 42%, rgba(34,211,238,0.30) 0%, rgba(96,165,250,0.16) 42%, rgba(4,30,66,0) 72%)',
-            filter: 'blur(10px)',
+            inset: '6% -8% 0 -8%',
+            background: 'radial-gradient(55% 55% at 50% 42%, rgba(123,79,216,0.28) 0%, rgba(43,79,199,0.14) 45%, rgba(43,79,199,0) 72%)',
+            filter: 'blur(14px)',
             pointerEvents: 'none',
           }} />
 
-          {/* Duotone engraved Washington — the stack of blended layers */}
+          {/* Multi-hue duotone Washington — 15-20% larger; bleeds off top + right */}
           <div style={{
             position: 'relative',
-            width: '112%',
-            maxWidth: 820,
+            width: '132%',
+            maxWidth: 980,
             marginBottom: 0,
-            transform: `translate3d(0, ${videoShift}px, 0) scale(${videoScale})`,
-            transformOrigin: 'center bottom',
+            // Multiply the parallax scale by 1.17 (~17% up-scale) and
+            // nudge the subject up-and-right so the top of the head and
+            // the right shoulder are lightly cropped by the section's
+            // overflow:hidden. transform-origin center-top keeps the
+            // scale-up growing outward from that upper reference point.
+            transform: `translate3d(3%, calc(${videoShift}px - 4%), 0) scale(${videoScale * 1.17})`,
+            transformOrigin: 'center top',
             willChange: 'transform',
             isolation: 'isolate',
           }}>
-            {/* Layer 1: base engraving — raise contrast, drop saturation */}
+            {/* Layer 1: base — desaturated + high contrast so the multiply
+                gradient shows through cleanly on the mids and shadows. */}
             <img
               src="app/assets/washington.png"
               alt="George Washington, modernized — holding an iPhone with an AirPod in his ear"
@@ -443,14 +449,17 @@ function V1Hero({ accent, onApply }) {
                 width: '100%',
                 height: 'auto',
                 display: 'block',
-                filter: 'grayscale(1) brightness(1.28) contrast(1.75)',
+                filter: 'grayscale(1) brightness(1.32) contrast(1.55)',
                 zIndex: 1,
               }}
             />
-            {/* Layer 2: cyan→indigo duotone via masked gradient (multiply) */}
+            {/* Layer 2: 4-stop vertical gradient duotone via masked multiply.
+                head=deep blue → shoulders=violet → collar=magenta → bottom=teal.
+                Stops map to the vertical anatomy of the source PNG:
+                head ~0–35%, shoulders ~35–55%, collar ~55–75%, hands/phone ~75–100%. */}
             <div aria-hidden style={{
               position: 'absolute', inset: 0,
-              background: 'linear-gradient(160deg, #22D3EE 0%, #0EA5E9 32%, #4945FF 78%, #312E81 100%)',
+              background: 'linear-gradient(180deg, #2B4FC7 0%, #2B4FC7 18%, #7B4FD8 42%, #C94FB8 66%, #4FD8C7 92%, #4FD8C7 100%)',
               mixBlendMode: 'multiply',
               WebkitMaskImage: 'url(app/assets/washington.png)',
               maskImage: 'url(app/assets/washington.png)',
@@ -461,10 +470,11 @@ function V1Hero({ accent, onApply }) {
               zIndex: 2,
               pointerEvents: 'none',
             }} />
-            {/* Layer 3: cyan highlight (screen) so the mid-tones read teal, not muddy */}
+            {/* Layer 3: subtle white highlight on the upper half so the
+                lit side of the head keeps luminance under the multiply. */}
             <div aria-hidden style={{
               position: 'absolute', inset: 0,
-              background: 'linear-gradient(180deg, rgba(103,232,249,0.55) 0%, rgba(34,211,238,0.28) 50%, rgba(4,30,66,0) 100%)',
+              background: 'linear-gradient(180deg, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0.10) 40%, rgba(255,255,255,0) 70%)',
               mixBlendMode: 'screen',
               WebkitMaskImage: 'url(app/assets/washington.png)',
               maskImage: 'url(app/assets/washington.png)',
@@ -475,49 +485,61 @@ function V1Hero({ accent, onApply }) {
               zIndex: 3,
               pointerEvents: 'none',
             }} />
-            {/* Layer 4: magenta band — the Plaid signature stripe across the face.
-                Uses a slight rotation and a linear-gradient with hard stops so
-                the band has crisp edges, then a small blur softens them. */}
-            <div aria-hidden className="v1hero-band" style={{
+
+            {/* Offer card — the source PNG shows the BACK of the phone, so
+                a literal on-screen overlay isn't physical. Instead we anchor
+                a light "offer" call-out card next to the phone, at a matching
+                tilt, styled as if the offer is being surfaced from the device. */}
+            <div aria-hidden style={{
               position: 'absolute',
-              left: '-6%', right: '-6%',
-              top: '46%', height: '9%',
-              background: 'linear-gradient(90deg, rgba(236,72,153,0) 0%, rgba(236,72,153,0.55) 12%, rgba(217,70,239,0.85) 30%, rgba(168,85,247,0.85) 55%, rgba(139,92,246,0.75) 78%, rgba(96,165,250,0) 100%)',
+              left: '11%', top: '62%', width: '15%', height: 'auto', aspectRatio: '5 / 4',
               transform: 'rotate(-8deg)',
-              filter: 'blur(1px) saturate(1.15)',
-              mixBlendMode: 'screen',
+              transformOrigin: 'center center',
+              background: '#EFF6FF',
+              borderRadius: 14,
+              boxShadow: '0 8px 28px rgba(20,30,60,0.28), 0 2px 6px rgba(20,30,60,0.18)',
+              border: '1px solid rgba(20,30,60,0.06)',
               zIndex: 4,
-              pointerEvents: 'none',
-              animation: 'v1heroBandShimmer 6s ease-in-out infinite',
-            }} />
-            {/* Layer 5: bill fibers — vertical hatching subtly overlaid to hint
-                at currency engraving. Rendered as a tiny SVG pattern that scales. */}
-            <svg aria-hidden viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice" style={{
-              position: 'absolute', inset: 0, width: '100%', height: '100%',
-              mixBlendMode: 'overlay', opacity: 0.35, zIndex: 5,
-              WebkitMaskImage: 'url(app/assets/washington.png)',
-              maskImage: 'url(app/assets/washington.png)',
-              WebkitMaskSize: '100% 100%',
-              maskSize: '100% 100%',
-              WebkitMaskRepeat: 'no-repeat',
-              maskRepeat: 'no-repeat',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 6,
+              padding: '14px 12px',
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
               pointerEvents: 'none',
             }}>
-              <defs>
-                <pattern id="v1heroHatch" x="0" y="0" width="3" height="3" patternUnits="userSpaceOnUse">
-                  <path d="M0 3 L3 0" stroke="rgba(255,255,255,0.65)" strokeWidth="0.4" />
-                </pattern>
-              </defs>
-              <rect x="0" y="0" width="400" height="400" fill="url(#v1heroHatch)" />
-            </svg>
+              <div style={{
+                fontFamily: DELT.font.body,
+                fontSize: 9,
+                fontWeight: 600,
+                letterSpacing: '0.18em',
+                textTransform: 'uppercase',
+                color: 'rgba(20,30,60,0.5)',
+              }}>Offer</div>
+              <div style={{
+                fontFamily: DELT.font.display,
+                fontSize: 22,
+                fontWeight: 600,
+                letterSpacing: '-0.035em',
+                color: '#141E3C',
+                fontVariantNumeric: 'tabular-nums',
+                lineHeight: 1,
+              }}>$95,000</div>
+              <div style={{
+                background: '#5B5BF0',
+                color: '#FFFFFF',
+                fontFamily: DELT.font.body,
+                fontSize: 10,
+                fontWeight: 600,
+                letterSpacing: '0.02em',
+                padding: '5px 12px',
+                borderRadius: 999,
+                whiteSpace: 'nowrap',
+              }}>Accept offer</div>
+            </div>
           </div>
-
-          {/* Left-edge fade so the subject melts into the copy column */}
-          <div style={{
-            position: 'absolute', left: 0, top: 0, bottom: 0, width: '28%',
-            background: 'linear-gradient(90deg, #041E42 0%, rgba(6,40,90,0.55) 35%, rgba(4,30,66,0) 100%)',
-            pointerEvents: 'none', zIndex: 6,
-          }} />
         </div>
       </div>
 
