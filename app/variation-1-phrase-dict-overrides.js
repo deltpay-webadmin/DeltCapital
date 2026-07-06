@@ -142,6 +142,99 @@
     'Mobile number': 'Número móvil',
     'I applied last Tuesday and haven\'t heard back on my offer — can you check the status?':
       'Solicité el martes pasado y no he tenido respuesta sobre mi oferta — ¿podría revisar el estado?',
+
+    // ── Wave 2b: bento hero + comparison + product-grid headline
+    // sections.jsx <h2>: "Why Delt beats" <br/> "the bank."
+    // Current dict gave "Por qué Delt es mejor / el banco" ("is better the bank").
+    // Correct: "Delt le gana al banco" ("Delt beats the bank").
+    'Why Delt beats': 'Delt le gana',
+    'the bank.': 'al banco.',
+
+    // plaid-sections.jsx <h2> (product grid): three-punch Brian-Tracy headline.
+    // Single text node, so one dict entry does it.
+    'Move now. Fund now. Grow now.': 'Actúe ya. Finánciese ya. Crezca ya.',
+    "Every day you wait is revenue you don't book. Capital wired in 24 hours — priced off your deposits, not your paperwork.":
+      'Cada día que espera son ingresos que no factura. Capital transferido en 24 horas — evaluado por sus depósitos, no por su papeleo.',
+
+    // Comparison intro paragraph (single text node)
+    'Ten differences that show up the day you actually need capital — speed, paperwork, collateral, and how you pay it back. Delt terms; typical bank terms.':
+      'Diez diferencias que aparecen el día que realmente necesita capital — velocidad, papeleo, garantías y cómo lo devuelve. Condiciones de Delt; condiciones típicas de un banco.',
+
+    // Header subtitle above bank column
+    'Typical terms': 'Condiciones típicas',
+
+    // ── Comparison row labels (metric names)
+    'Application process': 'Proceso de solicitud',
+    'Max funding': 'Financiamiento máximo',
+    'Funding term': 'Plazo de financiamiento',
+    'Application requirements': 'Requisitos de solicitud',
+    'Funding speed': 'Velocidad de financiamiento',
+    'Repayment terms': 'Condiciones de pago',
+    'Collateral': 'Garantía',
+    'Use of funds': 'Uso de los fondos',
+    'Cost of capital': 'Costo del capital',
+    'Prepayment ability': 'Prepago',
+
+    // ── Comparison row values — Delt column
+    'Apply in 5 minutes. Decision in 24–48 hours.':
+      'Solicite en 5 minutos. Decisión en 24–48 horas.',
+    '$10,000 – $500,000': '$10,000 – $500,000',
+    'Flexible, up to 18 months.': 'Flexible, hasta 18 meses.',
+    '3–4 months of bank statements.': '3–4 meses de estados de cuenta.',
+    'Next-day funding after approval.': 'Financiamiento al día siguiente de la aprobación.',
+    'Flexible — a percentage of daily sales.': 'Flexible — un porcentaje de las ventas diarias.',
+    'Not required.': 'No se requiere.',
+    'No restrictions.': 'Sin restricciones.',
+    'Factor rate; typically 0.18×–0.35× of the funded amount.':
+      'Tasa factor; normalmente 0.18×–0.35× del monto financiado.',
+    'Prepayment incentives; no penalties to prepay.':
+      'Incentivos por prepago; sin penalidades por pagar antes.',
+
+    // ── Comparison row values — Bank column
+    'Detailed financial review; weeks of back-and-forth.':
+      'Revisión financiera detallada; semanas de idas y venidas.',
+    'Varies; depends on collateral and profile.':
+      'Varía; depende de la garantía y el perfil.',
+    'Bank-set; little room to negotiate.':
+      'Fijado por el banco; poco margen para negociar.',
+    'Bank statements + P&L / balance sheet + tax returns + projections.':
+      'Estados de cuenta + estado de resultados / balance + declaraciones de impuestos + proyecciones.',
+    'Several days to weeks after approval.':
+      'Varios días a semanas después de la aprobación.',
+    'Fixed monthly payments regardless of revenue.':
+      'Pagos mensuales fijos sin importar los ingresos.',
+    'Often required; secured by business or personal assets.':
+      'Suele requerirse; garantizado con activos del negocio o personales.',
+    'Restricted to specific approved uses.':
+      'Restringido a usos específicos aprobados.',
+    'Lower interest rates; total cost lower for qualified borrowers.':
+      'Tasas de interés más bajas; costo total menor para prestatarios calificados.',
+    'Often prepayment fees and penalties.':
+      'A menudo con comisiones y penalidades por prepago.',
+
+    // ── Win pills (right side of each Delt row)
+    'minutes, not weeks': 'minutos, no semanas',
+    'clear ceiling': 'techo claro',
+    'you set the pace': 'usted marca el ritmo',
+    'no file box': 'sin caja de archivos',
+    'days, not weeks': 'días, no semanas',
+    'slows when you do': 'baja cuando usted baja',
+    'no lien on your life': 'sin gravamen sobre su vida',
+    'spend as you see fit': 'gástelo como quiera',
+    'priced for speed': 'precio por rapidez',
+    'pay early, save': 'pague antes, ahorre',
+
+    // ── Bottom result strip
+    'Median time to funds': 'Tiempo mediano a los fondos',
+    'vs weeks at a bank': 'vs. semanas en un banco',
+    'per draw, revenue-based': 'por disposición, según ingresos',
+    'Paperwork required': 'Papeleo requerido',
+    'Plaid replaces the file box': 'Plaid reemplaza la caja de archivos',
+
+    // Header cells
+    'Metric': 'Métrica',
+    'Traditional bank': 'Banco tradicional',
+    'MCA · direct funder': 'MCA · financiador directo',
   };
 
   for (const k in overrides) {

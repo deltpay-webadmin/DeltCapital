@@ -211,12 +211,12 @@ function V1Hero({ accent, onApply }) {
   return (
     <section style={{
       // Delt indigo gradient: violet/cyan glows over a deep navy → indigo
-      // base. The colors echo the tones in the Washington duotone so the
-      // portrait dissolves into the background instead of sitting on top.
+      // base. Washington cutout floats on the right; elegant swept curves
+      // fill the left half. No more baked-in ripple pattern.
       backgroundColor: '#041E42',
-      backgroundImage: 'url(app/assets/washington-plaid.jpg)',
+      backgroundImage: 'radial-gradient(120% 100% at 100% 50%, rgba(31,169,230,0.28) 0%, rgba(31,108,184,0.18) 30%, rgba(18,58,130,0.10) 55%, transparent 80%), linear-gradient(180deg, #04193A 0%, #041E42 55%, #052047 100%)',
       backgroundSize: 'cover',
-      backgroundPosition: 'center right',
+      backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
       color: '#F7F5F0',
       position: 'relative',
@@ -233,6 +233,47 @@ function V1Hero({ accent, onApply }) {
           .v1hero-pulse, .v1hero-bob { animation: none !important; }
         }
       `}</style>
+
+      {/* Elegant sweeping curves — same family as the footer's topography lines.
+          Delicate cyan Bezier arcs fanning from the upper-left corner across
+          the copy area. Sits behind everything (zIndex 1); Washington cutout
+          is above at zIndex 2. */}
+      <svg aria-hidden viewBox="0 0 1200 1000" preserveAspectRatio="none"
+        style={{
+          position: 'absolute', left: -80, top: -80, width: 1300, height: 1080,
+          opacity: 0.85, pointerEvents: 'none', zIndex: 1,
+          mixBlendMode: 'screen',
+        }}>
+        {Array.from({ length: 42 }, (_, i) => (
+          <path key={i}
+            d={`M ${-40 + i * 6} 0 Q ${260 + i * 12} ${180 + i * 8}, ${180 + i * 10} ${520 - i * 4} T ${-20 + i * 4} 1000`}
+            fill="none" stroke="rgba(125,211,252,0.55)" strokeWidth="0.55" />
+        ))}
+      </svg>
+
+      {/* Washington cutout — transparent PNG, absolutely positioned on the right.
+          Bleeds off the right edge so it reads like a portrait floating in space.
+          On narrow viewports we push it further off-screen and dim it so the
+          copy stays readable (media query in <style> below). */}
+      <style>{`
+        .v1hero-washington { position: absolute; right: -4%; bottom: 0; height: 96%; max-height: 820px; width: auto; z-index: 2; pointer-events: none;
+          filter: drop-shadow(0 20px 60px rgba(4,15,40,0.55)); transform-origin: right bottom; transition: transform 40ms linear; }
+        @media (max-width: 900px) {
+          .v1hero-washington { right: -35%; height: 70%; max-height: 520px; opacity: 0.35; }
+        }
+        @media (max-width: 560px) {
+          .v1hero-washington { right: -50%; height: 60%; opacity: 0.22; }
+        }
+      `}</style>
+      <img
+        className="v1hero-washington"
+        src="app/assets/washington-cutout.png"
+        alt=""
+        aria-hidden
+        style={{
+          transform: `translate3d(0, ${videoShift}px, 0) scale(${videoScale})`,
+        }}
+      />
 
       <div data-v1-grid-2col style={{
         width: '100%',

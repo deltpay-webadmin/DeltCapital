@@ -939,11 +939,11 @@ function V1ProductGrid() {
             margin: 0, fontFamily: DELT.font.display, fontWeight: 600,
             fontSize: mobile ? 34 : 72, letterSpacing: '-0.03em',
             lineHeight: 1.0, color: DELT.colors.ink, maxWidth: 820,
-          }}>Built for every operator, every stage.</h2>
+          }}>Move now. Fund now. Grow now.</h2>
           <p style={{
             margin: '20px 0 0', fontFamily: DELT.font.body, fontSize: mobile ? 16 : 18,
             lineHeight: 1.55, color: DELT.colors.inkSoft, maxWidth: 560,
-          }}>Capital that adapts to your revenue — not your paperwork.</p>
+          }}>Every day you wait is revenue you don't book. Capital wired in 24 hours — priced off your deposits, not your paperwork.</p>
           <div style={{ marginTop: 24 }}>
             <a href="#how" style={{
               display: 'inline-flex', alignItems: 'center', gap: 7,

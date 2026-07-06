@@ -68,11 +68,16 @@ function V1CompareSection() {
   // Rich per-row data — each row has a numeric delta we can visualize
   // deltStrength = 0..1 (how much Delt wins on this metric)
   const rows = [
-    { k: 'Speed to funds', delt: '24–48 hours',     bank: '4–8 weeks',                                                          win: 'weeks faster',       tone: 'pos',     strength: 0.98 },
-    { k: 'Total cost',     delt: '1.18× factor rate', bank: '11–15% APR + guarantee fee + origination',                          win: 'flat, no APR',       tone: 'neutral', strength: 0.75 },
-    { k: 'Paperwork',      delt: 'Plaid link + 1-page app', bank: '3 mo statements + P&L + tax returns + business plan + PFS',  win: 'minutes, not days',  tone: 'pos',     strength: 0.92 },
-    { k: 'Repayment',      delt: '% of daily sales', bank: 'Fixed monthly payment regardless of revenue',                        win: 'slows when you do',  tone: 'pos',     strength: 0.95 },
-    { k: 'Qualification',  delt: 'Revenue-based',   bank: '700+ credit score + 2 yrs financials + collateral appraisal + real estate lien', win: 'cash flow, not credit', tone: 'pos', strength: 1.00 },
+    { k: 'Application process',     delt: 'Apply in 5 minutes. Decision in 24–48 hours.',           bank: 'Detailed financial review; weeks of back-and-forth.',                       win: 'minutes, not weeks',   tone: 'pos',     strength: 0.98 },
+    { k: 'Max funding',             delt: '$10,000 – $500,000',                                       bank: 'Varies; depends on collateral and profile.',                                win: 'clear ceiling',        tone: 'pos',     strength: 0.85 },
+    { k: 'Funding term',            delt: 'Flexible, up to 18 months.',                              bank: 'Bank-set; little room to negotiate.',                                        win: 'you set the pace',     tone: 'pos',     strength: 0.80 },
+    { k: 'Application requirements', delt: '3–4 months of bank statements.',                          bank: 'Bank statements + P&L / balance sheet + tax returns + projections.',        win: 'no file box',          tone: 'pos',     strength: 0.92 },
+    { k: 'Funding speed',           delt: 'Next-day funding after approval.',                        bank: 'Several days to weeks after approval.',                                     win: 'days, not weeks',      tone: 'pos',     strength: 0.97 },
+    { k: 'Repayment terms',         delt: 'Flexible — a percentage of daily sales.',                 bank: 'Fixed monthly payments regardless of revenue.',                             win: 'slows when you do',    tone: 'pos',     strength: 0.95 },
+    { k: 'Collateral',              delt: 'Not required.',                                            bank: 'Often required; secured by business or personal assets.',                    win: 'no lien on your life', tone: 'pos',     strength: 1.00 },
+    { k: 'Use of funds',            delt: 'No restrictions.',                                         bank: 'Restricted to specific approved uses.',                                     win: 'spend as you see fit', tone: 'pos',     strength: 1.00 },
+    { k: 'Cost of capital',         delt: 'Factor rate; typically 0.18×–0.35× of the funded amount.', bank: 'Lower interest rates; total cost lower for qualified borrowers.',           win: 'priced for speed',     tone: 'neutral', strength: 0.55 },
+    { k: 'Prepayment ability',      delt: 'Prepayment incentives; no penalties to prepay.',           bank: 'Often prepayment fees and penalties.',                                       win: 'pay early, save',      tone: 'pos',     strength: 0.90 },
   ];
 
   return (
@@ -90,8 +95,8 @@ function V1CompareSection() {
             fontFamily: V1.fontBody, fontSize: 16.5, lineHeight: 1.6, color: V1.text,
             margin: 0, maxWidth: 460, justifySelf: 'end',
           }}>
-            Every row is a median across the last 12 months of Delt fundings, measured
-            against publicly-reported bank SBA 7(a) averages. Updated quarterly.
+            Ten differences that show up the day you actually need capital — speed,
+            paperwork, collateral, and how you pay it back. Delt terms; typical bank terms.
           </p>
         </div>
 
@@ -146,7 +151,7 @@ function V1CompareSection() {
                   Traditional bank
                 </div>
                 <div style={{ fontFamily: V1.fontMono, fontSize: 10.5, color: V1.muted, opacity: 0.7, marginTop: 2, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-                  SBA 7(a) worst-case
+                  Typical terms
                 </div>
               </div>
             </div>
@@ -185,8 +190,8 @@ function V1CompareSection() {
         {/* Result strip below */}
         <div data-v1-grid-3col data-v1-weeks-faster style={{ marginTop: 24, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
           {[
-            { label: 'Median time to funds',     value: '24 h',   sub: 'vs 2–6 weeks at a bank' },
-            { label: 'Avg savings vs SBA',       value: '19%',    sub: 'on total cost of capital' },
+            { label: 'Median time to funds',     value: '24 h',   sub: 'vs weeks at a bank' },
+            { label: 'Max funding',              value: '$500K',  sub: 'per draw, revenue-based' },
             { label: 'Paperwork required',       value: '0',      sub: 'Plaid replaces the file box' },
           ].map((s, i) => (
             <div key={i} style={{
