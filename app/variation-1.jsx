@@ -46,14 +46,16 @@ function V1Ticker({ accent }) {
 }
 
 function V1Chrome({ page, navTo, accent, openApp }) {
+  // Subscribe to language changes so nav labels re-render on toggle.
+  useLang();
   const links = [
-    { k: 'how',         l: 'How It Works' },
-    { k: 'calc',        l: 'Calculator' },
-    { k: 'processing',  l: 'Processing' },
-    { k: 'about',       l: 'About' },
-    { k: 'reviews',     l: 'Operators' },
-    { k: 'faq',         l: 'FAQ' },
-    { k: 'talk',        l: 'Contact' },
+    { k: 'how',         l: t('nav.how') },
+    { k: 'calc',        l: t('nav.calc') },
+    { k: 'processing',  l: t('nav.processing') },
+    { k: 'about',       l: t('nav.about') },
+    { k: 'reviews',     l: t('nav.reviews') },
+    { k: 'faq',         l: t('nav.faq') },
+    { k: 'talk',        l: t('nav.contact') },
   ];
   const [menuOpen, setMenuOpen] = React.useState(false);
   const handleNav = (k) => { setMenuOpen(false); navTo(k); };
@@ -91,8 +93,9 @@ function V1Chrome({ page, navTo, accent, openApp }) {
           ))}
         </nav>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-          <a data-v1-desktop-nav onClick={() => navTo('login')} style={{ fontFamily: DELT.font.body, fontSize: 13.5, color: page === 'login' ? '#F7F5F0' : 'rgba(247,245,240,0.75)', cursor: 'pointer' }}>Login</a>
-          <Btn variant="ghost" size="sm" onClick={openApp} style={{ background: 'transparent', color: '#F7F5F0', borderColor: 'rgba(247,245,240,0.2)' }}>Get Funded</Btn>
+          <a data-v1-desktop-nav onClick={() => navTo('login')} style={{ fontFamily: DELT.font.body, fontSize: 13.5, color: page === 'login' ? '#F7F5F0' : 'rgba(247,245,240,0.75)', cursor: 'pointer' }}>{t('nav.login')}</a>
+          <V1LangToggle compact />
+          <Btn variant="ghost" size="sm" onClick={openApp} style={{ background: 'transparent', color: '#F7F5F0', borderColor: 'rgba(247,245,240,0.2)' }}>{t('cta.getFunded')}</Btn>
           {/* Mobile hamburger — hidden on desktop via CSS, shown <= 768px */}
           <button
             data-v1-mobile-nav-toggle
@@ -160,10 +163,11 @@ function V1Chrome({ page, navTo, accent, openApp }) {
           color: page === 'login' ? '#F7F5F0' : 'rgba(247,245,240,0.78)',
           cursor: 'pointer', padding: '12px 4px',
           borderBottom: '1px solid rgba(247,245,240,0.08)',
-        }}>Login</a>
+        }}>{t('nav.login')}</a>
       </nav>
-      <div style={{ marginTop: 'auto', paddingTop: 24 }}>
-        <Btn variant="indigo" size="lg" onClick={() => { setMenuOpen(false); openApp(); }} style={{ background: accent, borderColor: accent, width: '100%' }}>Get Funded</Btn>
+      <div style={{ marginTop: 'auto', paddingTop: 24, display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'center' }}>
+        <V1LangToggle />
+        <Btn variant="indigo" size="lg" onClick={() => { setMenuOpen(false); openApp(); }} style={{ background: accent, borderColor: accent, width: '100%' }}>{t('cta.getFunded')}</Btn>
       </div>
     </div>
     </>
@@ -182,6 +186,8 @@ V1Chrome.brand = (
 function V1Hero({ accent, onApply }) {
   const mounted = useV1Mounted(80);
   const scrollY = useV1ScrollY();
+  // Subscribe to language changes so the hero copy swaps on toggle.
+  useLang();
   // Parallax: only active while the hero is on screen (roughly first 900px).
   const py = Math.min(scrollY, 900);
   const videoShift = -py * 0.12;
@@ -192,16 +198,11 @@ function V1Hero({ accent, onApply }) {
     transition: `opacity 820ms cubic-bezier(0.22, 1, 0.36, 1) ${base}ms, transform 820ms cubic-bezier(0.22, 1, 0.36, 1) ${base}ms`,
   });
 
-  // Rotating verb that swaps every 1.9s. Words are stacked in a single
-  // inline-grid cell so the <em> auto-sizes to the widest child — keeps the
-  // trailing "it." anchored regardless of which word is showing.
-  const fundWords = ['fund', 'back', 'wire', 'fuel'];
-  const [fundIdx, setFundIdx] = React.useState(0);
-  React.useEffect(() => {
-    if (!mounted) return undefined;
-    const iv = setInterval(() => setFundIdx((i) => (i + 1) % fundWords.length), 1900);
-    return () => clearInterval(iv);
-  }, [mounted]);
+  // Hero verb is a static "fund" — rotator was removed per stakeholder
+  // request so the headline reads as a definitive statement, not a demo.
+  // paddingBlockEnd on the inline container adds room for the italic
+  // descender ("d" in Source Serif Pro Italic sits below the baseline)
+  // so line-height:0.95 on the h1 no longer clips it.
 
   // Hero graphic — static George Washington cutout (transparent PNG).
   // Kept the parallax shift/scale variables so subtle scroll motion still
@@ -247,43 +248,30 @@ function V1Hero({ accent, onApply }) {
             letterSpacing: '-0.045em', color: '#F7F5F0', lineHeight: 0.95,
             margin: 0,
           }}>
-            <V1LineMask ready={mounted} delay={120}>You built the</V1LineMask>
+            <V1LineMask ready={mounted} delay={120}>{t('hero.line1')}</V1LineMask>
             <V1LineMask ready={mounted} delay={230}>
-              <span style={{ color: '#F7F5F0' }}>business.</span>
+              <span style={{ color: '#F7F5F0' }}>{t('hero.line2')}</span>
             </V1LineMask>
             <V1LineMask ready={mounted} delay={340}>
-              We{' '}
+              {t('hero.line3.we')}{' '}
               <em style={{
                 // Manrope/Codec Pro have no italic; switch to Source Serif Pro
                 // Italic to match the prior "yourself." treatment.
                 fontFamily: '"Source Serif Pro", Georgia, serif',
                 fontStyle: 'italic',
                 fontWeight: 400,
-                display: 'inline-grid',
-                gridTemplateAreas: '"stack"',
                 verticalAlign: 'baseline',
                 whiteSpace: 'nowrap',
-              }}>
-                {fundWords.map((w, i) => (
-                  <span key={w} style={{
-                    gridArea: 'stack',
-                    // Gradient must live on the span that holds the text —
-                    // background-clip:text on the <em> parent doesn't reach
-                    // child spans, which would render transparent.
-                    color: accent,
-                    background: `linear-gradient(90deg, ${accent}, #818CF8)`,
-                    WebkitBackgroundClip: 'text', backgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    // No trailing padding — the italic "l" already leans right,
-                    // and any extra inline-end space visually detaches "it.".
-                    paddingInlineEnd: 0,
-                    opacity: i === fundIdx ? 1 : 0,
-                    transform: i === fundIdx ? 'translateY(0)' : 'translateY(6px)',
-                    transition: 'opacity 480ms cubic-bezier(0.22, 1, 0.36, 1), transform 480ms cubic-bezier(0.22, 1, 0.36, 1)',
-                    whiteSpace: 'nowrap',
-                  }}>{w}</span>
-                ))}
-              </em><span style={{ marginInlineStart: '0.12em' }}>it.</span>
+                // Gradient fill on the span itself (background-clip:text
+                // works fine here since there's no child wrapper).
+                background: `linear-gradient(90deg, ${accent}, #818CF8)`,
+                WebkitBackgroundClip: 'text', backgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                // Give the italic "d" descender breathing room so line-height
+                // 0.95 on the h1 doesn't clip it.
+                paddingBlockEnd: '0.12em',
+                display: 'inline-block',
+              }}>{t('hero.line3.fund')}</em><span style={{ marginInlineStart: '0.08em' }}>{t('hero.line3.it')}</span>
             </V1LineMask>
           </h1>
 
@@ -292,15 +280,15 @@ function V1Hero({ accent, onApply }) {
             color: 'rgba(247,245,240,0.75)', margin: '32px 0 0', maxWidth: 520,
             ...enter(560),
           }}>
-            Funding from <span style={{ color: '#F7F5F0', fontWeight: 500 }}>$5K–$500K</span>, underwritten off your deposits — not only FICO. Wired in <span style={{ color: '#F7F5F0', fontWeight: 500 }}>24 hours</span>.
+            {t('hero.subhead.a')}<span style={{ color: '#F7F5F0', fontWeight: 500 }}>$5K–$500K</span>{t('hero.subhead.b')}<span style={{ color: '#F7F5F0', fontWeight: 500 }}>{t('hero.24h')}</span>{t('hero.subhead.c')}
           </p>
 
           <div style={{
             display: 'flex', gap: 12, marginTop: 36, alignItems: 'center', flexWrap: 'wrap',
             ...enter(700),
           }}>
-            <Btn variant="indigo" size="lg" onClick={onApply} style={{ background: accent, borderColor: accent }}>Get Funded <Arr /></Btn>
-            <Btn variant="ghost" size="lg" style={{ background: 'transparent', color: '#F7F5F0', borderColor: 'rgba(247,245,240,0.2)' }}>See how pricing works</Btn>
+            <Btn variant="indigo" size="lg" onClick={onApply} style={{ background: accent, borderColor: accent }}>{t('cta.getFunded')} <Arr /></Btn>
+            <Btn variant="ghost" size="lg" style={{ background: 'transparent', color: '#F7F5F0', borderColor: 'rgba(247,245,240,0.2)' }}>{t('cta.seePricing')}</Btn>
           </div>
 
           <div data-v1-hero-substats style={{
@@ -309,9 +297,9 @@ function V1Hero({ accent, onApply }) {
             display: 'flex', gap: 36, flexWrap: 'wrap',
           }}>
             {[
-              ['Funding range', '$5K–$500K', 'per draw'],
-              ['Time to funds', '24h', 'typical'],
-              ['Credit pull', 'Soft', 'only'],
+              [t('hero.stat.range'),  '$5K–$500K',        t('hero.stat.range.sub')],
+              [t('hero.stat.time'),   '24h',              t('hero.stat.time.sub')],
+              [t('hero.stat.credit'), t('hero.stat.credit.v'), t('hero.stat.credit.sub')],
             ].map(([l, v, s], i) => (
               <div key={l} style={enter(820 + i * 90)}>
                 <div style={{ fontFamily: DELT.font.body, fontSize: 10.5, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(247,245,240,0.45)' }}>{l}</div>

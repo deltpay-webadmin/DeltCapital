@@ -353,11 +353,32 @@ function FAQSection({ accent = DELT.colors.indigo }) {
 }
 
 function FooterBlock({ accent = DELT.colors.indigo, brand, onNav }) {
-  const linkKeyMap = { 'Blog': 'blog', 'FAQ': 'faq', 'About': 'about', 'How it works': 'how', 'Calculator': 'calc', 'Processing': 'processing', 'Reviews': 'reviews', 'Support': 'support', 'Contact': 'support', 'Terms of Use': 'terms', 'Privacy Policy': 'privacy', 'Communications': 'eca' };
-  const handle = (label) => (e) => {
-    const k = linkKeyMap[label];
+  // Re-render on language change so labels swap.
+  useLang();
+  const handle = (k) => (e) => {
     if (k && onNav) { e.preventDefault(); onNav(k); }
   };
+  const columns = [
+    { h: t('foot.col.product'), links: [
+      { k: 'calc',       l: t('foot.link.calc') },
+      { k: 'how',        l: t('foot.link.how') },
+      { k: 'processing', l: t('foot.link.proc') },
+    ]},
+    { h: t('foot.col.company'), links: [
+      { k: 'about',   l: t('foot.link.about') },
+      { k: 'reviews', l: t('foot.link.reviews') },
+    ]},
+    { h: t('foot.col.res'), links: [
+      { k: 'faq',     l: t('foot.link.faq') },
+      { k: 'blog',    l: t('foot.link.blog') },
+      { k: 'support', l: t('foot.link.support') },
+    ]},
+  ];
+  const legalLinks = [
+    { k: 'terms',   l: t('foot.terms') },
+    { k: 'privacy', l: t('foot.privacy') },
+    { k: 'eca',     l: t('foot.eca') },
+  ];
   return (
     <footer style={{ background: DELT.colors.ink, color: '#E9E7DF', padding: '64px 32px 40px' }}>
       <div style={{ maxWidth: 1120, margin: '0 auto' }}>
@@ -365,35 +386,31 @@ function FooterBlock({ accent = DELT.colors.indigo, brand, onNav }) {
           <div>
             {brand}
             <p style={{ fontFamily: DELT.font.body, fontSize: 13.5, lineHeight: 1.6, color: '#9E9BA8', marginTop: 16, maxWidth: 300 }}>
-              Revenue-based funding for U.S. businesses. Direct lender. Equal-opportunity finance.
+              {t('foot.tagline')}
             </p>
           </div>
-          {[
-            { h: 'Product', links: ['Calculator', 'How it works', 'Processing'] },
-            { h: 'Company', links: ['About', 'Reviews'] },
-            { h: 'Resources', links: ['FAQ', 'Blog', 'Support'] },
-          ].map(col => (
+          {columns.map(col => (
             <div key={col.h}>
               <div style={{ fontFamily: DELT.font.body, fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#6A6876', marginBottom: 18 }}>{col.h}</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {col.links.map(l => (
-                  <a key={l} onClick={handle(l)} style={{ fontFamily: DELT.font.body, fontSize: 14, color: '#E9E7DF', textDecoration: 'none', cursor: 'pointer' }}>{l}</a>
+                {col.links.map(ln => (
+                  <a key={ln.k} onClick={handle(ln.k)} style={{ fontFamily: DELT.font.body, fontSize: 14, color: '#E9E7DF', textDecoration: 'none', cursor: 'pointer' }}>{ln.l}</a>
                 ))}
               </div>
             </div>
           ))}
         </div>
         <div style={{ paddingTop: 28, borderTop: '1px solid #2B2A35', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 24, flexWrap: 'wrap', fontFamily: DELT.font.body, fontSize: 12, color: '#6A6876' }}>
-          <span>© 2026 Delt Capital, Inc. NMLS #—. California Finance Lender License #—.</span>
+          <span>{t('foot.legal')}</span>
           <span style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
-            {['Terms of Use', 'Privacy Policy', 'Communications'].map(l => (
+            {legalLinks.map(ln => (
               <a
-                key={l}
-                onClick={handle(l)}
+                key={ln.k}
+                onClick={handle(ln.k)}
                 style={{ color: '#9E9BA8', textDecoration: 'none', cursor: 'pointer', transition: 'color 180ms' }}
                 onMouseEnter={(e) => { e.currentTarget.style.color = '#E9E7DF'; }}
                 onMouseLeave={(e) => { e.currentTarget.style.color = '#9E9BA8'; }}
-              >{l}</a>
+              >{ln.l}</a>
             ))}
           </span>
         </div>
