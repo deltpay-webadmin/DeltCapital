@@ -24,6 +24,24 @@ module.exports = async function handler(req, res) {
     const data = await plaidFetch('/identity_verification/get', {
       identity_verification_id: id,
     });
+    // Diagnostic: when Plaid returns a terminal non-success status, log which
+    // named check(s) it failed. Plaid's IDV decision lives in `steps` (e.g.
+    // documentary_verification, selfie_check, kyc_check, watchlist_screening,
+    // risk_check) — the app otherwise collapses everything to a single "failed"
+    // state, which hides *why* Plaid rejected the session. Step names only (no
+    // applicant PII) so this is safe to keep in Vercel logs.
+    const statusLc = String(data.status || '').toLowerCase();
+    if (['failed', 'expired', 'canceled'].includes(statusLc) && data.steps) {
+      const PASSING = ['success', 'skipped', 'manually_approved', 'not_applicable', 'waiting', 'active'];
+      const failedSteps = Object.entries(data.steps)
+        .filter(([, v]) => v && !PASSING.includes(String(v).toLowerCase()))
+        .map(([k, v]) => `${k}=${v}`)
+        .join(', ');
+      console.log(
+        `plaid-get-idv-status terminal: id=${id} status=${data.status} ` +
+        `non_success_steps=[${failedSteps}]`
+      );
+    }
     // Don't cache — the whole point is to observe state changes quickly.
     res.setHeader('Cache-Control', 'no-store');
     res.status(200).json({

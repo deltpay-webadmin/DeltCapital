@@ -477,6 +477,30 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
   );
 }
 
+// Translate Plaid's per-check `steps` payload into the name(s) of the check(s)
+// that didn't pass, so a failed IDV can say *which* Plaid check tripped instead
+// of a generic "couldn't verify." Plaid decides pass/fail entirely on its side;
+// this only reads the `steps` map it returns (documentary_verification,
+// selfie_check, kyc_check, watchlist_screening, risk_check, verify_sms).
+const V1IDV_STEP_LABELS = {
+  documentary_verification: 'document check',
+  selfie_check: 'selfie match',
+  kyc_check: 'identity (KYC) check',
+  watchlist_screening: 'watchlist screening',
+  risk_check: 'risk check',
+  verify_sms: 'phone verification',
+};
+function V1IDVFailedSteps(steps) {
+  if (!steps || typeof steps !== 'object') return [];
+  const PASSING = ['success', 'skipped', 'manually_approved', 'not_applicable', 'waiting', 'active'];
+  return Object.entries(steps)
+    .filter(([, v]) => {
+      const s = String(v || '').toLowerCase();
+      return s && !PASSING.includes(s);
+    })
+    .map(([k]) => V1IDV_STEP_LABELS[k] || k.replace(/_/g, ' '));
+}
+
 // ─── V1IDVerify — Plaid Identity Verification with QR mobile handoff ──
 // Stages:
 //   intro → creating → choose-device → mobile-handoff (polling) → done
@@ -535,9 +559,18 @@ function V1IDVerify({ open, onClose, onComplete }) {
         if (status === 'success') { stopPolling(); setStage('done'); return; }
         if (status === 'failed' || status === 'expired' || status === 'canceled') {
           stopPolling();
+          // The pass/fail verdict is Plaid's — surface *which* of Plaid's checks
+          // didn't pass (from the `steps` map our /api/plaid-get-idv-status
+          // already returns) so a "failed" isn't a black box. Log the raw steps
+          // for the dev console too.
+          const failedChecks = V1IDVFailedSteps(res.steps);
+          if (res.steps) console.warn('IDV failed steps:', res.steps);
+          const checksNote = failedChecks.length
+            ? ` Plaid's ${failedChecks.join(' and ')} didn't pass.`
+            : '';
           setErr(status === 'expired' ? 'Session expired. Start a new verification.' :
                  status === 'canceled' ? 'Verification was canceled.' :
-                 'Verification could not be completed.');
+                 'Verification could not be completed.' + checksNote);
           setStage('failed');
           return;
         }
