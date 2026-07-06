@@ -61,16 +61,27 @@ const PLX_REDUCED = typeof window !== 'undefined' && window.matchMedia
 // each card in Plaid's grid). Two variants: default is a dark filled circle
 // (Plaid's actual case-study style), `dark=true` inverts to a light outline
 // on the dark AI banner.
-function PlxArrowCircle({ dark = false }) {
+function PlxArrowCircle({ dark = false, active = false }) {
+  // Three visual states:
+  //   - dark (on dark backgrounds): thin ivory outline, always visible.
+  //   - default (card not hovered): thin ink-tinted outline, ~50% opacity.
+  //     Sits quietly in the corner instead of competing with the mock.
+  //   - active (card hovered): fills to solid ink + white icon, translates
+  //     a couple of px → reads as "this whole card is clickable."
+  const filled = dark ? false : active;
   return (
     <span style={{
       width: 40, height: 40, borderRadius: 999, flexShrink: 0,
       display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-      background: dark ? 'transparent' : '#0F0E17',
-      border: dark ? '1px solid rgba(247,245,240,0.25)' : 'none',
-      color: dark ? '#F7F5F0' : '#FFFFFF',
-      transition: 'background .2s, transform .2s',
-      boxShadow: dark ? 'none' : '0 4px 10px rgba(15,14,23,0.15)',
+      background: filled ? '#0F0E17' : 'transparent',
+      border: filled
+        ? '1px solid #0F0E17'
+        : (dark ? '1px solid rgba(247,245,240,0.25)' : '1px solid rgba(15,14,23,0.18)'),
+      color: filled ? '#FFFFFF' : (dark ? '#F7F5F0' : '#0F0E17'),
+      opacity: dark ? 1 : (active ? 1 : 0.7),
+      transform: active ? 'translate(2px, -2px)' : 'translate(0, 0)',
+      transition: 'background .22s ease, border-color .22s ease, color .22s ease, opacity .22s ease, transform .22s cubic-bezier(0.22,1,0.36,1)',
+      boxShadow: filled ? '0 4px 10px rgba(15,14,23,0.15)' : 'none',
     }}>
       <svg width="16" height="16" viewBox="0 0 14 14">
         <path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" strokeWidth="1.8"
@@ -153,13 +164,16 @@ function PlxProductCard({ title, desc, children, large, mobile, tint }) {
       onMouseLeave={() => setHover(false)}
       style={{ position: 'relative', display: 'flex' }}
     >
-      {/* Rainbow conic-glow border, revealed on hover. Slightly larger than
-          the card so it blooms outward. */}
+      {/* Soft indigo→cyan glow, revealed on hover. Toned down from the old
+          5-stop rainbow conic: on an editorial palette that read arcade-y,
+          especially with five cards in view at once. A 2-stop diagonal blur
+          at 35% opacity gives the same "card lifts off the page" feeling
+          without the color show. */}
       <div aria-hidden style={{
         position: 'absolute', inset: -6, borderRadius: 26,
-        background: 'conic-gradient(from 200deg at 50% 50%, #7DD3FC, #7C6BFF, #8B5CF6, #DBF3FF, #7DD3FC)',
-        filter: 'blur(16px)',
-        opacity: hover && !mobile ? 0.55 : 0,
+        background: 'linear-gradient(135deg, rgba(124,107,255,0.55), rgba(125,211,252,0.55))',
+        filter: 'blur(18px)',
+        opacity: hover && !mobile ? 0.35 : 0,
         transition: 'opacity .28s ease-out',
         pointerEvents: 'none',
       }} />
@@ -201,7 +215,7 @@ function PlxProductCard({ title, desc, children, large, mobile, tint }) {
               lineHeight: 1.5, color: DELT.colors.inkMute, maxWidth: 360,
             }}>{desc}</p>
           </div>
-          <PlxArrowCircle />
+          <PlxArrowCircle active={hover && !mobile} />
         </div>
         {/* Hero visual — floats large in the bottom half, no bordered sub-tile. */}
         <div style={{ position: 'relative', marginTop: 'auto', paddingTop: 26, display: 'flex', justifyContent: 'center' }}>
@@ -510,7 +524,7 @@ function PlxMockProcessors() {
 
 function PlxMockTerminals() {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
       <img
         src="app/assets/mocks/delt_mock_terminals.jpg"
         alt="PAX A920, Verifone, Landi terminals"
@@ -519,9 +533,19 @@ function PlxMockTerminals() {
           display: 'block',
         }}
       />
-      <div style={{ padding: '9px 16px', borderRadius: 999, background: `linear-gradient(90deg, ${DELT.colors.indigo}, ${PLX.softIndigo})`, display: 'inline-flex', alignItems: 'center', gap: 8, boxShadow: '0 8px 20px rgba(73,69,255,0.30)' }}>
-        <span style={{ fontFamily: DELT.font.body, fontSize: 12.5, fontWeight: 600, color: '#fff', letterSpacing: '-0.005em' }}>$0 down</span>
-        <span style={{ fontFamily: DELT.font.mono, fontSize: 10.5, fontWeight: 600, color: 'rgba(255,255,255,0.8)' }}>Own or lease</span>
+      {/* Caption row — replaces the old solid-purple pill CTA. The whole card
+          is already clickable via the arrow affordance, so this reads as a
+          spec line rather than a competing button. Tabular numerals keep
+          "$0" and "$25/mo" on the same optical baseline. */}
+      <div style={{
+        display: 'inline-flex', alignItems: 'center', gap: 10,
+        fontFamily: DELT.font.mono, fontSize: 11, letterSpacing: '0.08em',
+        textTransform: 'uppercase', color: DELT.colors.inkMute,
+        fontVariantNumeric: 'tabular-nums',
+      }}>
+        <span><span style={{ color: DELT.colors.ink, fontWeight: 600 }}>$0</span> down</span>
+        <span style={{ opacity: 0.3 }}>•</span>
+        <span>Own or lease</span>
       </div>
     </div>
   );
@@ -542,7 +566,7 @@ function V1ProductGrid() {
           <p style={{
             margin: '20px 0 0', fontFamily: DELT.font.body, fontSize: mobile ? 16 : 18,
             lineHeight: 1.55, color: DELT.colors.inkSoft, maxWidth: 560,
-          }}>Revenue-based capital that adapts to your book — merchant, agent, or ISO.</p>
+          }}>Capital that adapts to your revenue — not your paperwork.</p>
           <div style={{ marginTop: 24 }}>
             <a href="#how" style={{
               display: 'inline-flex', alignItems: 'center', gap: 7,
@@ -560,7 +584,7 @@ function V1ProductGrid() {
           <PlxProductCard large mobile={mobile}
             tint="#EEF0FF"
             title="Revenue-based funding"
-            desc="Underwritten off deposits, not FICO. See the offer before you sign.">
+            desc="Underwritten off your deposits, not FICO. Wired in 24 hours.">
             <PlxMockOffer />
           </PlxProductCard>
           <PlxProductCard large mobile={mobile}
@@ -578,8 +602,8 @@ function V1ProductGrid() {
         }}>
           <PlxProductCard mobile={mobile}
             tint="#F5F1FF"
-            title="Lines of credit that beat the bank"
-            desc="Revolving capital you can draw on demand — lower rates, no covenants, funded off your deposits.">
+            title="Lines that beat the bank"
+            desc="Revolving capital, drawn on demand. Lower rates, no covenants.">
             <PlxMockLineOfCredit />
           </PlxProductCard>
           <PlxProductCard mobile={mobile}
