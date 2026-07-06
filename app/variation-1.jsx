@@ -194,23 +194,17 @@ function V1Hero({ accent, onApply }) {
     return () => clearInterval(iv);
   }, [mounted]);
 
-  // Hero graphic — engraved George Washington motif, treated to feel like
-  // an on-bill portrait (cyan → indigo duotone + magenta band). Uses CSS
-  // filters/blends on the existing PNG so we don't ship a second asset.
+  // Hero graphic — static George Washington cutout (transparent PNG).
+  // Kept the parallax shift/scale variables so subtle scroll motion still
+  // animates the image the same way the previous hero video did.
 
   return (
     <section style={{
-      // Continuous gradient that leaves indigo at the top and softens into
-      // a warm cream at the bottom edge — bridges into the compare section
-      // below instead of hard-cutting from navy to pale grey.
-      background: `
-        radial-gradient(120% 90% at 78% 44%, rgba(96,165,250,0.24) 0%, rgba(4,30,66,0) 55%),
-        radial-gradient(70% 60% at 20% 30%, rgba(129,140,248,0.18) 0%, rgba(4,30,66,0) 60%),
-        linear-gradient(180deg, #041E42 0%, #06285A 42%, #0B3170 72%, #1A3C7A 90%, #F3EEE3 100%)
-      `,
+      background: '#041E42',
       color: '#F7F5F0',
       position: 'relative',
       overflow: 'hidden',
+      borderBottom: '1px solid rgba(255,255,255,0.06)',
       minHeight: 'calc(100vh - 82px)',
       display: 'flex',
       flexDirection: 'column',
@@ -218,53 +212,20 @@ function V1Hero({ accent, onApply }) {
       <style>{`
         @keyframes v1heroPulse { 0% { transform: translate(-50%,-50%) scale(1); opacity: 0.55; } 70% { transform: translate(-50%,-50%) scale(2.6); opacity: 0; } 100% { transform: translate(-50%,-50%) scale(2.6); opacity: 0; } }
         @keyframes v1heroBob { 0%, 100% { transform: translateY(0); opacity: 0.55; } 50% { transform: translateY(5px); opacity: 1; } }
-        @keyframes v1heroDrift { 0%,100% { transform: translate3d(0,0,0); } 50% { transform: translate3d(-14px,-6px,0); } }
-        @keyframes v1heroBandShimmer { 0% { opacity: 0.85; filter: hue-rotate(0deg); } 50% { opacity: 1; filter: hue-rotate(-18deg); } 100% { opacity: 0.85; filter: hue-rotate(0deg); } }
         @media (prefers-reduced-motion: reduce) {
-          .v1hero-pulse, .v1hero-bob, .v1hero-drift, .v1hero-band { animation: none !important; }
+          .v1hero-pulse, .v1hero-bob { animation: none !important; }
         }
       `}</style>
-
-      {/* Wavy topographic line art — the signature Plaid ambient pattern. */}
-      <svg aria-hidden viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" style={{
-        position: 'absolute', inset: 0, width: '100%', height: '100%',
-        opacity: 0.32, pointerEvents: 'none', zIndex: 0,
-        mixBlendMode: 'screen',
-      }}>
-        <defs>
-          <linearGradient id="v1heroLine" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%"   stopColor="#60A5FA" stopOpacity="0" />
-            <stop offset="22%"  stopColor="#60A5FA" stopOpacity="0.55" />
-            <stop offset="78%"  stopColor="#22D3EE" stopOpacity="0.55" />
-            <stop offset="100%" stopColor="#22D3EE" stopOpacity="0" />
-          </linearGradient>
-        </defs>
-        {Array.from({ length: 26 }).map((_, i) => {
-          const y = 40 + i * 34;
-          const amp = 40 + (i % 5) * 8;
-          const ph = i * 30;
-          return (
-            <path
-              key={i}
-              d={`M -50 ${y} C 300 ${y - amp + ph % 20}, 700 ${y + amp - ph % 24}, 1100 ${y - amp/1.4}, 1650 ${y + amp/2}`}
-              fill="none"
-              stroke="url(#v1heroLine)"
-              strokeWidth={0.7}
-              opacity={0.65 - i * 0.012}
-            />
-          );
-        })}
-      </svg>
 
       <div data-v1-grid-2col style={{
         width: '100%',
         maxWidth: 1280, margin: '0 auto', padding: '76px 32px 0',
-        display: 'grid', gridTemplateColumns: '1.05fr 1fr', gap: 24,
+        display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48,
         alignItems: 'center', position: 'relative', zIndex: 2,
         minHeight: 680, flex: 1,
       }}>
         {/* Left: copy */}
-        <div style={{ position: 'relative', zIndex: 3 }}>
+        <div>
           <h1 data-v1-hero-title style={{
             fontFamily: DELT.font.display, fontSize: 92, fontWeight: 600,
             letterSpacing: '-0.045em', color: '#F7F5F0', lineHeight: 0.95,
@@ -291,10 +252,8 @@ function V1Hero({ accent, onApply }) {
                     // Gradient must live on the span that holds the text —
                     // background-clip:text on the <em> parent doesn't reach
                     // child spans, which would render transparent.
-                    // Cyan→indigo→magenta echoes the on-bill Washington
-                    // treatment and the hero's magenta band.
-                    color: '#67E8F9',
-                    background: 'linear-gradient(90deg, #67E8F9 0%, #A5B4FC 45%, #F0ABFC 100%)',
+                    color: accent,
+                    background: `linear-gradient(90deg, ${accent}, #818CF8)`,
                     WebkitBackgroundClip: 'text', backgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                     paddingInlineEnd: '0.12em',
@@ -345,133 +304,59 @@ function V1Hero({ accent, onApply }) {
           </div>
         </div>
 
-        {/* Right: George Washington — engraved on-bill treatment.
-           The transparent PNG sits inside a duotone stack:
-           1) desaturated grayscale base (base tones for engraving)
-           2) cyan→indigo blend layer (multiply) that colors the shadows
-           3) magenta stripe overlay across the eyes (Plaid's Franklin band)
-           4) soft screen highlight along the hair for a printed feel
-           The whole cluster bleeds below the section so Washington's coat
-           carries into the next section — no hard hero cut. */}
+        {/* Right: George Washington hero graphic (transparent PNG). */}
         <div data-v1-hero-media style={{
           position: 'relative',
           alignSelf: 'stretch',
           display: 'flex',
-          alignItems: 'flex-end',
+          alignItems: 'center',
           justifyContent: 'center',
-          marginRight: -80,
-          marginLeft: -40,
-          marginTop: -80,
-          marginBottom: -160,
-          overflow: 'visible',
-          clipPath: mounted ? 'inset(-200px -200px -400px -200px)' : 'inset(-200px -200px -400px 100%)',
+          marginRight: -32,
+          marginTop: -32,
+          marginBottom: -32,
+          overflow: 'hidden',
+          clipPath: mounted ? 'inset(0 0 0 0)' : 'inset(0 100% 0 0)',
           transition: 'clip-path 1100ms cubic-bezier(0.76, 0, 0.24, 1) 160ms',
           willChange: mounted ? 'auto' : 'clip-path',
         }}>
-          {/* Ambient cyan glow behind the subject */}
+          {/* Soft indigo glow behind the subject to lift it off Midnight Steel */}
           <div aria-hidden style={{
             position: 'absolute',
-            inset: '8% -6% 0 -6%',
-            background: 'radial-gradient(55% 55% at 50% 42%, rgba(34,211,238,0.30) 0%, rgba(96,165,250,0.16) 42%, rgba(4,30,66,0) 72%)',
-            filter: 'blur(10px)',
+            inset: '10% 6%',
+            background: 'radial-gradient(60% 55% at 50% 45%, rgba(73,69,255,0.28) 0%, rgba(73,69,255,0.12) 40%, rgba(4,30,66,0) 72%)',
+            filter: 'blur(6px)',
+            pointerEvents: 'none',
+          }} />
+          <img
+            src="app/assets/washington.png"
+            alt="George Washington, modernized — holding an iPhone with an AirPod in his ear"
+            style={{
+              position: 'relative',
+              maxWidth: '100%',
+              maxHeight: '92%',
+              width: 'auto',
+              height: 'auto',
+              objectFit: 'contain',
+              display: 'block',
+              transform: `translate3d(0, ${videoShift}px, 0) scale(${videoScale})`,
+              transformOrigin: 'center center',
+              willChange: 'transform',
+              filter: 'drop-shadow(0 24px 48px rgba(0,0,0,0.45))',
+            }}
+          />
+          {/* Left-edge fade so the subject melts into the copy column */}
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: 'linear-gradient(90deg, #041E42 0%, rgba(4,30,66,0.5) 8%, rgba(4,30,66,0) 22%)',
+            pointerEvents: 'none',
+          }} />
+          {/* Right-edge fade so the subject melts into the section background */}
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: 'linear-gradient(270deg, #041E42 0%, rgba(4,30,66,0.4) 6%, rgba(4,30,66,0) 18%)',
             pointerEvents: 'none',
           }} />
 
-          {/* Duotone engraved Washington — the stack of blended layers */}
-          <div style={{
-            position: 'relative',
-            width: '112%',
-            maxWidth: 820,
-            marginBottom: 0,
-            transform: `translate3d(0, ${videoShift}px, 0) scale(${videoScale})`,
-            transformOrigin: 'center bottom',
-            willChange: 'transform',
-            isolation: 'isolate',
-          }}>
-            {/* Layer 1: base engraving — raise contrast, drop saturation */}
-            <img
-              src="app/assets/washington.png"
-              alt="George Washington, modernized — holding an iPhone with an AirPod in his ear"
-              style={{
-                position: 'relative',
-                width: '100%',
-                height: 'auto',
-                display: 'block',
-                filter: 'grayscale(1) brightness(1.28) contrast(1.75)',
-                zIndex: 1,
-              }}
-            />
-            {/* Layer 2: cyan→indigo duotone via masked gradient (multiply) */}
-            <div aria-hidden style={{
-              position: 'absolute', inset: 0,
-              background: 'linear-gradient(160deg, #22D3EE 0%, #0EA5E9 32%, #4945FF 78%, #312E81 100%)',
-              mixBlendMode: 'multiply',
-              WebkitMaskImage: 'url(app/assets/washington.png)',
-              maskImage: 'url(app/assets/washington.png)',
-              WebkitMaskSize: '100% 100%',
-              maskSize: '100% 100%',
-              WebkitMaskRepeat: 'no-repeat',
-              maskRepeat: 'no-repeat',
-              zIndex: 2,
-              pointerEvents: 'none',
-            }} />
-            {/* Layer 3: cyan highlight (screen) so the mid-tones read teal, not muddy */}
-            <div aria-hidden style={{
-              position: 'absolute', inset: 0,
-              background: 'linear-gradient(180deg, rgba(103,232,249,0.55) 0%, rgba(34,211,238,0.28) 50%, rgba(4,30,66,0) 100%)',
-              mixBlendMode: 'screen',
-              WebkitMaskImage: 'url(app/assets/washington.png)',
-              maskImage: 'url(app/assets/washington.png)',
-              WebkitMaskSize: '100% 100%',
-              maskSize: '100% 100%',
-              WebkitMaskRepeat: 'no-repeat',
-              maskRepeat: 'no-repeat',
-              zIndex: 3,
-              pointerEvents: 'none',
-            }} />
-            {/* Layer 4: magenta band — the Plaid signature stripe across the face.
-                Uses a slight rotation and a linear-gradient with hard stops so
-                the band has crisp edges, then a small blur softens them. */}
-            <div aria-hidden className="v1hero-band" style={{
-              position: 'absolute',
-              left: '-6%', right: '-6%',
-              top: '46%', height: '9%',
-              background: 'linear-gradient(90deg, rgba(236,72,153,0) 0%, rgba(236,72,153,0.55) 12%, rgba(217,70,239,0.85) 30%, rgba(168,85,247,0.85) 55%, rgba(139,92,246,0.75) 78%, rgba(96,165,250,0) 100%)',
-              transform: 'rotate(-8deg)',
-              filter: 'blur(1px) saturate(1.15)',
-              mixBlendMode: 'screen',
-              zIndex: 4,
-              pointerEvents: 'none',
-              animation: 'v1heroBandShimmer 6s ease-in-out infinite',
-            }} />
-            {/* Layer 5: bill fibers — vertical hatching subtly overlaid to hint
-                at currency engraving. Rendered as a tiny SVG pattern that scales. */}
-            <svg aria-hidden viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice" style={{
-              position: 'absolute', inset: 0, width: '100%', height: '100%',
-              mixBlendMode: 'overlay', opacity: 0.35, zIndex: 5,
-              WebkitMaskImage: 'url(app/assets/washington.png)',
-              maskImage: 'url(app/assets/washington.png)',
-              WebkitMaskSize: '100% 100%',
-              maskSize: '100% 100%',
-              WebkitMaskRepeat: 'no-repeat',
-              maskRepeat: 'no-repeat',
-              pointerEvents: 'none',
-            }}>
-              <defs>
-                <pattern id="v1heroHatch" x="0" y="0" width="3" height="3" patternUnits="userSpaceOnUse">
-                  <path d="M0 3 L3 0" stroke="rgba(255,255,255,0.65)" strokeWidth="0.4" />
-                </pattern>
-              </defs>
-              <rect x="0" y="0" width="400" height="400" fill="url(#v1heroHatch)" />
-            </svg>
-          </div>
-
-          {/* Left-edge fade so the subject melts into the copy column */}
-          <div style={{
-            position: 'absolute', left: 0, top: 0, bottom: 0, width: '28%',
-            background: 'linear-gradient(90deg, #041E42 0%, rgba(6,40,90,0.55) 35%, rgba(4,30,66,0) 100%)',
-            pointerEvents: 'none', zIndex: 6,
-          }} />
         </div>
       </div>
 
