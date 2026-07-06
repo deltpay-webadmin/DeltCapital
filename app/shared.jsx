@@ -70,8 +70,8 @@ const DeltContent = {
     { q: 'How is repayment structured?', a: 'A fixed daily or weekly debit sized to your revenue. Typically 4–10 months. You see the schedule in your offer before you sign anything.' },
     { q: 'Will this hurt my credit?', a: 'No. Get Funded is a soft pull. A hard pull only happens if you counter-sign an offer — and only on the guarantor, not the business.' },
     { q: 'Do I need collateral?', a: 'No UCC-1 filing, no personal guarantee beyond a standard assurance. We underwrite revenue, not assets.' },
-    { q: 'What if revenue drops mid-term?', a: 'Call us. We\'ve restructured ~12% of active books without penalty. Talk to us before you miss a debit.' },
-    { q: 'Does my rate get better on a second draw?', a: 'Yes. Repeat borrowers in good standing typically see 4–8 basis points off the factor on each renewal. 68% of our book funds with us more than once — the math is in the file.' },
+    { q: 'What if revenue drops mid-term?', a: 'Call us. We\'ve restructured ~12% of active fundings without penalty. Talk to us before you miss a debit.' },
+    { q: 'Does my rate get better on a second draw?', a: 'Yes. Repeat borrowers in good standing typically see 4–8 basis points off the factor on each renewal. 68% of Delt merchants come back for a second funding — the math is in the file.' },
   ],
 };
 

@@ -985,8 +985,8 @@ function V1ProductGrid() {
           </PlxProductCard>
           <PlxProductCard mobile={mobile}
             tint="#FFFFFF"
-            title="Merchant processing"
-            desc="ISO-friendly rates across the top 12 processors.">
+            title="Card processing"
+            desc="We beat your current rate in writing. Same terminals, next-day deposits.">
             <PlxMockProcessors />
           </PlxProductCard>
           <PlxProductCard mobile={mobile}
@@ -1421,9 +1421,9 @@ function V1NetworkStats() {
           <h2 data-v1-section-title style={{
             margin: 0, fontFamily: DELT.font.display, fontWeight: 600,
             fontSize: mobile ? 30 : 56, letterSpacing: '-0.025em', lineHeight: 1.05, color: DELT.colors.ink,
-          }}>A book that gets smarter with every funding.</h2>
+          }}>Sharper offers, every year we've been at it.</h2>
           <p style={{ margin: '20px 0 0', fontFamily: DELT.font.body, fontSize: 17, lineHeight: 1.6, color: DELT.colors.inkSoft, maxWidth: 460 }}>
-            2,850+ businesses. $200M+ deployed. Every offer we make today is priced on data we've been collecting since 2019.
+            2,850+ businesses funded. $200M+ deployed since 2019. That track record is why your offer lands faster and priced tighter.
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: mobile ? 24 : 36, marginTop: 40 }}>
             {DeltContent.stats.map((s, i) => (
@@ -1749,7 +1749,7 @@ function V1CaseStudyStrip() {
   const mobile = useIsMobile();
   const stories = [
     { img: 'app/assets/cases/01_ward.jpg',     wordmark: 'Ward Market',          headline: "Ward Market's CFO said: \u2018take it, I can\u2019t beat that.\u2019" },
-    { img: 'app/assets/cases/02_roberts.jpg',  wordmark: 'Roberts Auto',         headline: 'Roberts Auto: our underwriter knew the book, not a call center.' },
+    { img: 'app/assets/cases/02_roberts.jpg',  wordmark: 'Roberts Auto',         headline: 'Roberts Auto: a real underwriter knew my file, not a call center.' },
     { img: 'app/assets/cases/03_bloom.jpg',    wordmark: 'Bloom Beauty',         headline: 'Bloom Beauty grew revenue 40% on $65K of working capital.' },
     { img: 'app/assets/cases/04_larosa.jpg',   wordmark: 'La Rosa Restaurant',   headline: 'La Rosa Restaurant closed in 19 hours — not 19 days.' },
     { img: 'app/assets/cases/05_rosario.jpg',  wordmark: 'Rosario Construction', headline: 'Rosario’s 3rd draw — each rate lower than the last.' },

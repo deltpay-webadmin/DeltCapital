@@ -207,7 +207,7 @@ function CompareSection({ accent = DELT.colors.indigo }) {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, alignItems: 'start', marginBottom: 40 }}>
           <h2 style={h2Style}>Delt vs. a traditional lender.<br />On the numbers that matter.</h2>
           <p style={{ fontFamily: DELT.font.body, fontSize: 15, lineHeight: 1.6, color: DELT.colors.inkSoft, marginTop: 8 }}>
-            Every row is a median across the last 12 months of our book, measured against publicly-reported bank SBA 7(a) averages. We update quarterly.
+            Every row is a median across the last 12 months of Delt fundings, measured against publicly-reported bank SBA 7(a) averages. We update quarterly.
           </p>
         </div>
 
@@ -506,7 +506,7 @@ function ReviewsPage({ accent }) {
       <div style={{ maxWidth: 1120, margin: '0 auto', padding: '72px 32px 56px' }}>
         <SectionLabel accent={accent}>Reviews</SectionLabel>
         <h1 style={{ fontFamily: DELT.font.display, fontSize: 54, fontWeight: 600, letterSpacing: '-0.035em', color: DELT.colors.ink, lineHeight: 1.05, margin: 0, maxWidth: 800 }}>
-          Verified by renewal. 68% of our book has funded with us more than once.
+          Verified by renewal. 68% of Delt merchants come back for a second funding.
         </h1>
       </div>
       <div style={{ maxWidth: 1120, margin: '0 auto', padding: '0 32px 96px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>

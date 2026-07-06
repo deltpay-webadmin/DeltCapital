@@ -90,7 +90,7 @@ function V1CompareSection() {
             fontFamily: V1.fontBody, fontSize: 16.5, lineHeight: 1.6, color: V1.text,
             margin: 0, maxWidth: 460, justifySelf: 'end',
           }}>
-            Every row is a median across the last 12 months of our book, measured
+            Every row is a median across the last 12 months of Delt fundings, measured
             against publicly-reported bank SBA 7(a) averages. Updated quarterly.
           </p>
         </div>
