@@ -292,57 +292,61 @@ function V1Hero({ accent, onApply }) {
           on the enclosing <section> (updated on mousemove, see effect above).
           Line count bumped 42 → 96 for a denser topography. */}
       {(() => {
-        // Plaid-parity background: densely packed CONCENTRIC ARCS centered
-        // just outside the top-right corner of the section. From that
-        // vantage point, the visible portion of each circle reads as a
-        // gentle curve sweeping across the hero — tight near the corner,
-        // spreading wider as radius grows. This matches plaid.com where
-        // the pattern is unmistakably a family of nested arcs around a
-        // shared center (not a fan of rays).
+        // Background pattern: soft WAVY HORIZONTAL contours running east→west
+        // across the full hero. Each line is a gentle sine wave with a small
+        // per-line phase and amplitude variation so the pattern reads as an
+        // organic topographic texture rather than a geometric grid. No
+        // corner convergence, no radial center — pure L→R waves.
+        //
+        // Barely visible at rest (opacity ≈ 0.10) and brightened under the
+        // cursor via a radial mask that follows the mouse (--mx / --my).
         const VBW = 1440;
         const VBH = 900;
-        // Center just outside top-right corner — a little above and a
-        // little to the right of the section, so all visible arcs curve
-        // with their concave side toward that corner.
-        const cx = VBW * 1.05;
-        const cy = -VBH * 0.08;
-        // Radii range from small (near the corner) to large enough to
-        // reach the far bottom-left corner of the section.
-        const rMin = 140;
-        const rMax = Math.hypot(VBW + Math.abs(cx - VBW), VBH + Math.abs(cy));
-        // Spacing between arcs → dense guilloché-like fill matching Plaid.
-        const RING_STEP = 14;
-        const rings = [];
-        for (let r = rMin; r <= rMax; r += RING_STEP) rings.push(r);
-        // Each arc is drawn as an SVG circle; the parts outside the section
-        // are clipped by overflow:hidden on the parent.
+        const LINE_STEP = 14;              // vertical spacing between waves
+        const SAMPLES = 48;                // horizontal samples per wave
+        const dx = VBW / SAMPLES;
+        // Build one SVG path per horizontal line.
+        const paths = [];
+        for (let i = 0, y0 = -20; y0 <= VBH + 20; y0 += LINE_STEP, i++) {
+          // Per-line variation for an abstract, non-repeating feel.
+          const amp   = 10 + ((i * 7) % 9);              // 10–18 px
+          const wl    = 900 + ((i * 53) % 260);          // 900–1160 px wavelength
+          const phase = (i * 0.37) % (Math.PI * 2);
+          let d = '';
+          for (let s = 0; s <= SAMPLES; s++) {
+            const x = s * dx;
+            const y = y0 + Math.sin((x / wl) * Math.PI * 2 + phase) * amp;
+            d += (s === 0 ? 'M' : 'L') + x.toFixed(1) + ' ' + y.toFixed(1) + ' ';
+          }
+          paths.push(d);
+        }
         return (
           <React.Fragment>
-            {/* Always-visible base arcs — permanent design element. */}
+            {/* Base layer — always on, barely visible. */}
+            <svg aria-hidden viewBox={`0 0 ${VBW} ${VBH}`} preserveAspectRatio="none"
+              style={{
+                position: 'absolute', inset: 0, width: '100%', height: '100%',
+                opacity: 0.10, pointerEvents: 'none', zIndex: 3,
+                mixBlendMode: 'screen',
+              }}>
+              {paths.map((d, i) => (
+                <path key={i} d={d} fill="none"
+                  stroke="rgba(180,220,255,1)" strokeWidth="0.9" />
+              ))}
+            </svg>
+            {/* Cursor spotlight — same waves, brighter, revealed only
+                inside the radial mask following the mouse. */}
             <svg aria-hidden viewBox={`0 0 ${VBW} ${VBH}`} preserveAspectRatio="none"
               style={{
                 position: 'absolute', inset: 0, width: '100%', height: '100%',
                 opacity: 0.9, pointerEvents: 'none', zIndex: 3,
                 mixBlendMode: 'screen',
+                WebkitMaskImage: 'radial-gradient(circle 460px at var(--mx, 50%) var(--my, 40%), rgba(0,0,0,1) 0%, rgba(0,0,0,0.55) 55%, rgba(0,0,0,0) 100%)',
+                maskImage: 'radial-gradient(circle 460px at var(--mx, 50%) var(--my, 40%), rgba(0,0,0,1) 0%, rgba(0,0,0,0.55) 55%, rgba(0,0,0,0) 100%)',
               }}>
-              {rings.map((r, i) => (
-                <circle key={i} cx={cx} cy={cy} r={r} fill="none"
-                  stroke="rgba(120,200,240,0.85)" strokeWidth="1.4" />
-              ))}
-            </svg>
-            {/* Cursor spotlight overlay — same arcs, brighter, revealed
-                only inside the radial mask following the mouse. */}
-            <svg aria-hidden viewBox={`0 0 ${VBW} ${VBH}`} preserveAspectRatio="none"
-              style={{
-                position: 'absolute', inset: 0, width: '100%', height: '100%',
-                opacity: 1, pointerEvents: 'none', zIndex: 3,
-                mixBlendMode: 'screen',
-                WebkitMaskImage: 'radial-gradient(circle 520px at var(--mx, 50%) var(--my, 40%), rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 55%, rgba(0,0,0,0) 100%)',
-                maskImage: 'radial-gradient(circle 520px at var(--mx, 50%) var(--my, 40%), rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 55%, rgba(0,0,0,0) 100%)',
-              }}>
-              {rings.map((r, i) => (
-                <circle key={i} cx={cx} cy={cy} r={r} fill="none"
-                  stroke="rgba(220,240,255,1)" strokeWidth="1.6" />
+              {paths.map((d, i) => (
+                <path key={i} d={d} fill="none"
+                  stroke="rgba(220,240,255,1)" strokeWidth="1.1" />
               ))}
             </svg>
           </React.Fragment>
