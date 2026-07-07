@@ -188,28 +188,47 @@ function V1Hero({ accent, onApply }) {
   // Subscribe to language changes so the hero copy swaps on toggle.
   useLang();
 
-  // Cursor-tracked spotlight on the background lines (Plaid-style).
-  // The section receives CSS custom properties --mx / --my in percent, and
-  // the overlay <svg> uses them to position a radial-gradient mask. Update
-  // via requestAnimationFrame + a 15% lerp so the light glides smoothly.
+  // Cursor-tracked spotlight on the background lines and cursor-tracked
+  // gradient on the headline (both Plaid-style). The section receives CSS
+  // custom properties --mx / --my (section-relative %) and --hx / --hy
+  // (headline-relative %). Both are updated via a single requestAnimationFrame
+  // loop with a 15% lerp so the light glides smoothly to the cursor.
   const heroRef = React.useRef(null);
+  const headlineRef = React.useRef(null);
   React.useEffect(() => {
     const el = heroRef.current;
     if (!el) return undefined;
-    const target = { x: 50, y: 40 };   // % — idle position (soft glow left-center)
-    const cur    = { x: 50, y: 40 };
+    // Idle: push spotlights off-screen so both the lines and the headline
+    // gradient hotspot are hidden until the user actually moves in.
+    const sec = { x: -30, y: -30 };
+    const head = { x: -30, y: -30 };
+    const curSec = { x: -30, y: -30 };
+    const curHead = { x: -30, y: -30 };
     let raf = 0;
     const onMove = (e) => {
       const r = el.getBoundingClientRect();
-      target.x = ((e.clientX - r.left) / r.width) * 100;
-      target.y = ((e.clientY - r.top) / r.height) * 100;
+      sec.x = ((e.clientX - r.left) / r.width) * 100;
+      sec.y = ((e.clientY - r.top) / r.height) * 100;
+      const h = headlineRef.current;
+      if (h) {
+        const hr = h.getBoundingClientRect();
+        head.x = ((e.clientX - hr.left) / hr.width) * 100;
+        head.y = ((e.clientY - hr.top) / hr.height) * 100;
+      }
     };
-    const onLeave = () => { target.x = 50; target.y = 40; };
+    const onLeave = () => {
+      sec.x = -30; sec.y = -30;
+      head.x = -30; head.y = -30;
+    };
     const tick = () => {
-      cur.x += (target.x - cur.x) * 0.15;
-      cur.y += (target.y - cur.y) * 0.15;
-      el.style.setProperty('--mx', cur.x.toFixed(2) + '%');
-      el.style.setProperty('--my', cur.y.toFixed(2) + '%');
+      curSec.x  += (sec.x  - curSec.x)  * 0.15;
+      curSec.y  += (sec.y  - curSec.y)  * 0.15;
+      curHead.x += (head.x - curHead.x) * 0.15;
+      curHead.y += (head.y - curHead.y) * 0.15;
+      el.style.setProperty('--mx', curSec.x.toFixed(2) + '%');
+      el.style.setProperty('--my', curSec.y.toFixed(2) + '%');
+      el.style.setProperty('--hx', curHead.x.toFixed(2) + '%');
+      el.style.setProperty('--hy', curHead.y.toFixed(2) + '%');
       raf = requestAnimationFrame(tick);
     };
     el.addEventListener('mousemove', onMove);
@@ -278,30 +297,33 @@ function V1Hero({ accent, onApply }) {
         const lines = Array.from({ length: LINE_COUNT }, (_, i) => buildPath(i));
         return (
           <React.Fragment>
-            {/* Dim base — always visible, sets the ambient topography. */}
+            {/* Barely-there base — the topography exists but is nearly
+                invisible at rest, matching Plaid where the lines only
+                emerge under the cursor. */}
             <svg aria-hidden viewBox="0 0 1200 1000" preserveAspectRatio="none"
               style={{
                 position: 'absolute', left: -80, top: -80, width: 1300, height: 1080,
-                opacity: 0.5, pointerEvents: 'none', zIndex: 1,
+                opacity: 0.14, pointerEvents: 'none', zIndex: 1,
                 mixBlendMode: 'screen',
               }}>
               {lines.map((d, i) => (
                 <path key={i} d={d} fill="none" stroke="rgba(125,211,252,0.35)" strokeWidth="0.5" />
               ))}
             </svg>
-            {/* Bright overlay — same paths, higher contrast, revealed only
-                inside the radial-gradient mask centered on the cursor.
-                --mx / --my come from the <section>'s style properties. */}
+            {/* Bright overlay — same paths, revealed only inside the
+                radial-gradient mask centered on the cursor. Mask center
+                --mx/--my is set on the <section> via the mousemove effect.
+                Larger radius (420px) matches Plaid's ~450px spotlight. */}
             <svg aria-hidden viewBox="0 0 1200 1000" preserveAspectRatio="none"
               style={{
                 position: 'absolute', left: -80, top: -80, width: 1300, height: 1080,
                 opacity: 1, pointerEvents: 'none', zIndex: 1,
                 mixBlendMode: 'screen',
-                WebkitMaskImage: 'radial-gradient(circle 320px at var(--mx, 50%) var(--my, 40%), rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.55) 45%, rgba(0,0,0,0) 100%)',
-                maskImage: 'radial-gradient(circle 320px at var(--mx, 50%) var(--my, 40%), rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.55) 45%, rgba(0,0,0,0) 100%)',
+                WebkitMaskImage: 'radial-gradient(circle 420px at var(--mx, 50%) var(--my, 40%), rgba(0,0,0,1) 0%, rgba(0,0,0,0.55) 55%, rgba(0,0,0,0) 100%)',
+                maskImage: 'radial-gradient(circle 420px at var(--mx, 50%) var(--my, 40%), rgba(0,0,0,1) 0%, rgba(0,0,0,0.55) 55%, rgba(0,0,0,0) 100%)',
               }}>
               {lines.map((d, i) => (
-                <path key={i} d={d} fill="none" stroke="rgba(180,220,255,0.95)" strokeWidth="0.8" />
+                <path key={i} d={d} fill="none" stroke="rgba(200,230,255,1)" strokeWidth="0.9" />
               ))}
             </svg>
           </React.Fragment>
@@ -316,17 +338,17 @@ function V1Hero({ accent, onApply }) {
           No parallax / scroll transform — the portrait sits static, per
           stakeholder direction. */}
       <style>{`
-        /* Raise the portrait ~120px above the section floor so the sub-stats
-           strip doesn't clip Washington's left shoulder / coat. Height is
-           capped so the full silhouette — shoulder-to-crown — fits between
-           the top nav and the sub-stats border. */
-        .v1hero-washington { position: absolute; right: 0; bottom: 120px; height: calc(100% - 140px); max-height: 720px; width: auto; z-index: 2; pointer-events: none;
+        /* Plaid-style silhouette: portrait sits flush with the section's
+           bottom edge and fills the right half, coat bleeding to the page
+           change below. Sub-stats bar overlays the coat instead of
+           floating below it. */
+        .v1hero-washington { position: absolute; right: 0; bottom: 0; height: 100%; max-height: 900px; width: auto; z-index: 2; pointer-events: none;
           filter: drop-shadow(0 20px 60px rgba(4,15,40,0.55)); transform-origin: right bottom; }
         @media (max-width: 900px) {
-          .v1hero-washington { right: -25%; bottom: 80px; height: 62%; max-height: 480px; opacity: 0.35; }
+          .v1hero-washington { right: -22%; bottom: 0; height: 78%; max-height: 560px; opacity: 0.35; }
         }
         @media (max-width: 560px) {
-          .v1hero-washington { right: -40%; bottom: 60px; height: 54%; opacity: 0.22; }
+          .v1hero-washington { right: -38%; bottom: 0; height: 66%; opacity: 0.22; }
         }
       `}</style>
       <img
@@ -345,14 +367,37 @@ function V1Hero({ accent, onApply }) {
       }}>
         {/* Left: copy */}
         <div style={{ position: 'relative', zIndex: 3 }}>
-          <h1 data-v1-hero-title style={{
+          {/* Headline gets a cursor-tracked radial gradient via a plain
+             CSS class so we can cascade the background-clip:text treatment
+             down to every descendant span/em (V1LineMask wraps each line
+             in inline-block spans, so applying clip:text on the H1 alone
+             wouldn't reach them). --hx / --hy come from the mousemove
+             effect; they sit off-screen when the cursor is not in the hero,
+             so the fallback is a soft brand tint at the top-left. */}
+          <style>{`
+            .v1hero-h1, .v1hero-h1 * {
+              background: radial-gradient(circle at var(--hx, -30%) var(--hy, -30%), #A5B4FC 0%, #7DD3FC 22%, #F7F5F0 55%);
+              -webkit-background-clip: text;
+              background-clip: text;
+              -webkit-text-fill-color: transparent;
+              color: transparent;
+            }
+            /* The italic "fund" <em> keeps its own accent→indigo gradient
+               so the animated verb still pops against the cursor-tracked
+               field. Override the cascade above. */
+            .v1hero-h1 em.v1hero-fund {
+              background: linear-gradient(90deg, ${accent}, #818CF8);
+              -webkit-background-clip: text; background-clip: text;
+            }
+          `}</style>
+          <h1 ref={headlineRef} className="v1hero-h1" data-v1-hero-title style={{
             fontFamily: DELT.font.display, fontSize: 92, fontWeight: 600,
-            letterSpacing: '-0.045em', color: '#F7F5F0', lineHeight: 0.95,
+            letterSpacing: '-0.045em', lineHeight: 0.95,
             margin: 0,
           }}>
             <V1LineMask ready={mounted} delay={120}>{t('hero.line1')}</V1LineMask>
             <V1LineMask ready={mounted} delay={230}>
-              <span style={{ color: '#F7F5F0' }}>{t('hero.line2')}</span>
+              <span>{t('hero.line2')}</span>
             </V1LineMask>
             <V1LineMask ready={mounted} delay={340}>
               {t('hero.line3.we')}{' '}
