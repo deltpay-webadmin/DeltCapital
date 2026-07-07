@@ -939,7 +939,7 @@ function V1ProductGrid() {
             margin: 0, fontFamily: DELT.font.display, fontWeight: 600,
             fontSize: mobile ? 34 : 72, letterSpacing: '-0.03em',
             lineHeight: 1.0, color: DELT.colors.ink, maxWidth: 820,
-          }}>Move now. Fund now. Grow now.</h2>
+          }}>Don't wait on the bank.</h2>
           <p style={{
             margin: '20px 0 0', fontFamily: DELT.font.body, fontSize: mobile ? 16 : 18,
             lineHeight: 1.55, color: DELT.colors.inkSoft, maxWidth: 560,
@@ -1236,13 +1236,13 @@ function V1IntelligentBanner() {
               margin: 0, fontFamily: DELT.font.display, fontWeight: 600,
               fontSize: mobile ? 34 : 56, letterSpacing: '-0.028em',
               lineHeight: 1.02, color: '#fff',
-            }}>The AI infrastructure behind smarter capital</h2>
-            <a href="#how" style={{
+            }}>Underwriting that reads your revenue, not your credit.</h2>
+            <a href="https://plaid.com/intelligent-finance/" target="_blank" rel="noopener noreferrer" style={{
               marginTop: 36, display: 'inline-flex', alignItems: 'center', gap: 10,
               fontFamily: DELT.font.body, fontSize: 15, fontWeight: 500, color: DELT.colors.ink,
               background: '#fff', borderRadius: 999, padding: '13px 26px',
               boxShadow: `0 0 0 3px rgba(125,211,252,0.35), 0 0 0 6px rgba(47,169,230,0.15), 0 10px 24px rgba(4,30,66,0.35)`,
-            }}>Explore intelligent finance</a>
+            }}>See how we underwrite</a>
           </div>
 
           {/* Mobile fallback — stacked DNA. */}
