@@ -187,6 +187,41 @@ function V1Hero({ accent, onApply }) {
   const mounted = useV1Mounted(80);
   // Subscribe to language changes so the hero copy swaps on toggle.
   useLang();
+
+  // Cursor-tracked spotlight on the background lines (Plaid-style).
+  // The section receives CSS custom properties --mx / --my in percent, and
+  // the overlay <svg> uses them to position a radial-gradient mask. Update
+  // via requestAnimationFrame + a 15% lerp so the light glides smoothly.
+  const heroRef = React.useRef(null);
+  React.useEffect(() => {
+    const el = heroRef.current;
+    if (!el) return undefined;
+    const target = { x: 50, y: 40 };   // % — idle position (soft glow left-center)
+    const cur    = { x: 50, y: 40 };
+    let raf = 0;
+    const onMove = (e) => {
+      const r = el.getBoundingClientRect();
+      target.x = ((e.clientX - r.left) / r.width) * 100;
+      target.y = ((e.clientY - r.top) / r.height) * 100;
+    };
+    const onLeave = () => { target.x = 50; target.y = 40; };
+    const tick = () => {
+      cur.x += (target.x - cur.x) * 0.15;
+      cur.y += (target.y - cur.y) * 0.15;
+      el.style.setProperty('--mx', cur.x.toFixed(2) + '%');
+      el.style.setProperty('--my', cur.y.toFixed(2) + '%');
+      raf = requestAnimationFrame(tick);
+    };
+    el.addEventListener('mousemove', onMove);
+    el.addEventListener('mouseleave', onLeave);
+    raf = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(raf);
+      el.removeEventListener('mousemove', onMove);
+      el.removeEventListener('mouseleave', onLeave);
+    };
+  }, []);
+
   // Hero portrait is static — no parallax / scroll animation, per stakeholder.
   const enter = (base) => ({
     opacity: mounted ? 1 : 0,
@@ -205,7 +240,7 @@ function V1Hero({ accent, onApply }) {
   // as the page scrolls.
 
   return (
-    <section style={{
+    <section ref={heroRef} style={{
       // Delt indigo gradient: violet/cyan glows over a deep navy → indigo
       // base. Washington cutout floats on the right; elegant swept curves
       // fill the left half. No more baked-in ripple pattern.
@@ -231,21 +266,47 @@ function V1Hero({ accent, onApply }) {
       `}</style>
 
       {/* Elegant sweeping curves — same family as the footer's topography lines.
-          Delicate cyan Bezier arcs fanning from the upper-left corner across
-          the copy area. Sits behind everything (zIndex 1); Washington cutout
-          is above at zIndex 2. */}
-      <svg aria-hidden viewBox="0 0 1200 1000" preserveAspectRatio="none"
-        style={{
-          position: 'absolute', left: -80, top: -80, width: 1300, height: 1080,
-          opacity: 0.85, pointerEvents: 'none', zIndex: 1,
-          mixBlendMode: 'screen',
-        }}>
-        {Array.from({ length: 42 }, (_, i) => (
-          <path key={i}
-            d={`M ${-40 + i * 6} 0 Q ${260 + i * 12} ${180 + i * 8}, ${180 + i * 10} ${520 - i * 4} T ${-20 + i * 4} 1000`}
-            fill="none" stroke="rgba(125,211,252,0.55)" strokeWidth="0.55" />
-        ))}
-      </svg>
+          Two layered SVGs so the pattern can "light up" under the cursor,
+          Plaid-style: a dim base drawn at full coverage, then a bright copy
+          on top revealed only by a radial mask that follows the mouse.
+          The mask center is driven by --mx / --my custom properties set
+          on the enclosing <section> (updated on mousemove, see effect above).
+          Line count bumped 42 → 96 for a denser topography. */}
+      {(() => {
+        const LINE_COUNT = 96;
+        const buildPath = (i) => `M ${-40 + i * 3} 0 Q ${260 + i * 6} ${180 + i * 4}, ${180 + i * 5} ${520 - i * 2} T ${-20 + i * 2} 1000`;
+        const lines = Array.from({ length: LINE_COUNT }, (_, i) => buildPath(i));
+        return (
+          <React.Fragment>
+            {/* Dim base — always visible, sets the ambient topography. */}
+            <svg aria-hidden viewBox="0 0 1200 1000" preserveAspectRatio="none"
+              style={{
+                position: 'absolute', left: -80, top: -80, width: 1300, height: 1080,
+                opacity: 0.5, pointerEvents: 'none', zIndex: 1,
+                mixBlendMode: 'screen',
+              }}>
+              {lines.map((d, i) => (
+                <path key={i} d={d} fill="none" stroke="rgba(125,211,252,0.35)" strokeWidth="0.5" />
+              ))}
+            </svg>
+            {/* Bright overlay — same paths, higher contrast, revealed only
+                inside the radial-gradient mask centered on the cursor.
+                --mx / --my come from the <section>'s style properties. */}
+            <svg aria-hidden viewBox="0 0 1200 1000" preserveAspectRatio="none"
+              style={{
+                position: 'absolute', left: -80, top: -80, width: 1300, height: 1080,
+                opacity: 1, pointerEvents: 'none', zIndex: 1,
+                mixBlendMode: 'screen',
+                WebkitMaskImage: 'radial-gradient(circle 320px at var(--mx, 50%) var(--my, 40%), rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.55) 45%, rgba(0,0,0,0) 100%)',
+                maskImage: 'radial-gradient(circle 320px at var(--mx, 50%) var(--my, 40%), rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.55) 45%, rgba(0,0,0,0) 100%)',
+              }}>
+              {lines.map((d, i) => (
+                <path key={i} d={d} fill="none" stroke="rgba(180,220,255,0.95)" strokeWidth="0.8" />
+              ))}
+            </svg>
+          </React.Fragment>
+        );
+      })()}
 
       {/* Washington cutout — transparent PNG, absolutely positioned on the right.
           Anchored to the section's right edge (right:0) with a small inner
@@ -255,13 +316,17 @@ function V1Hero({ accent, onApply }) {
           No parallax / scroll transform — the portrait sits static, per
           stakeholder direction. */}
       <style>{`
-        .v1hero-washington { position: absolute; right: 0; bottom: 0; height: 96%; max-height: 820px; width: auto; z-index: 2; pointer-events: none;
+        /* Raise the portrait ~120px above the section floor so the sub-stats
+           strip doesn't clip Washington's left shoulder / coat. Height is
+           capped so the full silhouette — shoulder-to-crown — fits between
+           the top nav and the sub-stats border. */
+        .v1hero-washington { position: absolute; right: 0; bottom: 120px; height: calc(100% - 140px); max-height: 720px; width: auto; z-index: 2; pointer-events: none;
           filter: drop-shadow(0 20px 60px rgba(4,15,40,0.55)); transform-origin: right bottom; }
         @media (max-width: 900px) {
-          .v1hero-washington { right: -25%; height: 70%; max-height: 520px; opacity: 0.35; }
+          .v1hero-washington { right: -25%; bottom: 80px; height: 62%; max-height: 480px; opacity: 0.35; }
         }
         @media (max-width: 560px) {
-          .v1hero-washington { right: -40%; height: 60%; opacity: 0.22; }
+          .v1hero-washington { right: -40%; bottom: 60px; height: 54%; opacity: 0.22; }
         }
       `}</style>
       <img
