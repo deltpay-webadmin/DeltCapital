@@ -381,18 +381,21 @@ function V1Hero({ accent, onApply }) {
            the section vertically. */
         .v1hero-washington {
           position: absolute;
-          right: 0; bottom: 0;
+          right: 6%; bottom: 0;
           height: 75%; max-height: 675px;
           width: auto;
           z-index: 2; pointer-events: none;
           filter: drop-shadow(0 20px 60px rgba(4,15,40,0.55));
           transform-origin: right bottom;
         }
+        @media (max-width: 1200px) {
+          .v1hero-washington { right: 2%; }
+        }
         @media (max-width: 900px) {
-          .v1hero-washington { right: -10%; bottom: 0; height: 82%; max-height: 620px; opacity: 0.45; }
+          .v1hero-washington { right: -8%; bottom: 0; height: 82%; max-height: 620px; opacity: 0.45; }
         }
         @media (max-width: 560px) {
-          .v1hero-washington { right: -22%; bottom: 0; height: 68%; opacity: 0.28; }
+          .v1hero-washington { right: -20%; bottom: 0; height: 68%; opacity: 0.28; }
         }
       `}</style>
       <img
