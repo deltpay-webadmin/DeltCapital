@@ -292,47 +292,45 @@ function V1Hero({ accent, onApply }) {
           on the enclosing <section> (updated on mousemove, see effect above).
           Line count bumped 42 → 96 for a denser topography. */}
       {(() => {
-        // Plaid-parity background lines: densely packed thin arcs that
-        // radiate from a point below the section (behind Franklin's chest
-        // area in Plaid's reference), fanning outward across the full hero.
-        // Lines are ALWAYS visible at rest (Plaid's are not hover-only);
-        // the cursor spotlight adds a brighter overlay on top.
-        const LINE_COUNT = 220;
+        // Plaid-parity background: densely packed CONCENTRIC ARCS centered
+        // just outside the top-right corner of the section. From that
+        // vantage point, the visible portion of each circle reads as a
+        // gentle curve sweeping across the hero — tight near the corner,
+        // spreading wider as radius grows. This matches plaid.com where
+        // the pattern is unmistakably a family of nested arcs around a
+        // shared center (not a fan of rays).
         const VBW = 1440;
         const VBH = 900;
-        // Origin sits below the section, right-of-center (matches Plaid's
-        // apparent origin under Franklin's phone hand). Endpoints spread
-        // across the top edge plus generous horizontal bleed so lines
-        // radiate from far-left to far-right.
-        const originX = VBW * 0.7;
-        const originY = VBH * 1.6;
-        const buildPath = (i) => {
-          const t = i / (LINE_COUNT - 1); // 0..1
-          // Distribute endpoints across a very wide arc — from x=-500 to
-          // x=VBW+500 — so the fan sweeps the entire horizon.
-          const endX = -500 + t * (VBW + 1000);
-          // Control point midway between origin and endpoint, slightly
-          // pulled toward horizontal-center for a gentle bow.
-          const midX = originX + (endX - originX) * 0.55;
-          const midY = VBH * 0.45;
-          return `M ${originX} ${originY} Q ${midX.toFixed(1)} ${midY}, ${endX.toFixed(1)} -80`;
-        };
-        const lines = Array.from({ length: LINE_COUNT }, (_, i) => buildPath(i));
+        // Center just outside top-right corner — a little above and a
+        // little to the right of the section, so all visible arcs curve
+        // with their concave side toward that corner.
+        const cx = VBW * 1.05;
+        const cy = -VBH * 0.08;
+        // Radii range from small (near the corner) to large enough to
+        // reach the far bottom-left corner of the section.
+        const rMin = 140;
+        const rMax = Math.hypot(VBW + Math.abs(cx - VBW), VBH + Math.abs(cy));
+        // Spacing between arcs → dense guilloché-like fill matching Plaid.
+        const RING_STEP = 14;
+        const rings = [];
+        for (let r = rMin; r <= rMax; r += RING_STEP) rings.push(r);
+        // Each arc is drawn as an SVG circle; the parts outside the section
+        // are clipped by overflow:hidden on the parent.
         return (
           <React.Fragment>
-            {/* Always-visible base fan — permanent design element,
-                matching Plaid where the ray pattern is present at rest. */}
+            {/* Always-visible base arcs — permanent design element. */}
             <svg aria-hidden viewBox={`0 0 ${VBW} ${VBH}`} preserveAspectRatio="none"
               style={{
                 position: 'absolute', inset: 0, width: '100%', height: '100%',
-                opacity: 0.7, pointerEvents: 'none', zIndex: 3,
+                opacity: 0.9, pointerEvents: 'none', zIndex: 3,
                 mixBlendMode: 'screen',
               }}>
-              {lines.map((d, i) => (
-                <path key={i} d={d} fill="none" stroke="rgba(160,220,255,0.6)" strokeWidth="0.55" />
+              {rings.map((r, i) => (
+                <circle key={i} cx={cx} cy={cy} r={r} fill="none"
+                  stroke="rgba(120,200,240,0.85)" strokeWidth="1.4" />
               ))}
             </svg>
-            {/* Cursor spotlight overlay — same paths, brighter, revealed
+            {/* Cursor spotlight overlay — same arcs, brighter, revealed
                 only inside the radial mask following the mouse. */}
             <svg aria-hidden viewBox={`0 0 ${VBW} ${VBH}`} preserveAspectRatio="none"
               style={{
@@ -342,8 +340,9 @@ function V1Hero({ accent, onApply }) {
                 WebkitMaskImage: 'radial-gradient(circle 520px at var(--mx, 50%) var(--my, 40%), rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 55%, rgba(0,0,0,0) 100%)',
                 maskImage: 'radial-gradient(circle 520px at var(--mx, 50%) var(--my, 40%), rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 55%, rgba(0,0,0,0) 100%)',
               }}>
-              {lines.map((d, i) => (
-                <path key={i} d={d} fill="none" stroke="rgba(200,230,255,1)" strokeWidth="0.85" />
+              {rings.map((r, i) => (
+                <circle key={i} cx={cx} cy={cy} r={r} fill="none"
+                  stroke="rgba(220,240,255,1)" strokeWidth="1.6" />
               ))}
             </svg>
           </React.Fragment>
