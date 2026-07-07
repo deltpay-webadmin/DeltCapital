@@ -322,11 +322,12 @@ function V1Hero({ accent, onApply }) {
         }
         return (
           <React.Fragment>
-            {/* Base layer — always on, barely visible. */}
+            {/* Base layer — always on, barely visible. Sits BEHIND
+                Washington (z:2) and the text column (z:2+) at z:1. */}
             <svg aria-hidden viewBox={`0 0 ${VBW} ${VBH}`} preserveAspectRatio="none"
               style={{
                 position: 'absolute', inset: 0, width: '100%', height: '100%',
-                opacity: 0.10, pointerEvents: 'none', zIndex: 3,
+                opacity: 0.10, pointerEvents: 'none', zIndex: 1,
                 mixBlendMode: 'screen',
               }}>
               {paths.map((d, i) => (
@@ -334,19 +335,29 @@ function V1Hero({ accent, onApply }) {
                   stroke="rgba(180,220,255,1)" strokeWidth="0.9" />
               ))}
             </svg>
-            {/* Cursor spotlight — same waves, brighter, revealed only
-                inside the radial mask following the mouse. */}
+            {/* Cursor spotlight — same waves, colored with the brand
+                indigo→purple gradient (matches the stripe painted across
+                Washington's eyes). Revealed only inside a soft radial mask
+                following the mouse. Lives at z:1 so the spotlight also
+                reads behind the portrait and headline. */}
             <svg aria-hidden viewBox={`0 0 ${VBW} ${VBH}`} preserveAspectRatio="none"
               style={{
                 position: 'absolute', inset: 0, width: '100%', height: '100%',
-                opacity: 0.9, pointerEvents: 'none', zIndex: 3,
+                opacity: 0.45, pointerEvents: 'none', zIndex: 1,
                 mixBlendMode: 'screen',
-                WebkitMaskImage: 'radial-gradient(circle 460px at var(--mx, 50%) var(--my, 40%), rgba(0,0,0,1) 0%, rgba(0,0,0,0.55) 55%, rgba(0,0,0,0) 100%)',
-                maskImage: 'radial-gradient(circle 460px at var(--mx, 50%) var(--my, 40%), rgba(0,0,0,1) 0%, rgba(0,0,0,0.55) 55%, rgba(0,0,0,0) 100%)',
+                WebkitMaskImage: 'radial-gradient(circle 360px at var(--mx, 50%) var(--my, 40%), rgba(0,0,0,1) 0%, rgba(0,0,0,0.35) 55%, rgba(0,0,0,0) 100%)',
+                maskImage: 'radial-gradient(circle 360px at var(--mx, 50%) var(--my, 40%), rgba(0,0,0,1) 0%, rgba(0,0,0,0.35) 55%, rgba(0,0,0,0) 100%)',
               }}>
+              <defs>
+                <linearGradient id="v1heroSpotGrad" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%"   stopColor="#4945FF" />
+                  <stop offset="55%"  stopColor="#6A4BE6" />
+                  <stop offset="100%" stopColor="#9F5BD6" />
+                </linearGradient>
+              </defs>
               {paths.map((d, i) => (
                 <path key={i} d={d} fill="none"
-                  stroke="rgba(220,240,255,1)" strokeWidth="1.1" />
+                  stroke="url(#v1heroSpotGrad)" strokeWidth="1.1" />
               ))}
             </svg>
           </React.Fragment>
