@@ -292,35 +292,59 @@ function V1Hero({ accent, onApply }) {
           on the enclosing <section> (updated on mousemove, see effect above).
           Line count bumped 42 → 96 for a denser topography. */}
       {(() => {
-        const LINE_COUNT = 96;
-        const buildPath = (i) => `M ${-40 + i * 3} 0 Q ${260 + i * 6} ${180 + i * 4}, ${180 + i * 5} ${520 - i * 2} T ${-20 + i * 2} 1000`;
+        // Plaid-style radiating topography: thin arcs that fan out from a
+        // virtual point below the section, sweeping upward across the full
+        // hero width. Paths are distributed evenly across x=0..1440 (matches
+        // typical desktop hero width) so lines cover the entire background,
+        // not just the left half. Each path is a gentle quadratic that
+        // starts at the bottom, arcs through the middle, and ends near the
+        // top — the collection forms a subtle radial "fanning" texture.
+        const LINE_COUNT = 140;
+        const VBW = 1440;
+        const VBH = 900;
+        // Fan origin sits below-center of the section, so lines radiate
+        // outward like a subtle rainbow of currency-engraving strokes.
+        const originX = VBW * 0.55;
+        const originY = VBH * 1.35;
+        const buildPath = (i) => {
+          // Spread endpoints across the full top edge (and beyond) so lines
+          // reach both far-left and far-right sides.
+          const t = i / (LINE_COUNT - 1); // 0..1
+          const topX = -200 + t * (VBW + 400); // -200..1640
+          // Curve control point midway between origin and top endpoint,
+          // pushed slightly outward for a gentle bow.
+          const midX = originX + (topX - originX) * 0.55;
+          const midY = VBH * 0.5;
+          return `M ${originX} ${originY} Q ${midX} ${midY}, ${topX} -60`;
+        };
         const lines = Array.from({ length: LINE_COUNT }, (_, i) => buildPath(i));
         return (
           <React.Fragment>
             {/* Barely-there base — the topography exists but is nearly
                 invisible at rest, matching Plaid where the lines only
-                emerge under the cursor. */}
-            <svg aria-hidden viewBox="0 0 1200 1000" preserveAspectRatio="none"
+                emerge fully under the cursor. Slightly higher baseline
+                opacity than v3 so the fan is faintly visible always. */}
+            <svg aria-hidden viewBox={`0 0 ${VBW} ${VBH}`} preserveAspectRatio="none"
               style={{
-                position: 'absolute', left: -80, top: -80, width: 1300, height: 1080,
-                opacity: 0.14, pointerEvents: 'none', zIndex: 1,
+                position: 'absolute', inset: 0, width: '100%', height: '100%',
+                opacity: 0.22, pointerEvents: 'none', zIndex: 1,
                 mixBlendMode: 'screen',
               }}>
               {lines.map((d, i) => (
-                <path key={i} d={d} fill="none" stroke="rgba(125,211,252,0.35)" strokeWidth="0.5" />
+                <path key={i} d={d} fill="none" stroke="rgba(125,211,252,0.42)" strokeWidth="0.55" />
               ))}
             </svg>
             {/* Bright overlay — same paths, revealed only inside the
                 radial-gradient mask centered on the cursor. Mask center
                 --mx/--my is set on the <section> via the mousemove effect.
-                Larger radius (420px) matches Plaid's ~450px spotlight. */}
-            <svg aria-hidden viewBox="0 0 1200 1000" preserveAspectRatio="none"
+                Larger radius (520px) for a more generous Plaid-like spotlight. */}
+            <svg aria-hidden viewBox={`0 0 ${VBW} ${VBH}`} preserveAspectRatio="none"
               style={{
-                position: 'absolute', left: -80, top: -80, width: 1300, height: 1080,
+                position: 'absolute', inset: 0, width: '100%', height: '100%',
                 opacity: 1, pointerEvents: 'none', zIndex: 1,
                 mixBlendMode: 'screen',
-                WebkitMaskImage: 'radial-gradient(circle 420px at var(--mx, 50%) var(--my, 40%), rgba(0,0,0,1) 0%, rgba(0,0,0,0.55) 55%, rgba(0,0,0,0) 100%)',
-                maskImage: 'radial-gradient(circle 420px at var(--mx, 50%) var(--my, 40%), rgba(0,0,0,1) 0%, rgba(0,0,0,0.55) 55%, rgba(0,0,0,0) 100%)',
+                WebkitMaskImage: 'radial-gradient(circle 520px at var(--mx, 50%) var(--my, 40%), rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 55%, rgba(0,0,0,0) 100%)',
+                maskImage: 'radial-gradient(circle 520px at var(--mx, 50%) var(--my, 40%), rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 55%, rgba(0,0,0,0) 100%)',
               }}>
               {lines.map((d, i) => (
                 <path key={i} d={d} fill="none" stroke="rgba(200,230,255,1)" strokeWidth="0.9" />
@@ -338,17 +362,28 @@ function V1Hero({ accent, onApply }) {
           No parallax / scroll transform — the portrait sits static, per
           stakeholder direction. */}
       <style>{`
-        /* Plaid-style silhouette: portrait sits flush with the section's
-           bottom edge and fills the right half, coat bleeding to the page
-           change below. Sub-stats bar overlays the coat instead of
-           floating below it. */
-        .v1hero-washington { position: absolute; right: 0; bottom: 0; height: 100%; max-height: 900px; width: auto; z-index: 2; pointer-events: none;
-          filter: drop-shadow(0 20px 60px rgba(4,15,40,0.55)); transform-origin: right bottom; }
+        /* Plaid-parity sizing: Franklin in the reference is ~62% of the
+           hero height, anchored to the right with the phone hand roughly
+           at the bottom of the section and the head in the upper third.
+           Matching those proportions here: height 62%, anchored right:0,
+           bottom:0. The left edge of the raw PNG has the shoulder pressed
+           against the image boundary (creating a harsh vertical crop);
+           a mask-image fade dissolves the leftmost ~110px into transparency
+           so the shoulder blends naturally into the background gradient. */
+        .v1hero-washington {
+          position: absolute; right: 0; bottom: 0;
+          height: 62%; max-height: 620px; width: auto;
+          z-index: 2; pointer-events: none;
+          filter: drop-shadow(0 20px 60px rgba(4,15,40,0.55));
+          transform-origin: right bottom;
+          -webkit-mask-image: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.35) 4%, rgba(0,0,0,1) 12%, rgba(0,0,0,1) 100%);
+                  mask-image: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.35) 4%, rgba(0,0,0,1) 12%, rgba(0,0,0,1) 100%);
+        }
         @media (max-width: 900px) {
-          .v1hero-washington { right: -22%; bottom: 0; height: 78%; max-height: 560px; opacity: 0.35; }
+          .v1hero-washington { right: -18%; bottom: 0; height: 52%; max-height: 460px; opacity: 0.4; }
         }
         @media (max-width: 560px) {
-          .v1hero-washington { right: -38%; bottom: 0; height: 66%; opacity: 0.22; }
+          .v1hero-washington { right: -34%; bottom: 0; height: 44%; opacity: 0.25; }
         }
       `}</style>
       <img
@@ -375,8 +410,18 @@ function V1Hero({ accent, onApply }) {
              effect; they sit off-screen when the cursor is not in the hero,
              so the fallback is a soft brand tint at the top-left. */}
           <style>{`
+            /* Plaid-parity: text always shows a wide cyan→indigo→white
+               gradient across the whole headline. The cursor adds a brighter
+               spotlight on top via a second layered background — both
+               background layers are clipped to the text so the effect reads
+               as a subtle highlight that follows the mouse, not a full
+               recolor. --hx/--hy are updated on mousemove; when the cursor
+               is outside the hero they sit off-screen (-30%) and the
+               spotlight disappears, leaving the static gradient. */
             .v1hero-h1, .v1hero-h1 * {
-              background: radial-gradient(circle at var(--hx, -30%) var(--hy, -30%), #A5B4FC 0%, #7DD3FC 22%, #F7F5F0 55%);
+              background:
+                radial-gradient(circle 380px at var(--hx, -30%) var(--hy, -30%), rgba(247,245,240,0.95) 0%, rgba(165,180,252,0.0) 60%),
+                linear-gradient(105deg, #7DD3FC 0%, #A5B4FC 38%, #C7D2FE 65%, #F7F5F0 100%);
               -webkit-background-clip: text;
               background-clip: text;
               -webkit-text-fill-color: transparent;
