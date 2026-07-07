@@ -296,9 +296,12 @@ function V1Hero({ accent, onApply }) {
           previous 60-path SVG wave field. */}
       <div aria-hidden style={{
         position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
-        background: 'repeating-linear-gradient(180deg, rgba(125,160,205,0.085) 0px, rgba(125,160,205,0.085) 1px, transparent 1px, transparent 4px)',
-        WebkitMaskImage: 'radial-gradient(130% 110% at 50% 42%, black 50%, rgba(0,0,0,0.25) 100%)',
-        maskImage: 'radial-gradient(130% 110% at 50% 42%, black 50%, rgba(0,0,0,0.25) 100%)',
+        background: 'repeating-linear-gradient(180deg, rgba(125,160,205,0.10) 0px, rgba(125,160,205,0.10) 1px, transparent 1px, transparent 4px)',
+        // Lines halo around George (right of center) and fade toward the
+        // copy column and corners, matching the reference plate — the
+        // cursor-spotlight layer below still reveals them anywhere.
+        WebkitMaskImage: 'radial-gradient(90% 120% at 74% 52%, black 40%, rgba(0,0,0,0.45) 64%, rgba(0,0,0,0.05) 90%, transparent 100%)',
+        maskImage: 'radial-gradient(90% 120% at 74% 52%, black 40%, rgba(0,0,0,0.45) 64%, rgba(0,0,0,0.05) 90%, transparent 100%)',
       }} />
       <div aria-hidden style={{
         position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
