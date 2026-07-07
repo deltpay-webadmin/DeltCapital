@@ -292,30 +292,29 @@ function V1Hero({ accent, onApply }) {
           on the enclosing <section> (updated on mousemove, see effect above).
           Line count bumped 42 → 96 for a denser topography. */}
       {(() => {
-        // Plaid-style radiating topography: thin arcs that fan out from a
-        // virtual point below the section, sweeping upward across the full
-        // hero width. Paths are distributed evenly across x=0..1440 (matches
-        // typical desktop hero width) so lines cover the entire background,
-        // not just the left half. Each path is a gentle quadratic that
-        // starts at the bottom, arcs through the middle, and ends near the
-        // top — the collection forms a subtle radial "fanning" texture.
-        const LINE_COUNT = 140;
+        // Plaid-style contour topography: densely packed near-horizontal
+        // lines that undulate gently across the full hero width, resembling
+        // engraved currency guilloché / topographic contour lines. Each
+        // line is a smooth cubic Bézier with slightly varied control point
+        // heights so the collection reads as an organic wavefield rather
+        // than perfectly parallel rules.
+        const LINE_COUNT = 180;
         const VBW = 1440;
         const VBH = 900;
-        // Fan origin sits below-center of the section, so lines radiate
-        // outward like a subtle rainbow of currency-engraving strokes.
-        const originX = VBW * 0.55;
-        const originY = VBH * 1.35;
         const buildPath = (i) => {
-          // Spread endpoints across the full top edge (and beyond) so lines
-          // reach both far-left and far-right sides.
+          // Vertical spacing: pack lines evenly across the full section
+          // height plus a bleed above/below.
           const t = i / (LINE_COUNT - 1); // 0..1
-          const topX = -200 + t * (VBW + 400); // -200..1640
-          // Curve control point midway between origin and top endpoint,
-          // pushed slightly outward for a gentle bow.
-          const midX = originX + (topX - originX) * 0.55;
-          const midY = VBH * 0.5;
-          return `M ${originX} ${originY} Q ${midX} ${midY}, ${topX} -60`;
+          const baseY = -40 + t * (VBH + 80);
+          // Two control points at 1/3 and 2/3 across, each offset vertically
+          // by a phase-shifted sine so the lines curve gently.
+          const phase = i * 0.11;
+          const amp1 = 22 + 8 * Math.sin(i * 0.19);
+          const amp2 = 22 + 8 * Math.cos(i * 0.23);
+          const y1 = baseY - amp1 * Math.sin(phase);
+          const y2 = baseY + amp2 * Math.sin(phase + 1.4);
+          const yEnd = baseY + 6 * Math.sin(phase + 2.8);
+          return `M -60 ${baseY.toFixed(1)} C ${VBW * 0.33} ${y1.toFixed(1)}, ${VBW * 0.66} ${y2.toFixed(1)}, ${VBW + 60} ${yEnd.toFixed(1)}`;
         };
         const lines = Array.from({ length: LINE_COUNT }, (_, i) => buildPath(i));
         return (
@@ -362,22 +361,15 @@ function V1Hero({ accent, onApply }) {
           No parallax / scroll transform — the portrait sits static, per
           stakeholder direction. */}
       <style>{`
-        /* Plaid-parity sizing: Franklin in the reference is ~62% of the
-           hero height, anchored to the right with the phone hand roughly
-           at the bottom of the section and the head in the upper third.
-           Matching those proportions here: height 62%, anchored right:0,
-           bottom:0. The left edge of the raw PNG has the shoulder pressed
-           against the image boundary (creating a harsh vertical crop);
-           a mask-image fade dissolves the leftmost ~110px into transparency
-           so the shoulder blends naturally into the background gradient. */
+        /* Franklin-ratio portrait: ~62% of hero height, anchored right:0.
+           No mask fade on the left edge — the shoulder shows in full so
+           there is no artificial vertical boundary line. */
         .v1hero-washington {
           position: absolute; right: 0; bottom: 0;
           height: 62%; max-height: 620px; width: auto;
           z-index: 2; pointer-events: none;
           filter: drop-shadow(0 20px 60px rgba(4,15,40,0.55));
           transform-origin: right bottom;
-          -webkit-mask-image: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.35) 4%, rgba(0,0,0,1) 12%, rgba(0,0,0,1) 100%);
-                  mask-image: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.35) 4%, rgba(0,0,0,1) 12%, rgba(0,0,0,1) 100%);
         }
         @media (max-width: 900px) {
           .v1hero-washington { right: -18%; bottom: 0; height: 52%; max-height: 460px; opacity: 0.4; }
@@ -420,8 +412,12 @@ function V1Hero({ accent, onApply }) {
                spotlight disappears, leaving the static gradient. */
             .v1hero-h1, .v1hero-h1 * {
               background:
-                radial-gradient(circle 380px at var(--hx, -30%) var(--hy, -30%), rgba(247,245,240,0.95) 0%, rgba(165,180,252,0.0) 60%),
-                linear-gradient(105deg, #7DD3FC 0%, #A5B4FC 38%, #C7D2FE 65%, #F7F5F0 100%);
+                radial-gradient(circle 620px at var(--hx, -30%) var(--hy, -30%),
+                  #FFFFFF 0%,
+                  #7DD3FC 22%,
+                  #A5B4FC 42%,
+                  rgba(165,180,252,0.0) 70%),
+                linear-gradient(105deg, #6EE7F9 0%, #7DD3FC 25%, #A5B4FC 55%, #C7D2FE 78%, #F7F5F0 100%);
               -webkit-background-clip: text;
               background-clip: text;
               -webkit-text-fill-color: transparent;
