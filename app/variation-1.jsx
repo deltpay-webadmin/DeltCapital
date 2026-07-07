@@ -14,11 +14,20 @@ function V1Ticker({ accent }) {
     ['SILVER FORK', '$220K', '1.13×', 'WIRED'],
   ];
   const all = [...rows, ...rows];
+  // Status color map — tuned for the black ticker background. The global
+  // DELT.colors.ok/warn are calibrated for light paper and read muddy on #000,
+  // so we use brighter ticker-specific values instead. FUNDED/WIRED = green,
+  // APPRVD = amber, CLOSED = neutral gray.
+  const statusColor = (s) => {
+    if (s === 'FUNDED' || s === 'WIRED') return '#22C55E';
+    if (s === 'APPRVD') return '#F59E0B';
+    return '#8B8A94'; // CLOSED + anything else
+  };
   return (
-    <div data-v1-ticker data-v1-ticker-bar style={{ background: '#000', color: '#E9E7DF', padding: '6px 0', overflow: 'hidden', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+    <div data-v1-ticker data-v1-ticker-bar data-no-i18n style={{ background: '#000', color: '#E9E7DF', padding: '10px 0 14px', overflow: 'hidden', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
       <div style={{
         display: 'flex', whiteSpace: 'nowrap',
-        animation: 'v1ticker 40s linear infinite', fontFamily: DELT.font.mono, fontSize: 11.5,
+        animation: 'v1ticker 48s linear infinite', fontFamily: DELT.font.mono, fontSize: 11.5,
       }}>
         {/* marginRight on every row (incl. last) so total width = 2× one copy
             exactly. translateX(-50%) then lines up pixel-perfect at loop. */}
@@ -27,7 +36,7 @@ function V1Ticker({ accent }) {
             <span style={{ color: 'rgba(233,231,223,0.5)' }}>{row[0]}</span>
             <span>{row[1]}</span>
             <span style={{ color: accent }}>{row[2]}</span>
-            <span style={{ color: DELT.colors.ok, fontSize: 10 }}>● {row[3]}</span>
+            <span style={{ color: statusColor(row[3]), fontSize: 10 }}>● {row[3]}</span>
           </span>
         ))}
       </div>
@@ -37,14 +46,16 @@ function V1Ticker({ accent }) {
 }
 
 function V1Chrome({ page, navTo, accent, openApp }) {
+  // Subscribe to language changes so nav labels re-render on toggle.
+  useLang();
   const links = [
-    { k: 'how',         l: 'How It Works' },
-    { k: 'calc',        l: 'Calculator' },
-    { k: 'processing',  l: 'Processing' },
-    { k: 'about',       l: 'About' },
-    { k: 'reviews',     l: 'Operators' },
-    { k: 'faq',         l: 'FAQ' },
-    { k: 'talk',        l: 'Contact' },
+    { k: 'how',         l: t('nav.how') },
+    { k: 'calc',        l: t('nav.calc') },
+    { k: 'processing',  l: t('nav.processing') },
+    { k: 'about',       l: t('nav.about') },
+    { k: 'reviews',     l: t('nav.reviews') },
+    { k: 'faq',         l: t('nav.faq') },
+    { k: 'talk',        l: t('nav.contact') },
   ];
   const [menuOpen, setMenuOpen] = React.useState(false);
   const handleNav = (k) => { setMenuOpen(false); navTo(k); };
@@ -82,8 +93,9 @@ function V1Chrome({ page, navTo, accent, openApp }) {
           ))}
         </nav>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-          <a data-v1-desktop-nav onClick={() => navTo('login')} style={{ fontFamily: DELT.font.body, fontSize: 13.5, color: page === 'login' ? '#F7F5F0' : 'rgba(247,245,240,0.75)', cursor: 'pointer' }}>Login</a>
-          <Btn variant="indigo" size="sm" onClick={openApp} style={{ background: accent, borderColor: accent }}>Get Funded</Btn>
+          <a data-v1-desktop-nav onClick={() => navTo('login')} style={{ fontFamily: DELT.font.body, fontSize: 13.5, color: page === 'login' ? '#F7F5F0' : 'rgba(247,245,240,0.75)', cursor: 'pointer' }}>{t('nav.login')}</a>
+          <V1LangToggle compact />
+          <Btn variant="ghost" size="sm" onClick={openApp} style={{ background: 'transparent', color: '#F7F5F0', borderColor: 'rgba(247,245,240,0.2)' }}>{t('cta.getFunded')}</Btn>
           {/* Mobile hamburger — hidden on desktop via CSS, shown <= 768px */}
           <button
             data-v1-mobile-nav-toggle
@@ -151,10 +163,11 @@ function V1Chrome({ page, navTo, accent, openApp }) {
           color: page === 'login' ? '#F7F5F0' : 'rgba(247,245,240,0.78)',
           cursor: 'pointer', padding: '12px 4px',
           borderBottom: '1px solid rgba(247,245,240,0.08)',
-        }}>Login</a>
+        }}>{t('nav.login')}</a>
       </nav>
-      <div style={{ marginTop: 'auto', paddingTop: 24 }}>
-        <Btn variant="indigo" size="lg" onClick={() => { setMenuOpen(false); openApp(); }} style={{ background: accent, borderColor: accent, width: '100%' }}>Get Funded</Btn>
+      <div style={{ marginTop: 'auto', paddingTop: 24, display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'center' }}>
+        <V1LangToggle />
+        <Btn variant="indigo" size="lg" onClick={() => { setMenuOpen(false); openApp(); }} style={{ background: accent, borderColor: accent, width: '100%' }}>{t('cta.getFunded')}</Btn>
       </div>
     </div>
     </>
@@ -172,46 +185,90 @@ V1Chrome.brand = (
 
 function V1Hero({ accent, onApply }) {
   const mounted = useV1Mounted(80);
-  const scrollY = useV1ScrollY();
-  // Parallax: only active while the hero is on screen (roughly first 900px).
-  const py = Math.min(scrollY, 900);
-  const videoShift = -py * 0.12;
-  const videoScale = 1 + Math.min(py, 600) * 0.00018;
+  // Subscribe to language changes so the hero copy swaps on toggle.
+  useLang();
+
+  // Cursor-tracked spotlight on the background lines and cursor-tracked
+  // gradient on the headline (both Plaid-style). The section receives CSS
+  // custom properties --mx / --my (section-relative %) and --hx / --hy
+  // (headline-relative %). Both are updated via a single requestAnimationFrame
+  // loop with a 15% lerp so the light glides smoothly to the cursor.
+  const heroRef = React.useRef(null);
+  const headlineRef = React.useRef(null);
+  React.useEffect(() => {
+    const el = heroRef.current;
+    if (!el) return undefined;
+    // Idle: push spotlights off-screen so both the lines and the headline
+    // gradient hotspot are hidden until the user actually moves in.
+    const sec = { x: -30, y: -30 };
+    const head = { x: -30, y: -30 };
+    const curSec = { x: -30, y: -30 };
+    const curHead = { x: -30, y: -30 };
+    let raf = 0;
+    const onMove = (e) => {
+      const r = el.getBoundingClientRect();
+      sec.x = ((e.clientX - r.left) / r.width) * 100;
+      sec.y = ((e.clientY - r.top) / r.height) * 100;
+      const h = headlineRef.current;
+      if (h) {
+        const hr = h.getBoundingClientRect();
+        head.x = ((e.clientX - hr.left) / hr.width) * 100;
+        head.y = ((e.clientY - hr.top) / hr.height) * 100;
+      }
+    };
+    const onLeave = () => {
+      sec.x = -30; sec.y = -30;
+      head.x = -30; head.y = -30;
+    };
+    const tick = () => {
+      curSec.x  += (sec.x  - curSec.x)  * 0.15;
+      curSec.y  += (sec.y  - curSec.y)  * 0.15;
+      curHead.x += (head.x - curHead.x) * 0.15;
+      curHead.y += (head.y - curHead.y) * 0.15;
+      el.style.setProperty('--mx', curSec.x.toFixed(2) + '%');
+      el.style.setProperty('--my', curSec.y.toFixed(2) + '%');
+      el.style.setProperty('--hx', curHead.x.toFixed(2) + '%');
+      el.style.setProperty('--hy', curHead.y.toFixed(2) + '%');
+      raf = requestAnimationFrame(tick);
+    };
+    el.addEventListener('mousemove', onMove);
+    el.addEventListener('mouseleave', onLeave);
+    raf = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(raf);
+      el.removeEventListener('mousemove', onMove);
+      el.removeEventListener('mouseleave', onLeave);
+    };
+  }, []);
+
+  // Hero portrait is static — no parallax / scroll animation, per stakeholder.
   const enter = (base) => ({
     opacity: mounted ? 1 : 0,
     transform: mounted ? 'translate3d(0,0,0)' : 'translate3d(0, 14px, 0)',
     transition: `opacity 820ms cubic-bezier(0.22, 1, 0.36, 1) ${base}ms, transform 820ms cubic-bezier(0.22, 1, 0.36, 1) ${base}ms`,
   });
 
-  // Rotating verb that swaps every 1.9s. Words are stacked in a single
-  // inline-grid cell so the <em> auto-sizes to the widest child — keeps the
-  // trailing "it." anchored regardless of which word is showing.
-  const fundWords = ['fund', 'back', 'wire', 'fuel'];
-  const [fundIdx, setFundIdx] = React.useState(0);
-  React.useEffect(() => {
-    if (!mounted) return undefined;
-    const iv = setInterval(() => setFundIdx((i) => (i + 1) % fundWords.length), 1900);
-    return () => clearInterval(iv);
-  }, [mounted]);
+  // Hero verb is a static "fund" — rotator was removed per stakeholder
+  // request so the headline reads as a definitive statement, not a demo.
+  // paddingBlockEnd on the inline container adds room for the italic
+  // descender ("d" in Source Serif Pro Italic sits below the baseline)
+  // so line-height:0.95 on the h1 no longer clips it.
 
   // Hero graphic — static George Washington cutout (transparent PNG).
-  // Kept the parallax shift/scale variables so subtle scroll motion still
-  // animates the image the same way the previous hero video did.
-
-  // Hero background tuning knobs — every visible layer is separate so we can
-  // dial it up/down independently. Change these to iterate.
-  const HERO_BG        = '#041E42';       // matches V1.ink and the CTA base
-  const HERO_LINE_OPAC = 0.18;            // Plaid-style waves — subtle but visible
-  const HERO_LINE_COUNT = 52;             // dense parallel flow like Plaid
-  const HERO_WASH_OPAC = 0.42;            // ghostlier Washington
-  const HERO_WASH_BLUR = 0.4;             // subtle softening (px)
+  // No parallax; the portrait is anchored at the right edge and stays put
+  // as the page scrolls.
 
   return (
-    <section style={{
-      // Same treatment as V1CTASection: solid ink base + two radial indigo
-      // blooms (top-right + bottom-left). The blooms are drawn as absolutely
-      // positioned divs below so opacity can animate on inView.
-      background: HERO_BG,
+    <section ref={heroRef} style={{
+      // Engraving-plate dark: deep slate navy (#0c1a2a, banknote-reference)
+      // with a soft steel bloom behind the portrait and a whisper of indigo
+      // low-left. The loud cyan wash is gone — the portrait and the offer
+      // screen carry the light now.
+      backgroundColor: '#0c1a2a',
+      backgroundImage: 'radial-gradient(85% 90% at 74% 34%, rgba(43,74,114,0.42) 0%, rgba(12,26,42,0) 62%), radial-gradient(60% 70% at 8% 96%, rgba(73,69,255,0.10) 0%, rgba(12,26,42,0) 60%)',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
       color: '#F7F5F0',
       position: 'relative',
       overflow: 'hidden',
@@ -223,136 +280,169 @@ function V1Hero({ accent, onApply }) {
       <style>{`
         @keyframes v1heroPulse { 0% { transform: translate(-50%,-50%) scale(1); opacity: 0.55; } 70% { transform: translate(-50%,-50%) scale(2.6); opacity: 0; } 100% { transform: translate(-50%,-50%) scale(2.6); opacity: 0; } }
         @keyframes v1heroBob { 0%, 100% { transform: translateY(0); opacity: 0.55; } 50% { transform: translateY(5px); opacity: 1; } }
+        @keyframes v1heroFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+        @keyframes v1heroGlow { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
         @media (prefers-reduced-motion: reduce) {
-          .v1hero-pulse, .v1hero-bob { animation: none !important; }
+          .v1hero-pulse, .v1hero-bob, .v1hero-float, .v1hero-glow { animation: none !important; }
         }
       `}</style>
 
-      {/* Ambient indigo bloom — top-right. Mirrors V1CTASection. */}
+      {/* Banknote scanlines — fine horizontal security linework, like the
+          field behind a portrait on a bill (matches the engraving reference).
+          Two layers, Plaid-style: a dim base always on, plus a brighter copy
+          revealed through a radial mask that follows the cursor (--mx / --my
+          custom properties set on the <section> by the mousemove effect).
+          Pure CSS repeating gradients — far cheaper to composite than the
+          previous 60-path SVG wave field. */}
       <div aria-hidden style={{
-        position: 'absolute', top: -240, right: -200, width: 640, height: 640,
-        background: 'radial-gradient(circle, #4945FF22 0%, transparent 60%)',
-        filter: 'blur(24px)', pointerEvents: 'none',
-        opacity: mounted ? 1 : 0,
-        transition: 'opacity 1400ms ease-out 200ms',
-        zIndex: 0,
+        position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
+        background: 'repeating-linear-gradient(180deg, rgba(125,160,205,0.085) 0px, rgba(125,160,205,0.085) 1px, transparent 1px, transparent 4px)',
+        WebkitMaskImage: 'radial-gradient(130% 110% at 50% 42%, black 50%, rgba(0,0,0,0.25) 100%)',
+        maskImage: 'radial-gradient(130% 110% at 50% 42%, black 50%, rgba(0,0,0,0.25) 100%)',
       }} />
-      {/* Ambient soft-indigo bloom — bottom-left. Mirrors V1CTASection. */}
       <div aria-hidden style={{
-        position: 'absolute', bottom: -280, left: -180, width: 520, height: 520,
-        background: 'radial-gradient(circle, #818CF81A 0%, transparent 60%)',
-        filter: 'blur(24px)', pointerEvents: 'none',
-        opacity: mounted ? 1 : 0,
-        transition: 'opacity 1400ms ease-out 400ms',
-        zIndex: 0,
+        position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
+        background: 'repeating-linear-gradient(180deg, rgba(147,184,232,0.22) 0px, rgba(147,184,232,0.22) 1px, transparent 1px, transparent 4px)',
+        WebkitMaskImage: 'radial-gradient(circle 360px at var(--mx, 50%) var(--my, 40%), rgba(0,0,0,1) 0%, rgba(0,0,0,0.35) 55%, rgba(0,0,0,0) 100%)',
+        maskImage: 'radial-gradient(circle 360px at var(--mx, 50%) var(--my, 40%), rgba(0,0,0,1) 0%, rgba(0,0,0,0.35) 55%, rgba(0,0,0,0) 100%)',
       }} />
 
-      {/* Plaid-style dense wavy line pattern. All lines share the same
-         underlying sine — one long "S" that flows across the width — with
-         each row offset by a fixed step. That yields the tightly parallel,
-         topographic look on plaid.com instead of the random tangle a
-         per-line-phase approach produces. Path is sampled at 32 points and
-         stitched with a smooth Catmull-Rom-style cubic. */}
-      <svg aria-hidden viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" style={{
-        position: 'absolute', inset: 0, width: '100%', height: '100%',
-        opacity: HERO_LINE_OPAC, pointerEvents: 'none', zIndex: 1,
-      }}>
-        <defs>
-          <linearGradient id="v1heroLineStroke" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%"   stopColor="#60A5FA" stopOpacity="0" />
-            <stop offset="22%"  stopColor="#60A5FA" stopOpacity="1" />
-            <stop offset="55%"  stopColor="#22D3EE" stopOpacity="1" />
-            <stop offset="82%"  stopColor="#818CF8" stopOpacity="1" />
-            <stop offset="100%" stopColor="#818CF8" stopOpacity="0" />
-          </linearGradient>
-        </defs>
-        {(() => {
-          // Shared sine profile — one gentle "S" from 0..1600. Amplitude
-          // ramps up in the middle so the flow feels stronger at the
-          // center and settles at the edges (Plaid-like).
-          const SAMPLES = 40;
-          const sampleX = (t) => t * 1600;
-          const sampleY = (t, baseY) => {
-            const envelope = Math.sin(Math.PI * t);      // 0..1..0
-            const primary  = Math.sin(t * Math.PI * 1.6);
-            const secondary = Math.sin(t * Math.PI * 3.2) * 0.28;
-            return baseY + (primary + secondary) * 46 * envelope;
-          };
-          const buildPath = (baseY) => {
-            let d = '';
-            for (let s = 0; s <= SAMPLES; s += 1) {
-              const t = s / SAMPLES;
-              const x = sampleX(t);
-              const y = sampleY(t, baseY);
-              d += s === 0 ? `M ${x.toFixed(1)} ${y.toFixed(1)}`
-                           : ` L ${x.toFixed(1)} ${y.toFixed(1)}`;
-            }
-            return d;
-          };
-          const spacing = 940 / HERO_LINE_COUNT;
-          return Array.from({ length: HERO_LINE_COUNT }).map((_, i) => {
-            const baseY = -20 + i * spacing;
-            return (
-              <path
-                key={i}
-                d={buildPath(baseY)}
-                fill="none"
-                stroke="url(#v1heroLineStroke)"
-                strokeWidth={0.75}
-                strokeLinecap="round"
-              />
-            );
-          });
-        })()}
-      </svg>
+      {/* Washington cutout — transparent PNG, absolutely positioned on the right.
+          Anchored to the section's right edge (right:0) with a small inner
+          pad so the full portrait — including the phone — stays on screen.
+          On narrow viewports we push it partially off-screen and dim it so
+          the copy stays readable (media query in <style> below).
+          No parallax / scroll transform — the portrait sits static, per
+          stakeholder direction. */}
+      <style>{`
+        /* Franklin-ratio portrait: anchored to the right so his head sits
+           in the upper-right quadrant and coat/shoulders spread down and
+           to the left. The wrapper shrink-wraps the img, so the phone-glow
+           child can use % coordinates that track the portrait at any size.
+           Mobile dim lives on the img (not the wrapper) because the wrapper
+           carries an inline entrance opacity that would win otherwise. */
+        .v1hero-washington {
+          position: absolute;
+          right: 0; bottom: 0;
+          height: 75%; max-height: 675px;
+          z-index: 2; pointer-events: none;
+        }
+        .v1hero-washington img {
+          height: 100%; width: auto; display: block;
+          filter: drop-shadow(0 20px 60px rgba(4,15,40,0.55));
+          animation: v1heroFloat 8s ease-in-out infinite;
+        }
+        @media (max-width: 1200px) {
+          .v1hero-washington { right: 0; }
+        }
+        @media (max-width: 900px) {
+          .v1hero-washington { right: -8%; bottom: 0; height: 82%; max-height: 620px; }
+          .v1hero-washington img { opacity: 0.45; animation: none; }
+        }
+        @media (max-width: 560px) {
+          .v1hero-washington { right: -20%; bottom: 0; height: 68%; }
+          .v1hero-washington img { opacity: 0.28; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .v1hero-washington img { animation: none; }
+        }
+      `}</style>
+      <div
+        className="v1hero-washington"
+        aria-hidden
+        style={{
+          opacity: mounted ? 1 : 0,
+          transition: 'opacity 1100ms ease-out 200ms',
+        }}
+      >
+        {/* Breathing glow off the phone screen — sells the "screen is lit"
+            read against the plate-dark background. Positioned in % of the
+            portrait so it stays glued to the phone at every viewport. */}
+        <div className="v1hero-glow" style={{
+          position: 'absolute', left: '-7%', top: '16%', width: '46%', height: '72%',
+          background: 'radial-gradient(50% 42% at 42% 50%, rgba(129,140,248,0.28) 0%, rgba(73,69,255,0.10) 48%, rgba(12,26,42,0) 74%)',
+          filter: 'blur(18px)',
+          animation: 'v1heroGlow 5.5s ease-in-out infinite',
+          pointerEvents: 'none',
+        }} />
+        <img src="app/assets/washington-cutout.png" alt="" />
+      </div>
 
       <div data-v1-grid-2col style={{
         width: '100%',
         maxWidth: 1280, margin: '0 auto', padding: '76px 32px 0',
         display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48,
-        alignItems: 'center', position: 'relative', zIndex: 3,
+        alignItems: 'center', position: 'relative', zIndex: 2,
         minHeight: 680, flex: 1,
       }}>
         {/* Left: copy */}
-        <div>
-          <h1 data-v1-hero-title style={{
+        <div style={{ position: 'relative', zIndex: 3 }}>
+          {/* Headline gets a cursor-tracked radial gradient via a plain
+             CSS class so we can cascade the background-clip:text treatment
+             down to every descendant span/em (V1LineMask wraps each line
+             in inline-block spans, so applying clip:text on the H1 alone
+             wouldn't reach them). --hx / --hy come from the mousemove
+             effect; they sit off-screen when the cursor is not in the hero,
+             so the fallback is a soft brand tint at the top-left. */}
+          <style>{`
+            /* Plaid-parity: text always shows a wide cyan→indigo→white
+               gradient across the whole headline. The cursor adds a brighter
+               spotlight on top via a second layered background — both
+               background layers are clipped to the text so the effect reads
+               as a subtle highlight that follows the mouse, not a full
+               recolor. --hx/--hy are updated on mousemove; when the cursor
+               is outside the hero they sit off-screen (-30%) and the
+               spotlight disappears, leaving the static gradient. */
+            .v1hero-h1, .v1hero-h1 * {
+              background:
+                radial-gradient(circle 620px at var(--hx, -30%) var(--hy, -30%),
+                  #FFFFFF 0%,
+                  #7DD3FC 22%,
+                  #A5B4FC 42%,
+                  rgba(165,180,252,0.0) 70%),
+                linear-gradient(105deg, #6EE7F9 0%, #7DD3FC 25%, #A5B4FC 55%, #C7D2FE 78%, #F7F5F0 100%);
+              -webkit-background-clip: text;
+              background-clip: text;
+              -webkit-text-fill-color: transparent;
+              color: transparent;
+            }
+            /* The italic "fund" <em> keeps its own accent→indigo gradient
+               so the animated verb still pops against the cursor-tracked
+               field. Override the cascade above. */
+            .v1hero-h1 em.v1hero-fund {
+              background: linear-gradient(90deg, ${accent}, #818CF8);
+              -webkit-background-clip: text; background-clip: text;
+            }
+          `}</style>
+          <h1 ref={headlineRef} className="v1hero-h1" data-v1-hero-title style={{
             fontFamily: DELT.font.display, fontSize: 92, fontWeight: 600,
-            letterSpacing: '-0.045em', color: '#F7F5F0', lineHeight: 0.95,
+            letterSpacing: '-0.045em', lineHeight: 0.95,
             margin: 0,
           }}>
-            <V1LineMask ready={mounted} delay={120}>You built the</V1LineMask>
-            <V1LineMask ready={mounted} delay={230}>business.</V1LineMask>
+            <V1LineMask ready={mounted} delay={120}>{t('hero.line1')}</V1LineMask>
+            <V1LineMask ready={mounted} delay={230}>
+              <span>{t('hero.line2')}</span>
+            </V1LineMask>
             <V1LineMask ready={mounted} delay={340}>
-              We{' '}
+              {t('hero.line3.we')}{' '}
               <em style={{
                 // Manrope/Codec Pro have no italic; switch to Source Serif Pro
                 // Italic to match the prior "yourself." treatment.
                 fontFamily: '"Source Serif Pro", Georgia, serif',
                 fontStyle: 'italic',
                 fontWeight: 400,
-                display: 'inline-grid',
-                gridTemplateAreas: '"stack"',
                 verticalAlign: 'baseline',
                 whiteSpace: 'nowrap',
-              }}>
-                {fundWords.map((w, i) => (
-                  <span key={w} style={{
-                    gridArea: 'stack',
-                    // Gradient must live on the span that holds the text —
-                    // background-clip:text on the <em> parent doesn't reach
-                    // child spans, which would render transparent.
-                    color: accent,
-                    background: `linear-gradient(90deg, ${accent}, #818CF8)`,
-                    WebkitBackgroundClip: 'text', backgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    paddingInlineEnd: '0.12em',
-                    opacity: i === fundIdx ? 1 : 0,
-                    transform: i === fundIdx ? 'translateY(0)' : 'translateY(6px)',
-                    transition: 'opacity 480ms cubic-bezier(0.22, 1, 0.36, 1), transform 480ms cubic-bezier(0.22, 1, 0.36, 1)',
-                    whiteSpace: 'nowrap',
-                  }}>{w}</span>
-                ))}
-              </em>{' '}it.
+                // Gradient fill on the span itself (background-clip:text
+                // works fine here since there's no child wrapper).
+                background: `linear-gradient(90deg, ${accent}, #818CF8)`,
+                WebkitBackgroundClip: 'text', backgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                // Give the italic "d" descender breathing room so line-height
+                // 0.95 on the h1 doesn't clip it.
+                paddingBlockEnd: '0.12em',
+                display: 'inline-block',
+              }}>{t('hero.line3.fund')}</em><span style={{ marginInlineStart: '0.08em' }}>{t('hero.line3.it')}</span>
             </V1LineMask>
           </h1>
 
@@ -361,15 +451,15 @@ function V1Hero({ accent, onApply }) {
             color: 'rgba(247,245,240,0.75)', margin: '32px 0 0', maxWidth: 520,
             ...enter(560),
           }}>
-            Revenue-based funding from <span style={{ color: '#F7F5F0', fontWeight: 500 }}>$5,000 to $500,000</span>, underwritten off deposits — not your FICO, not your collateral, not a call center's script. Median factor <span style={{ color: '#F7F5F0', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>1.18×</span>. Median time to funds, <span style={{ color: '#F7F5F0', fontWeight: 500 }}>24 hours</span>.
+            {t('hero.subhead.a')}<span style={{ color: '#F7F5F0', fontWeight: 500 }}>$5K–$500K</span>{t('hero.subhead.b')}<span style={{ color: '#F7F5F0', fontWeight: 500 }}>{t('hero.24h')}</span>{t('hero.subhead.c')}
           </p>
 
           <div style={{
             display: 'flex', gap: 12, marginTop: 36, alignItems: 'center', flexWrap: 'wrap',
             ...enter(700),
           }}>
-            <Btn variant="indigo" size="lg" onClick={onApply} style={{ background: accent, borderColor: accent }}>Get Funded <Arr /></Btn>
-            <Btn variant="ghost" size="lg" style={{ background: 'transparent', color: '#F7F5F0', borderColor: 'rgba(247,245,240,0.2)' }}>See how pricing works</Btn>
+            <Btn variant="indigo" size="lg" onClick={onApply} style={{ background: accent, borderColor: accent }}>{t('cta.getFunded')} <Arr /></Btn>
+            <Btn variant="ghost" size="lg" style={{ background: 'transparent', color: '#F7F5F0', borderColor: 'rgba(247,245,240,0.2)' }}>{t('cta.seePricing')}</Btn>
           </div>
 
           <div data-v1-hero-substats style={{
@@ -378,9 +468,9 @@ function V1Hero({ accent, onApply }) {
             display: 'flex', gap: 36, flexWrap: 'wrap',
           }}>
             {[
-              ['Today\'s median', '1.18×', 'factor'],
-              ['Time to funds', '24h', 'median'],
-              ['Soft-pull', 'Yes', 'only'],
+              [t('hero.stat.range'),  '$5K–$500K',        t('hero.stat.range.sub')],
+              [t('hero.stat.time'),   '24h',              t('hero.stat.time.sub')],
+              [t('hero.stat.credit'), t('hero.stat.credit.v'), t('hero.stat.credit.sub')],
             ].map(([l, v, s], i) => (
               <div key={l} style={enter(820 + i * 90)}>
                 <div style={{ fontFamily: DELT.font.body, fontSize: 10.5, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(247,245,240,0.45)' }}>{l}</div>
@@ -393,93 +483,13 @@ function V1Hero({ accent, onApply }) {
           </div>
         </div>
 
-        {/* Right: George Washington hero graphic (transparent PNG). */}
-        <div data-v1-hero-media style={{
-          position: 'relative',
-          alignSelf: 'stretch',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginRight: -32,
-          marginTop: -32,
-          marginBottom: -32,
-          overflow: 'hidden',
-          clipPath: mounted ? 'inset(0 0 0 0)' : 'inset(0 100% 0 0)',
-          transition: 'clip-path 1100ms cubic-bezier(0.76, 0, 0.24, 1) 160ms',
-          willChange: mounted ? 'auto' : 'clip-path',
-        }}>
-          {/* Soft indigo glow behind the subject to lift it off Midnight Steel */}
-          <div aria-hidden style={{
-            position: 'absolute',
-            inset: '10% 6%',
-            background: 'radial-gradient(60% 55% at 50% 45%, rgba(73,69,255,0.22) 0%, rgba(73,69,255,0.10) 40%, rgba(4,30,66,0) 72%)',
-            filter: 'blur(6px)',
-            pointerEvents: 'none',
-          }} />
-          {/* Washington — transparent PNG, monochrome + indigo-tinted so he
-             reads as an on-bill engraving rather than a photo. Simple filter
-             stack: full desaturation, contrast pulled down, a soft blur, and
-             a very slight sepia→hue-rotate to nudge the grays toward navy.
-             No overlay divs, no multi-layer stack — one image, one filter. */}
-          <img
-            src="app/assets/washington.png"
-            alt="George Washington, modernized — holding an iPhone with an AirPod in his ear"
-            style={{
-              position: 'relative',
-              maxWidth: '100%',
-              maxHeight: '92%',
-              width: 'auto',
-              height: 'auto',
-              objectFit: 'contain',
-              display: 'block',
-              opacity: HERO_WASH_OPAC,
-              transform: `translate3d(0, ${videoShift}px, 0) scale(${videoScale})`,
-              transformOrigin: 'center center',
-              willChange: 'transform',
-              filter: `grayscale(1) sepia(0.55) hue-rotate(190deg) saturate(1.4) brightness(1.08) contrast(0.85) blur(${HERO_WASH_BLUR}px) drop-shadow(0 14px 28px rgba(0,0,0,0.28))`,
-            }}
-          />
-          {/* Left-edge fade so the subject melts into the copy column */}
-          <div style={{
-            position: 'absolute', inset: 0,
-            background: 'linear-gradient(90deg, #041E42 0%, rgba(4,30,66,0.5) 8%, rgba(4,30,66,0) 22%)',
-            pointerEvents: 'none',
-          }} />
-          {/* Right-edge fade so the subject melts into the section background */}
-          <div style={{
-            position: 'absolute', inset: 0,
-            background: 'linear-gradient(270deg, #041E42 0%, rgba(4,30,66,0.4) 6%, rgba(4,30,66,0) 18%)',
-            pointerEvents: 'none',
-          }} />
-
-        </div>
+        {/* Right column spacer — Washington image is absolutely positioned
+            on the section so it can bleed edge-to-edge, Plaid-style. */}
+        <div aria-hidden />
       </div>
 
-      {/* Bottom rule with scroll cue */}
-      <div data-v1-decorative style={{
-        width: '100%',
-        maxWidth: 1280, margin: '32px auto 0', padding: '48px 32px 28px',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        borderTop: '1px solid rgba(247,245,240,0.08)',
-        fontFamily: DELT.font.mono, fontSize: 11, color: 'rgba(247,245,240,0.45)',
-        letterSpacing: '0.14em', textTransform: 'uppercase',
-        position: 'relative', zIndex: 2,
-        ...enter(1000),
-      }}>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10 }}>
-          Scroll — the numbers
-          <span className="v1hero-bob" style={{
-            display: 'inline-block',
-            animation: 'v1heroBob 1.8s cubic-bezier(0.22, 1, 0.36, 1) infinite',
-            willChange: 'transform, opacity',
-          }}>
-            <svg width="10" height="12" viewBox="0 0 10 12" aria-hidden="true">
-              <path d="M5 1v9M1.5 7.5 5 11l3.5-3.5" stroke="currentColor" strokeWidth="1.3" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </span>
-        </span>
-        <span>$200M+ deployed · 2,850+ funded · since 2019</span>
-      </div>
+
+
     </section>
   );
 }
@@ -683,11 +693,18 @@ function Variation1() {
 
   const home = (
     <>
+      {/* Plaid-structured homepage flow — Delt-skinned. Hero stays untouched;
+          new sections mirror Plaid.com's rhythm (marquee → product grid →
+          dark engine banner → network stats → product tabs → case studies),
+          keep V1CompareSection as a final skeptic's look before the lead form. */}
       <V1Hero accent={accent} onApply={() => openApp(null, null)} />
+      <V1ProductGrid />
+      <V1IntelligentBanner />
+      <V1NetworkStats />
+      <V1ProductTabs />
+      <V1CaseStudyStrip />
       <V1CompareSection />
-      <V1UseCasesSection />
-      <V1CalcSection calcState={calcState} setCalcState={setCalcState} onApply={openApp} onNavHow={() => navTo('funding-flow')} onNavProcessing={() => navTo('processing')} />
-      <V1CTASection onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} />
+      <V1LeadFormSection onApply={openApp} />
     </>
   );
 
