@@ -381,7 +381,7 @@ function V1Hero({ accent, onApply }) {
            the section vertically. */
         .v1hero-washington {
           position: absolute;
-          right: 6%; bottom: 0;
+          right: 0; bottom: 0;
           height: 75%; max-height: 675px;
           width: auto;
           z-index: 2; pointer-events: none;
@@ -389,7 +389,7 @@ function V1Hero({ accent, onApply }) {
           transform-origin: right bottom;
         }
         @media (max-width: 1200px) {
-          .v1hero-washington { right: 2%; }
+          .v1hero-washington { right: 0; }
         }
         @media (max-width: 900px) {
           .v1hero-washington { right: -8%; bottom: 0; height: 82%; max-height: 620px; opacity: 0.45; }
