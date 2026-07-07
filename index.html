@@ -129,7 +129,7 @@
     [data-v1-capital-picker-mobile] { display: block !important; }
 
     /* Disable decorative animations on mobile (reduce visual noise + save battery) */
-    .v1hero-pulse, .v1hero-bob { animation: none !important; }
+    .v1hero-pulse, .v1hero-bob, .v1hero-float, .v1hero-glow { animation: none !important; }
 
     /* Mobile-simplified comparison cards */
     [data-v1-comparison-mobile] { padding: 0; margin: 0; }
@@ -229,7 +229,7 @@
   /* Match the splash background so the first paint is Midnight Steel,
      not white — otherwise the browser flashes white before the splash
      overlay is composited on top. */
-  html, body { margin: 0; padding: 0; background: #041E42; font-family: 'Inter', sans-serif; color: #0F0E17; }
+  html, body { margin: 0; padding: 0; background: #0c1a2a; font-family: 'Inter', sans-serif; color: #0F0E17; }
   body { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
   button { font-family: inherit; }
   a { text-decoration: none; color: inherit; }
@@ -238,7 +238,7 @@
   #app-splash {
     position: fixed; inset: 0; z-index: 9999;
     display: flex; align-items: center; justify-content: center;
-    background: #041E42;
+    background: #0c1a2a;
     transition: opacity 280ms ease;
   }
   #app-splash.is-hidden { opacity: 0; pointer-events: none; }

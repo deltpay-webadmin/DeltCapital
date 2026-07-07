@@ -260,11 +260,12 @@ function V1Hero({ accent, onApply }) {
 
   return (
     <section ref={heroRef} style={{
-      // Delt indigo gradient: violet/cyan glows over a deep navy → indigo
-      // base. Washington cutout floats on the right; elegant swept curves
-      // fill the left half. No more baked-in ripple pattern.
-      backgroundColor: '#041E42',
-      backgroundImage: 'radial-gradient(120% 100% at 100% 50%, rgba(31,169,230,0.28) 0%, rgba(31,108,184,0.18) 30%, rgba(18,58,130,0.10) 55%, transparent 80%), linear-gradient(180deg, #04193A 0%, #041E42 55%, #052047 100%)',
+      // Engraving-plate dark: deep slate navy (#0c1a2a, banknote-reference)
+      // with a soft steel bloom behind the portrait and a whisper of indigo
+      // low-left. The loud cyan wash is gone — the portrait and the offer
+      // screen carry the light now.
+      backgroundColor: '#0c1a2a',
+      backgroundImage: 'radial-gradient(85% 90% at 74% 34%, rgba(43,74,114,0.42) 0%, rgba(12,26,42,0) 62%), radial-gradient(60% 70% at 8% 96%, rgba(73,69,255,0.10) 0%, rgba(12,26,42,0) 60%)',
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
@@ -279,90 +280,32 @@ function V1Hero({ accent, onApply }) {
       <style>{`
         @keyframes v1heroPulse { 0% { transform: translate(-50%,-50%) scale(1); opacity: 0.55; } 70% { transform: translate(-50%,-50%) scale(2.6); opacity: 0; } 100% { transform: translate(-50%,-50%) scale(2.6); opacity: 0; } }
         @keyframes v1heroBob { 0%, 100% { transform: translateY(0); opacity: 0.55; } 50% { transform: translateY(5px); opacity: 1; } }
+        @keyframes v1heroFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+        @keyframes v1heroGlow { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
         @media (prefers-reduced-motion: reduce) {
-          .v1hero-pulse, .v1hero-bob { animation: none !important; }
+          .v1hero-pulse, .v1hero-bob, .v1hero-float, .v1hero-glow { animation: none !important; }
         }
       `}</style>
 
-      {/* Elegant sweeping curves — same family as the footer's topography lines.
-          Two layered SVGs so the pattern can "light up" under the cursor,
-          Plaid-style: a dim base drawn at full coverage, then a bright copy
-          on top revealed only by a radial mask that follows the mouse.
-          The mask center is driven by --mx / --my custom properties set
-          on the enclosing <section> (updated on mousemove, see effect above).
-          Line count bumped 42 → 96 for a denser topography. */}
-      {(() => {
-        // Background pattern: soft WAVY HORIZONTAL contours running east→west
-        // across the full hero. Each line is a gentle sine wave with a small
-        // per-line phase and amplitude variation so the pattern reads as an
-        // organic topographic texture rather than a geometric grid. No
-        // corner convergence, no radial center — pure L→R waves.
-        //
-        // Barely visible at rest (opacity ≈ 0.10) and brightened under the
-        // cursor via a radial mask that follows the mouse (--mx / --my).
-        const VBW = 1440;
-        const VBH = 900;
-        const LINE_STEP = 14;              // vertical spacing between waves
-        const SAMPLES = 48;                // horizontal samples per wave
-        const dx = VBW / SAMPLES;
-        // Build one SVG path per horizontal line.
-        const paths = [];
-        for (let i = 0, y0 = -20; y0 <= VBH + 20; y0 += LINE_STEP, i++) {
-          // Per-line variation for an abstract, non-repeating feel.
-          const amp   = 10 + ((i * 7) % 9);              // 10–18 px
-          const wl    = 900 + ((i * 53) % 260);          // 900–1160 px wavelength
-          const phase = (i * 0.37) % (Math.PI * 2);
-          let d = '';
-          for (let s = 0; s <= SAMPLES; s++) {
-            const x = s * dx;
-            const y = y0 + Math.sin((x / wl) * Math.PI * 2 + phase) * amp;
-            d += (s === 0 ? 'M' : 'L') + x.toFixed(1) + ' ' + y.toFixed(1) + ' ';
-          }
-          paths.push(d);
-        }
-        return (
-          <React.Fragment>
-            {/* Base layer — always on, barely visible. Sits BEHIND
-                Washington (z:2) and the text column (z:2+) at z:1. */}
-            <svg aria-hidden viewBox={`0 0 ${VBW} ${VBH}`} preserveAspectRatio="none"
-              style={{
-                position: 'absolute', inset: 0, width: '100%', height: '100%',
-                opacity: 0.10, pointerEvents: 'none', zIndex: 1,
-                mixBlendMode: 'screen',
-              }}>
-              {paths.map((d, i) => (
-                <path key={i} d={d} fill="none"
-                  stroke="rgba(180,220,255,1)" strokeWidth="0.9" />
-              ))}
-            </svg>
-            {/* Cursor spotlight — same waves, colored with the brand
-                indigo→purple gradient (matches the stripe painted across
-                Washington's eyes). Revealed only inside a soft radial mask
-                following the mouse. Lives at z:1 so the spotlight also
-                reads behind the portrait and headline. */}
-            <svg aria-hidden viewBox={`0 0 ${VBW} ${VBH}`} preserveAspectRatio="none"
-              style={{
-                position: 'absolute', inset: 0, width: '100%', height: '100%',
-                opacity: 0.45, pointerEvents: 'none', zIndex: 1,
-                mixBlendMode: 'screen',
-                WebkitMaskImage: 'radial-gradient(circle 360px at var(--mx, 50%) var(--my, 40%), rgba(0,0,0,1) 0%, rgba(0,0,0,0.35) 55%, rgba(0,0,0,0) 100%)',
-                maskImage: 'radial-gradient(circle 360px at var(--mx, 50%) var(--my, 40%), rgba(0,0,0,1) 0%, rgba(0,0,0,0.35) 55%, rgba(0,0,0,0) 100%)',
-              }}>
-              <defs>
-                <linearGradient id="v1heroSpotGrad" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%"   stopColor="#4945FF" />
-                  <stop offset="55%"  stopColor="#6A4BE6" />
-                  <stop offset="100%" stopColor="#9F5BD6" />
-                </linearGradient>
-              </defs>
-              {paths.map((d, i) => (
-                <path key={i} d={d} fill="none"
-                  stroke="url(#v1heroSpotGrad)" strokeWidth="1.1" />
-              ))}
-            </svg>
-          </React.Fragment>
-        );
-      })()}
+      {/* Banknote scanlines — fine horizontal security linework, like the
+          field behind a portrait on a bill (matches the engraving reference).
+          Two layers, Plaid-style: a dim base always on, plus a brighter copy
+          revealed through a radial mask that follows the cursor (--mx / --my
+          custom properties set on the <section> by the mousemove effect).
+          Pure CSS repeating gradients — far cheaper to composite than the
+          previous 60-path SVG wave field. */}
+      <div aria-hidden style={{
+        position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
+        background: 'repeating-linear-gradient(180deg, rgba(125,160,205,0.085) 0px, rgba(125,160,205,0.085) 1px, transparent 1px, transparent 4px)',
+        WebkitMaskImage: 'radial-gradient(130% 110% at 50% 42%, black 50%, rgba(0,0,0,0.25) 100%)',
+        maskImage: 'radial-gradient(130% 110% at 50% 42%, black 50%, rgba(0,0,0,0.25) 100%)',
+      }} />
+      <div aria-hidden style={{
+        position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
+        background: 'repeating-linear-gradient(180deg, rgba(147,184,232,0.22) 0px, rgba(147,184,232,0.22) 1px, transparent 1px, transparent 4px)',
+        WebkitMaskImage: 'radial-gradient(circle 360px at var(--mx, 50%) var(--my, 40%), rgba(0,0,0,1) 0%, rgba(0,0,0,0.35) 55%, rgba(0,0,0,0) 100%)',
+        maskImage: 'radial-gradient(circle 360px at var(--mx, 50%) var(--my, 40%), rgba(0,0,0,1) 0%, rgba(0,0,0,0.35) 55%, rgba(0,0,0,0) 100%)',
+      }} />
 
       {/* Washington cutout — transparent PNG, absolutely positioned on the right.
           Anchored to the section's right edge (right:0) with a small inner
@@ -374,36 +317,56 @@ function V1Hero({ accent, onApply }) {
       <style>{`
         /* Franklin-ratio portrait: anchored to the right so his head sits
            in the upper-right quadrant and coat/shoulders spread down and
-           to the left. The PNG has been extended with 200px of transparent
-           padding on the left and the shoulder alpha feathered across 80px,
-           so there is no visible image boundary — the coat naturally fades
-           into the background gradient. Height 100% so the portrait fills
-           the section vertically. */
+           to the left. The wrapper shrink-wraps the img, so the phone-glow
+           child can use % coordinates that track the portrait at any size.
+           Mobile dim lives on the img (not the wrapper) because the wrapper
+           carries an inline entrance opacity that would win otherwise. */
         .v1hero-washington {
           position: absolute;
           right: 0; bottom: 0;
           height: 75%; max-height: 675px;
-          width: auto;
           z-index: 2; pointer-events: none;
+        }
+        .v1hero-washington img {
+          height: 100%; width: auto; display: block;
           filter: drop-shadow(0 20px 60px rgba(4,15,40,0.55));
-          transform-origin: right bottom;
+          animation: v1heroFloat 8s ease-in-out infinite;
         }
         @media (max-width: 1200px) {
           .v1hero-washington { right: 0; }
         }
         @media (max-width: 900px) {
-          .v1hero-washington { right: -8%; bottom: 0; height: 82%; max-height: 620px; opacity: 0.45; }
+          .v1hero-washington { right: -8%; bottom: 0; height: 82%; max-height: 620px; }
+          .v1hero-washington img { opacity: 0.45; animation: none; }
         }
         @media (max-width: 560px) {
-          .v1hero-washington { right: -20%; bottom: 0; height: 68%; opacity: 0.28; }
+          .v1hero-washington { right: -20%; bottom: 0; height: 68%; }
+          .v1hero-washington img { opacity: 0.28; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .v1hero-washington img { animation: none; }
         }
       `}</style>
-      <img
+      <div
         className="v1hero-washington"
-        src="app/assets/washington-cutout.png"
-        alt=""
         aria-hidden
-      />
+        style={{
+          opacity: mounted ? 1 : 0,
+          transition: 'opacity 1100ms ease-out 200ms',
+        }}
+      >
+        {/* Breathing glow off the phone screen — sells the "screen is lit"
+            read against the plate-dark background. Positioned in % of the
+            portrait so it stays glued to the phone at every viewport. */}
+        <div className="v1hero-glow" style={{
+          position: 'absolute', left: '-7%', top: '16%', width: '46%', height: '72%',
+          background: 'radial-gradient(50% 42% at 42% 50%, rgba(129,140,248,0.28) 0%, rgba(73,69,255,0.10) 48%, rgba(12,26,42,0) 74%)',
+          filter: 'blur(18px)',
+          animation: 'v1heroGlow 5.5s ease-in-out infinite',
+          pointerEvents: 'none',
+        }} />
+        <img src="app/assets/washington-cutout.png" alt="" />
+      </div>
 
       <div data-v1-grid-2col style={{
         width: '100%',
