@@ -409,13 +409,10 @@ function V1Hero({ accent, onApply }) {
               -webkit-text-fill-color: transparent;
               color: transparent;
             }
-            /* The italic "fund" <em> keeps its own accent→indigo gradient
-               so the animated verb still pops against the cursor-tracked
-               field. Override the cascade above. */
-            .v1hero-h1 em.v1hero-fund {
-              background: linear-gradient(90deg, ${accent}, #818CF8);
-              -webkit-background-clip: text; background-clip: text;
-            }
+            /* The italic "fund" <em> is a solid brand-indigo fill (set
+               inline on the element) so the action word reads as one clean
+               accent color instead of a gradient that clashes with the
+               cursor-tracked field behind it. */
           `}</style>
           <h1 ref={headlineRef} className="v1hero-h1" data-v1-hero-title style={{
             fontFamily: DELT.font.display, fontSize: 92, fontWeight: 600,
@@ -436,11 +433,13 @@ function V1Hero({ accent, onApply }) {
                 fontWeight: 400,
                 verticalAlign: 'baseline',
                 whiteSpace: 'nowrap',
-                // Gradient fill on the span itself (background-clip:text
-                // works fine here since there's no child wrapper).
-                background: `linear-gradient(90deg, ${accent}, #818CF8)`,
-                WebkitBackgroundClip: 'text', backgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
+                // Solid brand-indigo fill — the accent word is one flat
+                // color, not a gradient, so it doesn't clash with the
+                // cyan→white headline gradient behind it. Overrides the
+                // transparent text-fill set by the .v1hero-h1 * cascade.
+                background: 'none',
+                WebkitTextFillColor: accent,
+                color: accent,
                 // Give the italic "d" descender breathing room so line-height
                 // 0.95 on the h1 doesn't clip it.
                 paddingBlockEnd: '0.12em',
