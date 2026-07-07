@@ -292,61 +292,58 @@ function V1Hero({ accent, onApply }) {
           on the enclosing <section> (updated on mousemove, see effect above).
           Line count bumped 42 → 96 for a denser topography. */}
       {(() => {
-        // Plaid-style contour topography: densely packed near-horizontal
-        // lines that undulate gently across the full hero width, resembling
-        // engraved currency guilloché / topographic contour lines. Each
-        // line is a smooth cubic Bézier with slightly varied control point
-        // heights so the collection reads as an organic wavefield rather
-        // than perfectly parallel rules.
-        const LINE_COUNT = 180;
+        // Plaid-parity background lines: densely packed thin arcs that
+        // radiate from a point below the section (behind Franklin's chest
+        // area in Plaid's reference), fanning outward across the full hero.
+        // Lines are ALWAYS visible at rest (Plaid's are not hover-only);
+        // the cursor spotlight adds a brighter overlay on top.
+        const LINE_COUNT = 220;
         const VBW = 1440;
         const VBH = 900;
+        // Origin sits below the section, right-of-center (matches Plaid's
+        // apparent origin under Franklin's phone hand). Endpoints spread
+        // across the top edge plus generous horizontal bleed so lines
+        // radiate from far-left to far-right.
+        const originX = VBW * 0.7;
+        const originY = VBH * 1.6;
         const buildPath = (i) => {
-          // Vertical spacing: pack lines evenly across the full section
-          // height plus a bleed above/below.
           const t = i / (LINE_COUNT - 1); // 0..1
-          const baseY = -40 + t * (VBH + 80);
-          // Two control points at 1/3 and 2/3 across, each offset vertically
-          // by a phase-shifted sine so the lines curve gently.
-          const phase = i * 0.11;
-          const amp1 = 22 + 8 * Math.sin(i * 0.19);
-          const amp2 = 22 + 8 * Math.cos(i * 0.23);
-          const y1 = baseY - amp1 * Math.sin(phase);
-          const y2 = baseY + amp2 * Math.sin(phase + 1.4);
-          const yEnd = baseY + 6 * Math.sin(phase + 2.8);
-          return `M -60 ${baseY.toFixed(1)} C ${VBW * 0.33} ${y1.toFixed(1)}, ${VBW * 0.66} ${y2.toFixed(1)}, ${VBW + 60} ${yEnd.toFixed(1)}`;
+          // Distribute endpoints across a very wide arc — from x=-500 to
+          // x=VBW+500 — so the fan sweeps the entire horizon.
+          const endX = -500 + t * (VBW + 1000);
+          // Control point midway between origin and endpoint, slightly
+          // pulled toward horizontal-center for a gentle bow.
+          const midX = originX + (endX - originX) * 0.55;
+          const midY = VBH * 0.45;
+          return `M ${originX} ${originY} Q ${midX.toFixed(1)} ${midY}, ${endX.toFixed(1)} -80`;
         };
         const lines = Array.from({ length: LINE_COUNT }, (_, i) => buildPath(i));
         return (
           <React.Fragment>
-            {/* Barely-there base — the topography exists but is nearly
-                invisible at rest, matching Plaid where the lines only
-                emerge fully under the cursor. Slightly higher baseline
-                opacity than v3 so the fan is faintly visible always. */}
+            {/* Always-visible base fan — permanent design element,
+                matching Plaid where the ray pattern is present at rest. */}
             <svg aria-hidden viewBox={`0 0 ${VBW} ${VBH}`} preserveAspectRatio="none"
               style={{
                 position: 'absolute', inset: 0, width: '100%', height: '100%',
-                opacity: 0.22, pointerEvents: 'none', zIndex: 1,
+                opacity: 0.7, pointerEvents: 'none', zIndex: 3,
                 mixBlendMode: 'screen',
               }}>
               {lines.map((d, i) => (
-                <path key={i} d={d} fill="none" stroke="rgba(125,211,252,0.42)" strokeWidth="0.55" />
+                <path key={i} d={d} fill="none" stroke="rgba(160,220,255,0.6)" strokeWidth="0.55" />
               ))}
             </svg>
-            {/* Bright overlay — same paths, revealed only inside the
-                radial-gradient mask centered on the cursor. Mask center
-                --mx/--my is set on the <section> via the mousemove effect.
-                Larger radius (520px) for a more generous Plaid-like spotlight. */}
+            {/* Cursor spotlight overlay — same paths, brighter, revealed
+                only inside the radial mask following the mouse. */}
             <svg aria-hidden viewBox={`0 0 ${VBW} ${VBH}`} preserveAspectRatio="none"
               style={{
                 position: 'absolute', inset: 0, width: '100%', height: '100%',
-                opacity: 1, pointerEvents: 'none', zIndex: 1,
+                opacity: 1, pointerEvents: 'none', zIndex: 3,
                 mixBlendMode: 'screen',
                 WebkitMaskImage: 'radial-gradient(circle 520px at var(--mx, 50%) var(--my, 40%), rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 55%, rgba(0,0,0,0) 100%)',
                 maskImage: 'radial-gradient(circle 520px at var(--mx, 50%) var(--my, 40%), rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 55%, rgba(0,0,0,0) 100%)',
               }}>
               {lines.map((d, i) => (
-                <path key={i} d={d} fill="none" stroke="rgba(200,230,255,1)" strokeWidth="0.9" />
+                <path key={i} d={d} fill="none" stroke="rgba(200,230,255,1)" strokeWidth="0.85" />
               ))}
             </svg>
           </React.Fragment>
@@ -361,21 +358,27 @@ function V1Hero({ accent, onApply }) {
           No parallax / scroll transform — the portrait sits static, per
           stakeholder direction. */}
       <style>{`
-        /* Franklin-ratio portrait: ~62% of hero height, anchored right:0.
-           No mask fade on the left edge — the shoulder shows in full so
-           there is no artificial vertical boundary line. */
+        /* Franklin-ratio portrait: anchored to the right so his head sits
+           in the upper-right quadrant and coat/shoulders spread down and
+           to the left. The PNG has been extended with 200px of transparent
+           padding on the left and the shoulder alpha feathered across 80px,
+           so there is no visible image boundary — the coat naturally fades
+           into the background gradient. Height 100% so the portrait fills
+           the section vertically. */
         .v1hero-washington {
-          position: absolute; right: 0; bottom: 0;
-          height: 62%; max-height: 620px; width: auto;
+          position: absolute;
+          right: 0; bottom: 0;
+          height: 100%; max-height: 900px;
+          width: auto;
           z-index: 2; pointer-events: none;
           filter: drop-shadow(0 20px 60px rgba(4,15,40,0.55));
           transform-origin: right bottom;
         }
         @media (max-width: 900px) {
-          .v1hero-washington { right: -18%; bottom: 0; height: 52%; max-height: 460px; opacity: 0.4; }
+          .v1hero-washington { right: -10%; bottom: 0; height: 82%; max-height: 620px; opacity: 0.45; }
         }
         @media (max-width: 560px) {
-          .v1hero-washington { right: -34%; bottom: 0; height: 44%; opacity: 0.25; }
+          .v1hero-washington { right: -22%; bottom: 0; height: 68%; opacity: 0.28; }
         }
       `}</style>
       <img
