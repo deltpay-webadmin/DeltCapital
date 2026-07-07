@@ -382,7 +382,7 @@ function V1Hero({ accent, onApply }) {
         .v1hero-washington {
           position: absolute;
           right: 0; bottom: 0;
-          height: 100%; max-height: 900px;
+          height: 75%; max-height: 675px;
           width: auto;
           z-index: 2; pointer-events: none;
           filter: drop-shadow(0 20px 60px rgba(4,15,40,0.55));
