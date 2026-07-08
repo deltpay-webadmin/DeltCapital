@@ -1177,7 +1177,7 @@ function PlxNetworkGlobe({ size = 380 }) {
   );
 }
 
-function V1IntelligentBanner() {
+function V1IntelligentBanner({ onNav }) {
   const mobile = useIsMobile();
   return (
     <section style={{ background: '#EEF3FA', padding: mobile ? '40px 0 64px' : '80px 0 120px' }}>
@@ -1252,13 +1252,21 @@ function V1IntelligentBanner() {
               margin: 0, fontFamily: DELT.font.display, fontWeight: 600,
               fontSize: mobile ? 34 : 56, letterSpacing: '-0.028em',
               lineHeight: 1.02, color: '#fff',
-            }}>Underwriting that reads your revenue, not your credit.</h2>
-            <a href="https://plaid.com/intelligent-finance/" target="_blank" rel="noopener noreferrer" style={{
-              marginTop: 36, display: 'inline-flex', alignItems: 'center', gap: 10,
-              fontFamily: DELT.font.body, fontSize: 15, fontWeight: 500, color: DELT.colors.ink,
-              background: '#fff', borderRadius: 999, padding: '13px 26px',
-              boxShadow: `0 0 0 3px rgba(125,211,252,0.35), 0 0 0 6px rgba(47,169,230,0.15), 0 10px 24px rgba(4,30,66,0.35)`,
-            }}>See how we underwrite</a>
+            }}>Underwriting that reads your revenue, not only your credit.</h2>
+            <p style={{
+              margin: '20px 0 0', fontFamily: DELT.font.body,
+              fontSize: mobile ? 15.5 : 17, lineHeight: 1.6,
+              color: 'rgba(255,255,255,0.78)', maxWidth: 440,
+            }}>A holistic review — live deposits, cash flow, and time in business weighed alongside credit, not a single score deciding your fate.</p>
+            <a
+              onClick={(e) => { e.preventDefault(); if (onNav) onNav('how'); }}
+              href="#how"
+              style={{
+                marginTop: 32, display: 'inline-flex', alignItems: 'center', gap: 10,
+                fontFamily: DELT.font.body, fontSize: 15, fontWeight: 500, color: DELT.colors.ink,
+                background: '#fff', borderRadius: 999, padding: '13px 26px', cursor: 'pointer',
+                boxShadow: `0 0 0 3px rgba(125,211,252,0.35), 0 0 0 6px rgba(47,169,230,0.15), 0 10px 24px rgba(4,30,66,0.35)`,
+              }}>See how we underwrite</a>
           </div>
 
           {/* Mobile fallback — stacked DNA. */}
@@ -1439,7 +1447,7 @@ function V1NetworkStats() {
             fontSize: mobile ? 30 : 56, letterSpacing: '-0.025em', lineHeight: 1.05, color: DELT.colors.ink,
           }}>Sharper offers, every year we've been at it.</h2>
           <p style={{ margin: '20px 0 0', fontFamily: DELT.font.body, fontSize: 17, lineHeight: 1.6, color: DELT.colors.inkSoft, maxWidth: 460 }}>
-            2,850+ businesses funded. $200M+ deployed since 2019. That track record is why your offer lands faster and priced tighter.
+            2,850+ businesses funded. $200M+ deployed since 2019. That track record is why your offer lands faster and priced better.
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: mobile ? 24 : 36, marginTop: 40 }}>
             {DeltContent.stats.map((s, i) => (

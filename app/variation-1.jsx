@@ -701,7 +701,7 @@ function Variation1() {
           keep V1CompareSection as a final skeptic's look before the lead form. */}
       <V1Hero accent={accent} onApply={() => openApp(null, null)} />
       <V1ProductGrid onNav={navTo} />
-      <V1IntelligentBanner />
+      <V1IntelligentBanner onNav={navTo} />
       <V1NetworkStats />
       <V1ProductTabs />
       <V1CaseStudyStrip />

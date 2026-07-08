@@ -133,12 +133,13 @@ function V1CompareSection() {
               <V1Eyebrow color={V1.muted}>Metric</V1Eyebrow>
             </div>
             <div style={{
-              padding: '22px 28px', borderLeft: `1px solid ${V1.line}`,
+              padding: '22px 28px',
               display: 'flex', alignItems: 'center', gap: 12,
+              background: V1_CMP.bankHeadBg,
             }}>
               <div style={{
                 width: 30, height: 30, borderRadius: 8,
-                background: V1.muted + '18', color: V1.muted,
+                background: 'rgba(255,255,255,0.14)', color: 'rgba(255,255,255,0.85)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>
                 {/* Bank icon */}
@@ -147,34 +148,34 @@ function V1CompareSection() {
                 </svg>
               </div>
               <div>
-                <div style={{ fontFamily: V1.fontDisplay, fontSize: 17, fontWeight: 600, color: V1.muted, letterSpacing: '-0.015em' }}>
+                <div style={{ fontFamily: V1.fontDisplay, fontSize: 17, fontWeight: 600, color: '#fff', letterSpacing: '-0.015em' }}>
                   Traditional bank
                 </div>
-                <div style={{ fontFamily: V1.fontMono, fontSize: 10.5, color: V1.muted, opacity: 0.7, marginTop: 2, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                <div style={{ fontFamily: V1.fontMono, fontSize: 10.5, color: 'rgba(255,255,255,0.65)', marginTop: 2, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                   Typical terms
                 </div>
               </div>
             </div>
             <div style={{
-              padding: '22px 28px', borderLeft: `1px solid ${V1.line}`,
+              padding: '22px 28px',
               display: 'flex', alignItems: 'center', gap: 12,
-              background: `linear-gradient(90deg, ${V1.blue}0A, transparent)`,
+              background: V1_CMP.deltHeadBg,
             }}>
               <div style={{
                 width: 30, height: 30, borderRadius: 8,
-                background: `linear-gradient(135deg, ${V1.blue}, #818CF8)`,
+                background: 'rgba(255,255,255,0.18)',
                 color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                boxShadow: `0 4px 12px ${V1.blue}55`,
+                boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.2)',
               }}>
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
                   <path d="M8 1L2 8h4l-1 5 6-7H7l1-5z"/>
                 </svg>
               </div>
               <div>
-                <div style={{ fontFamily: V1.fontDisplay, fontSize: 17, fontWeight: 700, color: V1.ink, letterSpacing: '-0.015em' }}>
-                  Delt<span style={{ color: V1.blue }}>.</span>
+                <div style={{ fontFamily: V1.fontDisplay, fontSize: 17, fontWeight: 700, color: '#fff', letterSpacing: '-0.015em' }}>
+                  Delt<span style={{ color: '#C7D2FE' }}>.</span>
                 </div>
-                <div style={{ fontFamily: V1.fontMono, fontSize: 10.5, color: V1.blue, opacity: 0.85, marginTop: 2, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                <div style={{ fontFamily: V1.fontMono, fontSize: 10.5, color: 'rgba(255,255,255,0.8)', marginTop: 2, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                   MCA · direct funder
                 </div>
               </div>
@@ -230,6 +231,17 @@ function V1CompareSection() {
   );
 }
 
+// Shared palette for the comparison panels. Both data columns are solid
+// colored panels with white text — the bank a dimmed slate, Delt an indigo
+// gradient — so the contrast reads clearly instead of gray-on-white.
+const V1_CMP = {
+  bankBg:     '#4A5568',                                            // slate panel — the "old way"
+  bankHeadBg: '#3B4557',                                            // slightly darker header band
+  deltBg:     `linear-gradient(150deg, ${V1.blue} 0%, #6E63FF 55%, #8A7BFF 100%)`,
+  deltHeadBg: `linear-gradient(150deg, #3A34D6 0%, ${V1.blue} 100%)`,
+  rowLine:    'rgba(255,255,255,0.14)',                             // hairline between rows, inside panels
+};
+
 // ─── Individual comparison row with animated fill-in ───
 function V1CompareRow({ r, i, visible, last }) {
   const delay = 100 + i * 120;
@@ -237,12 +249,12 @@ function V1CompareRow({ r, i, visible, last }) {
     <div data-v1-grid-3col style={{
       display: 'grid',
       gridTemplateColumns: '200px 1fr 1fr',
-      borderBottom: last ? 'none' : `1px solid ${V1.line}`,
       minHeight: 88,
     }}>
-      {/* Metric label */}
+      {/* Metric label — paper rail */}
       <div style={{
         padding: '22px 28px',
+        borderBottom: last ? 'none' : `1px solid ${V1.line}`,
         display: 'flex', flexDirection: 'column', justifyContent: 'center',
       }}>
         <div style={{
@@ -260,15 +272,16 @@ function V1CompareRow({ r, i, visible, last }) {
         </div>
       </div>
 
-      {/* Bank column */}
+      {/* Bank column — slate panel, white text */}
       <div style={{
         padding: '22px 28px',
-        borderLeft: `1px solid ${V1.line}`,
+        background: V1_CMP.bankBg,
+        borderBottom: last ? 'none' : `1px solid ${V1_CMP.rowLine}`,
         display: 'flex', alignItems: 'center', gap: 14, position: 'relative',
       }}>
         <span style={{
           flexShrink: 0, width: 22, height: 22, borderRadius: 999,
-          background: V1.muted + '18', color: V1.muted,
+          background: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.9)',
           display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
         }}>
           <svg width="10" height="10" viewBox="0 0 14 14">
@@ -276,28 +289,26 @@ function V1CompareRow({ r, i, visible, last }) {
           </svg>
         </span>
         <div style={{
-          fontFamily: V1.fontDisplay, fontSize: 18, fontWeight: 500,
-          color: V1.muted, letterSpacing: '-0.015em', lineHeight: 1.2,
+          fontFamily: V1.fontDisplay, fontSize: 17, fontWeight: 500,
+          color: 'rgba(255,255,255,0.88)', letterSpacing: '-0.015em', lineHeight: 1.25,
           fontVariantNumeric: 'tabular-nums',
-          textDecoration: 'line-through', textDecorationColor: V1.muted + '66',
-          textDecorationThickness: 1,
         }}>
           {r.bank}
         </div>
       </div>
 
-      {/* Delt column */}
+      {/* Delt column — indigo panel, white text */}
       <div style={{
         padding: '22px 28px',
-        borderLeft: `1px solid ${V1.line}`,
-        background: `linear-gradient(90deg, ${V1.blue}06, transparent 70%)`,
+        background: V1_CMP.deltBg,
+        borderBottom: last ? 'none' : `1px solid ${V1_CMP.rowLine}`,
         display: 'flex', alignItems: 'center', gap: 14, position: 'relative',
       }}>
         <span style={{
           flexShrink: 0, width: 22, height: 22, borderRadius: 999,
-          background: `linear-gradient(135deg, ${V1.blue}, #818CF8)`, color: '#fff',
+          background: 'rgba(255,255,255,0.22)', color: '#fff',
           display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: `0 3px 10px ${V1.blue}66`,
+          boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.25)',
         }}>
           <svg width="11" height="11" viewBox="0 0 14 14">
             <path d="M3 7.2L5.8 10 11 4.5" stroke="currentColor" strokeWidth="2.2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
@@ -308,8 +319,8 @@ function V1CompareRow({ r, i, visible, last }) {
           display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
         }}>
           <div style={{
-            fontFamily: V1.fontDisplay, fontSize: 18, fontWeight: 700,
-            color: V1.ink, letterSpacing: '-0.02em', lineHeight: 1.2,
+            fontFamily: V1.fontDisplay, fontSize: 17, fontWeight: 700,
+            color: '#fff', letterSpacing: '-0.02em', lineHeight: 1.25,
             fontVariantNumeric: 'tabular-nums',
           }}>
             {r.delt}
@@ -317,21 +328,22 @@ function V1CompareRow({ r, i, visible, last }) {
           <span style={{
             flexShrink: 0,
             padding: '4px 10px', borderRadius: 999,
-            background: r.tone === 'neutral' ? `${V1.muted}1A` : `${V1.blue}14`,
-            color: r.tone === 'neutral' ? V1.muted : V1.blue,
+            background: 'rgba(255,255,255,0.18)',
+            color: '#fff',
             fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 600,
             letterSpacing: '0.08em', textTransform: 'uppercase',
             whiteSpace: 'nowrap',
+            boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.22)',
           }}>
             {r.win}
           </span>
         </div>
 
-        {/* Animated strength bar */}
+        {/* Animated strength bar — white on the indigo panel */}
         <div aria-hidden style={{
           position: 'absolute', bottom: 0, left: 0,
           height: 2, width: visible ? `${r.strength * 100}%` : '0%',
-          background: `linear-gradient(90deg, ${V1.blue}, #818CF8)`,
+          background: 'linear-gradient(90deg, rgba(255,255,255,0.95), rgba(255,255,255,0.35))',
           transition: `width 1200ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms`,
         }} />
       </div>
