@@ -760,6 +760,7 @@ function Variation1() {
         onDraftChange={saveApplyDraft}
         onComplete={clearApplyDraft}
       />
+      <V1CookieConsent onNav={navTo} />
     </>
   );
 }

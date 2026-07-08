@@ -412,6 +412,13 @@ function FooterBlock({ accent = DELT.colors.indigo, brand, onNav }) {
                 onMouseLeave={(e) => { e.currentTarget.style.color = '#9E9BA8'; }}
               >{ln.l}</a>
             ))}
+            {/* Re-open the cookie consent banner so visitors can change their choice. */}
+            <a
+              onClick={(e) => { e.preventDefault(); if (window.DeltConsent) window.DeltConsent.open(); }}
+              style={{ color: '#9E9BA8', textDecoration: 'none', cursor: 'pointer', transition: 'color 180ms' }}
+              onMouseEnter={(e) => { e.currentTarget.style.color = '#E9E7DF'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = '#9E9BA8'; }}
+            >{t('foot.cookies')}</a>
           </span>
         </div>
       </div>

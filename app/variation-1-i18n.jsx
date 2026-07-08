@@ -75,6 +75,18 @@
     'foot.terms':       { en: 'Terms of Use',            es: 'Términos de uso' },
     'foot.privacy':     { en: 'Privacy Policy',          es: 'Política de privacidad' },
     'foot.eca':         { en: 'Communications',          es: 'Comunicaciones' },
+    'foot.cookies':     { en: 'Cookie preferences',      es: 'Preferencias de cookies' },
+
+    // ── Cookie consent ────────────────────────────────────────────────────
+    'cookie.title':     { en: 'We use cookies',
+                          es: 'Usamos cookies' },
+    'cookie.body':      { en: 'We use cookies to run this site, remember your preferences, and measure our marketing. You can accept or decline non-essential cookies. See our ',
+                          es: 'Usamos cookies para operar el sitio, recordar tus preferencias y medir nuestro marketing. Puedes aceptar o rechazar las cookies no esenciales. Consulta nuestra ' },
+    'cookie.policy':    { en: 'Cookie & Privacy Policy',  es: 'Política de Cookies y Privacidad' },
+    'cookie.accept':    { en: 'Accept all',               es: 'Aceptar todo' },
+    'cookie.decline':   { en: 'Decline',                  es: 'Rechazar' },
+    'cookie.saved.on':  { en: 'Cookies accepted',         es: 'Cookies aceptadas' },
+    'cookie.saved.off': { en: 'Only essential cookies',   es: 'Solo cookies esenciales' },
 
     // ── Language toggle labels (self-referential; do not translate names) ──
     'lang.toggle.aria': { en: 'Change language',         es: 'Cambiar idioma' },

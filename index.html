@@ -265,7 +265,24 @@
   s.parentNode.insertBefore(t,s)}(window,document,'script',
   'https://connect.facebook.net/en_US/fbevents.js');
   fbq('init', '3142121879304554');
-  fbq('track', 'PageView');
+  // Cookie-consent gating: only track once the visitor has accepted cookies.
+  // The consent record is written by app/variation-1-cookies.jsx; we read the
+  // same key here so a returning, consented visitor is tracked immediately,
+  // while an undecided/declined visitor is held via Meta's consent API until
+  // they accept (at which point the banner grants consent + fires PageView).
+  (function () {
+    var choice = null;
+    try {
+      var raw = window.localStorage.getItem('deltcap:cookie-consent:v1');
+      if (raw) { choice = (JSON.parse(raw) || {}).choice; }
+    } catch (e) { /* private mode / bad JSON — treat as undecided */ }
+    if (choice === 'accepted') {
+      fbq('consent', 'grant');
+      fbq('track', 'PageView');
+    } else {
+      fbq('consent', 'revoke'); // hold all tracking until consent is granted
+    }
+  })();
 </script>
 <!-- End Meta Pixel Code -->
 </head>
@@ -336,6 +353,7 @@
   <script type="text/babel" src="app/variation-1-speed.jsx"></script>
   <script type="text/babel" src="app/variation-1-lending.jsx"></script>
   <script type="text/babel" src="app/variation-1-terminals.jsx"></script>
+  <script type="text/babel" src="app/variation-1-cookies.jsx"></script>
   <script type="text/babel" src="app/variation-1.jsx"></script>
 
   <script type="text/babel" data-presets="react">
