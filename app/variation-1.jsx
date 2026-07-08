@@ -302,11 +302,22 @@ function V1Hero({ accent, onApply }) {
         WebkitMaskImage: 'radial-gradient(90% 120% at 74% 52%, black 40%, rgba(0,0,0,0.45) 64%, rgba(0,0,0,0.05) 90%, transparent 100%)',
         maskImage: 'radial-gradient(90% 120% at 74% 52%, black 40%, rgba(0,0,0,0.45) 64%, rgba(0,0,0,0.05) 90%, transparent 100%)',
       }} />
+      {/* Cursor-revealed illumination. The lines themselves carry the same
+          cyan→sky→indigo→ivory gradient as the "You built the business. We
+          fund it." headline (105deg to match). Two mask layers are composited
+          with `intersect`: the 1px line pattern AND a large, soft regional
+          glow that follows the cursor — so the illuminated area reads as a
+          broad wash over the linework rather than a tight spotlight. */}
       <div aria-hidden style={{
         position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
-        background: 'repeating-linear-gradient(180deg, rgba(147,184,232,0.22) 0px, rgba(147,184,232,0.22) 1px, transparent 1px, transparent 4px)',
-        WebkitMaskImage: 'radial-gradient(circle 360px at var(--mx, 50%) var(--my, 40%), rgba(0,0,0,1) 0%, rgba(0,0,0,0.35) 55%, rgba(0,0,0,0) 100%)',
-        maskImage: 'radial-gradient(circle 360px at var(--mx, 50%) var(--my, 40%), rgba(0,0,0,1) 0%, rgba(0,0,0,0.35) 55%, rgba(0,0,0,0) 100%)',
+        opacity: 0.62,
+        background: 'linear-gradient(105deg, #6EE7F9 0%, #7DD3FC 25%, #A5B4FC 55%, #C7D2FE 78%, #F7F5F0 100%)',
+        WebkitMaskImage: 'repeating-linear-gradient(180deg, #000 0px, #000 1px, transparent 1px, transparent 4px), radial-gradient(circle 640px at var(--mx, 50%) var(--my, 40%), #000 0%, rgba(0,0,0,0.82) 32%, rgba(0,0,0,0.4) 62%, rgba(0,0,0,0.12) 84%, transparent 100%)',
+        WebkitMaskRepeat: 'repeat, no-repeat',
+        WebkitMaskComposite: 'source-in',
+        maskImage: 'repeating-linear-gradient(180deg, #000 0px, #000 1px, transparent 1px, transparent 4px), radial-gradient(circle 640px at var(--mx, 50%) var(--my, 40%), #000 0%, rgba(0,0,0,0.82) 32%, rgba(0,0,0,0.4) 62%, rgba(0,0,0,0.12) 84%, transparent 100%)',
+        maskRepeat: 'repeat, no-repeat',
+        maskComposite: 'intersect',
       }} />
 
       {/* Washington cutout — transparent PNG, absolutely positioned on the right.
