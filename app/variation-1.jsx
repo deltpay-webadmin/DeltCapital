@@ -342,7 +342,7 @@ function V1Hero({ accent, onApply }) {
         }
         .v1hero-washington img {
           height: 100%; width: auto; display: block;
-          filter: drop-shadow(0 20px 60px rgba(4,15,40,0.55));
+          filter: drop-shadow(0 8px 22px rgba(0,0,0,0.28));
         }
         @media (max-width: 1200px) {
           .v1hero-washington { right: 0; }
