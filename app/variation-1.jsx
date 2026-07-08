@@ -198,12 +198,17 @@ function V1Hero({ accent, onApply }) {
   React.useEffect(() => {
     const el = heroRef.current;
     if (!el) return undefined;
-    // Idle: push spotlights off-screen so both the lines and the headline
-    // gradient hotspot are hidden until the user actually moves in.
-    const sec = { x: -30, y: -30 };
-    const head = { x: -30, y: -30 };
-    const curSec = { x: -30, y: -30 };
+    // Idle: the lines layer starts fully faded out (--illum-op 0). The
+    // position starts centered so that when it does fade in it isn't parked
+    // in a corner. The headline hotspot starts off-screen (-30%) — the
+    // headline has no opacity dial, so we hide/reveal it purely by position.
+    const OP_MAX = 0.155;                 // matches the layer's target opacity
+    const sec = { x: 50, y: 40 };         // background-lines spotlight target
+    const head = { x: -30, y: -30 };      // headline hotspot target
+    const curSec = { x: 50, y: 40 };
     const curHead = { x: -30, y: -30 };
+    let targetOp = 0;                     // 0 when cursor outside, OP_MAX when inside
+    let curOp = 0;
     let raf = 0;
     const onMove = (e) => {
       const r = el.getBoundingClientRect();
@@ -215,9 +220,15 @@ function V1Hero({ accent, onApply }) {
         head.x = ((e.clientX - hr.left) / hr.width) * 100;
         head.y = ((e.clientY - hr.top) / hr.height) * 100;
       }
+      targetOp = OP_MAX;
     };
+    const onEnter = () => { targetOp = OP_MAX; };
+    // On leave we DON'T move the lines spotlight — we leave --mx/--my exactly
+    // where the cursor last was and gently fade the whole layer out in place,
+    // so it never darts to a corner. Only the headline hotspot glides off
+    // (it can't fade), which is imperceptible over the text.
     const onLeave = () => {
-      sec.x = -30; sec.y = -30;
+      targetOp = 0;
       head.x = -30; head.y = -30;
     };
     const tick = () => {
@@ -225,18 +236,24 @@ function V1Hero({ accent, onApply }) {
       curSec.y  += (sec.y  - curSec.y)  * 0.15;
       curHead.x += (head.x - curHead.x) * 0.15;
       curHead.y += (head.y - curHead.y) * 0.15;
+      // Slow, symmetric opacity lerp so the fade in/out reads as a soft
+      // dissolve rather than a snap.
+      curOp += (targetOp - curOp) * 0.055;
       el.style.setProperty('--mx', curSec.x.toFixed(2) + '%');
       el.style.setProperty('--my', curSec.y.toFixed(2) + '%');
       el.style.setProperty('--hx', curHead.x.toFixed(2) + '%');
       el.style.setProperty('--hy', curHead.y.toFixed(2) + '%');
+      el.style.setProperty('--illum-op', curOp.toFixed(3));
       raf = requestAnimationFrame(tick);
     };
     el.addEventListener('mousemove', onMove);
+    el.addEventListener('mouseenter', onEnter);
     el.addEventListener('mouseleave', onLeave);
     raf = requestAnimationFrame(tick);
     return () => {
       cancelAnimationFrame(raf);
       el.removeEventListener('mousemove', onMove);
+      el.removeEventListener('mouseenter', onEnter);
       el.removeEventListener('mouseleave', onLeave);
     };
   }, []);
@@ -310,7 +327,10 @@ function V1Hero({ accent, onApply }) {
           broad wash over the linework rather than a tight spotlight. */}
       <div aria-hidden style={{
         position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
-        opacity: 0.155,
+        // Opacity is driven by the rAF loop (--illum-op, 0 → 0.155) so the
+        // lit lines fade in/out in place instead of snapping when the cursor
+        // enters or leaves the hero.
+        opacity: 'var(--illum-op, 0)',
         background: 'linear-gradient(105deg, #6EE7F9 0%, #7DD3FC 25%, #A5B4FC 55%, #C7D2FE 78%, #F7F5F0 100%)',
         WebkitMaskImage: 'repeating-linear-gradient(180deg, #000 0px, #000 1px, transparent 1px, transparent 4px), radial-gradient(circle 640px at var(--mx, 50%) var(--my, 40%), #000 0%, rgba(0,0,0,0.82) 32%, rgba(0,0,0,0.4) 62%, rgba(0,0,0,0.12) 84%, transparent 100%)',
         WebkitMaskRepeat: 'repeat, no-repeat',
