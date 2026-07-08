@@ -183,10 +183,12 @@ V1Chrome.brand = (
   </div>
 );
 
-function V1Hero({ accent, onApply }) {
+function V1Hero({ accent, onApply, onNav }) {
   const mounted = useV1Mounted(80);
   // Subscribe to language changes so the hero copy swaps on toggle.
   useLang();
+  // Hover state for the secondary "See how pricing works" CTA.
+  const [pricingHover, setPricingHover] = React.useState(false);
 
   // Cursor-tracked spotlight on the background lines and cursor-tracked
   // gradient on the headline (both Plaid-style). The section receives CSS
@@ -490,7 +492,32 @@ function V1Hero({ accent, onApply }) {
             ...enter(700),
           }}>
             <Btn variant="indigo" size="lg" onClick={onApply} style={{ background: accent, borderColor: accent }}>{t('cta.getFunded')} <Arr /></Btn>
-            <Btn variant="ghost" size="lg" style={{ background: 'transparent', color: '#F7F5F0', borderColor: 'rgba(247,245,240,0.2)' }}>{t('cta.seePricing')}</Btn>
+            {/* Secondary CTA → lending / pricing overview page. Custom button
+                (not <Btn/>) so it can carry its own hover animation: the
+                border and fill brighten, it lifts a hair, and the arrow slides. */}
+            <button
+              onClick={() => onNav && onNav('lending')}
+              onMouseEnter={() => setPricingHover(true)}
+              onMouseLeave={() => setPricingHover(false)}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 8,
+                background: pricingHover ? 'rgba(247,245,240,0.10)' : 'transparent',
+                color: '#F7F5F0',
+                border: `1px solid ${pricingHover ? 'rgba(247,245,240,0.5)' : 'rgba(247,245,240,0.2)'}`,
+                borderRadius: 6, cursor: 'pointer', whiteSpace: 'nowrap',
+                padding: '13px 22px', fontFamily: DELT.font.body, fontSize: 15, fontWeight: 500,
+                transform: pricingHover ? 'translateY(-1px)' : 'translateY(0)',
+                boxShadow: pricingHover ? '0 8px 22px rgba(4,15,40,0.35)' : '0 0 0 rgba(0,0,0,0)',
+                transition: 'background .2s ease, border-color .2s ease, transform .2s cubic-bezier(0.22,1,0.36,1), box-shadow .2s ease',
+              }}
+            >
+              {t('cta.seePricing')}
+              <span style={{
+                display: 'inline-flex',
+                transform: pricingHover ? 'translateX(3px)' : 'translateX(0)',
+                transition: 'transform .22s cubic-bezier(0.22,1,0.36,1)',
+              }}><Arr /></span>
+            </button>
           </div>
 
           <div data-v1-hero-substats style={{
@@ -728,7 +755,7 @@ function Variation1() {
           new sections mirror Plaid.com's rhythm (marquee → product grid →
           dark engine banner → network stats → product tabs → case studies),
           keep V1CompareSection as a final skeptic's look before the lead form. */}
-      <V1Hero accent={accent} onApply={() => openApp(null, null)} />
+      <V1Hero accent={accent} onApply={() => openApp(null, null)} onNav={navTo} />
       <V1ProductGrid onNav={navTo} />
       <V1IntelligentBanner onNav={navTo} />
       <V1NetworkStats />
