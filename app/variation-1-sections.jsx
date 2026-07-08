@@ -232,14 +232,15 @@ function V1CompareSection() {
 }
 
 // Shared palette for the comparison panels. Both data columns are solid
-// colored panels with white text — the bank a dimmed slate, Delt an indigo
-// gradient — so the contrast reads clearly instead of gray-on-white.
+// colored panels with white text — the bank a dimmed slate, Delt a deep
+// navy that matches the "Capital and payments, working together." band —
+// so the contrast reads clearly without the color feeling over-rich.
 const V1_CMP = {
   bankBg:     '#4A5568',                                            // slate panel — the "old way"
   bankHeadBg: '#3B4557',                                            // slightly darker header band
-  deltBg:     `linear-gradient(150deg, ${V1.blue} 0%, #6E63FF 55%, #8A7BFF 100%)`,
-  deltHeadBg: `linear-gradient(150deg, #3A34D6 0%, ${V1.blue} 100%)`,
-  rowLine:    'rgba(255,255,255,0.14)',                             // hairline between rows, inside panels
+  deltBg:     `linear-gradient(155deg, #0A1A6E 0%, #06214E 52%, #041E42 100%)`,
+  deltHeadBg: `linear-gradient(155deg, #0A1A6E 0%, #041E42 100%)`,
+  rowLine:    'rgba(255,255,255,0.12)',                             // hairline between rows, inside panels
 };
 
 // ─── Individual comparison row with animated fill-in ───
