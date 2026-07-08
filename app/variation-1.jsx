@@ -503,7 +503,7 @@ function V1Hero({ accent, onApply }) {
 // browser's Back/Forward buttons work and deep links resolve on reload. Every
 // navTo() fades the body out for ~200ms before swapping content so page
 // changes feel like a transition rather than a hard snap.
-const V1_PAGES = new Set(['home', 'about', 'how', 'reviews', 'calc', 'talk', 'support', 'faq', 'blog', 'login', 'terms', 'privacy', 'eca', 'funding-flow', 'processing']);
+const V1_PAGES = new Set(['home', 'about', 'how', 'reviews', 'calc', 'talk', 'support', 'faq', 'blog', 'login', 'terms', 'privacy', 'eca', 'funding-flow', 'processing', 'speed', 'lending', 'terminals']);
 function readPageFromHash() {
   if (typeof window === 'undefined') return 'home';
   // Apply is special-cased: it's a route that opens the modal rather than
@@ -700,7 +700,7 @@ function Variation1() {
           dark engine banner → network stats → product tabs → case studies),
           keep V1CompareSection as a final skeptic's look before the lead form. */}
       <V1Hero accent={accent} onApply={() => openApp(null, null)} />
-      <V1ProductGrid />
+      <V1ProductGrid onNav={navTo} />
       <V1IntelligentBanner />
       <V1NetworkStats />
       <V1ProductTabs />
@@ -725,6 +725,9 @@ function Variation1() {
     page === 'eca'     ? <V1ElectronicCommunications onBack={() => navTo('home')} /> :
     page === 'funding-flow' ? <V1FundingFlowPage accent={accent} onApply={() => openApp(null, null)} onCalc={() => navTo('calc')} /> :
     page === 'processing' ? <V1ProcessingPage accent={accent} onApply={() => openApp(null, null)} onCalc={() => navTo('calc')} /> :
+    page === 'speed'    ? <V1SpeedPage accent={accent} onApply={() => openApp(null, null)} onCalc={() => navTo('calc')} /> :
+    page === 'lending'  ? <V1LendingPage accent={accent} onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} /> :
+    page === 'terminals' ? <V1TerminalsPage accent={accent} onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} /> :
     home;
 
   return (

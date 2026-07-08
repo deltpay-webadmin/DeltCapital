@@ -156,13 +156,23 @@ function V1LogoMarquee() {
 // as an absolutely-positioned aria-hidden div behind the card content, fading
 // opacity from 0 → ~0.55 over 240ms. Cards themselves keep their solid tinted
 // background and elevate slightly.
-function PlxProductCard({ title, desc, children, large, mobile, tint }) {
+function PlxProductCard({ title, desc, children, large, mobile, tint, onClick }) {
   const [hover, setHover] = React.useState(false);
+  // When an onClick is supplied the whole card becomes an activatable button:
+  // pointer cursor, keyboard-focusable, and Enter/Space trigger navigation so
+  // the arrow-circle affordance is honored for keyboard + assistive-tech users.
+  const clickable = typeof onClick === 'function';
+  const activate = clickable ? (e) => { if (e) e.preventDefault(); onClick(); } : undefined;
   return (
     <div
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      style={{ position: 'relative', display: 'flex' }}
+      onClick={activate}
+      role={clickable ? 'link' : undefined}
+      tabIndex={clickable ? 0 : undefined}
+      aria-label={clickable ? title : undefined}
+      onKeyDown={clickable ? (e) => { if (e.key === 'Enter' || e.key === ' ') activate(e); } : undefined}
+      style={{ position: 'relative', display: 'flex', cursor: clickable ? 'pointer' : 'default' }}
     >
       {/* Soft indigo→cyan glow, revealed on hover. Toned down from the old
           5-stop rainbow conic: on an editorial palette that read arcade-y,
@@ -928,8 +938,9 @@ function PlxMockTerminals() {
   );
 }
 
-function V1ProductGrid() {
+function V1ProductGrid({ onNav }) {
   const mobile = useIsMobile();
+  const go = (page) => (typeof onNav === 'function' ? () => onNav(page) : undefined);
   return (
     <section data-v1-section style={{ background: '#EEF3FA', padding: mobile ? '64px 0' : '120px 0' }}>
       <div style={{ maxWidth: 1240, margin: '0 auto', padding: mobile ? '0 20px' : '0 32px' }}>
@@ -961,13 +972,15 @@ function V1ProductGrid() {
           <PlxProductCard large mobile={mobile}
             tint="#EEF0FF"
             title="Revenue-based funding"
-            desc="Underwritten off your deposits, not FICO. Wired in 24 hours.">
+            desc="Underwritten off your deposits, not FICO. Wired in 24 hours."
+            onClick={go('how')}>
             <PlxMockOffer />
           </PlxProductCard>
           <PlxProductCard large mobile={mobile}
             tint="#F0F7FE"
             title="Faster than the bank"
-            desc="Ranged offers in minutes. Soft pull, no callbacks.">
+            desc="Ranged offers in minutes. Soft pull, no callbacks."
+            onClick={go('speed')}>
             <PlxMockApprovals />
           </PlxProductCard>
         </div>
@@ -979,20 +992,23 @@ function V1ProductGrid() {
         }}>
           <PlxProductCard mobile={mobile}
             tint="#F5F1FF"
-            title="Lines that beat the bank"
-            desc="Revolving capital, drawn on demand. Lower rates, no covenants.">
+            title="Lines, loans & more"
+            desc="Revolving credit, term loans with simple interest, and SBA-style options — all priced below the bank."
+            onClick={go('lending')}>
             <PlxMockLineOfCredit />
           </PlxProductCard>
           <PlxProductCard mobile={mobile}
             tint="#FFFFFF"
             title="Card processing"
-            desc="We beat your current rate in writing. Same terminals, next-day deposits.">
+            desc="We beat your current rate in writing. Same terminals, next-day deposits."
+            onClick={go('processing')}>
             <PlxMockProcessors />
           </PlxProductCard>
           <PlxProductCard mobile={mobile}
             tint="#EEF7FB"
             title="Terminal financing"
-            desc="Own or lease. Same-day board.">
+            desc="Own or lease. Same-day board."
+            onClick={go('terminals')}>
             <PlxMockTerminals />
           </PlxProductCard>
         </div>
