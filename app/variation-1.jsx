@@ -366,19 +366,30 @@ function V1Hero({ accent, onApply, onNav }) {
           height: 100%; width: auto; display: block;
           filter: drop-shadow(0 8px 22px rgba(0,0,0,0.28));
         }
+        /* George fades out progressively as the viewport narrows so he never
+           clashes with the copy column (which sits above him at z-index 3).
+           The ramp starts well before the two-column layout gets cramped —
+           by tablet width he's a faint watermark, and by phone width he's
+           nearly gone — keeping the headline, subhead, and CTAs clean. */
         @media (max-width: 1200px) {
           .v1hero-washington { right: 0; }
+          .v1hero-washington img { opacity: 0.72; }
+        }
+        @media (max-width: 1024px) {
+          .v1hero-washington { right: -4%; }
+          .v1hero-washington img { opacity: 0.42; }
         }
         @media (max-width: 900px) {
           .v1hero-washington { right: -8%; bottom: 0; height: 82%; max-height: 620px; }
-          .v1hero-washington img { opacity: 0.45; animation: none; }
+          .v1hero-washington img { opacity: 0.28; }
+        }
+        @media (max-width: 768px) {
+          .v1hero-washington { right: -10%; }
+          .v1hero-washington img { opacity: 0.18; }
         }
         @media (max-width: 560px) {
           .v1hero-washington { right: -20%; bottom: 0; height: 68%; }
-          .v1hero-washington img { opacity: 0.28; }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .v1hero-washington img { animation: none; }
+          .v1hero-washington img { opacity: 0.1; }
         }
       `}</style>
       <div
