@@ -310,7 +310,7 @@ function V1Hero({ accent, onApply }) {
           broad wash over the linework rather than a tight spotlight. */}
       <div aria-hidden style={{
         position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
-        opacity: 0.62,
+        opacity: 0.155,
         background: 'linear-gradient(105deg, #6EE7F9 0%, #7DD3FC 25%, #A5B4FC 55%, #C7D2FE 78%, #F7F5F0 100%)',
         WebkitMaskImage: 'repeating-linear-gradient(180deg, #000 0px, #000 1px, transparent 1px, transparent 4px), radial-gradient(circle 640px at var(--mx, 50%) var(--my, 40%), #000 0%, rgba(0,0,0,0.82) 32%, rgba(0,0,0,0.4) 62%, rgba(0,0,0,0.12) 84%, transparent 100%)',
         WebkitMaskRepeat: 'repeat, no-repeat',
