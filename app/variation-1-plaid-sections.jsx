@@ -1191,12 +1191,10 @@ function V1IntelligentBanner({ onNav }) {
           <style>{`
             @keyframes plxGlobeSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
             .plx-globe-spin { animation: plxGlobeSpin 90s linear infinite; transform-origin: center; }
-            @keyframes plxGeorgeFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-            .plx-george-float { animation: plxGeorgeFloat 9s ease-in-out infinite; }
             @keyframes plxTopoDrift { 0% { transform: translateX(0); } 100% { transform: translateX(-24px); } }
             .plx-topo-drift { animation: plxTopoDrift 24s ease-in-out infinite alternate; }
             @media (prefers-reduced-motion: reduce) {
-              .plx-globe-spin, .plx-george-float, .plx-topo-drift { animation: none !important; }
+              .plx-globe-spin, .plx-topo-drift { animation: none !important; }
             }
           `}</style>
 
@@ -1218,7 +1216,7 @@ function V1IntelligentBanner({ onNav }) {
              The image itself carries the navy fade on its left edge so it
              blends directly into the banner background. */}
           {!mobile && (
-            <div className="plx-george-float" style={{
+            <div style={{
               position: 'absolute', right: 0, bottom: 0, top: 0,
               width: '60%', pointerEvents: 'none',
               display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-end',

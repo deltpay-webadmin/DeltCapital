@@ -280,7 +280,6 @@ function V1Hero({ accent, onApply }) {
       <style>{`
         @keyframes v1heroPulse { 0% { transform: translate(-50%,-50%) scale(1); opacity: 0.55; } 70% { transform: translate(-50%,-50%) scale(2.6); opacity: 0; } 100% { transform: translate(-50%,-50%) scale(2.6); opacity: 0; } }
         @keyframes v1heroBob { 0%, 100% { transform: translateY(0); opacity: 0.55; } 50% { transform: translateY(5px); opacity: 1; } }
-        @keyframes v1heroFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
         @keyframes v1heroGlow { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
         @media (prefers-reduced-motion: reduce) {
           .v1hero-pulse, .v1hero-bob, .v1hero-float, .v1hero-glow { animation: none !important; }
@@ -333,7 +332,6 @@ function V1Hero({ accent, onApply }) {
         .v1hero-washington img {
           height: 100%; width: auto; display: block;
           filter: drop-shadow(0 20px 60px rgba(4,15,40,0.55));
-          animation: v1heroFloat 8s ease-in-out infinite;
         }
         @media (max-width: 1200px) {
           .v1hero-washington { right: 0; }
