@@ -483,7 +483,7 @@ function V1StepOffer({ form, prefill, accent }) {
         fontFamily: V1.fontBody, fontSize: 15, color: V1.muted,
         lineHeight: 1.55, margin: 0, maxWidth: 540,
       }}>
-        No addenda, no "processing fee", no origination fee. Counter-sign to
+        No addenda, no "processing fee". Counter-sign to
         move to funding.
       </p>
 
@@ -581,7 +581,7 @@ function V1StepOffer({ form, prefill, accent }) {
           fontFamily: V1.fontMono, fontSize: 11, fontWeight: 500,
           letterSpacing: '0.08em', textTransform: 'uppercase', color: V1.muted,
         }}>
-          <span>No origination · No ACH · Early-pay rebate</span>
+          <span>No ACH fee · Early-pay rebate</span>
           <span>${daily.toLocaleString()} / day equiv.</span>
         </div>
       </div>
@@ -1069,29 +1069,6 @@ function V1ApplicationFlow({
               {step < 4 ? '🔒 Secured · Plaid · Soft-pull only' : 'Application received'}
             </div>
             <div style={{ display: 'flex', gap: 10 }}>
-              {/* TEMP: dev-only skip — remove once IDV is green */}
-              {step < 2 && (
-                <button
-                  onClick={() => {
-                    setForm((f) => ({
-                      ...f,
-                      businessName: f.businessName || 'Test Co',
-                      email: f.email || 'test@example.com',
-                      bankConnected: true,
-                      bankInstitution: f.bankInstitution || 'Test Bank',
-                    }));
-                    setStep(2);
-                  }}
-                  style={{
-                    padding: '7px 10px', borderRadius: 6,
-                    background: 'transparent', border: `1px dashed ${V1.muted}`,
-                    color: V1.muted, cursor: 'pointer',
-                    fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 600,
-                    letterSpacing: '0.12em', textTransform: 'uppercase',
-                  }}
-                >Skip → Identity</button>
-              )}
-              {/* /TEMP */}
               {step > 0 && step < 4 && (
                 <button
                   onClick={() => setStep(step - 1)}

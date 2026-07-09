@@ -465,7 +465,7 @@ function AboutPage({ accent }) {
           {[
             { h: 'Direct capital', t: 'We lend off our own balance sheet. No broker points, no middleman markup, no "we\'ll shop you around."' },
             { h: 'Revenue-based', t: 'We underwrite 90 days of deposits via Plaid. Your FICO is a check, not the decision.' },
-            { h: 'Flat pricing', t: 'One factor rate. No origination fee, no "processing fee," no ACH fees. The number you see is the number you pay.' },
+            { h: 'Flat pricing', t: 'One factor rate. No "processing fee," no ACH fees.' },
             { h: 'Early-pay rebates', t: 'Pay off early and we return the unearned factor pro-rata. The industry standard — owe the full factor — is a tax on success.' },
             { h: 'No prepayment penalties', t: 'Ever. On any product. Written into every contract on page one.' },
             { h: 'In-house underwriting', t: 'Two-person underwriting desk. Your file is read by a human who has authority to price it.' },
@@ -794,7 +794,7 @@ function StepOffer({ form, prefill, accent }) {
           ))}
         </div>
         <div style={{ padding: '16px 24px', background: DELT.colors.paperWarm, borderTop: `1px solid ${DELT.colors.line}`, fontFamily: DELT.font.body, fontSize: 12.5, color: DELT.colors.inkMute, display: 'flex', justifyContent: 'space-between' }}>
-          <div>No origination fee · No ACH fee · Early-pay rebate included</div>
+          <div>No ACH fee · Early-pay rebate included</div>
           <div style={{ fontFamily: DELT.font.mono }}>Expires in 72h</div>
         </div>
       </div>

@@ -366,7 +366,7 @@ function V1SupportPage({ accent, onTalk, onApply }) {
                 <V1Eyebrow>Direct channels</V1Eyebrow>
                 <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 14 }}>
                   <V1SupChannel icon="mail" label="Email" value="hello@deltcapital.com" sub="Reply in < 1 hour (business hours)" accent={accent} />
-                  <V1SupChannel icon="phone" label="Phone" value="(888) 555-0144" sub="Mon–Fri · 8:00a–7:00p ET" accent={accent} />
+                  <V1SupChannel icon="phone" label="Phone" value="(864) 729-3358" sub="864-PAY-DELT · Mon–Fri · 8:00a–7:00p ET" accent={accent} />
                   <V1SupChannel icon="chat" label="Live chat" value="In the app · bottom right" sub="For active accounts only" accent={accent} />
                 </div>
               </div>
