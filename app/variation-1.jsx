@@ -391,6 +391,22 @@ function V1Hero({ accent, onApply, onNav }) {
           .v1hero-washington { right: -20%; bottom: 0; height: 68%; }
           .v1hero-washington img { opacity: 0.1; }
         }
+        /* Copy-side scrim — invisible over the dark left on desktop, then
+           widens and deepens as the layout narrows so the light copy stays
+           readable where George's face slides under it. */
+        .v1hero-copyscrim {
+          background: linear-gradient(90deg, rgba(10,22,38,0.62) 0%, rgba(10,22,38,0.30) 26%, rgba(10,22,38,0.08) 46%, rgba(10,22,38,0) 62%);
+        }
+        @media (max-width: 1200px) {
+          .v1hero-copyscrim {
+            background: linear-gradient(90deg, rgba(10,22,38,0.88) 0%, rgba(10,22,38,0.68) 34%, rgba(10,22,38,0.34) 56%, rgba(10,22,38,0.08) 76%, rgba(10,22,38,0) 88%);
+          }
+        }
+        @media (max-width: 768px) {
+          .v1hero-copyscrim {
+            background: linear-gradient(90deg, rgba(10,22,38,0.90) 0%, rgba(10,22,38,0.72) 46%, rgba(10,22,38,0.38) 72%, rgba(10,22,38,0.12) 100%);
+          }
+        }
       `}</style>
       <div
         className="v1hero-washington"
@@ -412,6 +428,16 @@ function V1Hero({ accent, onApply, onNav }) {
         }} />
         <img src="app/assets/washington-cutout.png" alt="" />
       </div>
+
+      {/* Copy scrim — a soft dark gradient that sits above George (z-index 2,
+          later in DOM) but below the copy (z-index 3). On desktop it's
+          confined to the already-dark left edge so it's invisible; as the
+          viewport narrows and George encroaches on the copy column, it
+          widens/darkens to keep the light subhead + stats legible over his
+          bright engraved face (see .v1hero-copyscrim media queries above). */}
+      <div className="v1hero-copyscrim" aria-hidden style={{
+        position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none',
+      }} />
 
       <div data-v1-grid-2col style={{
         width: '100%',
@@ -492,10 +518,14 @@ function V1Hero({ accent, onApply, onNav }) {
 
           <p style={{
             fontFamily: DELT.font.body, fontSize: 18, lineHeight: 1.55,
-            color: 'rgba(247,245,240,0.75)', margin: '32px 0 0', maxWidth: 520,
+            // Brighter base + a dark halo so the subhead stays legible where
+            // George's light engraved face slides under it on narrow screens.
+            color: 'rgba(247,245,240,0.92)', margin: '32px 0 0', maxWidth: 520,
+            fontWeight: 450,
+            textShadow: '0 1px 3px rgba(4,14,35,0.85), 0 2px 18px rgba(4,14,35,0.7)',
             ...enter(560),
           }}>
-            {t('hero.subhead.a')}<span style={{ color: '#F7F5F0', fontWeight: 500 }}>$5K–$500K</span>{t('hero.subhead.b')}<span style={{ color: '#F7F5F0', fontWeight: 500 }}>{t('hero.24h')}</span>{t('hero.subhead.c')}
+            {t('hero.subhead.a')}<span style={{ color: '#FFFFFF', fontWeight: 600 }}>$5K–$500K</span>{t('hero.subhead.b')}<span style={{ color: '#FFFFFF', fontWeight: 600 }}>{t('hero.24h')}</span>{t('hero.subhead.c')}
           </p>
 
           <div style={{
