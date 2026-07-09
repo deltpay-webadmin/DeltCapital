@@ -525,7 +525,7 @@ function V1Hero({ accent, onApply, onNav }) {
             textShadow: '0 1px 3px rgba(4,14,35,0.85), 0 2px 18px rgba(4,14,35,0.7)',
             ...enter(560),
           }}>
-            {t('hero.subhead.a')}<span style={{ color: '#FFFFFF', fontWeight: 600 }}>$5K–$500K</span>{t('hero.subhead.b')}<span style={{ color: '#FFFFFF', fontWeight: 600 }}>{t('hero.24h')}</span>{t('hero.subhead.c')}
+            {t('hero.subhead.a')}<span style={{ color: '#FFFFFF', fontWeight: 600 }}>$10K–$500K</span>{t('hero.subhead.b')}<span style={{ color: '#FFFFFF', fontWeight: 600 }}>{t('hero.24h')}</span>{t('hero.subhead.c')}
           </p>
 
           <div style={{
@@ -567,7 +567,7 @@ function V1Hero({ accent, onApply, onNav }) {
             display: 'flex', gap: 36, flexWrap: 'wrap',
           }}>
             {[
-              [t('hero.stat.range'),  '$5K–$500K',        t('hero.stat.range.sub')],
+              [t('hero.stat.range'),  '$10K–$500K',        t('hero.stat.range.sub')],
               [t('hero.stat.time'),   '24h',              t('hero.stat.time.sub')],
               [t('hero.stat.credit'), t('hero.stat.credit.v'), t('hero.stat.credit.sub')],
             ].map(([l, v, s], i) => (
@@ -600,7 +600,7 @@ function V1Hero({ accent, onApply, onNav }) {
 // browser's Back/Forward buttons work and deep links resolve on reload. Every
 // navTo() fades the body out for ~200ms before swapping content so page
 // changes feel like a transition rather than a hard snap.
-const V1_PAGES = new Set(['home', 'about', 'how', 'reviews', 'calc', 'talk', 'support', 'faq', 'blog', 'login', 'terms', 'privacy', 'eca', 'funding-flow', 'processing', 'speed', 'lending', 'terminals']);
+const V1_PAGES = new Set(['home', 'about', 'how', 'reviews', 'calc', 'talk', 'support', 'faq', 'blog', 'login', 'terms', 'privacy', 'eca', 'funding-flow', 'processing', 'speed', 'lending', 'terminals', 'eligibility']);
 function readPageFromHash() {
   if (typeof window === 'undefined') return 'home';
   // Apply is special-cased: it's a route that opens the modal rather than
@@ -760,10 +760,12 @@ function Variation1() {
       setAppFromEmail(true);
       setAppOpen(true);
       saveApplyDraft(prefill);
-      // Strip the payload so refreshes don't carry it. We keep #apply so
-      // popstate still resolves the modal-open state.
+      // Strip the payload AND reset the path to root so the rest of the
+      // session routes normally. (Previously this pinned the path to /apply,
+      // which made readPageFromHash resolve every later nav/reload back to
+      // home.) The modal is already open via state, so it doesn't need the URL.
       try {
-        window.history.replaceState({ page: 'home' }, '', '/apply');
+        window.history.replaceState({ page: 'home' }, '', '/');
       } catch (_) { /* old browsers */ }
       return;
     }
@@ -773,14 +775,22 @@ function Variation1() {
     if (draft && draft.prefill) setAppPrefill(draft.prefill);
   }, []);
 
-  // Sync with Back / Forward buttons.
+  // Sync with Back / Forward buttons (popstate) AND with plain in-page hash
+  // links (hashchange). navTo() uses pushState — which fires neither — so
+  // this doesn't double-handle programmatic navigation; it only catches raw
+  // `<a href="#page">` clicks so every hash link routes logically. The URL is
+  // already updated by the browser in both cases, so we swap without pushing.
   React.useEffect(() => {
     const onPop = () => {
       const next = readPageFromHash();
       if (next !== page) swapPage(next, false);
     };
     window.addEventListener('popstate', onPop);
-    return () => window.removeEventListener('popstate', onPop);
+    window.addEventListener('hashchange', onPop);
+    return () => {
+      window.removeEventListener('popstate', onPop);
+      window.removeEventListener('hashchange', onPop);
+    };
   }, [page, swapPage]);
 
   // Make sure the initial URL has a history entry so the first Back works.
@@ -825,6 +835,7 @@ function Variation1() {
     page === 'speed'    ? <V1SpeedPage accent={accent} onApply={() => openApp(null, null)} onCalc={() => navTo('calc')} /> :
     page === 'lending'  ? <V1LendingPage accent={accent} onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} /> :
     page === 'terminals' ? <V1TerminalsPage accent={accent} onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} /> :
+    page === 'eligibility' ? <V1EligibilityPage accent={accent} onApply={() => openApp(null, null)} onTalk={() => navTo('talk')} /> :
     home;
 
   return (

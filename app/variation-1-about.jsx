@@ -31,9 +31,9 @@ const ABOUT_PRINCIPLES = [
 ];
 
 const ABOUT_VALUES = [
-  { label: 'Years operating',      value: 6,       suffix: '',  sub: 'Founded 2019' },
+  { label: 'Years operating',      value: 7,       suffix: '',  sub: 'Founded 2019' },
   { label: 'Capital deployed',     value: 200,     suffix: 'M', prefix: '$', sub: 'Lifetime, through Q4' },
-  { label: 'Operators funded',     value: 4200,    suffix: '+', sub: 'Across 47 US states' },
+  { label: 'Operators funded',     value: 2850,    suffix: '+', sub: 'Across 47 US states' },
   { label: 'Avg. time to fund',    value: 24,      suffix: ' h', sub: 'From Plaid connect' },
 ];
 

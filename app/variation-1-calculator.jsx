@@ -289,17 +289,18 @@ function V1CalcAnalyzer({ onApply, onNavHow, onNavProcessing, hideHeader }) {
     baseLow = revenue * TIB_MULT[tib].low;
     baseHigh = revenue * TIB_MULT[tib].high;
   }
-  const preLow  = Math.min(250000, Math.max(5000, Math.round(baseLow / 1000) * 1000));
+  const preLow  = Math.min(250000, Math.max(10000, Math.round(baseLow / 1000) * 1000));
   const preHigh = Math.min(250000, Math.max(preLow + 2000, Math.round(baseHigh / 1000) * 1000));
   let bLow = baseLow, bHigh = baseHigh;
-  // ~25% uplift — realistic underwriting confidence boost from a unified
-  // processor (tighter cash-flow visibility, faster verification, marginally
-  // lower risk premium). Was 1.75 — too generous to read as honest.
-  if (boosted) { bLow *= 1.25; bHigh *= 1.25; }
+  // 1.75× uplift when the merchant processes with Delt — a unified processor
+  // gives us real-time deposit visibility, so we underwrite against projected
+  // (not just historical) revenue and can responsibly extend up to 1.75× the
+  // standard advance. Matches the "Up to 1.75×" / "75% more capital" copy.
+  if (boosted) { bLow *= 1.75; bHigh *= 1.75; }
   bLow = Math.round(bLow / 1000) * 1000;
   bHigh = Math.round(bHigh / 1000) * 1000;
   const cap = boosted ? 500000 : 250000;
-  bLow  = Math.min(cap, Math.max(5000, bLow));
+  bLow  = Math.min(cap, Math.max(10000, bLow));
   bHigh = Math.min(cap, Math.max(bLow + 2000, bHigh));
   const displayLow  = boosted ? bLow  : preLow;
   const displayHigh = boosted ? bHigh : preHigh;
@@ -686,8 +687,8 @@ function V1CalcAnalyzer({ onApply, onNavHow, onNavProcessing, hideHeader }) {
                     color: deltToggle ? V1.ink : V1.muted, transition: 'color .3s',
                   }}>
                     {noCards
-                      ? 'Sign up for Delt payments for 25% more capital'
-                      : 'Switch processing to Delt for 25% more capital'}
+                      ? 'Sign up for Delt payments for 75% more capital'
+                      : 'Switch processing to Delt for 75% more capital'}
                   </div>
                   {deltToggle && hasRevenue && !isRedirect && (
                     <div style={{ fontSize: 11.5, color: V1.blue, fontWeight: 500, marginTop: 2, fontVariantNumeric: 'tabular-nums' }}>

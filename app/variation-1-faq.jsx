@@ -107,7 +107,7 @@ const FAQ_CATS = [
               <li><b>Customer mix</b> and revenue stability</li>
             </ul>
             <p>
-              <a href="#" style={{ color: V1.blue, textDecoration: 'underline' }}>
+              <a href="#eligibility" style={{ color: V1.blue, textDecoration: 'underline' }}>
                 Learn more about eligibility for Delt funding.
               </a>
             </p>
@@ -116,12 +116,12 @@ const FAQ_CATS = [
       },
       {
         q: 'How much funding can I receive through Delt?',
-        short: 'Offers are customized to your business performance — up to $350K.',
+        short: 'Offers are customized to your business performance — up to $500K.',
         a: (
           <>
             <p>
               Offers are <b>customized to your business</b> and can range up
-              to <b>$350,000</b>, depending on performance. We take into
+              to <b>$500,000</b>, depending on performance. We take into
               account:
             </p>
             <ul style={faqUlStyle}>
@@ -131,7 +131,7 @@ const FAQ_CATS = [
             </ul>
             <FaqMath
               rows={[
-                ['Maximum offer',  '$350,000'],
+                ['Maximum offer',  '$500,000'],
                 ['Decision time',  '< 6 hours'],
                 ['Funding time',   'Next business day'],
                 ['Renewal pricing','Steps down each cycle'],

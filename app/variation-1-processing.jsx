@@ -8,7 +8,7 @@
 //
 // This page is the deep dive behind two existing surfaces in the site:
 //   • the Delt Boost toggle on the home/calculator card ("Switch processing
-//     to Delt for 25% more capital"), and
+//     to Delt for 75% more capital"), and
 //   • the post-estimate "New businesses that process with Delt get a
 //     pre-approved offer and up to 2× more capital as they grow." callout.
 //
@@ -160,7 +160,7 @@ function PpHero({ onApply, onCalc }) {
           {[
             ['Capital uplift', 'Up to 2×',     'with Delt processing'],
             ['Cap raised to',  '$500K',         'from $250K standard'],
-            ['Approval lift',  '+25%',          'on offer size'],
+            ['Approval lift',  '+75%',          'on offer size'],
             ['First $5K',      '0%',            'processing fee'],
           ].map(([l, v, s]) => (
             <div key={l}>
@@ -515,7 +515,7 @@ function PpExample() {
             fontFamily: V1.fontBody, fontSize: 11.5, color: V1.muted,
             margin: '24px 0 0', lineHeight: 1.5,
           }}>
-            Illustrative. Final offers depend on a full review of your business and processing volume. The Delt Boost on the calculator shows the typical 25% uplift on first offer; the 2× ceiling reflects raised caps and pre-approved renewals as your processing history with Delt builds.
+            Illustrative. Final offers depend on a full review of your business and processing volume. The Delt Boost on the calculator shows the typical 75% uplift on first offer; the 2× ceiling reflects raised caps and pre-approved renewals as your processing history with Delt builds.
           </p>
         </div>
       </div>
