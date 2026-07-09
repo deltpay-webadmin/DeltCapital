@@ -82,7 +82,7 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     setSent(true);
-    onSignIn && onSignIn(email || 'operator@delt.capital');
+    onSignIn && onSignIn(email || 'you@yourbusiness.com');
   };
 
   const enter = (delay) => ({
@@ -105,7 +105,7 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
   })();
 
   return (
-    <section data-v1-section style={{
+    <section data-v1-section data-v1-grid-2col style={{
       display: 'grid',
       gridTemplateColumns: '0.9fr 1.1fr',
       minHeight: 'calc(100vh - 96px)',
@@ -663,7 +663,7 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
                   maxWidth: 460,
                 }}>
                   We emailed a sign-in link to{' '}
-                  <span style={{ color: V1.ink, fontWeight: 500 }}>{email || 'operator@delt.capital'}</span>.
+                  <span style={{ color: V1.ink, fontWeight: 500 }}>{email || 'you@yourbusiness.com'}</span>.
                   Open it on this device to finish signing in.
                 </p>
 

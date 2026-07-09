@@ -151,7 +151,7 @@ function PpHero({ onApply, onCalc }) {
         </div>
 
         {/* Stat strip */}
-        <div style={{
+        <div data-v1-grid-4col style={{
           marginTop: 48, paddingTop: 28,
           borderTop: '1px solid rgba(255,255,255,0.1)',
           display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 28,
@@ -220,7 +220,7 @@ function PpRails() {
           When all your payments flow through Delt, our underwriters see real revenue cadence in real time. That clarity is what turns a $250K cap into a $500K cap.
         </p>
 
-        <div style={{
+        <div data-v1-grid-3col style={{
           marginTop: 56,
           display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24,
         }}>
@@ -263,7 +263,7 @@ function PpRails() {
                 fontFamily: V1.fontBody, fontSize: 14, lineHeight: 1.6,
                 color: V1.text, margin: 0,
               }}>{r.d}</p>
-              <ul style={{
+              <ul data-v1-grid-2col style={{
                 listStyle: 'none', padding: 0, margin: '18px 0 0',
                 display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px 12px',
               }}>
@@ -314,7 +314,7 @@ function PpWhy() {
   return (
     <section style={{ background: V1.white, padding: '96px 0', borderTop: `1px solid ${V1.line}`, borderBottom: `1px solid ${V1.line}` }}>
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 40px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.4fr', gap: 64, alignItems: 'start' }}>
+        <div data-v1-grid-2col style={{ display: 'grid', gridTemplateColumns: '1fr 1.4fr', gap: 64, alignItems: 'start' }}>
           <div style={{ position: 'sticky', top: 32 }}>
             <V1Eyebrow>Why 2×</V1Eyebrow>
             <h2 style={{
@@ -356,7 +356,7 @@ function PpWhy() {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 18 }}>
+          <div data-v1-grid-2col style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 18 }}>
             {items.map((it) => (
               <div key={it.h} style={{
                 border: `1px solid ${V1.line}`, borderRadius: 14,
@@ -426,7 +426,7 @@ function PpExample() {
           background: V1.white, border: `1px solid ${V1.line}`,
           borderRadius: 16, padding: 32, overflow: 'hidden',
         }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32 }}>
+          <div data-v1-grid-2col style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32 }}>
             {/* Before */}
             <div style={{ paddingRight: 28, borderRight: `1px solid ${V1.line}` }}>
               <div style={{
@@ -541,7 +541,7 @@ function PpSwitch() {
         }}>
           Three steps. No downtime. Same-day cutover for most merchants.
         </h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 0, position: 'relative' }}>
+        <div data-v1-grid-3col style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 0, position: 'relative' }}>
           {/* Connecting rule */}
           <div aria-hidden style={{
             position: 'absolute', top: 28, left: '14%', right: '14%', height: 1,

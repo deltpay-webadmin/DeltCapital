@@ -27,7 +27,7 @@ const { renderEmail } = require('./_email-layout');
 
 const NOTIFY_TO = process.env.LEADS_NOTIFY_EMAIL
                 || process.env.BOOKING_NOTIFY_EMAIL
-                || 'david@deltpay.com';
+                || 'info@deltpay.com';
 
 // Heuristic: only echo back the business name in the email body when it
 // looks like a real name. A user who types '123 my business' as a

@@ -36,7 +36,7 @@
 //   BOOKING_NOTIFY_EMAIL  — Internal recipient + BCC on booker email; defaults to david@deltpay.com
 //   BOOKING_TIMEZONE      — Windows timezone name; defaults to "Eastern Standard Time"
 
-const NOTIFY_TO = process.env.BOOKING_NOTIFY_EMAIL || 'david@deltpay.com';
+const NOTIFY_TO = process.env.BOOKING_NOTIFY_EMAIL || 'info@deltpay.com';
 const CALENDAR_USER = process.env.OUTLOOK_CALENDAR_USER || process.env.OUTLOOK_FROM_EMAIL || NOTIFY_TO;
 const TEAMS_HOST = process.env.OUTLOOK_TEAMS_HOST || NOTIFY_TO;
 const EVENT_TIMEZONE = process.env.BOOKING_TIMEZONE || 'Eastern Standard Time';
@@ -429,7 +429,7 @@ module.exports = async function handler(req, res) {
     } catch (err) {
       console.error('createEvent failed:', err && err.stack ? err.stack : err);
       res.status(500).json({
-        error: "We couldn't put this on the calendar. Please email david@deltpay.com directly and we'll get you booked.",
+        error: "We couldn't put this on the calendar. Please email support@deltpay.com directly and we'll get you booked.",
       });
       return;
     }

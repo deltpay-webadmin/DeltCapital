@@ -36,7 +36,7 @@ const COMPANY = {
   phone: '(864) 729-3358',
   // tel: links want digits only
   phoneTel: '+18647293358',
-  supportEmail: 'david@deltpay.com',
+  supportEmail: 'support@deltpay.com',
   site: 'deltcapital.com',
   siteUrl: ORIGIN,
 };

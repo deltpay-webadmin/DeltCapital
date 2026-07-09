@@ -1489,7 +1489,7 @@ function PlxTabCapital() {
         <div style={{ fontFamily: DELT.font.display, fontSize: 68, fontWeight: 700, letterSpacing: '-0.035em', lineHeight: 1, marginTop: 8, background: `linear-gradient(90deg, ${DELT.colors.indigo}, ${PLX.softIndigo})`, WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>$125,000</div>
         <div style={{ fontFamily: DELT.font.body, fontSize: 15, color: DELT.colors.inkSoft, marginTop: 14 }}>Wired to your account within 24 hours.</div>
       </div>
-      <div style={{ padding: '28px 28px 0', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+      <div data-v1-grid-3col style={{ padding: '28px 28px 0', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
         {/* MCA framing — no fixed term. Holdback (percentage of daily card
             settlements) replaces a weekly duration; total repaid is factor
             × advance. Payback duration flexes with revenue. */}
@@ -1557,7 +1557,7 @@ function PlxTabPayments() {
         <span style={{ fontFamily: DELT.font.display, fontWeight: 600, fontSize: 15, color: DELT.colors.indigo }}>Your processing rate</span>
         <span style={{ fontFamily: DELT.font.mono, fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', color: DELT.colors.inkMute }}>Monthly savings</span>
       </div>
-      <div style={{ padding: '30px 28px 24px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+      <div data-v1-grid-2col style={{ padding: '30px 28px 24px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
         <div style={{ padding: 22, borderRadius: 14, border: `1px solid ${DELT.colors.lineSoft}`, background: 'rgba(15,14,23,0.02)' }}>
           <div style={{ fontFamily: DELT.font.mono, fontSize: 10.5, letterSpacing: '0.12em', textTransform: 'uppercase', color: DELT.colors.inkMute }}>Old processor</div>
           <div style={{ fontFamily: DELT.font.display, fontSize: 40, fontWeight: 700, color: DELT.colors.inkMute, marginTop: 8, letterSpacing: '-0.025em', textDecoration: 'line-through', fontVariantNumeric: 'tabular-nums' }}>2.90%</div>
@@ -1598,7 +1598,7 @@ function PlxTabPayments_OLD() {
           <polyline points={pts} fill="none" stroke={DELT.colors.indigo} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
         </svg>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12, padding: '0 24px 24px' }}>
+      <div data-v1-grid-3col style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12, padding: '0 24px 24px' }}>
         {[['Volume today', '$42,180'], ['Batches', '3'], ['Approval rate', '96.8%']].map(([l, v]) => (
           <div key={l} style={{ border: `1px solid ${DELT.colors.line}`, borderRadius: 10, padding: 14 }}>
             <div style={{ fontFamily: DELT.font.mono, fontSize: 10.5, textTransform: 'uppercase', letterSpacing: '0.08em', color: DELT.colors.inkMute }}>{l}</div>
@@ -1632,7 +1632,8 @@ function PlxTabPortal_OLD() {
         <span style={{ fontFamily: DELT.font.display, fontWeight: 600, fontSize: 15 }}>Agent Portal · Residuals</span>
         <span style={{ fontFamily: DELT.font.mono, fontSize: 12.5, color: DELT.colors.indigo }}>Commissions this month: <strong>$12,480</strong></span>
       </div>
-      <div style={{ padding: '8px 24px 24px' }}>
+      <div data-v1-table-wrap style={{ padding: '8px 24px 24px' }}>
+        <div style={{ minWidth: 360 }}>
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', padding: '10px 0', fontFamily: DELT.font.mono, fontSize: 10.5, textTransform: 'uppercase', letterSpacing: '0.08em', color: DELT.colors.inkMute, borderBottom: `1px solid ${DELT.colors.line}` }}>
           <span>Merchant</span><span>Funded</span><span>Factor</span><span style={{ textAlign: 'right' }}>Residual</span>
         </div>
@@ -1644,6 +1645,7 @@ function PlxTabPortal_OLD() {
             <span style={{ fontFamily: DELT.font.mono, textAlign: 'right', color: DELT.colors.indigo, fontWeight: 600 }}>{r.res}</span>
           </div>
         ))}
+        </div>
       </div>
     </div>
   );

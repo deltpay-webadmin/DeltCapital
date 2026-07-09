@@ -1212,7 +1212,7 @@ function HowItWorksPage({ accent, onApply, onTalk }) {
       <HwStep
         num="03" label="Offer" mockKind="offer" accent={accent}
         title="A real offer, priced by a human."
-        body="Every file crosses a Delt underwriter's desk. No black-box scoring. You get the actual numbers — factor rate, term, payment schedule — and the name of the analyst who signed it. Offers are live in under four hours on most files."
+        body="Every file crosses a Delt underwriter's desk. No black-box scoring. You get the actual numbers — factor rate, term, payment schedule — and the name of the analyst who signed it. Most offers are live within 24–48 hours."
         bullets={[
           'Factor rate published, not hidden',
           'Payment schedule shown before you sign',

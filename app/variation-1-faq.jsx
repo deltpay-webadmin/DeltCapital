@@ -132,7 +132,7 @@ const FAQ_CATS = [
             <FaqMath
               rows={[
                 ['Maximum offer',  '$500,000'],
-                ['Decision time',  '< 6 hours'],
+                ['Decision time',  '24–48 hours'],
                 ['Funding time',   'Next business day'],
                 ['Renewal pricing','Steps down each cycle'],
               ]}

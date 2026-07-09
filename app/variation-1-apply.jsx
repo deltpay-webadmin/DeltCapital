@@ -455,14 +455,16 @@ function V1StepIdentity({ form, setForm, accent, onAdvance }) {
 }
 
 // ─── Step 4: Offer ───
-function V1StepOffer({ form, prefill, accent }) {
+function V1StepOffer({ form, prefill, accent, reference }) {
   const amount = prefill?.high || form.amount || 75000;
   const factor = prefill?.factor || 1.18;
   const total = Math.round(amount * factor);
   const term = 8;
   const weekly = Math.round(total / (term * 4.33));
   const daily = Math.round(total / (term * 22));
-  const offerId = React.useMemo(() => `DLT-2026-${Math.floor(100000 + Math.random() * 900000)}`, []);
+  // Shared application reference (passed from the parent flow) so the Offer ID
+  // shown here matches the REF on the confirmation step.
+  const offerId = reference;
 
   return (
     <div>
@@ -546,7 +548,7 @@ function V1StepOffer({ form, prefill, accent }) {
         </div>
 
         {/* Terms grid */}
-        <div style={{
+        <div data-v1-grid-4col style={{
           background: V1.white, padding: 0,
           display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)',
         }}>
@@ -599,8 +601,8 @@ function V1StepOffer({ form, prefill, accent }) {
 }
 
 // ─── Step 5: Done ───
-function V1StepDone({ form, accent }) {
-  const ref = React.useMemo(() => `DLT-2026-${Math.floor(100000 + Math.random() * 900000)}`, []);
+function V1StepDone({ form, accent, reference }) {
+  const ref = reference;
   return (
     <div style={{ textAlign: 'center', padding: '24px 0 16px' }}>
       <div style={{
@@ -646,7 +648,7 @@ function V1StepDone({ form, accent }) {
         <b style={{ color: V1.ink }}>{form.email || 'your email'}</b>.
       </p>
 
-      <div style={{
+      <div data-v1-grid-3col style={{
         maxWidth: 480, margin: '0 auto',
         padding: '16px 20px',
         background: V1.bg, border: `1px solid ${V1.line}`, borderRadius: 12,
@@ -712,6 +714,15 @@ function V1ApplicationFlow({
     // estimate.high they were just shown.
     amount: prefill?.high || 75000,
   });
+
+  // One reference number per application, generated when the modal opens and
+  // shared by the Offer step and the confirmation ("Done") step — so the ID the
+  // user counter-signs is the same REF printed on their receipt. Regenerates on
+  // a fresh open so a second application gets its own reference.
+  const reference = React.useMemo(
+    () => `DLT-2026-${Math.floor(100000 + Math.random() * 900000)}`,
+    [open]
+  );
 
   // If the modal is re-opened with a newer prefill (e.g. user re-runs the
   // calculator and the lead-gate captures different contact info), merge
@@ -1052,8 +1063,8 @@ function V1ApplicationFlow({
             {step === 0 && <V1StepBusiness form={form} setForm={setForm} accent={accent} />}
             {step === 1 && <V1StepBank form={form} setForm={setForm} accent={accent} onAdvance={() => setStep(2)} autoOpen={autoOpenPlaid} />}
             {step === 2 && <V1StepIdentity form={form} setForm={setForm} accent={accent} onAdvance={() => setStep(3)} />}
-            {step === 3 && <V1StepOffer form={form} prefill={prefill} accent={accent} />}
-            {step === 4 && <V1StepDone form={form} accent={accent} />}
+            {step === 3 && <V1StepOffer form={form} prefill={prefill} accent={accent} reference={reference} />}
+            {step === 4 && <V1StepDone form={form} accent={accent} reference={reference} />}
           </div>
 
           {/* action bar */}

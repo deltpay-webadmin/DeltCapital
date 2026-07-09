@@ -277,8 +277,14 @@ function V1CalcAnalyzer({ onApply, onNavHow, onNavProcessing, hideHeader }) {
   const showTheater = leadStage === 'calculating';
 
   const noCards = acceptsCards === false;
-  const crossSell = noCards;
-  const boosted = deltToggle || crossSell;
+  // The Delt-processing boost only applies when the merchant explicitly opts
+  // in via the toggle — we never auto-inflate a baseline estimate just because
+  // someone doesn't accept cards. (Answering "no cards" used to silently force
+  // the boost on, showing a BIGGER number for a business we can see LESS of.)
+  // The toggle stays available to both segments so each can model the upside:
+  // switchers ("move your processing to Delt") and adopters ("start taking
+  // card payments with Delt").
+  const boosted = deltToggle;
   const isRedirect = tib === '<6mo';
   const hasRevenue = revenue > 0;
   const hasTIB = tib !== '';
@@ -662,11 +668,11 @@ function V1CalcAnalyzer({ onApply, onNavHow, onNavProcessing, hideHeader }) {
               </div>
             )}
 
-            <button onClick={() => setDeltToggle(!deltToggle)} disabled={noCards}
+            <button onClick={() => setDeltToggle(!deltToggle)}
               style={{
                 width: '100%', padding: '14px 28px 18px', border: 'none',
                 background: 'transparent',
-                cursor: noCards ? 'default' : 'pointer', textAlign: 'left',
+                cursor: 'pointer', textAlign: 'left',
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
                 fontFamily: V1.fontBody,
               }}>

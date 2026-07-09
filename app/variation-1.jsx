@@ -124,7 +124,10 @@ function V1Chrome({ page, navTo, accent, openApp }) {
       aria-modal="true"
       aria-hidden={!menuOpen}
       style={{
-        position: 'fixed', inset: 0, zIndex: 50,
+        // z-index 70 keeps the full-screen mobile menu above the cookie
+        // banner (z60) so the banner can't cover the menu's CTA/toggle, while
+        // still sitting below the Plaid (80) / apply + booking (100) modals.
+        position: 'fixed', inset: 0, zIndex: 70,
         background: DELT.colors.ink,
         opacity: menuOpen ? 1 : 0,
         pointerEvents: menuOpen ? 'auto' : 'none',

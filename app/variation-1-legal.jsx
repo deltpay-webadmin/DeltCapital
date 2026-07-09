@@ -213,7 +213,7 @@ function V1LegalLayout({ title, eyebrow, effective, toc, onBack, otherLink, chil
               <span style={{
                 fontFamily: V1.fontBody, fontSize: 14, color: V1.text,
               }}>
-                Questions? Email <LegalLink href="mailto:privacy@delt.com">privacy@delt.com</LegalLink>.
+                Questions? Email <LegalLink href="mailto:info@deltpay.com">info@deltpay.com</LegalLink>.
               </span>
               <button
                 type="button"
@@ -610,7 +610,7 @@ function V1PrivacyPolicy({ onBack, onNavTerms }) {
           'Timely patching of known security vulnerabilities.',
           'Incident response procedures to address security events promptly.',
         ]} />
-        <LegalP>We comply with the Safeguards Rule under the Gramm-Leach-Bliley Act ("GLBA"), which requires us to maintain a comprehensive information security program. While we work hard to protect your information, no system is completely secure. If you believe your information has been compromised, please contact us immediately at <LegalLink href="mailto:privacy@delt.com">privacy@delt.com</LegalLink>.</LegalP>
+        <LegalP>We comply with the Safeguards Rule under the Gramm-Leach-Bliley Act ("GLBA"), which requires us to maintain a comprehensive information security program. While we work hard to protect your information, no system is completely secure. If you believe your information has been compromised, please contact us immediately at <LegalLink href="mailto:info@deltpay.com">info@deltpay.com</LegalLink>.</LegalP>
       </LegalSection>
 
       <LegalSection id="pp-7" eyebrow="07 · Retention" title="Data Retention">
@@ -632,7 +632,7 @@ function V1PrivacyPolicy({ onBack, onNavTerms }) {
           If Delt Pay has obtained a consumer report about you through Plaid CRA, you have specific rights under the Fair Credit Reporting Act, including the right to access the information in your consumer file, dispute inaccurate or incomplete information and request reinvestigation, be notified if information in your consumer report has been used against you in a credit decision, and request that your information not be used for prescreened offers of credit.
         </LegalCallout>
         <LegalP>To exercise your FCRA rights with Plaid CRA, you may visit <LegalLink href="https://plaid.com/check/consumer-service-center/" external>Plaid CRA's Consumer Service Center</LegalLink> or contact Plaid CRA at 844-204-5860.</LegalP>
-        <LegalP>To exercise any rights with Delt Pay, please contact us at <LegalLink href="mailto:privacy@delt.com">privacy@delt.com</LegalLink>. We will respond within a reasonable time and in accordance with applicable law. We may require you to verify your identity before fulfilling a request.</LegalP>
+        <LegalP>To exercise any rights with Delt Pay, please contact us at <LegalLink href="mailto:info@deltpay.com">info@deltpay.com</LegalLink>. We will respond within a reasonable time and in accordance with applicable law. We may require you to verify your identity before fulfilling a request.</LegalP>
       </LegalSection>
 
       <LegalSection id="pp-9" eyebrow="09 · Plaid" title="Plaid's Role and Your Rights with Plaid">
@@ -646,7 +646,7 @@ function V1PrivacyPolicy({ onBack, onNavTerms }) {
           'We do not share your nonpublic personal information with non-affiliated third parties for marketing purposes.',
           'We share nonpublic personal information only as permitted under GLBA, including with service providers who help us operate our business and as required by law.',
         ]} />
-        <LegalP>You do not need to take any action to limit our sharing, as we already limit sharing to what is described in this Policy. If you have questions about our GLBA practices, contact us at <LegalLink href="mailto:privacy@delt.com">privacy@delt.com</LegalLink>.</LegalP>
+        <LegalP>You do not need to take any action to limit our sharing, as we already limit sharing to what is described in this Policy. If you have questions about our GLBA practices, contact us at <LegalLink href="mailto:info@deltpay.com">info@deltpay.com</LegalLink>.</LegalP>
       </LegalSection>
 
       <LegalSection id="pp-11" eyebrow="11 · FCRA" title="FCRA Compliance Notice">
@@ -654,7 +654,7 @@ function V1PrivacyPolicy({ onBack, onNavTerms }) {
       </LegalSection>
 
       <LegalSection id="pp-12" eyebrow="12 · California" title="California Privacy Notice">
-        <LegalP>If you are a California resident, you may have additional rights under the California Consumer Privacy Act ("CCPA"), as amended by the California Privacy Rights Act ("CPRA"). However, please note that the CCPA provides exemptions for personal information collected, processed, sold, or disclosed pursuant to the Gramm-Leach-Bliley Act and for activities subject to the Fair Credit Reporting Act. To the extent these exemptions apply to your data, CCPA requirements may not apply. Regardless of applicable exemptions, we are committed to transparency about our data practices as described throughout this Policy. If you have questions about your California privacy rights, please contact us at <LegalLink href="mailto:privacy@delt.com">privacy@delt.com</LegalLink>.</LegalP>
+        <LegalP>If you are a California resident, you may have additional rights under the California Consumer Privacy Act ("CCPA"), as amended by the California Privacy Rights Act ("CPRA"). However, please note that the CCPA provides exemptions for personal information collected, processed, sold, or disclosed pursuant to the Gramm-Leach-Bliley Act and for activities subject to the Fair Credit Reporting Act. To the extent these exemptions apply to your data, CCPA requirements may not apply. Regardless of applicable exemptions, we are committed to transparency about our data practices as described throughout this Policy. If you have questions about your California privacy rights, please contact us at <LegalLink href="mailto:info@deltpay.com">info@deltpay.com</LegalLink>.</LegalP>
       </LegalSection>
 
       <LegalSection id="pp-13" eyebrow="13 · Cookies" title="Cookie Policy">
@@ -700,7 +700,7 @@ function V1PrivacyPolicy({ onBack, onNavTerms }) {
         <LegalCallout eyebrow="Delt Pay LLC · Attn: Privacy">
           1603 Capitol Ave Ste 415 #644712<br/>
           Cheyenne, Wyoming 82001 USA<br/>
-          Email: <LegalLink href="mailto:privacy@delt.com">privacy@delt.com</LegalLink>
+          Email: <LegalLink href="mailto:info@deltpay.com">info@deltpay.com</LegalLink>
         </LegalCallout>
         <LegalP style={{ fontStyle: 'italic', fontWeight: 500 }}>We take privacy concerns seriously and will respond to your inquiry as promptly as possible.</LegalP>
       </LegalSection>
@@ -746,7 +746,7 @@ function V1ElectronicCommunications({ onBack }) {
       <LegalSection id="eca-3" eyebrow="03 · Withdrawal" title="How to Withdraw Consent">
         <LegalP>You may withdraw your consent to receive communications electronically by contacting us in writing. If you withdraw your consent, we reserve the right to close your account or charge you additional fees for paper copies.</LegalP>
         <LegalCallout eyebrow="To withdraw consent">
-          Email <LegalLink href="mailto:privacy@delt.com">privacy@delt.com</LegalLink> with the subject line <b>"Electronic Communications — Withdraw Consent"</b> and include the business name and EIN on file. We will confirm receipt within five (5) business days and process the request within a reasonable time.
+          Email <LegalLink href="mailto:info@deltpay.com">info@deltpay.com</LegalLink> with the subject line <b>"Electronic Communications — Withdraw Consent"</b> and include the business name and EIN on file. We will confirm receipt within five (5) business days and process the request within a reasonable time.
         </LegalCallout>
       </LegalSection>
 

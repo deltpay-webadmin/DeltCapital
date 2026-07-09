@@ -116,7 +116,7 @@ function FfHero({ onApply }) {
         }}>
           {[
             ['Application', '5', 'min'],
-            ['Approval',    '24', 'hrs'],
+            ['Approval',    '24–48', 'hrs'],
             ['To wire',     '24', 'h'],
             ['Hidden fees', '0',  '$'],
           ].map(([label, value, unit], i) => (
@@ -759,7 +759,7 @@ function V1FundingFlowPage({ accent, onApply, onCalc }) {
           { icon: 'pie',    text: 'Transparent pricing — one factor rate, no compounding' },
           { icon: 'zap',    text: 'Most files approved within hours, not weeks' },
         ]}
-        statLabel="Average approval time · 24 hours"
+        statLabel="Average approval time · 24–48 hours"
         mock={(active) => <FfMock2 active={active} />}
       />
 

@@ -33,7 +33,7 @@ const { renderEmail, esc: layoutEsc } = require('./_email-layout');
 
 const NOTIFY_TO = process.env.LEADS_NOTIFY_EMAIL
                 || process.env.BOOKING_NOTIFY_EMAIL
-                || 'david@deltpay.com';
+                || 'info@deltpay.com';
 
 const FROM_MAILBOX = process.env.OUTLOOK_FROM_EMAIL;
 

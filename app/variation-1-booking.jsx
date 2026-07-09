@@ -324,8 +324,8 @@ function V1BookingCalendar({ currentDate, setCurrentDate, selectedDate, onPickDa
   const y = currentDate.getFullYear(), m = currentDate.getMonth();
   const first = new Date(y, m, 1).getDay();
   const total = new Date(y, m + 1, 0).getDate();
-  // "Today" is anchored to David's timezone (ET) so a visitor outside ET
-  // can't pick a date that's already wrapped up on his side.
+  // "Today" is anchored to the booking timezone (ET) so a visitor outside ET
+  // can't pick a date that's already wrapped up on our side.
   const todayET = v1BkTodayInET(); // 'YYYY-MM-DD'
 
   const cells = [];
@@ -544,7 +544,7 @@ function V1TimeSlots({ selectedDate, selectedTime, onPickTime, accent, busySlots
           padding: '20px 16px', textAlign: 'center',
           border: `1px dashed ${V1.line}`, borderRadius: 10, background: V1.white,
           fontFamily: V1.fontBody, fontSize: 13.5, color: V1.muted,
-        }}>Checking David's calendar…</div>
+        }}>Checking calendar…</div>
       ) : allTaken ? (
         <div style={{
           padding: '20px 16px', textAlign: 'center',
@@ -1128,7 +1128,7 @@ function V1BookingPage({ accent, onApply }) {
     return () => clearInterval(id);
   }, []);
 
-  // Fetch David's busy slots whenever the picked date changes.
+  // Fetch busy slots whenever the picked date changes.
   React.useEffect(() => {
     if (!selectedDate) { setBusySlots([]); return; }
     const dateISO = v1BkDateToISO(selectedDate);

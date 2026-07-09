@@ -10,7 +10,7 @@
 //
 // Reuses the same env vars as api/book.js — see that file for setup.
 
-const NOTIFY_TO = process.env.BOOKING_NOTIFY_EMAIL || 'david@deltpay.com';
+const NOTIFY_TO = process.env.BOOKING_NOTIFY_EMAIL || 'info@deltpay.com';
 // Availability is always evaluated against the specialist's mailbox (David),
 // not the mailbox that hosts the calendar event. They diverge once events are
 // hosted on a shared mailbox like noreply.
