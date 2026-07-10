@@ -539,13 +539,7 @@ function V1TimeSlots({ selectedDate, selectedTime, onPickTime, accent, busySlots
         }}>
           No more open times today — pick another day.
         </div>
-      ) : busyLoading ? (
-        <div style={{
-          padding: '20px 16px', textAlign: 'center',
-          border: `1px dashed ${V1.line}`, borderRadius: 10, background: V1.white,
-          fontFamily: V1.fontBody, fontSize: 13.5, color: V1.muted,
-        }}>Checking David's calendar…</div>
-      ) : allTaken ? (
+      ) : (!busyLoading && allTaken) ? (
         <div style={{
           padding: '20px 16px', textAlign: 'center',
           border: `1px dashed ${V1.line}`, borderRadius: 10, background: V1.white,
