@@ -443,7 +443,7 @@ function V1TermsOfUse({ onBack, onNavPrivacy }) {
       </LegalSection>
 
       <LegalSection id="terms-7" eyebrow="07" title="Governing Law">
-        <LegalP>These terms and conditions are governed by and construed in accordance with the laws of Delaware and you irrevocably submit to the exclusive jurisdiction of the courts in that State.</LegalP>
+        <LegalP>These terms and conditions are governed by and construed in accordance with the laws of Florida and you irrevocably submit to the exclusive jurisdiction of the courts in that State.</LegalP>
       </LegalSection>
     </V1LegalLayout>
   );
@@ -553,6 +553,7 @@ function V1PrivacyPolicy({ onBack, onNavTerms }) {
             <><b>Device and usage data:</b> IP address, browser type, operating system, device model, and pages visited.</>,
             <><b>Log data:</b> Access times, referring URLs, and other diagnostic data.</>,
             <><b>Cookies and similar technologies:</b> Used for session management, analytics, security, and platform functionality. See Section 13 (Cookie Policy) for more details.</>,
+            <><b>Advertising and measurement pixels:</b> We use tracking pixels, including the Meta Pixel and Google Analytics, that collect your IP address, browser and device information, and the pages and actions you take on our site to measure and optimize our advertising. See Section 13 (Cookie Policy) for more details.</>,
             <><b>Approximate location:</b> Inferred from your IP address or device timezone settings.</>,
           ]} />
         </LegalSubSection>
@@ -578,7 +579,7 @@ function V1PrivacyPolicy({ onBack, onNavTerms }) {
       </LegalSection>
 
       <LegalSection id="pp-5" eyebrow="05 · Sharing" title="How We Share Your Information">
-        <LegalP>Delt Pay does not sell your personal information. We do not share your information with third-party marketers or advertisers. We share information only in the following limited circumstances:</LegalP>
+        <LegalP>Delt Pay does not sell your personal information. We do not share the financial account data, consumer report data, or biometric data associated with your financing application with third-party marketers or advertisers. We do, however, share limited website-activity and conversion-event data with advertising and analytics partners (including Meta and Google) to measure and optimize our marketing, as described in Section 13 (Cookie Policy). We share information only in the following limited circumstances:</LegalP>
 
         <LegalSubSection id="pp-5-1" title="5.1 Plaid and Plaid CRA">
           <LegalP>We share information with Plaid to enable bank account connectivity, identity verification (including biometric verification), income verification, transaction data retrieval, and balance checks. We share information with Plaid CRA to obtain consumer reports and scores for credit evaluation purposes. Plaid and Plaid CRA act as service providers and/or data processors on our behalf and under their own agreements with you. Their use of your data is governed by their respective privacy policies.</LegalP>
@@ -588,15 +589,20 @@ function V1PrivacyPolicy({ onBack, onNavTerms }) {
           <LegalP>We may share information with carefully selected third-party service providers who assist us in operating our platform, processing applications, verifying identity, providing analytics, maintaining security, and fulfilling legal obligations. These providers are contractually required to use your information only as directed by us and in accordance with applicable law.</LegalP>
         </LegalSubSection>
 
-        <LegalSubSection id="pp-5-3" title="5.3 Legal and Regulatory Disclosures">
+        <LegalSubSection id="pp-5-3" title="5.3 Advertising and Analytics Partners">
+          <LegalP>We use the Meta Pixel (provided by Meta Platforms, Inc.) and Google Analytics on our website to understand how visitors engage with our marketing and to measure the performance of our advertising campaigns. When you visit our site or complete certain milestones in our funnel — such as requesting a capital estimate, starting an application, connecting a bank account through Plaid, or submitting an application — the Meta Pixel may transmit event data to Meta, including your IP address, browser and device information, the pages and actions you take, and a non-financial estimate value associated with the event. Meta may use this data to measure ad performance, build audiences, and deliver and optimize advertising to you across Meta's platforms and partner services.</LegalP>
+          <LegalP>We do not transmit your bank account credentials, account or routing numbers, consumer report data, or biometric data to these advertising or analytics partners. You can control this tracking as described in Section 13 (Cookie Policy), including by declining non-essential cookies through our cookie banner and by adjusting your ad preferences with Meta and Google directly.</LegalP>
+        </LegalSubSection>
+
+        <LegalSubSection id="pp-5-4" title="5.4 Legal and Regulatory Disclosures">
           <LegalP>We may disclose information when required by law, regulation, court order, or government request, or when we believe in good faith that disclosure is necessary to protect our legal rights, prevent fraud, or protect the safety of any person.</LegalP>
         </LegalSubSection>
 
-        <LegalSubSection id="pp-5-4" title="5.4 Business Transfers">
+        <LegalSubSection id="pp-5-5" title="5.5 Business Transfers">
           <LegalP>If Delt Pay undergoes a merger, acquisition, sale of assets, or similar corporate transaction, your information may be transferred as part of that transaction. We will notify you of any such change as required by applicable law.</LegalP>
         </LegalSubSection>
 
-        <LegalSubSection id="pp-5-5" title="5.5 With Your Consent">
+        <LegalSubSection id="pp-5-6" title="5.6 With Your Consent">
           <LegalP>We may share your information for other purposes with your explicit consent.</LegalP>
         </LegalSubSection>
       </LegalSection>
@@ -667,11 +673,19 @@ function V1PrivacyPolicy({ onBack, onNavTerms }) {
             <><b>Strictly necessary cookies:</b> Required for our platform to function properly. These enable core features such as security, authentication, and session management.</>,
             <><b>Analytics and performance cookies:</b> We use third-party analytics services, including Google Analytics, to understand how visitors interact with our website and to improve our platform. These cookies collect information such as pages visited, time spent on pages, and traffic sources.</>,
             <><b>Functional cookies:</b> These enable enhanced functionality and personalization, such as remembering your preferences and settings.</>,
+            <><b>Advertising and marketing cookies:</b> Set by advertising partners, including the Meta Pixel, to measure the performance of our advertising, attribute conversions, and build and optimize audiences for advertising across those partners' platforms. These are non-essential and are only active where permitted by your cookie choices.</>,
           ]} />
-          <LegalP>We do not use advertising or targeting cookies.</LegalP>
         </LegalSubSection>
         <LegalSubSection title="Google Analytics">
           <LegalP>We use Google Analytics to collect anonymized usage data about our website visitors. Google Analytics uses cookies to collect information such as how often users visit our site, what pages they view, and what other sites they visited before coming to ours. Google's ability to use and share information collected by Google Analytics is restricted by the Google Analytics Terms of Service and the Google Privacy Policy. You can opt out of Google Analytics by installing Google's opt-out browser add-on, available at <LegalLink href="https://tools.google.com/dlpage/gaoptout" external>tools.google.com/dlpage/gaoptout</LegalLink>.</LegalP>
+        </LegalSubSection>
+        <LegalSubSection title="Meta Pixel">
+          <LegalP>We use the Meta Pixel, a tracking technology provided by Meta Platforms, Inc. (Facebook and Instagram), to measure the effectiveness of our advertising and to reach relevant audiences. The pixel loads when you visit our website and records a page view, and it also records specific actions you take in our application funnel — such as requesting a capital estimate, starting an application, connecting a bank account through Plaid, submitting an application, and requesting a call.</LegalP>
+          <LegalP>For these events, the Meta Pixel may transmit to Meta your IP address, browser and device information, cookie identifiers, the pages and actions you take, and a non-financial estimate value associated with the event (used to optimize advertising). We do not send your bank credentials, account or routing numbers, consumer report data, or biometric data to Meta. Meta may combine this information with data it already holds about you to measure conversions, build audiences, and deliver and optimize advertising across Meta's platforms and partner network. Meta's use of this data is governed by the <LegalLink href="https://www.facebook.com/privacy/policy/" external>Meta Privacy Policy</LegalLink>.</LegalP>
+          <LegalP>You can limit this tracking by declining non-essential cookies through our cookie banner, by adjusting your ad settings in your Meta account, and by using browser controls or opt-out tools such as the Digital Advertising Alliance's <LegalLink href="https://optout.aboutads.info" external>opt-out page</LegalLink>. Because the pixel relies on cookies and scripts, browser privacy settings and ad blockers may also prevent it from loading.</LegalP>
+        </LegalSubSection>
+        <LegalSubSection title="Plaid">
+          <LegalP>When you connect a financial account or verify your identity through Plaid, Plaid loads its own scripts and may set cookies and collect device and technical data (such as your IP address and browser information) to operate its service, secure the connection, and prevent fraud. This processing is carried out by Plaid under the <LegalLink href="https://plaid.com/legal" external>Plaid End User Privacy Policy</LegalLink>, and you can manage or revoke your Plaid connections at <LegalLink href="https://my.plaid.com" external>my.plaid.com</LegalLink>. See Sections 3.2, 5.1, and 9 for how we use the financial data obtained through Plaid.</LegalP>
         </LegalSubSection>
         <LegalSubSection title="Your choices">
           <LegalP>Most web browsers allow you to manage cookie preferences through browser settings. You can set your browser to refuse cookies or alert you when cookies are being sent. Please note that disabling cookies may affect the functionality of our platform.</LegalP>
