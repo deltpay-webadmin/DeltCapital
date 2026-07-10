@@ -6,7 +6,7 @@
 // HERO IMAGE: swap `HERO_SRC` for any other asset (e.g. a Nano Banana Pro
 // render dropped into app/assets/) — everything else is layout, so a new file
 // or a new path is the only change needed.
-const V1_LOGIN_HERO_SRC = 'app/assets/about/pillar-02_mainstreet.jpg';
+const V1_LOGIN_HERO_SRC = 'app/assets/cases/03_bloom.jpg';
 
 function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
   const mounted = useV1Mounted(60);
@@ -75,7 +75,7 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
             alt="A small-business owner opening up for the day"
             style={{
               position: 'absolute', inset: 0, width: '100%', height: '100%',
-              objectFit: 'cover', objectPosition: '32% 60%',
+              objectFit: 'cover', objectPosition: '62% 32%',
               transform: mounted ? 'scale(1)' : 'scale(1.06)',
               transition: 'transform 1400ms cubic-bezier(0.22, 1, 0.36, 1)',
             }}
@@ -83,7 +83,7 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
           {/* Gradient wash for legibility */}
           <div aria-hidden style={{
             position: 'absolute', inset: 0,
-            background: 'linear-gradient(180deg, rgba(9,10,20,0.72) 0%, rgba(9,10,20,0.28) 34%, rgba(9,10,20,0.55) 78%, rgba(9,10,20,0.9) 100%)',
+            background: 'linear-gradient(180deg, rgba(9,10,20,0.58) 0%, rgba(9,10,20,0.12) 30%, rgba(9,10,20,0.42) 74%, rgba(9,10,20,0.86) 100%)',
           }} />
           {/* Faint concentric ring, echoing the reference */}
           <div aria-hidden style={{
