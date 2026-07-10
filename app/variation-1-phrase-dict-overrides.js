@@ -156,8 +156,8 @@
     // plaid-sections.jsx intelligent-finance banner — Delt-original copy
     // (was the near-verbatim Plaid "AI infrastructure / Explore intelligent
     // finance" wording). Both are single text nodes.
-    'Underwriting that reads your revenue, not your credit.':
-      'Evaluación basada en sus ingresos, no en su crédito.',
+    'Underwriting that reads your revenue, not only your credit.':
+      'Evaluación basada en sus ingresos, no solo en su crédito.',
     'See how we underwrite': 'Vea cómo lo evaluamos',
     "Every day you wait is revenue you don't book. Capital wired in 24 hours — priced off your deposits, not your paperwork.":
       'Cada día que espera son ingresos que no factura. Capital transferido en 24 horas — evaluado por sus depósitos, no por su papeleo.',

@@ -144,60 +144,9 @@ function V1CalcPill({ active, onClick, children, icon }) {
 // ═══════════════════════════════════════════════════════════════
 // CALCULATOR CORE — the analyzer card itself
 // ═══════════════════════════════════════════════════════════════
-// Animated "How it works →" standalone button.
-// NOTE: Superseded by V1CalcHowInlineLink which lives inside the
-// bottom strip alongside the Delt-Boost toggle. Kept here in case we
-// want a standalone variant again for an A/B test.
-function V1CalcHowLink({ onClick }) {
-  const [shown, setShown] = v1cUseState(false);
-  const [hover, setHover] = v1cUseState(false);
-  v1cUseEffect(() => {
-    const r = requestAnimationFrame(() => setShown(true));
-    return () => cancelAnimationFrame(r);
-  }, []);
-  return (
-    <button
-      onClick={onClick}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      style={{
-        marginTop: 18, alignSelf: 'flex-start',
-        position: 'relative', overflow: 'hidden',
-        display: 'inline-flex', alignItems: 'center', gap: 8,
-        padding: '11px 20px', borderRadius: 10, cursor: 'pointer',
-        background: hover ? V1.blue : '#fff',
-        color: hover ? '#fff' : V1.blue,
-        border: `1px solid ${V1.blue}`,
-        fontFamily: V1.fontDisplay, fontSize: 13.5, fontWeight: 700,
-        lineHeight: 1, letterSpacing: '-0.005em',
-        boxShadow: hover ? `0 10px 24px -10px ${V1.blue}88` : '0 0 0 rgba(0,0,0,0)',
-        transform: !shown ? 'translateY(6px)'
-                  : hover ? 'translateY(-1px)' : 'translateY(0)',
-        opacity: shown ? 1 : 0,
-        transition: 'opacity 360ms cubic-bezier(0.22, 1, 0.36, 1), transform 280ms cubic-bezier(0.22, 1, 0.36, 1), background 220ms, color 220ms, box-shadow 240ms',
-      }}
-    >
-      <span aria-hidden style={{
-        position: 'absolute', inset: 0, pointerEvents: 'none',
-        background: 'linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.22) 50%, transparent 70%)',
-        transform: hover ? 'translateX(120%)' : 'translateX(-120%)',
-        transition: 'transform 900ms cubic-bezier(0.22, 1, 0.36, 1)',
-      }} />
-      How it works
-      <span aria-hidden style={{
-        display: 'inline-flex',
-        transform: hover ? 'translateX(3px)' : 'translateX(0)',
-        transition: 'transform 260ms cubic-bezier(0.22, 1, 0.36, 1)',
-      }}>→</span>
-    </button>
-  );
-}
-
-// Inline variant of V1CalcHowLink that lives *inside* the bottom
-// strip directly above the Delt-Boost toggle. Lighter visual weight
-// than the standalone button — reads as a connecting prompt ("Curious
-// how it works? →") so the strip feels like a single guided action
-// instead of two stacked cards.
+// Inline "how it works" prompt that lives inside the bottom strip,
+// directly above the Delt-Boost toggle — a lightweight connecting prompt
+// ("Curious how it works? →") so the strip reads as one guided action.
 function V1CalcHowInlineLink({ onClick }) {
   const [hover, setHover] = v1cUseState(false);
   return (
@@ -340,7 +289,9 @@ function V1CalcAnalyzer({ onApply, onNavHow, onNavProcessing, hideHeader }) {
       // Already gave us their info; just show the recalculated number.
       setShowResults(false);
       calcTimer.current = setTimeout(() => setShowResults(true), 700);
-      return;
+      // Clear the pending timer if inputs change or the calculator unmounts
+      // within the 700ms window (avoids a setState-on-unmounted warning).
+      return () => clearTimeout(calcTimer.current);
     }
 
     // First-time reveal: run the 3-phase theater, then open the gate.

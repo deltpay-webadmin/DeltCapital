@@ -64,18 +64,20 @@ const FAQ_CATS = [
       },
       {
         q: 'Are there late fees or prepayment penalties?',
-        short: 'No late fees. No prepayment penalty. Pay early and you finish sooner — same cost.',
+        short: 'No late fees, no prepayment penalty — and paying early lowers your cost, because we rebate the unearned factor.',
         a: (
           <>
             <p>
-              <b>No late fees.</b> Nothing is ever added to your total amount
-              owed. The number on your offer is the number — full stop.
+              <b>No late fees.</b> Nothing is ever added to what you owe — the
+              factor on your offer is a ceiling, not a moving target.
             </p>
             <p>
-              <b>No prepayment penalty.</b> Pay ahead any time at no extra
-              cost. The total amount you owe doesn't change due to
-              prepayments; you simply finish the advance sooner and free up
-              your card sales.
+              <b>No prepayment penalty — the opposite.</b> Pay ahead any time
+              and we rebate the unearned portion of your factor pro-rata, so
+              paying early actually <b>lowers your total cost</b> and frees up
+              your card sales. The industry standard — owe the full factor no
+              matter when you pay it off — is a tax on doing well. We don't do
+              that.
             </p>
           </>
         ),
@@ -595,7 +597,9 @@ function FaqHero({ accent, query, setQuery, totalCount, filteredCount }) {
 function FaqCategoryNav({ cats, activeK, onJump, accent }) {
   return (
     <div style={{
-      position: 'sticky', top: 0, zIndex: 9,
+      // top offset clears the sticky site header (~57px) so the category nav
+      // doesn't slide underneath it on scroll.
+      position: 'sticky', top: 57, zIndex: 9,
       background: `${V1.bg}F2`, backdropFilter: 'blur(12px)',
       borderBottom: `1px solid ${V1.line}`,
       padding: '14px 40px',

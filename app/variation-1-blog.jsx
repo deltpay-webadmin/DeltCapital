@@ -255,7 +255,7 @@ function BlogPlate({ seed = 0, aspect = '16/10', tone = 'light' }) {
         <text x="3" y="59" fontFamily="JetBrains Mono, monospace"
               fontSize="2.4" letterSpacing="0.18em"
               fill={isDark ? 'rgba(255,255,255,0.45)' : 'rgba(10,37,64,0.35)'}
-              textTransform="uppercase">
+              style={{ textTransform: 'uppercase' }}>
           FIG. {String(seed).padStart(2, '0')}
         </text>
       </svg>
@@ -480,7 +480,9 @@ function BlogFeatured({ post, accent }) {
 function BlogCategoryBar({ activeK, onSelect, counts, accent }) {
   return (
     <div style={{
-      position: 'sticky', top: 0, zIndex: 9,
+      // top offset clears the sticky site header (~57px) so the filter bar
+      // doesn't slide underneath it on scroll.
+      position: 'sticky', top: 57, zIndex: 9,
       background: `${V1.white}F2`, backdropFilter: 'blur(12px)',
       borderBottom: `1px solid ${V1.line}`,
       padding: '14px 40px',

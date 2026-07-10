@@ -84,7 +84,7 @@ function V1Chrome({ page, navTo, accent, openApp }) {
         </div>
         <nav data-v1-desktop-nav style={{ display: 'flex', gap: 28 }}>
           {links.map(ln => (
-            <a key={ln.k} onClick={() => handleNav(ln.k)} style={{
+            <a key={ln.k} href={`#${ln.k}`} onClick={(e) => { e.preventDefault(); handleNav(ln.k); }} style={{
               fontFamily: DELT.font.body, fontSize: 13.5,
               color: page === ln.k ? '#F7F5F0' : 'rgba(247,245,240,0.65)',
               fontWeight: page === ln.k ? 500 : 400, cursor: 'pointer', paddingBottom: 2,
@@ -93,7 +93,7 @@ function V1Chrome({ page, navTo, accent, openApp }) {
           ))}
         </nav>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-          <a data-v1-desktop-nav onClick={() => navTo('login')} style={{ fontFamily: DELT.font.body, fontSize: 13.5, color: page === 'login' ? '#F7F5F0' : 'rgba(247,245,240,0.75)', cursor: 'pointer' }}>{t('nav.login')}</a>
+          <a data-v1-desktop-nav href="#login" onClick={(e) => { e.preventDefault(); navTo('login'); }} style={{ fontFamily: DELT.font.body, fontSize: 13.5, color: page === 'login' ? '#F7F5F0' : 'rgba(247,245,240,0.75)', cursor: 'pointer' }}>{t('nav.login')}</a>
           <V1LangToggle compact />
           <Btn variant="ghost" size="sm" onClick={openApp} style={{ background: 'transparent', color: '#F7F5F0', borderColor: 'rgba(247,245,240,0.2)' }}>{t('cta.getFunded')}</Btn>
           {/* Mobile hamburger — hidden on desktop via CSS, shown <= 768px */}
@@ -154,14 +154,14 @@ function V1Chrome({ page, navTo, accent, openApp }) {
       </div>
       <nav style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 32 }}>
         {links.map(ln => (
-          <a key={ln.k} onClick={() => handleNav(ln.k)} style={{
+          <a key={ln.k} href={`#${ln.k}`} onClick={(e) => { e.preventDefault(); handleNav(ln.k); }} style={{
             fontFamily: DELT.font.display, fontSize: 28, fontWeight: 600,
             color: page === ln.k ? '#F7F5F0' : 'rgba(247,245,240,0.78)',
             cursor: 'pointer', padding: '12px 4px',
             borderBottom: '1px solid rgba(247,245,240,0.08)',
           }}>{ln.l}</a>
         ))}
-        <a onClick={() => handleNav('login')} style={{
+        <a href="#login" onClick={(e) => { e.preventDefault(); handleNav('login'); }} style={{
           fontFamily: DELT.font.display, fontSize: 28, fontWeight: 600,
           color: page === 'login' ? '#F7F5F0' : 'rgba(247,245,240,0.78)',
           cursor: 'pointer', padding: '12px 4px',
