@@ -326,7 +326,7 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
             ...enter(460),
           }}>
             <span style={{ fontFamily: V1.fontBody, fontSize: 12, color: V1.muted }}>
-              © 2005–2026 Delt Capital LLC.
+              © 2026 Delt Capital LLC.
             </span>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 18 }}>
               <button

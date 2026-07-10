@@ -988,24 +988,6 @@ function V1ApplicationFlow({
             })}
           </div>
 
-          <div style={{
-            marginTop: 'auto', paddingTop: 20,
-            borderTop: '1px solid rgba(255,255,255,0.08)',
-          }}>
-            <div style={{
-              fontFamily: V1.fontMono, fontSize: 9.5, fontWeight: 600,
-              letterSpacing: '0.16em', textTransform: 'uppercase',
-              color: 'rgba(255,255,255,0.4)',
-            }}>Trust & security</div>
-            <div style={{
-              marginTop: 10, display: 'flex', flexDirection: 'column', gap: 6,
-              fontFamily: V1.fontBody, fontSize: 12, color: 'rgba(255,255,255,0.72)',
-            }}>
-              <div>▸ Soft-pull only (until countersign)</div>
-              <div>▸ Plaid read-only — no ACH yet</div>
-              <div>▸ Data purged 30d if declined</div>
-            </div>
-          </div>
         </aside>
 
         {/* ─── Right panel — content ─── */}
