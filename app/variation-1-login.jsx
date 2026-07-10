@@ -1,404 +1,303 @@
-// V1 Login — Apple Account–style sign-in, recut for Delt.
-// A single centered white card on a near-white canvas: a dotted brand "halo"
-// around the Delt mark, one rounded identifier field, a two-step
-// email → password flow, a primary Continue and a dark Passkey button, an
-// account-info blurb, and a slim legal footer.
-
-// ─── Brand halo emblem (Delt take on Apple's dotted ring) ───────────
-function V1LoginHalo() {
-  const cx = 100, cy = 100;
-  const colors = ['#4945FF', '#635BFF', '#8B79F0', '#B07CE8', '#D77BD0', '#E87CA6', '#F0997C', '#F4B77C', '#9FB4FC', '#7C9BF4'];
-  const rings = [
-    { r: 84, count: 46, base: 3.1, off: 0.0 },
-    { r: 63, count: 34, base: 2.7, off: 0.11 },
-  ];
-  const dots = [];
-  rings.forEach((ring, ri) => {
-    for (let i = 0; i < ring.count; i++) {
-      const a = (i / ring.count) * Math.PI * 2 + ring.off;
-      const x = cx + ring.r * Math.cos(a);
-      const y = cy + ring.r * Math.sin(a);
-      const size = ring.base * (0.72 + ((i % 3) * 0.2));
-      const color = colors[(i + ri * 3) % colors.length];
-      const opacity = 0.45 + ((i % 4) * 0.16);
-      dots.push({ x, y, size, color, opacity, key: ri + '-' + i });
-    }
-  });
-  return (
-    <div style={{ position: 'relative', width: 116, height: 116 }}>
-      <svg width="116" height="116" viewBox="0 0 200 200" aria-hidden>
-        {dots.map(d => (
-          <circle key={d.key} cx={d.x} cy={d.y} r={d.size} fill={d.color} opacity={d.opacity} />
-        ))}
-      </svg>
-      {/* Delt mark, centered */}
-      <svg width="34" height="34" viewBox="0 0 64 64" aria-hidden style={{
-        position: 'absolute', top: '50%', left: '50%',
-        transform: 'translate(-50%, -50%)',
-      }}>
-        <rect x="34" y="9" width="14" height="46" rx="7" fill="#4945FF" />
-        <circle cx="20" cy="44" r="11" fill="#4945FF" />
-      </svg>
-    </div>
-  );
-}
+// V1 Login — split editorial sign-in (Payoneer-style), Delt-branded.
+// A floating rounded card on a soft canvas: left half is a full-bleed
+// photograph of a real small-business operator with a dark gradient wash and an
+// oversized headline; right half is a clean white sign-in form.
+//
+// HERO IMAGE: swap `HERO_SRC` for any other asset (e.g. a Nano Banana Pro
+// render dropped into app/assets/) — everything else is layout, so a new file
+// or a new path is the only change needed.
+const V1_LOGIN_HERO_SRC = 'app/assets/about/pillar-02_mainstreet.jpg';
 
 function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
   const mounted = useV1Mounted(60);
-  const [step, setStep]                 = React.useState('email'); // 'email' | 'password' | 'done'
   const [email, setEmail]               = React.useState('');
   const [password, setPassword]         = React.useState('');
   const [showPassword, setShowPassword] = React.useState(false);
-  const [rememberMe, setRememberMe]     = React.useState(false);
   const [focused, setFocused]           = React.useState(null);
   const [hover, setHover]               = React.useState(null);
+  const [signed, setSigned]             = React.useState(false);
 
-  const APPLE = {
-    ink:    '#1d1d1f',
-    sub:    '#6e6e73',
-    line:   '#d2d2d7',
-    field:  '#ffffff',
-    canvas: '#fbfbfd',
-    link:   V1.blue,
-    key:    '#1d1d1f',
-  };
+  const grad = 'linear-gradient(90deg, #4F46FF 0%, #8B5CF6 100%)';
 
-  const canContinue = email.trim().length > 0;
-  const canSignIn   = password.length > 0;
-
-  const handleContinue = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (!canContinue) return;
-    setStep('password');
-    setFocused('password');
-  };
-
-  const handleSignIn = (e) => {
-    e.preventDefault();
-    if (!canSignIn) return;
-    setStep('done');
+    setSigned(true);
     onSignIn && onSignIn(email || 'operator@delt.capital');
   };
 
   const enter = (delay) => ({
     opacity: mounted ? 1 : 0,
-    transform: mounted ? 'translate3d(0,0,0)' : 'translate3d(0,8px,0)',
-    transition: `opacity 620ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms, transform 620ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms`,
+    transform: mounted ? 'translate3d(0,0,0)' : 'translate3d(0,10px,0)',
+    transition: `opacity 700ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms, transform 700ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms`,
   });
 
-  const fieldStyle = (name) => ({
+  const field = (name) => ({
     width: '100%', boxSizing: 'border-box',
-    background: APPLE.field,
-    border: `1px solid ${focused === name ? V1.blue : APPLE.line}`,
-    borderRadius: 12,
-    padding: '15px 16px',
-    fontFamily: V1.fontBody, fontSize: 17, color: APPLE.ink,
+    background: '#fff',
+    border: `1px solid ${focused === name ? V1.blue : '#e3e6eb'}`,
+    borderRadius: 999,
+    padding: '15px 22px',
+    fontFamily: V1.fontBody, fontSize: 15, color: V1.ink,
     outline: 'none',
-    boxShadow: focused === name ? `0 0 0 3px ${V1.blue}22` : 'none',
-    transition: 'border-color 160ms, box-shadow 160ms',
+    boxShadow: focused === name ? `0 0 0 4px ${V1.blue}1f` : '0 1px 2px rgba(16,24,40,0.04)',
+    transition: 'border-color 180ms, box-shadow 180ms',
   });
-
-  const footerLink = (label, onClick) => (
-    <button
-      type="button"
-      onClick={onClick}
-      onMouseEnter={() => setHover('f-' + label)}
-      onMouseLeave={() => setHover(null)}
-      style={{
-        background: 'transparent', border: 'none', cursor: 'pointer', padding: 0,
-        fontFamily: V1.fontBody, fontSize: 12, color: APPLE.sub,
-        textDecoration: hover === ('f-' + label) ? 'underline' : 'none',
-      }}
-    >{label}</button>
-  );
 
   return (
     <section data-v1-section style={{
       minHeight: 'calc(100vh - 96px)',
-      background: APPLE.canvas,
-      display: 'flex', flexDirection: 'column',
+      background: 'radial-gradient(120% 120% at 50% 0%, #f3f4f7 0%, #e9ebef 100%)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      padding: '40px 32px',
     }}>
-      <div style={{
-        flex: 1,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        padding: '56px 24px 40px',
+      <div data-v1-grid-2col style={{
+        width: '100%', maxWidth: 1120,
+        display: 'grid', gridTemplateColumns: '1fr 1fr',
+        background: '#fff',
+        borderRadius: 28, overflow: 'hidden',
+        boxShadow: '0 40px 90px -40px rgba(4,30,66,0.45), 0 2px 8px rgba(4,30,66,0.06)',
+        minHeight: 620,
+        ...enter(40),
       }}>
-        <div style={{
-          width: '100%', maxWidth: 640,
-          background: '#ffffff',
-          borderRadius: 18,
-          boxShadow: '0 2px 8px rgba(0,0,0,0.04), 0 18px 48px -12px rgba(0,0,0,0.14)',
-          padding: '48px 40px 40px',
-          ...enter(40),
+
+        {/* ─── LEFT — editorial photo panel ─── */}
+        <aside style={{
+          position: 'relative',
+          background: V1.ink,
+          overflow: 'hidden',
+          display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+          padding: '32px 36px 40px',
+          minHeight: 620,
         }}>
-          <div style={{ maxWidth: 400, margin: '0 auto' }}>
-            {/* Emblem */}
-            <div style={{ display: 'flex', justifyContent: 'center', ...enter(80) }}>
-              <V1LoginHalo />
-            </div>
+          {/* Photo */}
+          <img
+            src={V1_LOGIN_HERO_SRC}
+            alt="A small-business owner opening up for the day"
+            style={{
+              position: 'absolute', inset: 0, width: '100%', height: '100%',
+              objectFit: 'cover', objectPosition: '32% 60%',
+              transform: mounted ? 'scale(1)' : 'scale(1.06)',
+              transition: 'transform 1400ms cubic-bezier(0.22, 1, 0.36, 1)',
+            }}
+          />
+          {/* Gradient wash for legibility */}
+          <div aria-hidden style={{
+            position: 'absolute', inset: 0,
+            background: 'linear-gradient(180deg, rgba(9,10,20,0.72) 0%, rgba(9,10,20,0.28) 34%, rgba(9,10,20,0.55) 78%, rgba(9,10,20,0.9) 100%)',
+          }} />
+          {/* Faint concentric ring, echoing the reference */}
+          <div aria-hidden style={{
+            position: 'absolute', top: '30%', left: '50%',
+            width: 360, height: 360, transform: 'translate(-50%,-50%)',
+            border: '1px solid rgba(255,255,255,0.10)', borderRadius: 999,
+          }} />
+          <div aria-hidden style={{
+            position: 'absolute', top: '30%', left: '50%',
+            width: 240, height: 240, transform: 'translate(-50%,-50%)',
+            border: '1px solid rgba(255,255,255,0.08)', borderRadius: 999,
+          }} />
 
-            {/* Heading */}
-            <h1 data-v1-section-title style={{
-              textAlign: 'center', margin: '18px 0 0',
-              fontFamily: V1.fontDisplay,
-              fontSize: 30, fontWeight: 700, letterSpacing: '-0.02em',
-              color: APPLE.ink,
-              ...enter(120),
+          {/* Top row: wordmark + tagline */}
+          <div style={{ position: 'relative', zIndex: 1, ...enter(140) }}>
+            <img src="app/assets/logo-white.png" alt="Delt Capital" style={{ height: 22, width: 'auto', display: 'block' }} />
+            <p style={{
+              margin: '18px 0 0', maxWidth: 300,
+              fontFamily: V1.fontBody, fontSize: 13.5, lineHeight: 1.5,
+              color: 'rgba(255,255,255,0.82)',
             }}>
-              Sign in with Delt Account
+              Capital for operators who don't overpay — approved in minutes, wired in 24 hours.
+            </p>
+          </div>
+
+          {/* Headline */}
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <h1 data-v1-section-title style={{
+              margin: 0,
+              fontFamily: V1.fontDisplay,
+              fontSize: 'clamp(2.4rem, 3.4vw, 3.1rem)',
+              fontWeight: 800, lineHeight: 1.04, letterSpacing: '-0.035em',
+              color: '#fff',
+            }}>
+              <V1LineMask ready={mounted} delay={240} duration={900}>Capital that</V1LineMask>
+              <V1LineMask ready={mounted} delay={340} duration={900}>keeps you open.</V1LineMask>
             </h1>
+          </div>
+        </aside>
 
-            {step !== 'done' && (
-              <form onSubmit={step === 'email' ? handleContinue : handleSignIn} style={{ marginTop: 28 }}>
-                {/* Identifier field */}
-                <div style={enter(180)}>
-                  <input
-                    id="login-email"
-                    type="text"
-                    inputMode="email"
-                    placeholder="Email or Phone Number"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    onFocus={() => setFocused('email')}
-                    onBlur={() => setFocused(null)}
-                    readOnly={step === 'password'}
-                    autoComplete="username"
-                    style={{
-                      ...fieldStyle('email'),
-                      color: step === 'password' ? APPLE.sub : APPLE.ink,
-                      cursor: step === 'password' ? 'default' : 'text',
-                    }}
-                  />
-                </div>
+        {/* ─── RIGHT — sign-in form ─── */}
+        <div style={{
+          position: 'relative',
+          background: '#fff',
+          padding: '32px 56px 40px',
+          display: 'flex', flexDirection: 'column',
+        }}>
+          {/* Top row: Sign Up */}
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'flex-end',
+            ...enter(80),
+          }}>
+            <button
+              type="button"
+              onClick={onApply}
+              onMouseEnter={() => setHover('signup')}
+              onMouseLeave={() => setHover(null)}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 8,
+                background: 'transparent', border: 'none', cursor: 'pointer', padding: 0,
+                fontFamily: V1.fontBody, fontSize: 14, fontWeight: 500,
+                color: hover === 'signup' ? V1.blue : V1.text,
+                transition: 'color 180ms',
+              }}
+            >
+              <svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="8" cy="7" r="3.2"/><path d="M2.5 16.5c0-3 2.5-4.8 5.5-4.8s5.5 1.8 5.5 4.8"/><path d="M15.5 6.5v4M17.5 8.5h-4"/>
+              </svg>
+              Sign Up
+            </button>
+          </div>
 
-                {/* Password field (step 2) */}
-                <div style={{
-                  overflow: 'hidden',
-                  maxHeight: step === 'password' ? 140 : 0,
-                  opacity: step === 'password' ? 1 : 0,
-                  transition: 'max-height 380ms cubic-bezier(0.22, 1, 0.36, 1), opacity 300ms ease',
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', maxWidth: 380, width: '100%', margin: '0 auto' }}>
+            {!signed ? (
+              <>
+                <h2 data-v1-section-title style={{
+                  margin: '0 0 28px',
+                  fontFamily: V1.fontDisplay,
+                  fontSize: 40, fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1.05,
+                  color: V1.ink,
+                  ...enter(160),
                 }}>
-                  <div style={{ position: 'relative', marginTop: 12 }}>
-                    <input
-                      id="login-password"
-                      type={showPassword ? 'text' : 'password'}
-                      placeholder="Password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      onFocus={() => setFocused('password')}
-                      onBlur={() => setFocused(null)}
-                      autoComplete="current-password"
-                      style={{ ...fieldStyle('password'), paddingRight: 44 }}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(v => !v)}
-                      aria-label={showPassword ? 'Hide password' : 'Show password'}
-                      style={{
-                        position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)',
-                        background: 'transparent', border: 'none', cursor: 'pointer',
-                        padding: 4, color: APPLE.sub, display: 'inline-flex',
-                      }}
-                    >
-                      {showPassword ? (
-                        <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M2 8s2.5-4.5 6-4.5S14 8 14 8s-2.5 4.5-6 4.5S2 8 2 8z"/><circle cx="8" cy="8" r="1.8"/><path d="M2.5 2.5l11 11"/>
-                        </svg>
-                      ) : (
-                        <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M2 8s2.5-4.5 6-4.5S14 8 14 8s-2.5 4.5-6 4.5S2 8 2 8z"/><circle cx="8" cy="8" r="1.8"/>
-                        </svg>
-                      )}
-                    </button>
-                  </div>
-                  <label style={{
-                    display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 14,
-                    cursor: 'pointer', fontFamily: V1.fontBody, fontSize: 14, color: APPLE.sub,
-                  }}>
-                    <span style={{
-                      width: 16, height: 16, borderRadius: 4,
-                      border: `1.5px solid ${rememberMe ? V1.blue : APPLE.line}`,
-                      background: rememberMe ? V1.blue : '#fff',
-                      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                    }}>
-                      <svg width="10" height="10" viewBox="0 0 10 10" style={{ color: '#fff', opacity: rememberMe ? 1 : 0 }}>
-                        <path d="M2 5.2L4.2 7.4 8.2 3" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    </span>
-                    <input type="checkbox" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} style={{ position: 'absolute', opacity: 0, pointerEvents: 'none' }} />
-                    Keep me signed in
-                  </label>
-                </div>
+                  Sign In
+                </h2>
 
-                {/* Create account / Forgot */}
-                <div style={{ marginTop: 16, ...enter(240) }}>
-                  {step === 'email' ? (
-                    <button
-                      type="button"
-                      onClick={onApply}
-                      onMouseEnter={() => setHover('create')}
-                      onMouseLeave={() => setHover(null)}
-                      style={{
-                        background: 'transparent', border: 'none', cursor: 'pointer', padding: 0,
-                        fontFamily: V1.fontBody, fontSize: 15, color: APPLE.link,
-                        textDecoration: hover === 'create' ? 'underline' : 'none',
-                      }}
-                    >Create Your Delt Account</button>
-                  ) : (
+                <form onSubmit={handleSubmit}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                    <div style={enter(220)}>
+                      <input
+                        id="login-email"
+                        type="text"
+                        placeholder="Email or Username"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        onFocus={() => setFocused('email')}
+                        onBlur={() => setFocused(null)}
+                        autoComplete="username"
+                        style={field('email')}
+                      />
+                    </div>
+
+                    <div style={{ position: 'relative', ...enter(280) }}>
+                      <input
+                        id="login-password"
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        onFocus={() => setFocused('password')}
+                        onBlur={() => setFocused(null)}
+                        autoComplete="current-password"
+                        style={{ ...field('password'), paddingRight: 48 }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(v => !v)}
+                        aria-label={showPassword ? 'Hide password' : 'Show password'}
+                        style={{
+                          position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)',
+                          background: 'transparent', border: 'none', cursor: 'pointer',
+                          padding: 4, color: V1.muted, display: 'inline-flex',
+                        }}
+                      >
+                        {showPassword ? (
+                          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M2 8s2.5-4.5 6-4.5S14 8 14 8s-2.5 4.5-6 4.5S2 8 2 8z"/><circle cx="8" cy="8" r="1.8"/><path d="M2.5 2.5l11 11"/>
+                          </svg>
+                        ) : (
+                          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M2 8s2.5-4.5 6-4.5S14 8 14 8s-2.5 4.5-6 4.5S2 8 2 8z"/><circle cx="8" cy="8" r="1.8"/>
+                          </svg>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div style={{ marginTop: 12, ...enter(320) }}>
                     <button
                       type="button"
                       onMouseEnter={() => setHover('forgot')}
                       onMouseLeave={() => setHover(null)}
                       style={{
                         background: 'transparent', border: 'none', cursor: 'pointer', padding: 0,
-                        fontFamily: V1.fontBody, fontSize: 15, color: APPLE.link,
+                        fontFamily: V1.fontBody, fontSize: 13.5, fontWeight: 600,
+                        color: V1.blue,
                         textDecoration: hover === 'forgot' ? 'underline' : 'none',
                       }}
-                    >Forgot password?</button>
-                  )}
-                </div>
+                    >
+                      Forgot password?
+                    </button>
+                  </div>
 
-                {/* Account-info blurb */}
-                <div style={{ marginTop: 22, ...enter(300) }}>
-                  <svg width="30" height="24" viewBox="0 0 30 24" style={{ display: 'block', marginBottom: 8 }}>
-                    <circle cx="9" cy="7" r="4.2" fill={V1.blue} />
-                    <path d="M2 21c0-4 3.1-6.4 7-6.4S16 17 16 21z" fill={V1.blue} />
-                    <circle cx="21.5" cy="9" r="3.2" fill="#9FB4FC" />
-                    <path d="M16.5 21c0-3.1 2.3-5 5-5s5 1.9 5 5z" fill="#9FB4FC" />
-                  </svg>
-                  <p style={{
-                    margin: 0, fontFamily: V1.fontBody, fontSize: 12.5, lineHeight: 1.5, color: APPLE.sub,
-                  }}>
-                    Your Delt Account information is used to allow you to sign in securely and
-                    access your data. Delt records certain data for security, support, and
-                    reporting purposes. If you agree, Delt may also use your account
-                    information to send you product updates and communications.{' '}
-                    <button
-                      type="button"
-                      onClick={() => onNavLegal && onNavLegal('privacy')}
-                      onMouseEnter={() => setHover('manage')}
-                      onMouseLeave={() => setHover(null)}
-                      style={{
-                        background: 'transparent', border: 'none', cursor: 'pointer', padding: 0,
-                        fontFamily: 'inherit', fontSize: 'inherit', color: APPLE.link,
-                        textDecoration: hover === 'manage' ? 'underline' : 'none',
-                      }}
-                    >See how your data is managed…</button>
-                  </p>
-                </div>
-
-                {/* Actions */}
-                <div style={{
-                  marginTop: 26, display: 'flex', gap: 12, alignItems: 'stretch',
-                  ...enter(360),
-                }}>
                   <button
                     type="submit"
-                    disabled={step === 'email' ? !canContinue : !canSignIn}
-                    onMouseEnter={() => setHover('primary')}
+                    onMouseEnter={() => setHover('submit')}
                     onMouseLeave={() => setHover(null)}
                     style={{
-                      flex: 1,
-                      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                      border: 'none', borderRadius: 12, padding: '13px 20px',
-                      fontFamily: V1.fontDisplay, fontSize: 15, fontWeight: 600, lineHeight: 1,
-                      color: '#fff',
-                      background: (step === 'email' ? canContinue : canSignIn)
-                        ? (hover === 'primary' ? '#3a36e0' : V1.blue)
-                        : '#b7c1f7',
-                      cursor: (step === 'email' ? canContinue : canSignIn) ? 'pointer' : 'default',
-                      transition: 'background 200ms',
+                      position: 'relative', overflow: 'hidden',
+                      width: '100%', marginTop: 26,
+                      display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+                      background: grad, color: '#fff', border: 'none',
+                      padding: '16px 26px', borderRadius: 999, cursor: 'pointer',
+                      fontFamily: V1.fontDisplay, fontSize: 15.5, fontWeight: 600, lineHeight: 1,
+                      boxShadow: hover === 'submit'
+                        ? '0 16px 34px -12px rgba(79,70,255,0.62)'
+                        : '0 10px 24px -12px rgba(79,70,255,0.5)',
+                      transform: hover === 'submit' ? 'translateY(-1px)' : 'translateY(0)',
+                      transition: 'box-shadow 240ms, transform 240ms',
+                      ...enter(380),
                     }}
                   >
-                    {step === 'email' ? 'Continue' : 'Sign In'}
+                    <span aria-hidden style={{
+                      position: 'absolute', inset: 0, pointerEvents: 'none',
+                      background: 'linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.28) 50%, transparent 70%)',
+                      transform: hover === 'submit' ? 'translateX(120%)' : 'translateX(-120%)',
+                      transition: 'transform 900ms cubic-bezier(0.22, 1, 0.36, 1)',
+                    }} />
+                    <svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M4 10h9M9.5 5.5L14 10l-4.5 4.5"/><path d="M13.5 4.5h2.5v11h-2.5"/>
+                    </svg>
+                    Sign In
                   </button>
-
-                  {step === 'email' && (
-                    <button
-                      type="button"
-                      onClick={() => onSignIn && onSignIn(email || 'operator@delt.capital')}
-                      onMouseEnter={() => setHover('passkey')}
-                      onMouseLeave={() => setHover(null)}
-                      style={{
-                        flex: 1,
-                        display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                        border: 'none', borderRadius: 12, padding: '13px 20px',
-                        fontFamily: V1.fontDisplay, fontSize: 15, fontWeight: 600, lineHeight: 1,
-                        color: '#fff',
-                        background: hover === 'passkey' ? '#000' : APPLE.key,
-                        cursor: 'pointer', transition: 'background 200ms',
-                      }}
-                    >
-                      <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="7" cy="8" r="3.2"/>
-                        <path d="M9.6 9.8L15 15.2M13 13.2l1.6 1.6M15 15.2l1.4-1.4"/>
-                      </svg>
-                      Sign in with Passkey
-                    </button>
-                  )}
-
-                  {step === 'password' && (
-                    <button
-                      type="button"
-                      onClick={() => { setStep('email'); setPassword(''); }}
-                      onMouseEnter={() => setHover('back')}
-                      onMouseLeave={() => setHover(null)}
-                      style={{
-                        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                        border: `1px solid ${APPLE.line}`, borderRadius: 12, padding: '13px 20px',
-                        fontFamily: V1.fontDisplay, fontSize: 15, fontWeight: 600, lineHeight: 1,
-                        color: APPLE.ink, background: hover === 'back' ? '#f5f5f7' : '#fff',
-                        cursor: 'pointer', transition: 'background 200ms',
-                      }}
-                    >
-                      Back
-                    </button>
-                  )}
-                </div>
-
-                {step === 'email' && (
-                  <p style={{
-                    margin: '10px 0 0', textAlign: 'right', flexBasis: '100%',
-                    fontFamily: V1.fontBody, fontSize: 12, color: APPLE.sub,
-                    ...enter(420),
-                  }}>
-                    Requires a device with a saved Delt passkey.
-                  </p>
-                )}
-              </form>
-            )}
-
-            {/* Signed-in confirmation */}
-            {step === 'done' && (
-              <div style={{ marginTop: 28, textAlign: 'center' }}>
+                </form>
+              </>
+            ) : (
+              <div style={{ textAlign: 'center' }}>
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                   <span style={{
-                    width: 56, height: 56, borderRadius: 999, background: V1.blue,
+                    width: 60, height: 60, borderRadius: 999, background: grad,
                     display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                    boxShadow: `0 14px 32px -12px ${V1.blue}99`,
+                    boxShadow: '0 16px 34px -12px rgba(79,70,255,0.6)',
                   }}>
-                    <svg width="24" height="24" viewBox="0 0 16 16" style={{ color: '#fff' }}>
+                    <svg width="26" height="26" viewBox="0 0 16 16" style={{ color: '#fff' }}>
                       <path d="M3 8.2L6.5 11.7 13 5.2" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                   </span>
                 </div>
                 <h2 style={{
-                  margin: '18px 0 0', fontFamily: V1.fontDisplay, fontSize: 22, fontWeight: 700,
-                  letterSpacing: '-0.02em', color: APPLE.ink,
+                  margin: '20px 0 0', fontFamily: V1.fontDisplay, fontSize: 26, fontWeight: 700,
+                  letterSpacing: '-0.025em', color: V1.ink,
                 }}>
                   You're signed in.
                 </h2>
-                <p style={{ margin: '8px 0 0', fontFamily: V1.fontBody, fontSize: 14.5, color: APPLE.sub }}>
-                  Welcome back, <span style={{ color: APPLE.ink }}>{email || 'operator@delt.capital'}</span>.
+                <p style={{ margin: '10px 0 0', fontFamily: V1.fontBody, fontSize: 14.5, color: V1.text }}>
+                  Welcome back, <span style={{ color: V1.ink, fontWeight: 600 }}>{email || 'operator@delt.capital'}</span>.
                 </p>
                 <div style={{ marginTop: 26, display: 'flex', gap: 12, justifyContent: 'center' }}>
                   <button
                     type="button"
-                    onClick={() => { setStep('email'); setPassword(''); }}
+                    onClick={() => setSigned(false)}
                     style={{
-                      border: `1px solid ${APPLE.line}`, borderRadius: 12, padding: '12px 22px',
+                      border: '1px solid #e3e6eb', borderRadius: 999, padding: '12px 24px',
                       background: '#fff', cursor: 'pointer',
-                      fontFamily: V1.fontDisplay, fontSize: 15, fontWeight: 600, color: APPLE.ink,
+                      fontFamily: V1.fontDisplay, fontSize: 14.5, fontWeight: 600, color: V1.ink,
                     }}
                   >
                     Sign out
@@ -407,9 +306,9 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
                     type="button"
                     onClick={onClose}
                     style={{
-                      border: 'none', borderRadius: 12, padding: '12px 22px',
-                      background: V1.blue, color: '#fff', cursor: 'pointer',
-                      fontFamily: V1.fontDisplay, fontSize: 15, fontWeight: 600,
+                      border: 'none', borderRadius: 999, padding: '12px 24px',
+                      background: grad, color: '#fff', cursor: 'pointer',
+                      fontFamily: V1.fontDisplay, fontSize: 14.5, fontWeight: 600,
                     }}
                   >
                     Continue to Delt
@@ -418,29 +317,43 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
               </div>
             )}
           </div>
+
+          {/* Footer */}
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            gap: 16, flexWrap: 'wrap', marginTop: 24,
+            ...enter(460),
+          }}>
+            <span style={{ fontFamily: V1.fontBody, fontSize: 12, color: V1.muted }}>
+              © 2005–2026 Delt Capital LLC.
+            </span>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 18 }}>
+              <button
+                type="button"
+                onClick={onClose}
+                onMouseEnter={() => setHover('contact')}
+                onMouseLeave={() => setHover(null)}
+                style={{
+                  background: 'transparent', border: 'none', cursor: 'pointer', padding: 0,
+                  fontFamily: V1.fontBody, fontSize: 12.5,
+                  color: hover === 'contact' ? V1.ink : V1.text,
+                }}
+              >
+                Contact Us
+              </button>
+              <span style={{
+                display: 'inline-flex', alignItems: 'center', gap: 5,
+                fontFamily: V1.fontBody, fontSize: 12.5, color: V1.text,
+              }}>
+                English
+                <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 4.5L6 7.5 9 4.5"/>
+                </svg>
+              </span>
+            </div>
+          </div>
         </div>
       </div>
-
-      {/* Slim legal footer */}
-      <footer style={{
-        borderTop: `1px solid ${APPLE.line}`,
-        background: '#f5f5f7',
-        padding: '18px 24px',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        gap: 16, flexWrap: 'wrap',
-        ...enter(480),
-      }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 14 }}>
-          {footerLink('System Status', onClose)}
-          <span style={{ width: 1, height: 12, background: APPLE.line }} />
-          {footerLink('Privacy Policy', () => onNavLegal && onNavLegal('privacy'))}
-          <span style={{ width: 1, height: 12, background: APPLE.line }} />
-          {footerLink('Terms & Conditions', () => onNavLegal && onNavLegal('terms'))}
-        </div>
-        <span style={{ fontFamily: V1.fontBody, fontSize: 12, color: APPLE.sub }}>
-          Copyright © 2026 Delt Capital LLC. All rights reserved.
-        </span>
-      </footer>
     </section>
   );
 }
