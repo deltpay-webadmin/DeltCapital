@@ -54,7 +54,7 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
         width: '100%', maxWidth: 1120,
         display: 'grid', gridTemplateColumns: '1fr 1fr',
         background: '#fff',
-        borderRadius: 28, overflow: 'hidden',
+        borderRadius: 40, overflow: 'hidden',
         boxShadow: '0 40px 90px -40px rgba(4,30,66,0.45), 0 2px 8px rgba(4,30,66,0.06)',
         minHeight: 620,
         ...enter(40),
