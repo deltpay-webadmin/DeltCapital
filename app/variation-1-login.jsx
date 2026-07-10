@@ -83,7 +83,7 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
           {/* Gradient wash for legibility */}
           <div aria-hidden style={{
             position: 'absolute', inset: 0,
-            background: 'linear-gradient(180deg, rgba(9,10,20,0.58) 0%, rgba(9,10,20,0.12) 30%, rgba(9,10,20,0.42) 74%, rgba(9,10,20,0.86) 100%)',
+            background: 'linear-gradient(180deg, rgba(9,10,20,0.84) 0%, rgba(9,10,20,0.52) 15%, rgba(9,10,20,0.14) 34%, rgba(9,10,20,0.44) 74%, rgba(9,10,20,0.88) 100%)',
           }} />
           {/* Faint concentric ring, echoing the reference */}
           <div aria-hidden style={{
@@ -99,11 +99,12 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
 
           {/* Top row: wordmark + tagline */}
           <div style={{ position: 'relative', zIndex: 1, ...enter(140) }}>
-            <img src="app/assets/logo-white.png" alt="Delt Capital" style={{ height: 22, width: 'auto', display: 'block' }} />
+            <img src="app/assets/logo-white.png" alt="Delt Capital" style={{ height: 22, width: 'auto', display: 'block', filter: 'drop-shadow(0 1px 4px rgba(0,0,0,0.55))' }} />
             <p style={{
               margin: '18px 0 0', maxWidth: 300,
               fontFamily: V1.fontBody, fontSize: 13.5, lineHeight: 1.5,
-              color: 'rgba(255,255,255,0.82)',
+              color: 'rgba(255,255,255,0.95)',
+              textShadow: '0 1px 4px rgba(0,0,0,0.6)',
             }}>
               Capital for operators who don't overpay — approved in minutes, wired in 24 hours.
             </p>
@@ -119,7 +120,7 @@ function V1LoginPage({ onClose, onSignIn, onApply, onNavLegal }) {
               color: '#fff',
             }}>
               <V1LineMask ready={mounted} delay={240} duration={900}>Capital that</V1LineMask>
-              <V1LineMask ready={mounted} delay={340} duration={900}>keeps you open.</V1LineMask>
+              <V1LineMask ready={mounted} delay={340} duration={900}>keeps you moving.</V1LineMask>
             </h1>
           </div>
         </aside>
