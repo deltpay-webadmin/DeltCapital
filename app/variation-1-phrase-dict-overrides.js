@@ -112,10 +112,10 @@
       'Hable con el analista\n\n          que fijaría el precio de su operación.',
     'Not a call center.': 'No es un centro de llamadas.',
 
-    // blog.jsx <h1>: "The Ledger. Field notes from underwriting."
+    // blog.jsx <h1>: "The Ledger. Notes on lending."
     'The Ledger.': 'The Ledger.',
-    'Field notes': 'Notas de campo',
-    'from underwriting.': 'del área de análisis.',
+    'Notes on': 'Notas sobre',
+    'lending.': 'préstamos.',
 
     // blog.jsx <h2>: "The Floor Rate. Monthly letters from our lead underwriter."
     'The Floor Rate.': 'The Floor Rate.',
