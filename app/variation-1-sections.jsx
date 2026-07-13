@@ -466,7 +466,7 @@ function V1ReviewsSection() {
         <div data-v1-grid-2col style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'end', marginBottom: 56 }}>
           <div>
             <V1Eyebrow>Operators</V1Eyebrow>
-            <h2 data-v1-section-title style={{ ...v1H2, marginTop: 18 }}>Verified on the renewal call.</h2>
+            <h2 data-v1-section-title style={{ ...v1H2, marginTop: 18 }}>Straight from funded operators.</h2>
           </div>
           <p style={{
             fontFamily: V1.fontBody, fontSize: 17, lineHeight: 1.6, color: V1.text,
@@ -564,7 +564,7 @@ function V1FAQSection() {
 // ═══════════════════════════════════════════════════════════════
 // CTA — closing spread, editorial: oversized "60s", animated timeline
 // ═══════════════════════════════════════════════════════════════
-function V1CTASection({ onApply, onTalk }) {
+function V1CTASection({ onApply, onTalk, onCalc, primaryLabel, talkLabel }) {
   const [secRef, inView] = useV1InView(0.2, '0px 0px -40px 0px');
   const [hoverPrimary, setHoverPrimary] = React.useState(false);
   const [hoverGhost, setHoverGhost]     = React.useState(false);
@@ -707,7 +707,7 @@ function V1CTASection({ onApply, onTalk }) {
           transition: 'opacity 700ms cubic-bezier(0.22,1,0.36,1) 700ms, transform 700ms cubic-bezier(0.22,1,0.36,1) 700ms',
         }}>
           <button
-            onClick={onApply}
+            onClick={onCalc || onApply}
             onMouseEnter={() => setHoverPrimary(true)}
             onMouseLeave={() => setHoverPrimary(false)}
             style={{
@@ -730,7 +730,7 @@ function V1CTASection({ onApply, onTalk }) {
               transform: hoverPrimary ? 'translateX(120%)' : 'translateX(-120%)',
               transition: 'transform 900ms cubic-bezier(0.22, 1, 0.36, 1)',
             }} />
-            Get Funded
+            {primaryLabel || 'Get Funded'}
             <svg width="15" height="15" viewBox="0 0 14 14" style={{
               transform: hoverPrimary ? 'translateX(3px)' : 'translateX(0)',
               transition: 'transform 260ms cubic-bezier(0.22, 1, 0.36, 1)',
@@ -758,7 +758,7 @@ function V1CTASection({ onApply, onTalk }) {
                 <rect x="1.5" y="2.5" width="11" height="9" rx="1.5"/>
                 <path d="M4 1v2M10 1v2M1.5 5.5h11"/>
               </svg>
-              Talk to an underwriter
+              {talkLabel || 'Talk to an underwriter'}
               <span style={{
                 opacity: hoverGhost ? 1 : 0,
                 transform: hoverGhost ? 'translateX(0)' : 'translateX(-4px)',

@@ -284,7 +284,7 @@ function ReviewsSection({ accent = DELT.colors.indigo }) {
       <div style={{ maxWidth: 1120, margin: '0 auto', padding: '80px 32px' }}>
         <SectionLabel accent={accent}>Operators</SectionLabel>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, marginBottom: 40 }}>
-          <h2 style={h2Style}>What the last 100 borrowers said on their renewal call.</h2>
+          <h2 style={h2Style}>What funded operators tell us.</h2>
           <p style={{ fontFamily: DELT.font.body, fontSize: 15, lineHeight: 1.6, color: DELT.colors.inkSoft, marginTop: 8 }}>
             Verified. Every quote is from a borrower who has closed at least once. The business names are real, on request.
           </p>

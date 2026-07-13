@@ -271,6 +271,10 @@ function V1CalcAnalyzer({ onApply, onNavHow, onNavProcessing, hideHeader }) {
   // with the right key, and so the offer CTA can pass it through.
   const [leadId, setLeadId] = v1cUseState(null);
   const theaterTimers = v1cUseRef([]);
+  // Once the range is revealed we take the user straight into applying.
+  // This ref guards the hand-off so it fires exactly once — recalculating
+  // the range afterwards (changing inputs) must not re-trigger it.
+  const autoAdvancedRef = v1cUseRef(false);
 
   const isCaptured = leadStage === 'captured';
   const showGate   = leadStage === 'gating' && !isCaptured;
@@ -452,6 +456,36 @@ function V1CalcAnalyzer({ onApply, onNavHow, onNavProcessing, hideHeader }) {
 
   const ctaDisabled = !allFilled;
   const ctaBoosted = (boosted || isRedirect) && showResults;
+
+  // Hand the captured range off to the apply flow. Shared by the "Get My
+  // Offer" button and the automatic post-reveal advance below. Trips the
+  // one-shot guard so the auto-advance timer can't also fire.
+  const goApply = () => {
+    autoAdvancedRef.current = true;
+    onApply?.({
+      low: displayLow, high: displayHigh, factor: 1.18, ok: true,
+      // Pass the Supabase lead id through so apply-progress beacons can
+      // correlate (when present — null is fine and the endpoint no-ops).
+      leadId: isCaptured ? leadId : null,
+      // Pre-fill apply contact step with whatever the lead gave us
+      lead: isCaptured ? {
+        firstName: leadFirst.trim(),
+        businessName: leadBiz.trim(),
+        email: leadEmail.trim(),
+        phone: leadPhone ? `${dialPrefix} ${leadPhone}`.trim() : '',
+      } : null,
+    });
+  };
+
+  // After the range un-blurs, hold on it for a beat so the number lands,
+  // then drop the user straight into the application. The guard is only
+  // set once goApply actually runs — recalculating the range briefly
+  // toggles showResults, and we must not burn the one-shot on that.
+  v1cUseEffect(() => {
+    if (isRedirect || !isCaptured || !showResults || autoAdvancedRef.current) return;
+    const t = setTimeout(goApply, 1800);
+    return () => clearTimeout(t);
+  }, [isCaptured, showResults, isRedirect]);
 
   return (
     <div style={{
@@ -885,20 +919,7 @@ function V1CalcAnalyzer({ onApply, onNavHow, onNavProcessing, hideHeader }) {
       {/* CTA row — spans full width */}
       <div style={{ padding: '0 40px 40px' }}>
         <button
-          onClick={() => onApply?.({
-            low: displayLow, high: displayHigh, factor: 1.18, ok: true,
-            // Pass the Supabase lead id through so apply-progress beacons
-            // can correlate (when present — null is fine and the beacon
-            // endpoint no-ops on missing leadId).
-            leadId: isCaptured ? leadId : null,
-            // Pre-fill apply contact step with whatever the lead gave us
-            lead: isCaptured ? {
-              firstName: leadFirst.trim(),
-              businessName: leadBiz.trim(),
-              email: leadEmail.trim(),
-              phone: leadPhone ? `${dialPrefix} ${leadPhone}`.trim() : '',
-            } : null,
-          })}
+          onClick={goApply}
           disabled={ctaDisabled}
           style={{
             width: '100%', padding: '18px 28px', borderRadius: 14, border: 'none',
@@ -917,14 +938,16 @@ function V1CalcAnalyzer({ onApply, onNavHow, onNavProcessing, hideHeader }) {
           onMouseEnter={(e) => { if (!ctaDisabled) { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = `0 14px 40px -10px ${V1.blue}CC, 0 6px 14px -4px ${V1.blue}99`; } }}
           onMouseLeave={(e) => { if (!ctaDisabled) { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = `0 10px 30px -10px ${V1.blue}AA, 0 4px 10px -4px ${V1.blue}77`; } }}
         >
-          Get My Offer
+          {isCaptured && showResults ? 'Continue to my application' : 'Get My Offer'}
           <V1CalcIcon kind="arr" />
         </button>
         <div style={{
           textAlign: 'center', fontSize: 12.5, color: V1.muted,
           marginTop: 10, fontStyle: 'italic', fontFamily: V1.fontBody,
         }}>
-          No impact to your credit. Takes 2 minutes.
+          {isCaptured && showResults
+            ? 'Taking you to your application…'
+            : 'No impact to your credit. Takes 2 minutes.'}
         </div>
       </div>
     </div>

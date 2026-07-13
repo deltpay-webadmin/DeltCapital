@@ -824,14 +824,20 @@ function AboutLeadership() {
 }
 
 // ─── Root ───
-function V1AboutPage({ accent, onApply, onTalk }) {
+function V1AboutPage({ accent, onApply, onTalk, onCalc }) {
   return (
     <>
       <AboutHero />
       <AboutThesis />
       <AboutPrinciples />
       <AboutTimeline />
-      <V1CTASection onApply={onApply} onTalk={onTalk} />
+      <V1CTASection
+        onApply={onApply}
+        onTalk={onTalk}
+        onCalc={onCalc}
+        primaryLabel="See my range"
+        talkLabel="Talk to an expert"
+      />
     </>
   );
 }

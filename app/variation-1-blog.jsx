@@ -322,9 +322,9 @@ function BlogMasthead({ accent }) {
               <em style={{
                 fontFamily: '"Source Serif Pro", Georgia, serif',
                 fontStyle: 'italic', fontWeight: 400, color: accent,
-              }}>Published notes</em>
+              }}>Field notes</em>
               <br />
-              from the desk.
+              from underwriting.
             </h1>
           </div>
           <div style={{

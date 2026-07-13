@@ -112,10 +112,10 @@
       'Hable con el analista\n\n          que fijaría el precio de su operación.',
     'Not a call center.': 'No es un centro de llamadas.',
 
-    // blog.jsx <h1>: "The Ledger. Published notes from the desk."
+    // blog.jsx <h1>: "The Ledger. Field notes from underwriting."
     'The Ledger.': 'The Ledger.',
-    'Published notes': 'Notas publicadas',
-    'from the desk.': 'desde la mesa.',
+    'Field notes': 'Notas de campo',
+    'from underwriting.': 'del área de análisis.',
 
     // blog.jsx <h2>: "The Floor Rate. Monthly letters from our lead underwriter."
     'The Floor Rate.': 'The Floor Rate.',
@@ -125,6 +125,17 @@
     // blog.jsx <h2>: "One long read, a few short ones, most Wednesdays."
     'One long read, a few short ones,': 'Una lectura larga, unas cuantas cortas,',
     'most Wednesdays.': 'casi todos los miércoles.',
+
+    // reviews.jsx <h1> / sections.jsx <h2>: "Straight from funded operators."
+    // The reviews-page hero splits it across a <br/> ("Straight from" /
+    // "funded operators."); the homepage section renders it as one node.
+    'Straight from funded operators.': 'Directo de operadores financiados.',
+    'Straight from': 'Directo de',
+    'funded operators.': 'operadores financiados.',
+
+    // about.jsx closing CTA buttons (V1CTASection overrides).
+    'See my range': 'Ver mi rango',
+    'Talk to an expert': 'Hablar con un experto',
 
     // ── Small caption / helper text the batch missed or got wrong.
     // (This one appears under the calculator's revenue input.)

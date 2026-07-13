@@ -267,7 +267,7 @@ function V1ReviewsPage({ accent, onApply, onTalk }) {
               letterSpacing: '-0.035em', lineHeight: 1.02,
               margin: 0, textWrap: 'balance',
             }}>
-              Verified on<br/>the renewal call.
+              Straight from<br/>funded operators.
             </h1>
             <p style={{
               fontFamily: V1.fontBody, fontSize: 17.5, lineHeight: 1.6,
