@@ -1,4 +1,4 @@
-// V1 Blog index — "The Ledger", Delt's editorial notebook.
+// V1 Blog index — Delt's editorial notebook.
 // Structure:
 //   Masthead   — Vol / Issue dateline strip, oversized display lockup
 //   Featured   — one lead editorial (full-bleed photo placeholder + deck)
@@ -310,21 +310,18 @@ function BlogMasthead({ accent }) {
         {/* Lockup */}
         <div data-v1-grid-2col style={{ paddingTop: 48, display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 64, alignItems: 'flex-end' }}>
           <div>
-            <V1Eyebrow color={V1.blueSoft}>The Ledger</V1Eyebrow>
+            <V1Eyebrow color={V1.blueSoft}>The blog</V1Eyebrow>
             <h1 data-v1-section-title style={{
               fontFamily: V1.fontDisplay,
               fontSize: 'clamp(3.4rem, 8vw, 7rem)',
               fontWeight: 600, letterSpacing: '-0.045em', lineHeight: 0.92,
               color: V1.white, margin: '18px 0 0',
             }}>
-              The Ledger.
-              <br />
+              Notes on{' '}
               <em style={{
                 fontFamily: '"Source Serif Pro", Georgia, serif',
                 fontStyle: 'italic', fontWeight: 400, color: accent,
-              }}>Notes on</em>
-              <br />
-              lending.
+              }}>lending.</em>
             </h1>
           </div>
           <div style={{
@@ -805,7 +802,7 @@ function BlogNewsletter({ accent, onTalk }) {
             fontFamily: V1.fontBody, fontSize: 16, lineHeight: 1.55,
             color: V1.text, margin: '20px 0 0', maxWidth: 520,
           }}>
-            The Ledger in your inbox. No tracking pixels, no marketing sequences,
+            Straight to your inbox. No tracking pixels, no marketing sequences,
             and one single "unsubscribe" button that actually works. If you don't
             like an issue, reply and tell us — a human writes back.
           </p>
