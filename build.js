@@ -13,7 +13,9 @@
  * vendors React's *production* build into app/vendor/. index.html then loads
  * those plain, same-origin scripts. The output is committed so the Vercel
  * deploy stays zero-config (no build command required on their side); re-run
- * `npm run build` after editing any app/*.jsx source.
+ * `npm run compile` after editing any app/*.jsx source. (Named `compile`, not
+ * `build`, so Vercel stays zero-config static and serves the committed output
+ * instead of trying to run a build and looking for a public/ output dir.)
  */
 const fs = require('fs');
 const path = require('path');

@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "description": "Static frontend (precompiled JSX, self-hosted React) + Vercel serverless API. The qrcode dependency is used server-side only to render Plaid hosted-link / IDV QR codes as PNG data URLs (api/plaid-create-link-token.js, api/plaid-create-idv.js) so the link never leaves our infrastructure.",
   "scripts": {
-    "build": "node build.js"
+    "compile": "node build.js"
   },
   "dependencies": {
     "qrcode": "^1.5.3"
