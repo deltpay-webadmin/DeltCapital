@@ -2,8 +2,18 @@
   "name": "deltcapital",
   "private": true,
   "version": "0.0.0",
-  "description": "Static frontend (in-browser Babel) + Vercel serverless API. The qrcode dependency is used server-side only to render Plaid hosted-link / IDV QR codes as PNG data URLs (api/plaid-create-link-token.js, api/plaid-create-idv.js) so the link never leaves our infrastructure.",
+  "description": "Static frontend (precompiled JSX, self-hosted React) + Vercel serverless API. The qrcode dependency is used server-side only to render Plaid hosted-link / IDV QR codes as PNG data URLs (api/plaid-create-link-token.js, api/plaid-create-idv.js) so the link never leaves our infrastructure.",
+  "scripts": {
+    "build": "node build.js"
+  },
   "dependencies": {
     "qrcode": "^1.5.3"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.24.0",
+    "@babel/core": "^7.24.0",
+    "@babel/preset-react": "^7.24.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
   }
 }

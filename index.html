@@ -315,50 +315,52 @@
     })();
   </script>
 
-  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <!-- React runtime — self-hosted PRODUCTION build (same-origin, no unpkg).
+       The page used to pull React dev builds + @babel/standalone (~4MB) from
+       unpkg and compile ~25 JSX files in the browser on every load. All JSX is
+       now precompiled to app/compiled/*.js by `npm run build`; no in-browser
+       Babel is loaded. Re-run the build after editing any app/*.jsx source. -->
+  <script src="app/vendor/react.production.min.js"></script>
+  <script src="app/vendor/react-dom.production.min.js"></script>
 
-  <!-- Plaid Link SDK (bank connect). The mobile-handoff QR is rendered
-       via api.qrserver.com directly in <img>, so no QR JS lib is loaded. -->
-  <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+  <!-- Plaid Link SDK (bank connect) — only used inside the apply modal, so it
+       is deferred and kept off the critical render path. The mobile-handoff QR
+       is rendered via api.qrserver.com directly in <img>, so no QR JS lib. -->
+  <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js" defer></script>
 
   <!-- Meta Pixel event helpers. Plain <script> so window.DeltPixel is
-       attached before any Babel-JSX module tries to use it below. -->
+       attached before any app module below uses it. -->
   <script src="app/pixel.js"></script>
 
-  <script type="text/babel" src="app/shared.jsx"></script>
+  <script src="app/compiled/shared.js"></script>
   <!-- Wave 2 phrase dictionary — plain JS, must load BEFORE the i18n module -->
   <script src="app/variation-1-phrase-dict.js"></script>
   <script src="app/variation-1-phrase-dict-overrides.js"></script>
-  <script type="text/babel" src="app/variation-1-i18n.jsx"></script>
-  <script type="text/babel" src="app/app.jsx"></script>
-  <script type="text/babel" src="app/variation-1-motion.jsx"></script>
-  <script type="text/babel" src="app/variation-1-sections.jsx"></script>
-  <script type="text/babel" src="app/variation-1-plaid-sections.jsx"></script>
-  <script type="text/babel" src="app/variation-1-calculator.jsx"></script>
-  <script type="text/babel" src="app/variation-1-howitworks.jsx"></script>
-  <script type="text/babel" src="app/variation-1-reviews.jsx"></script>
-  <script type="text/babel" src="app/variation-1-about.jsx"></script>
-  <script type="text/babel" src="app/variation-1-booking.jsx"></script>
-  <script type="text/babel" src="app/variation-1-support.jsx"></script>
-  <script type="text/babel" src="app/variation-1-faq.jsx"></script>
-  <script type="text/babel" src="app/variation-1-blog.jsx"></script>
-  <script type="text/babel" src="app/variation-1-plaid.jsx"></script>
-  <script type="text/babel" src="app/variation-1-apply.jsx"></script>
-  <script type="text/babel" src="app/variation-1-legal.jsx"></script>
-  <script type="text/babel" src="app/variation-1-login.jsx"></script>
-  <script type="text/babel" src="app/variation-1-funding-flow.jsx"></script>
-  <script type="text/babel" src="app/variation-1-processing.jsx"></script>
-  <script type="text/babel" src="app/variation-1-speed.jsx"></script>
-  <script type="text/babel" src="app/variation-1-lending.jsx"></script>
-  <script type="text/babel" src="app/variation-1-terminals.jsx"></script>
-  <script type="text/babel" src="app/variation-1-cookies.jsx"></script>
-  <script type="text/babel" src="app/variation-1.jsx"></script>
+  <script src="app/compiled/variation-1-i18n.js"></script>
+  <script src="app/compiled/app.js"></script>
+  <script src="app/compiled/variation-1-motion.js"></script>
+  <script src="app/compiled/variation-1-sections.js"></script>
+  <script src="app/compiled/variation-1-plaid-sections.js"></script>
+  <script src="app/compiled/variation-1-calculator.js"></script>
+  <script src="app/compiled/variation-1-howitworks.js"></script>
+  <script src="app/compiled/variation-1-reviews.js"></script>
+  <script src="app/compiled/variation-1-about.js"></script>
+  <script src="app/compiled/variation-1-booking.js"></script>
+  <script src="app/compiled/variation-1-support.js"></script>
+  <script src="app/compiled/variation-1-faq.js"></script>
+  <script src="app/compiled/variation-1-blog.js"></script>
+  <script src="app/compiled/variation-1-plaid.js"></script>
+  <script src="app/compiled/variation-1-apply.js"></script>
+  <script src="app/compiled/variation-1-legal.js"></script>
+  <script src="app/compiled/variation-1-login.js"></script>
+  <script src="app/compiled/variation-1-funding-flow.js"></script>
+  <script src="app/compiled/variation-1-processing.js"></script>
+  <script src="app/compiled/variation-1-speed.js"></script>
+  <script src="app/compiled/variation-1-lending.js"></script>
+  <script src="app/compiled/variation-1-terminals.js"></script>
+  <script src="app/compiled/variation-1-cookies.js"></script>
+  <script src="app/compiled/variation-1.js"></script>
 
-  <script type="text/babel" data-presets="react">
-    function Root() { return <Variation1 />; }
-    ReactDOM.createRoot(document.getElementById('root')).render(<Root />);
-  </script>
+  <script src="app/compiled/_boot.js"></script>
 </body>
 </html>
