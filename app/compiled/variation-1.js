@@ -472,13 +472,37 @@ function V1Hero({
         @media (max-width: 1200px) {
           .v1hero-washington { right: 0; }
         }
+        /* Mobile: the Washington + $95K-offer cutout IS the ad creative, so it
+           must stay prominent (paid clicks are mostly mobile). Center it at the
+           bottom at near-full opacity and let the copy sit above it, rather
+           than dimming it to a ghost off the right edge. A scrim (below) keeps
+           the headline legible where they meet. */
         @media (max-width: 900px) {
-          .v1hero-washington { right: -8%; bottom: 0; height: 82%; max-height: 620px; }
-          .v1hero-washington img { opacity: 0.45; animation: none; }
+          .v1hero-washington { right: 50%; transform: translateX(50%); bottom: 0; height: 60%; max-height: 560px; }
+          .v1hero-washington img { opacity: 0.92; animation: none; }
         }
         @media (max-width: 560px) {
-          .v1hero-washington { right: -20%; bottom: 0; height: 68%; }
-          .v1hero-washington img { opacity: 0.28; }
+          .v1hero-washington { right: 50%; transform: translateX(50%); bottom: 0; height: 50%; max-height: 430px; }
+          .v1hero-washington img { opacity: 0.95; }
+        }
+        /* On mobile, stack the copy at the top so it clears the centered
+           portrait below; drop the desktop vertical-centering + tall min-height. */
+        @media (max-width: 768px) {
+          [data-v1-hero-grid] {
+            align-items: start !important;
+            min-height: auto !important;
+            padding: 36px 20px 0 !important;
+          }
+        }
+        /* Mobile legibility scrim — darkens the upper area (where the copy
+           sits) over the centered portrait. Desktop is unaffected. */
+        .v1hero-mobile-scrim { display: none; }
+        @media (max-width: 768px) {
+          .v1hero-mobile-scrim {
+            display: block;
+            position: absolute; inset: 0; z-index: 2; pointer-events: none;
+            background: linear-gradient(180deg, rgba(12,26,42,0.92) 0%, rgba(12,26,42,0.85) 40%, rgba(12,26,42,0.55) 60%, rgba(12,26,42,0) 78%);
+          }
         }
         @media (prefers-reduced-motion: reduce) {
           .v1hero-washington img { animation: none; }
@@ -504,10 +528,14 @@ function V1Hero({
       pointerEvents: 'none'
     }
   }), React.createElement("img", {
-    src: "app/assets/washington-cutout.png",
+    src: "app/assets/washington-cutout.webp",
     alt: ""
   })), React.createElement("div", {
+    className: "v1hero-mobile-scrim",
+    "aria-hidden": true
+  }), React.createElement("div", {
     "data-v1-grid-2col": true,
+    "data-v1-hero-grid": true,
     style: {
       width: '100%',
       maxWidth: 1280,
