@@ -371,7 +371,7 @@ function V1ReviewsPage({
       margin: 0,
       textWrap: 'balance'
     }
-  }, "Verified on", React.createElement("br", null), "the renewal call."), React.createElement("p", {
+  }, "Straight from", React.createElement("br", null), "funded operators."), React.createElement("p", {
     style: {
       fontFamily: V1.fontBody,
       fontSize: 17.5,

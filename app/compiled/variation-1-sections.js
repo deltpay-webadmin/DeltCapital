@@ -767,7 +767,7 @@ function V1ReviewsSection() {
       ...v1H2,
       marginTop: 18
     }
-  }, "Verified on the renewal call.")), React.createElement("p", {
+  }, "Straight from funded operators.")), React.createElement("p", {
     style: {
       fontFamily: V1.fontBody,
       fontSize: 17,
@@ -923,7 +923,10 @@ function V1FAQSection() {
 }
 function V1CTASection({
   onApply,
-  onTalk
+  onTalk,
+  onCalc,
+  primaryLabel,
+  talkLabel
 }) {
   const [secRef, inView] = useV1InView(0.2, '0px 0px -40px 0px');
   const [hoverPrimary, setHoverPrimary] = React.useState(false);
@@ -1134,7 +1137,7 @@ function V1CTASection({
       transition: 'opacity 700ms cubic-bezier(0.22,1,0.36,1) 700ms, transform 700ms cubic-bezier(0.22,1,0.36,1) 700ms'
     }
   }, React.createElement("button", {
-    onClick: onApply,
+    onClick: onCalc || onApply,
     onMouseEnter: () => setHoverPrimary(true),
     onMouseLeave: () => setHoverPrimary(false),
     style: {
@@ -1167,7 +1170,7 @@ function V1CTASection({
       transform: hoverPrimary ? 'translateX(120%)' : 'translateX(-120%)',
       transition: 'transform 900ms cubic-bezier(0.22, 1, 0.36, 1)'
     }
-  }), "Get Funded", React.createElement("svg", {
+  }), primaryLabel || 'Get Funded', React.createElement("svg", {
     width: "15",
     height: "15",
     viewBox: "0 0 14 14",
@@ -1218,7 +1221,7 @@ function V1CTASection({
     rx: "1.5"
   }), React.createElement("path", {
     d: "M4 1v2M10 1v2M1.5 5.5h11"
-  })), "Talk to an underwriter", React.createElement("span", {
+  })), talkLabel || 'Talk to an underwriter', React.createElement("span", {
     style: {
       opacity: hoverGhost ? 1 : 0,
       transform: hoverGhost ? 'translateX(0)' : 'translateX(-4px)',

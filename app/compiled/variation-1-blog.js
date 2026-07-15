@@ -437,7 +437,7 @@ function BlogMasthead({
     }
   }, React.createElement("div", null, React.createElement(V1Eyebrow, {
     color: V1.blueSoft
-  }, "The Ledger"), React.createElement("h1", {
+  }, "The blog"), React.createElement("h1", {
     "data-v1-section-title": true,
     style: {
       fontFamily: V1.fontDisplay,
@@ -448,14 +448,14 @@ function BlogMasthead({
       color: V1.white,
       margin: '18px 0 0'
     }
-  }, "The Ledger.", React.createElement("br", null), React.createElement("em", {
+  }, "Notes on", ' ', React.createElement("em", {
     style: {
       fontFamily: '"Source Serif Pro", Georgia, serif',
       fontStyle: 'italic',
       fontWeight: 400,
       color: accent
     }
-  }, "Published notes"), React.createElement("br", null), "from the desk.")), React.createElement("div", {
+  }, "lending."))), React.createElement("div", {
     style: {
       paddingBottom: 14,
       fontFamily: V1.fontBody,
@@ -1244,7 +1244,7 @@ function BlogNewsletter({
       margin: '20px 0 0',
       maxWidth: 520
     }
-  }, "The Ledger in your inbox. No tracking pixels, no marketing sequences, and one single \"unsubscribe\" button that actually works. If you don't like an issue, reply and tell us \u2014 a human writes back."), React.createElement("div", {
+  }, "Straight to your inbox. No tracking pixels, no marketing sequences, and one single \"unsubscribe\" button that actually works. If you don't like an issue, reply and tell us \u2014 a human writes back."), React.createElement("div", {
     style: {
       marginTop: 22,
       display: 'flex',

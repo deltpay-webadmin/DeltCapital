@@ -364,6 +364,7 @@ function V1CalcAnalyzer({
   const [leadError, setLeadError] = v1cUseState('');
   const [leadId, setLeadId] = v1cUseState(null);
   const theaterTimers = v1cUseRef([]);
+  const autoAdvancedRef = v1cUseRef(false);
   const isCaptured = leadStage === 'captured';
   const showGate = leadStage === 'gating' && !isCaptured;
   const showTheater = leadStage === 'calculating';
@@ -507,6 +508,27 @@ function V1CalcAnalyzer({
   };
   const ctaDisabled = !allFilled;
   const ctaBoosted = (boosted || isRedirect) && showResults;
+  const goApply = () => {
+    autoAdvancedRef.current = true;
+    onApply?.({
+      low: displayLow,
+      high: displayHigh,
+      factor: 1.18,
+      ok: true,
+      leadId: isCaptured ? leadId : null,
+      lead: isCaptured ? {
+        firstName: leadFirst.trim(),
+        businessName: leadBiz.trim(),
+        email: leadEmail.trim(),
+        phone: leadPhone ? `${dialPrefix} ${leadPhone}`.trim() : ''
+      } : null
+    });
+  };
+  v1cUseEffect(() => {
+    if (isRedirect || !isCaptured || !showResults || autoAdvancedRef.current) return;
+    const t = setTimeout(goApply, 1800);
+    return () => clearTimeout(t);
+  }, [isCaptured, showResults, isRedirect]);
   return React.createElement("div", {
     style: {
       background: V1.white,
@@ -1101,19 +1123,7 @@ function V1CalcAnalyzer({
       padding: '0 40px 40px'
     }
   }, React.createElement("button", {
-    onClick: () => onApply?.({
-      low: displayLow,
-      high: displayHigh,
-      factor: 1.18,
-      ok: true,
-      leadId: isCaptured ? leadId : null,
-      lead: isCaptured ? {
-        firstName: leadFirst.trim(),
-        businessName: leadBiz.trim(),
-        email: leadEmail.trim(),
-        phone: leadPhone ? `${dialPrefix} ${leadPhone}`.trim() : ''
-      } : null
-    }),
+    onClick: goApply,
     disabled: ctaDisabled,
     style: {
       width: '100%',
@@ -1145,7 +1155,7 @@ function V1CalcAnalyzer({
         e.currentTarget.style.boxShadow = `0 10px 30px -10px ${V1.blue}AA, 0 4px 10px -4px ${V1.blue}77`;
       }
     }
-  }, "Get My Offer", React.createElement(V1CalcIcon, {
+  }, isCaptured && showResults ? 'Continue to my application' : 'Get My Offer', React.createElement(V1CalcIcon, {
     kind: "arr"
   })), React.createElement("div", {
     style: {
@@ -1156,7 +1166,7 @@ function V1CalcAnalyzer({
       fontStyle: 'italic',
       fontFamily: V1.fontBody
     }
-  }, "No impact to your credit. Takes 2 minutes.")));
+  }, isCaptured && showResults ? 'Taking you to your application…' : 'No impact to your credit. Takes 2 minutes.')));
 }
 function V1LeadInput({
   value,

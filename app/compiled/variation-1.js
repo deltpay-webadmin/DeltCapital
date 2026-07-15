@@ -894,7 +894,8 @@ function Variation1() {
   const body = page === 'about' ? React.createElement(V1AboutPage, {
     accent: accent,
     onApply: () => openApp(null, null),
-    onTalk: () => navTo('talk')
+    onTalk: () => navTo('talk'),
+    onCalc: () => navTo('calc')
   }) : page === 'how' ? React.createElement(HowItWorksPage, {
     accent: accent,
     onApply: () => openApp(null, null),

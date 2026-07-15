@@ -1109,10 +1109,12 @@ function V1ApplicationFlow({
     }));
   }, [open, prefill]);
   const [closing, setClosing] = React.useState(false);
+  const [showLeaveConfirm, setShowLeaveConfirm] = React.useState(false);
   React.useEffect(() => {
     if (open) {
       setStep(startStep);
       setClosing(false);
+      setShowLeaveConfirm(false);
     }
   }, [open, startStep]);
   React.useEffect(() => {
@@ -1213,12 +1215,20 @@ function V1ApplicationFlow({
     };
   }, [open]);
   if (!open && !closing) return null;
-  const handleClose = () => {
+  const doClose = () => {
+    setShowLeaveConfirm(false);
     setClosing(true);
     setTimeout(() => {
       setClosing(false);
       onClose();
     }, 200);
+  };
+  const handleClose = () => {
+    if (step >= 4) {
+      doClose();
+      return;
+    }
+    setShowLeaveConfirm(true);
   };
   const canProceed = (() => {
     if (step === 0) return v1BusinessComplete(form);
@@ -1683,7 +1693,128 @@ function V1ApplicationFlow({
       fontWeight: 600
     }
   }, "Close"))))));
-  return ReactDOM.createPortal(modal, document.body);
+  const leaveConfirm = showLeaveConfirm ? React.createElement("div", {
+    onClick: e => {
+      if (e.target === e.currentTarget) setShowLeaveConfirm(false);
+    },
+    style: {
+      position: 'fixed',
+      inset: 0,
+      zIndex: 120,
+      background: 'rgba(15, 14, 23, 0.55)',
+      backdropFilter: 'blur(6px)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: 24,
+      animation: 'v1apFadeIn .16s ease'
+    }
+  }, React.createElement("div", {
+    style: {
+      width: '100%',
+      maxWidth: 420,
+      background: V1.bg,
+      borderRadius: 18,
+      border: `1px solid ${V1.line}`,
+      boxShadow: '0 40px 100px -20px rgba(15,14,23,0.55)',
+      padding: '30px 30px 26px',
+      textAlign: 'center',
+      animation: 'v1apSlideIn .24s cubic-bezier(.2,.7,.3,1)'
+    }
+  }, React.createElement("div", {
+    style: {
+      width: 46,
+      height: 46,
+      borderRadius: 12,
+      margin: '0 auto 16px',
+      background: `linear-gradient(135deg, ${accent}, #818CF8)`,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: V1.white,
+      boxShadow: `0 10px 26px -10px ${accent}aa`
+    }
+  }, React.createElement("svg", {
+    width: "22",
+    height: "22",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round"
+  }, React.createElement("path", {
+    d: "M12 2L3 7v6c0 5 3.8 8.3 9 9 5.2-.7 9-4 9-9V7l-9-5z"
+  }))), React.createElement("h3", {
+    style: {
+      margin: 0,
+      fontFamily: V1.fontDisplay,
+      fontSize: 22,
+      fontWeight: 700,
+      letterSpacing: '-0.02em',
+      color: V1.ink
+    }
+  }, "Are you sure?"), React.createElement("p", {
+    style: {
+      margin: '10px 0 0',
+      fontFamily: V1.fontBody,
+      fontSize: 14.5,
+      lineHeight: 1.55,
+      color: V1.muted
+    }
+  }, "You're moments from your funding offer. Leave now and you'll have to start over \u2014 your range and details won't be saved."), React.createElement("div", {
+    style: {
+      marginTop: 22,
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 10
+    }
+  }, React.createElement("button", {
+    onClick: () => setShowLeaveConfirm(false),
+    style: {
+      width: '100%',
+      padding: '14px 20px',
+      borderRadius: 12,
+      border: 'none',
+      background: `linear-gradient(135deg, ${accent}, #6366F1)`,
+      color: V1.white,
+      cursor: 'pointer',
+      fontFamily: V1.fontBody,
+      fontSize: 15,
+      fontWeight: 700,
+      boxShadow: `0 10px 28px -10px ${accent}aa`,
+      transition: 'filter .15s, transform .1s'
+    },
+    onMouseEnter: e => {
+      e.currentTarget.style.filter = 'brightness(1.08)';
+      e.currentTarget.style.transform = 'translateY(-1px)';
+    },
+    onMouseLeave: e => {
+      e.currentTarget.style.filter = 'none';
+      e.currentTarget.style.transform = 'translateY(0)';
+    }
+  }, "Keep my offer"), React.createElement("button", {
+    onClick: doClose,
+    style: {
+      width: '100%',
+      padding: '11px 20px',
+      borderRadius: 12,
+      background: 'transparent',
+      border: 'none',
+      color: V1.muted,
+      cursor: 'pointer',
+      fontFamily: V1.fontBody,
+      fontSize: 13.5,
+      fontWeight: 500
+    },
+    onMouseEnter: e => {
+      e.currentTarget.style.color = V1.ink;
+    },
+    onMouseLeave: e => {
+      e.currentTarget.style.color = V1.muted;
+    }
+  }, "No thanks, leave anyway")))) : null;
+  return ReactDOM.createPortal(React.createElement(React.Fragment, null, modal, leaveConfirm), document.body);
 }
 Object.assign(window, {
   V1ApplicationFlow

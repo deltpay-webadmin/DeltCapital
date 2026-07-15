@@ -1037,11 +1037,15 @@ function AboutLeadership() {
 function V1AboutPage({
   accent,
   onApply,
-  onTalk
+  onTalk,
+  onCalc
 }) {
   return React.createElement(React.Fragment, null, React.createElement(AboutHero, null), React.createElement(AboutThesis, null), React.createElement(AboutPrinciples, null), React.createElement(AboutTimeline, null), React.createElement(V1CTASection, {
     onApply: onApply,
-    onTalk: onTalk
+    onTalk: onTalk,
+    onCalc: onCalc,
+    primaryLabel: "See my range",
+    talkLabel: "Talk to an expert"
   }));
 }
 Object.assign(window, {

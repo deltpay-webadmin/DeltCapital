@@ -569,7 +569,7 @@ function ReviewsSection({
     }
   }, React.createElement("h2", {
     style: h2Style
-  }, "What the last 100 borrowers said on their renewal call."), React.createElement("p", {
+  }, "What funded operators tell us."), React.createElement("p", {
     style: {
       fontFamily: DELT.font.body,
       fontSize: 15,
