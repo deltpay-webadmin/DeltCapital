@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Delt Capital — Broker / ISO Agreement</title>
+<style>
+  :root{
+    --indigo:#4945FF;
+    --ink:#041E42;
+    --near-black:#0F0E17;
+    --paper:#F6F9FC;
+    --hair:#DCDFE4;
+    --muted:#697386;
+    --body:#2c3a4d;
+  }
+  *{box-sizing:border-box;}
+  @page{ size:Letter; margin:16mm 16mm 18mm 16mm; }
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    color:var(--near-black);
+    font-size:10px;
+    line-height:1.5;
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+  }
+
+  /* Masthead */
+  .masthead{
+    background:var(--ink);color:#fff;border-radius:10px;
+    padding:16px 18px;display:flex;justify-content:space-between;align-items:flex-start;
+    margin-bottom:16px;
+  }
+  .brand{display:flex;align-items:center;gap:10px;}
+  .logo-mark{width:30px;height:30px;border-radius:7px;background:var(--indigo);
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#fff;}
+  .brand .name{font-size:15px;font-weight:800;letter-spacing:-.3px;line-height:1;}
+  .brand .tag{font-size:8px;color:#9fb0c9;text-transform:uppercase;letter-spacing:1.4px;margin-top:3px;}
+  .masthead .doc-title{text-align:right;}
+  .masthead .doc-title h1{font-size:14px;margin:0;font-weight:800;letter-spacing:-.2px;}
+  .masthead .doc-title p{margin:3px 0 0;font-size:7.6px;color:#9fb0c9;text-transform:uppercase;letter-spacing:1.2px;}
+
+  h2.clause{
+    font-size:10.5px;font-weight:800;color:var(--ink);
+    text-transform:uppercase;letter-spacing:.4px;
+    margin:14px 0 5px;padding-bottom:3px;border-bottom:1px solid var(--hair);
+    break-after:avoid;
+  }
+  h2.clause .n{color:var(--indigo);margin-right:6px;}
+  p{margin:0 0 7px;color:var(--body);}
+  p.lead{margin-bottom:10px;}
+  .sub{margin:0 0 6px 16px;color:var(--body);}
+  .sub .lbl{font-weight:700;color:var(--ink);}
+  ol.sub-list{margin:2px 0 8px 20px;padding:0;}
+  ol.sub-list li{margin-bottom:4px;color:var(--body);}
+  strong{color:var(--ink);}
+  .fill{border-bottom:1px solid var(--muted);display:inline-block;min-width:34px;text-align:center;}
+
+  .partybox{
+    background:var(--paper);border:1px solid var(--hair);border-radius:8px;
+    padding:11px 14px;margin-bottom:12px;font-size:10px;
+  }
+  .partybox .row{display:flex;gap:8px;margin-bottom:3px;}
+  .partybox .k{color:var(--muted);width:150px;flex:0 0 auto;text-transform:uppercase;font-size:8px;letter-spacing:.6px;font-weight:600;padding-top:2px;}
+  .partybox .v{border-bottom:1px solid var(--hair);flex:1;min-height:15px;}
+
+  .notice{
+    background:#EAF0FE;border:1px solid #c7d4f7;border-radius:8px;
+    padding:8px 12px;font-size:8.4px;color:#2b2fb8;margin-bottom:14px;
+  }
+
+  /* Commission callout */
+  .callout{
+    border:1px solid var(--indigo);border-radius:8px;padding:10px 13px;margin:8px 0 10px;
+    background:#fbfbff;
+  }
+  .callout .h{font-size:8px;text-transform:uppercase;letter-spacing:.8px;color:var(--indigo);font-weight:800;margin-bottom:5px;}
+
+  table{width:100%;border-collapse:collapse;margin:6px 0 4px;font-size:9px;}
+  th{font-size:7.6px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:700;
+    text-align:left;padding:5px 7px;border-bottom:1.5px solid var(--ink);background:var(--paper);}
+  td{border-bottom:1px solid var(--hair);padding:6px 7px;color:var(--body);vertical-align:top;}
+  td .fillbox{border-bottom:1px solid var(--muted);display:block;min-height:13px;}
+
+  .sig-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 30px;margin-top:8px;}
+  .sig .co{font-weight:800;color:var(--ink);font-size:9px;text-transform:uppercase;letter-spacing:.6px;margin-bottom:16px;}
+  .sig .line{border-bottom:1.5px solid var(--ink);height:20px;}
+  .sig .cap{font-size:7.4px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-top:3px;}
+  .sig .sp{height:12px;}
+
+  .footer{position:running(foot);}
+  .pagebreak{break-before:page;}
+  .avoid{break-inside:avoid;}
+
+  .exhibit-title{
+    font-size:12px;font-weight:800;color:var(--ink);text-transform:uppercase;letter-spacing:.5px;
+    border-bottom:2px solid var(--indigo);padding-bottom:5px;margin:0 0 10px;
+  }
+</style>
+</head>
+<body>
+
+  <div class="masthead">
+    <div class="brand">
+      <div class="logo-mark">D</div>
+      <div>
+        <div class="name">Delt Capital</div>
+        <div class="tag">Alternative Business Funding</div>
+      </div>
+    </div>
+    <div class="doc-title">
+      <h1>Broker / ISO Agreement</h1>
+      <p>Referral &amp; Commission Terms</p>
+    </div>
+  </div>
+
+  <div class="notice">
+    <strong>Template notice.</strong> Bracketed values <span style="font-family:monospace">[ ]</span> are the deal-specific
+    terms to set before signing. This is a standard-form agreement and should be reviewed by your counsel before use.
+  </div>
+
+  <p class="lead">This Broker / Independent Sales Organization Agreement (the <strong>"Agreement"</strong>) is entered into as of
+  <span class="fill" style="min-width:120px">&nbsp;</span> (the <strong>"Effective Date"</strong>) by and between:</p>
+
+  <div class="partybox">
+    <div class="row"><div class="k">Company / Funder</div><div class="v">Delt Capital &nbsp;("Company")</div></div>
+    <div class="row"><div class="k">Company address</div><div class="v"></div></div>
+    <div class="row"><div class="k">Broker / ISO</div><div class="v"></div></div>
+    <div class="row"><div class="k">Broker entity type</div><div class="v"></div></div>
+    <div class="row"><div class="k">Broker address</div><div class="v"></div></div>
+    <div class="row"><div class="k">Broker contact / email</div><div class="v"></div></div>
+  </div>
+
+  <p>Company and Broker are each a <strong>"Party"</strong> and together the <strong>"Parties."</strong> Company is engaged
+  in providing merchant cash advances, revenue-based financing, and related commercial funding products
+  (each, a <strong>"Transaction"</strong>) to businesses (each, a <strong>"Merchant"</strong>). Broker is engaged in referring
+  Merchants to funding sources. The Parties agree as follows.</p>
+
+  <h2 class="clause"><span class="n">1.</span>Appointment &amp; Relationship</h2>
+  <p><span class="sub"></span><strong>1.1 Non-exclusive appointment.</strong> Company appoints Broker as a non-exclusive
+  referral source to submit Merchant applications to Company for potential funding. Broker is free to submit deals to other
+  funders, and Company is free to accept deals from other brokers.</p>
+  <p><strong>1.2 Independent contractor.</strong> Broker is an independent contractor. Nothing herein creates an employment,
+  partnership, joint venture, or agency relationship. Broker has no authority to bind Company, quote final terms, approve
+  funding, or make representations on Company's behalf. Broker is solely responsible for its own personnel, expenses, and taxes,
+  and will be issued an IRS Form 1099 for commissions paid.</p>
+  <p><strong>1.3 Sole discretion.</strong> Company underwrites, approves, prices, and funds each Transaction in its sole and
+  absolute discretion. Company is under no obligation to fund any Merchant referred by Broker.</p>
+
+  <h2 class="clause"><span class="n">2.</span>Broker Responsibilities</h2>
+  <ol class="sub-list">
+    <li>Submit complete, accurate application packages, including the Company's submission form and all supporting documents.</li>
+    <li>Obtain from each Merchant and owner all authorizations required for Company to obtain credit reports, verify bank
+    activity, and process the application, and retain evidence of such authorizations.</li>
+    <li>Present Company's products truthfully and never guarantee approval, amounts, rates, or terms.</li>
+    <li>Not collect any upfront fee from a Merchant on Company's behalf, and not alter, add to, or misstate Company's terms.</li>
+    <li>Comply with all applicable laws (Section&nbsp;8) and cooperate with Company's compliance and verification requests.</li>
+  </ol>
+
+  <h2 class="clause"><span class="n">3.</span>Company Responsibilities</h2>
+  <ol class="sub-list">
+    <li>Review submitted applications and communicate approval decisions and offer terms to Broker in a commercially reasonable timeframe.</li>
+    <li>Fund approved Transactions in accordance with its agreements with the Merchant.</li>
+    <li>Calculate and pay Commissions earned by Broker in accordance with Section&nbsp;4 and Exhibit&nbsp;A.</li>
+    <li>Provide Broker reasonable reporting on the status and funded amount of Broker's submitted deals.</li>
+  </ol>
+
+  <h2 class="clause"><span class="n">4.</span>Commissions &amp; Compensation</h2>
+  <p><strong>4.1 Commission.</strong> For each Transaction that Company funds from a Merchant referred by Broker, Company shall
+  pay Broker a commission (the <strong>"Commission"</strong>) calculated as set forth in the Commission Schedule
+  (<strong>Exhibit&nbsp;A</strong>). Commission is expressed in <strong>"Points,"</strong> where one (1)&nbsp;Point equals one percent
+  (1%) of the gross amount actually disbursed to the Merchant (the <strong>"Funded Amount"</strong>).</p>
+
+  <div class="callout">
+    <div class="h">How commission is earned — the standard structure</div>
+    <p style="margin-bottom:5px;"><strong>Base points.</strong> Broker earns a base Commission of <span class="fill">[8]</span>–<span class="fill">[12]</span> Points
+    of the Funded Amount per Transaction, per Exhibit&nbsp;A.</p>
+    <p style="margin-bottom:5px;"><strong>Upsell on the spread.</strong> Where Broker arranges a factor rate above Company's approved
+    "buy rate," Broker earns additional Commission equal to <span class="fill">[50]</span>% of the resulting spread, credited as
+    additional Points.</p>
+    <p style="margin-bottom:0;"><strong>Cap.</strong> Total Commission (base + upsell) shall not exceed <span class="fill">[15]</span> Points
+    of the Funded Amount unless otherwise agreed in writing.</p>
+  </div>
+
+  <p><strong>4.2 When Commission is paid.</strong> Commission is earned upon funding and is paid within
+  <span class="fill">[2]</span> business days after the later of (i)&nbsp;Company disbursing the Funded Amount and
+  (ii)&nbsp;Company's confirmation that the Merchant's initial remittance has cleared, subject to the clawback rights in Section&nbsp;5.</p>
+
+  <p><strong>4.3 Renewals.</strong> If a Merchant originally referred by Broker renews or takes an additional Transaction with
+  Company while Broker remains active and the Merchant is within the protection period (Section&nbsp;6), Company shall pay Broker a
+  renewal Commission per Exhibit&nbsp;A.</p>
+
+  <p><strong>4.4 No commission owed.</strong> No Commission is earned or payable on any application that is declined, withdrawn,
+  expired, or not funded, or on any Transaction procured through Broker's breach, misrepresentation, or fraud.</p>
+
+  <p><strong>4.5 Full settlement.</strong> The Commission is Broker's sole compensation. Broker is responsible for compensating
+  its own sub-agents, if any, and Company has no obligation to any third party engaged by Broker.</p>
+
+  <h2 class="clause"><span class="n">5.</span>Clawback &amp; Chargeback</h2>
+  <p><strong>5.1 Clawback events.</strong> If, within <span class="fill">[90]</span> days of funding, any of the following occurs,
+  Broker shall refund <strong>100% of the Commission</strong> paid on that Transaction: (a)&nbsp;the Merchant defaults on its first
+  scheduled remittance (first-payment default); (b)&nbsp;the Transaction is rescinded, cancelled, or unwound; or (c)&nbsp;the
+  Transaction was procured through Broker's or the Merchant's misrepresentation, fraud, or breach.</p>
+  <p><strong>5.2 Method.</strong> Broker shall pay any clawback within <span class="fill">[10]</span> days of Company's written demand.
+  Company may, at its option, offset any amount owed against Commissions otherwise payable to Broker on other Transactions.</p>
+
+  <h2 class="clause"><span class="n">6.</span>Deal Protection &amp; Non-Circumvention</h2>
+  <p><strong>6.1 Merchant protection.</strong> A Merchant first submitted by Broker is protected to Broker for
+  <span class="fill">[90]</span> days from the date of submission (and renews for each funded Transaction), provided Broker remains
+  active and in good standing. During the protection period Company will credit Broker, and not a competing broker, for that Merchant.</p>
+  <p><strong>6.2 Non-circumvention.</strong> During the Term and for <span class="fill">[12]</span> months after, neither Party shall
+  knowingly circumvent the other with respect to a Merchant introduced under this Agreement in order to avoid the Commission or
+  protection obligations herein.</p>
+
+  <h2 class="clause"><span class="n">7.</span>Representations &amp; Warranties</h2>
+  <p>Broker represents and warrants, on an ongoing basis, that: (a)&nbsp;it is duly organized and authorized to enter this Agreement;
+  (b)&nbsp;all information it submits is true, complete, and not altered; (c)&nbsp;it holds all licenses required for its activities;
+  (d)&nbsp;it has obtained all Merchant and owner authorizations needed for the application; and (e)&nbsp;it has not and will not engage
+  in any deceptive, fraudulent, or unfair act in connection with any Merchant or Transaction.</p>
+
+  <h2 class="clause"><span class="n">8.</span>Compliance with Laws</h2>
+  <p>Broker shall comply with all applicable federal, state, and local laws and regulations, including without limitation those
+  governing commercial financing disclosure, unfair or deceptive acts and practices (UDAP), telemarketing and consumer contact
+  (TCPA, Do-Not-Call), privacy and data security (including GLBA safeguards), anti-money-laundering and OFAC screening, and any
+  applicable licensing or commercial-financing-disclosure requirements. Broker shall not make any usurious or unlawful
+  representation regarding any Transaction.</p>
+
+  <h2 class="clause"><span class="n">9.</span>Confidentiality &amp; Data</h2>
+  <p>Each Party shall keep confidential, and use only for performing this Agreement, the other Party's non-public business, pricing,
+  and Merchant information. Broker shall protect all Merchant personal and financial data with reasonable administrative, technical,
+  and physical safeguards, and shall not sell or repurpose Merchant data. This section survives termination.</p>
+
+  <h2 class="clause"><span class="n">10.</span>Indemnification</h2>
+  <p>Broker shall indemnify, defend, and hold harmless Company and its affiliates, officers, and agents from any claim, loss,
+  liability, penalty, or expense (including reasonable attorneys' fees) arising out of (a)&nbsp;Broker's breach of this Agreement or
+  its representations, (b)&nbsp;Broker's or its agents' acts, omissions, misrepresentations, or violations of law, or (c)&nbsp;any
+  dispute between Broker and a Merchant or sub-agent. This section survives termination.</p>
+
+  <h2 class="clause"><span class="n">11.</span>Limitation of Liability</h2>
+  <p>Except for indemnification and confidentiality obligations, neither Party shall be liable for indirect, incidental, special, or
+  consequential damages. Company's aggregate liability under this Agreement shall not exceed the total Commissions paid to Broker in
+  the <span class="fill">[6]</span> months preceding the event giving rise to the claim.</p>
+
+  <h2 class="clause"><span class="n">12.</span>Term &amp; Termination</h2>
+  <p><strong>12.1 Term.</strong> This Agreement begins on the Effective Date and continues until terminated. Either Party may
+  terminate for convenience upon <span class="fill">[30]</span> days' written notice, or immediately for the other Party's material
+  breach, fraud, or insolvency.</p>
+  <p><strong>12.2 Survival.</strong> Termination does not affect Commissions earned on Transactions funded before termination
+  (subject to clawback), and Sections&nbsp;5, 6, 9, 10, 11, and 13 survive.</p>
+
+  <h2 class="clause"><span class="n">13.</span>Dispute Resolution &amp; Governing Law</h2>
+  <p>This Agreement is governed by the laws of the State of <span class="fill">[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</span>,
+  without regard to conflict-of-laws rules. Any dispute shall be resolved by binding arbitration administered in
+  <span class="fill">[county, state]</span> under the rules of the American Arbitration Association, and each Party waives any right
+  to a jury trial and to participate in a class action. The prevailing Party is entitled to recover reasonable attorneys' fees and costs.</p>
+
+  <h2 class="clause"><span class="n">14.</span>Miscellaneous</h2>
+  <p>This Agreement, with Exhibit&nbsp;A, is the entire agreement between the Parties and supersedes all prior understandings. It may
+  be amended only in a writing signed by both Parties. Broker may not assign this Agreement without Company's written consent; Company
+  may assign to an affiliate or successor. If any provision is unenforceable, the remainder stays in effect. Notices must be in writing
+  to the addresses above. A signature delivered electronically or by counterpart is as valid as an original.</p>
+
+  <div class="avoid" style="margin-top:16px;">
+    <p style="color:var(--ink);font-weight:700;margin-bottom:8px;">IN WITNESS WHEREOF, the Parties execute this Agreement as of the Effective Date.</p>
+    <div class="sig-grid">
+      <div class="sig">
+        <div class="co">Company — Delt Capital</div>
+        <div class="line"></div><div class="cap">Authorized signature</div>
+        <div class="sp"></div>
+        <div class="line"></div><div class="cap">Name &amp; title</div>
+        <div class="sp"></div>
+        <div class="line"></div><div class="cap">Date</div>
+      </div>
+      <div class="sig">
+        <div class="co">Broker / ISO</div>
+        <div class="line"></div><div class="cap">Authorized signature</div>
+        <div class="sp"></div>
+        <div class="line"></div><div class="cap">Name &amp; title</div>
+        <div class="sp"></div>
+        <div class="line"></div><div class="cap">Date</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Exhibit A -->
+  <div class="pagebreak"></div>
+  <div class="exhibit-title">Exhibit A — Commission Schedule</div>
+  <p>Commissions are payable per Section&nbsp;4 of the Agreement. One (1) Point = 1% of the Funded Amount. Complete the applicable
+  rows below; blank rows may be struck through.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:34%">Product / scenario</th>
+        <th style="width:22%">Base commission (Points)</th>
+        <th style="width:22%">Upsell share of spread</th>
+        <th style="width:22%">Max total (Points)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Merchant Cash Advance — new</td><td><div class="fillbox">[8–12]</div></td><td><div class="fillbox">[50]%</div></td><td><div class="fillbox">[15]</div></td></tr>
+      <tr><td>Revenue-based / term — new</td><td><div class="fillbox"></div></td><td><div class="fillbox"></div></td><td><div class="fillbox"></div></td></tr>
+      <tr><td>Renewal / additional funding</td><td><div class="fillbox"></div></td><td><div class="fillbox"></div></td><td><div class="fillbox"></div></td></tr>
+      <tr><td>Other: ______________________</td><td><div class="fillbox"></div></td><td><div class="fillbox"></div></td><td><div class="fillbox"></div></td></tr>
+    </tbody>
+  </table>
+
+  <table style="margin-top:14px;">
+    <thead><tr><th style="width:50%">Term</th><th style="width:50%">Value</th></tr></thead>
+    <tbody>
+      <tr><td>Commission payment timing (business days after funding &amp; first clear)</td><td><div class="fillbox">[2]</div></td></tr>
+      <tr><td>Clawback window (days from funding)</td><td><div class="fillbox">[90]</div></td></tr>
+      <tr><td>Clawback refund %</td><td><div class="fillbox">[100]%</div></td></tr>
+      <tr><td>Merchant protection period (days)</td><td><div class="fillbox">[90]</div></td></tr>
+      <tr><td>Payment method (ACH / wire / check)</td><td><div class="fillbox"></div></td></tr>
+    </tbody>
+  </table>
+
+  <div class="sig-grid" style="margin-top:22px;">
+    <div class="sig">
+      <div class="line"></div><div class="cap">Company — authorized signature &amp; date</div>
+    </div>
+    <div class="sig">
+      <div class="line"></div><div class="cap">Broker / ISO — authorized signature &amp; date</div>
+    </div>
+  </div>
+
+  <div style="margin-top:16px;padding-top:8px;border-top:1px solid var(--hair);display:flex;justify-content:space-between;font-size:7px;color:var(--muted);">
+    <div>Delt Capital · Broker / ISO Agreement · v1.0</div>
+    <div>Confidential</div>
+  </div>
+
+</body>
+</html>
