@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Delt Capital — Broker Deal Submission Form</title>
+<style>
+  :root{
+    --indigo:#4945FF;
+    --ink:#041E42;
+    --near-black:#0F0E17;
+    --paper:#F6F9FC;
+    --hair:#DCDFE4;
+    --muted:#697386;
+    --body:#425466;
+  }
+  *{box-sizing:border-box;}
+  @page{ size:Letter; margin:14mm 12mm 16mm 12mm; }
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    color:var(--near-black);
+    font-size:9.2px;
+    line-height:1.4;
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+  }
+
+  /* ---------- Masthead ---------- */
+  .masthead{
+    background:var(--ink);
+    color:#fff;
+    border-radius:10px;
+    padding:16px 18px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin-bottom:12px;
+  }
+  .brand{display:flex;align-items:center;gap:10px;}
+  .logo-mark{
+    width:30px;height:30px;border-radius:7px;
+    background:var(--indigo);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:16px;color:#fff;letter-spacing:-.5px;
+  }
+  .brand .name{font-size:15px;font-weight:800;letter-spacing:-.3px;line-height:1;}
+  .brand .tag{font-size:8px;color:#9fb0c9;text-transform:uppercase;letter-spacing:1.4px;margin-top:3px;}
+  .masthead .doc-title{text-align:right;}
+  .masthead .doc-title h1{font-size:13px;margin:0;font-weight:800;letter-spacing:-.2px;}
+  .masthead .doc-title p{margin:3px 0 0;font-size:7.6px;color:#9fb0c9;text-transform:uppercase;letter-spacing:1.2px;}
+
+  .intro{
+    background:var(--paper);
+    border:1px solid var(--hair);
+    border-radius:8px;
+    padding:9px 12px;
+    margin-bottom:12px;
+    color:var(--body);
+    font-size:8.6px;
+  }
+  .intro strong{color:var(--ink);}
+
+  /* ---------- Sections ---------- */
+  .section{ border:1px solid var(--hair); border-radius:8px; margin-bottom:9px; break-inside:avoid; }
+  .section-head{
+    display:flex;align-items:center;gap:8px;
+    padding:7px 12px;
+    border-bottom:1px solid var(--hair);
+    background:#fff;
+    border-radius:8px 8px 0 0;
+  }
+  .section-head .num{
+    width:18px;height:18px;border-radius:5px;
+    background:var(--indigo);color:#fff;
+    font-weight:800;font-size:9px;
+    display:flex;align-items:center;justify-content:center;flex:0 0 auto;
+  }
+  .section-head h2{font-size:11px;margin:0;font-weight:800;color:var(--ink);letter-spacing:-.2px;}
+  .section-head .hint{margin-left:auto;font-size:7.4px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;}
+  .section-body{padding:10px 12px;}
+
+  /* ---------- Field grid ---------- */
+  .grid{display:grid;gap:8px 10px;}
+  .c2{grid-template-columns:repeat(2,1fr);}
+  .c3{grid-template-columns:repeat(3,1fr);}
+  .c4{grid-template-columns:repeat(4,1fr);}
+  .span2{grid-column:span 2;}
+  .span3{grid-column:span 3;}
+
+  .field label{
+    display:block;font-size:7.4px;color:var(--muted);
+    text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin-bottom:3px;
+  }
+  .field label .req{color:var(--indigo);}
+  .field .box{
+    border:1px solid var(--hair);border-radius:5px;
+    height:20px;background:#fff;
+  }
+  .field .box.tall{height:34px;}
+  .field .hintline{font-size:6.9px;color:var(--muted);margin-top:2px;font-style:italic;}
+
+  /* choice chips (checkbox rows) */
+  .choices{display:flex;flex-wrap:wrap;gap:5px 12px;padding-top:2px;}
+  .choice{display:flex;align-items:center;gap:4px;font-size:8px;color:var(--body);}
+  .cb{width:9px;height:9px;border:1px solid var(--muted);border-radius:2px;flex:0 0 auto;}
+
+  /* ---------- Tables (positions) ---------- */
+  table{width:100%;border-collapse:collapse;margin-top:2px;}
+  th{
+    font-size:6.8px;text-transform:uppercase;letter-spacing:.5px;
+    color:var(--muted);font-weight:700;text-align:left;
+    padding:4px 5px;border-bottom:1px solid var(--hair);
+  }
+  td{border-bottom:1px solid var(--hair);height:19px;padding:0 5px;}
+  td.fill{background:#fff;}
+  .tbl-note{font-size:7px;color:var(--muted);margin-top:4px;font-style:italic;}
+
+  /* ---------- Docs checklist ---------- */
+  .docwrap{display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;}
+  .doc{display:flex;gap:7px;align-items:flex-start;break-inside:avoid;}
+  .doc .cbig{width:12px;height:12px;border:1.5px solid var(--indigo);border-radius:3px;flex:0 0 auto;margin-top:1px;}
+  .doc .txt{font-size:8.2px;line-height:1.35;}
+  .doc .txt b{color:var(--ink);font-weight:700;display:block;font-size:8.6px;}
+  .doc .txt span{color:var(--muted);}
+  .doc .req-pill{
+    display:inline-block;font-size:6.4px;font-weight:700;letter-spacing:.4px;
+    padding:1px 4px;border-radius:3px;margin-left:4px;vertical-align:middle;text-transform:uppercase;
+  }
+  .pill-req{background:#4945FF;color:#fff;}
+  .pill-cond{background:#EAF0FE;color:#2b2fb8;}
+
+  /* ---------- Attestation ---------- */
+  .attest{font-size:7.8px;color:var(--body);line-height:1.5;margin-bottom:10px;}
+  .sign-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:10px 18px;margin-top:4px;}
+  .sig .line{border-bottom:1.5px solid var(--ink);height:22px;}
+  .sig .cap{font-size:7px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-top:3px;}
+
+  .footer{
+    margin-top:12px;padding-top:8px;border-top:1px solid var(--hair);
+    display:flex;justify-content:space-between;font-size:7px;color:var(--muted);
+  }
+  .avoid{break-inside:avoid;}
+</style>
+</head>
+<body>
+
+  <div class="masthead">
+    <div class="brand">
+      <div class="logo-mark">D</div>
+      <div>
+        <div class="name">Delt Capital</div>
+        <div class="tag">Alternative Business Funding</div>
+      </div>
+    </div>
+    <div class="doc-title">
+      <h1>Broker Deal Submission Form</h1>
+      <p>ISO / Referral Partner Package</p>
+    </div>
+  </div>
+
+  <div class="intro">
+    <strong>For our referral partners:</strong> Complete this form and attach the required documents listed in
+    Section&nbsp;9 to submit a deal for underwriting. Fields marked <span style="color:var(--indigo)">*</span> are required for a decision.
+    A complete file — signed application + <strong>4 months of bank statements</strong> + owner ID — is typically approved same-day.
+    Submit to <strong>deals@deltcapital.com</strong>.
+  </div>
+
+  <!-- 1. Submitting Broker -->
+  <div class="section">
+    <div class="section-head"><div class="num">1</div><h2>Submitting Broker / ISO</h2><div class="hint">Who to pay & contact</div></div>
+    <div class="section-body">
+      <div class="grid c4">
+        <div class="field span2"><label>ISO / Broker company<span class="req">*</span></label><div class="box"></div></div>
+        <div class="field"><label>Date submitted<span class="req">*</span></label><div class="box"></div></div>
+        <div class="field"><label>Commission / points expected</label><div class="box"></div></div>
+        <div class="field span2"><label>Rep name<span class="req">*</span></label><div class="box"></div></div>
+        <div class="field"><label>Rep email<span class="req">*</span></label><div class="box"></div></div>
+        <div class="field"><label>Rep phone<span class="req">*</span></label><div class="box"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Funding request -->
+  <div class="section">
+    <div class="section-head"><div class="num">2</div><h2>Funding Request</h2><div class="hint">What the deal needs</div></div>
+    <div class="section-body">
+      <div class="grid c4" style="margin-bottom:8px;">
+        <div class="field"><label>Amount requested<span class="req">*</span></label><div class="box"></div></div>
+        <div class="field"><label>Desired term</label><div class="box"></div></div>
+        <div class="field"><label>Funds needed by</label><div class="box"></div></div>
+        <div class="field"><label>Prior funder / renewal?</label><div class="box"></div></div>
+      </div>
+      <div class="grid c2">
+        <div class="field">
+          <label>Product requested</label>
+          <div class="choices">
+            <div class="choice"><span class="cb"></span>Merchant Cash Advance</div>
+            <div class="choice"><span class="cb"></span>Revenue-based / Term</div>
+            <div class="choice"><span class="cb"></span>Line of Credit</div>
+            <div class="choice"><span class="cb"></span>Other</div>
+          </div>
+        </div>
+        <div class="field"><label>Use of funds<span class="req">*</span></label><div class="box"></div>
+          <div class="hintline">e.g. inventory, payroll, expansion, consolidate positions, equipment</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Business information -->
+  <div class="section">
+    <div class="section-head"><div class="num">3</div><h2>Business Information</h2><div class="hint">The borrowing entity</div></div>
+    <div class="section-body">
+      <div class="grid c3">
+        <div class="field span2"><label>Legal company name<span class="req">*</span></label><div class="box"></div></div>
+        <div class="field"><label>DBA / trade name</label><div class="box"></div></div>
+
+        <div class="field"><label>Legal structure<span class="req">*</span></label><div class="box"></div>
+          <div class="hintline">LLC · S-Corp · C-Corp · Sole Prop · Partnership</div></div>
+        <div class="field"><label>Federal Tax ID / EIN<span class="req">*</span></label><div class="box"></div></div>
+        <div class="field"><label>State of incorporation</label><div class="box"></div></div>
+
+        <div class="field"><label>Industry / business type<span class="req">*</span></label><div class="box"></div></div>
+        <div class="field"><label>Business start date<span class="req">*</span></label><div class="box"></div>
+          <div class="hintline">MM / YYYY — establishes time in business</div></div>
+        <div class="field"><label># of employees</label><div class="box"></div></div>
+
+        <div class="field span2"><label>Business street address<span class="req">*</span></label><div class="box"></div></div>
+        <div class="field"><label>Business phone<span class="req">*</span></label><div class="box"></div></div>
+
+        <div class="field"><label>City<span class="req">*</span></label><div class="box"></div></div>
+        <div class="field"><label>State<span class="req">*</span></label><div class="box"></div></div>
+        <div class="field"><label>ZIP<span class="req">*</span></label><div class="box"></div></div>
+
+        <div class="field"><label>Business email<span class="req">*</span></label><div class="box"></div></div>
+        <div class="field"><label>Website</label><div class="box"></div></div>
+        <div class="field"><label>Rent or own premises?</label>
+          <div class="choices" style="padding-top:5px;">
+            <div class="choice"><span class="cb"></span>Rent</div>
+            <div class="choice"><span class="cb"></span>Own</div>
+          </div>
+        </div>
+
+        <div class="field"><label>Landlord / mortgage holder</label><div class="box"></div></div>
+        <div class="field"><label>Landlord phone</label><div class="box"></div></div>
+        <div class="field"><label>Monthly rent / mortgage</label><div class="box"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Financial profile -->
+  <div class="section">
+    <div class="section-head"><div class="num">4</div><h2>Financial Profile</h2><div class="hint">Pulled from bank statements</div></div>
+    <div class="section-body">
+      <div class="grid c4">
+        <div class="field"><label>Gross annual revenue<span class="req">*</span></label><div class="box"></div></div>
+        <div class="field"><label>Avg. monthly revenue<span class="req">*</span></label><div class="box"></div></div>
+        <div class="field"><label>Avg. monthly bank deposits<span class="req">*</span></label><div class="box"></div></div>
+        <div class="field"><label>Avg. daily bank balance</label><div class="box"></div></div>
+        <div class="field"><label># deposits / month</label><div class="box"></div></div>
+        <div class="field"><label>Negative days (last 3 mo.)</label><div class="box"></div></div>
+        <div class="field"><label>NSFs (last 3 mo.)</label><div class="box"></div></div>
+        <div class="field"><label>Monthly card volume</label><div class="box"></div>
+          <div class="hintline">if applicable</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Existing positions -->
+  <div class="section">
+    <div class="section-head"><div class="num">5</div><h2>Existing Advances &amp; Positions</h2><div class="hint">All current MCA / loan balances</div></div>
+    <div class="section-body">
+      <table>
+        <thead><tr>
+          <th style="width:24%">Funder / lender</th>
+          <th style="width:14%">Original amount</th>
+          <th style="width:14%">Current balance</th>
+          <th style="width:14%">Payment</th>
+          <th style="width:12%">Frequency</th>
+          <th style="width:12%">Date funded</th>
+          <th style="width:10%">Standing</th>
+        </tr></thead>
+        <tbody>
+          <tr><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+          <tr><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+          <tr><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+          <tr><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        </tbody>
+      </table>
+      <div class="tbl-note">List every open position (daily &amp; weekly). Frequency = daily / weekly / monthly. Standing = current / restructured / default. Check here if the business has <span class="cb" style="display:inline-block;vertical-align:middle;"></span> <b>no current positions</b>.</div>
+    </div>
+  </div>
+
+  <!-- 6. Owners -->
+  <div class="section">
+    <div class="section-head"><div class="num">6</div><h2>Owner(s) / Personal Guarantor(s)</h2><div class="hint">All owners with 20%+ stake</div></div>
+    <div class="section-body">
+      <!-- Owner 1 -->
+      <div style="font-weight:800;color:var(--ink);font-size:8.4px;margin-bottom:5px;">Owner 1</div>
+      <div class="grid c4" style="margin-bottom:10px;">
+        <div class="field"><label>First name<span class="req">*</span></label><div class="box"></div></div>
+        <div class="field"><label>Last name<span class="req">*</span></label><div class="box"></div></div>
+        <div class="field"><label>Ownership %<span class="req">*</span></label><div class="box"></div></div>
+        <div class="field"><label>Est. FICO / credit<span class="req">*</span></label><div class="box"></div></div>
+        <div class="field"><label>SSN<span class="req">*</span></label><div class="box"></div></div>
+        <div class="field"><label>Date of birth<span class="req">*</span></label><div class="box"></div></div>
+        <div class="field"><label>Cell phone<span class="req">*</span></label><div class="box"></div></div>
+        <div class="field"><label>Email<span class="req">*</span></label><div class="box"></div></div>
+        <div class="field span2"><label>Home address<span class="req">*</span></label><div class="box"></div></div>
+        <div class="field"><label>City / State / ZIP<span class="req">*</span></label><div class="box"></div></div>
+        <div class="field"><label>Own / rent home</label>
+          <div class="choices" style="padding-top:5px;"><div class="choice"><span class="cb"></span>Own</div><div class="choice"><span class="cb"></span>Rent</div></div>
+        </div>
+      </div>
+      <!-- Owner 2 -->
+      <div style="font-weight:800;color:var(--ink);font-size:8.4px;margin-bottom:5px;">Owner 2 <span style="font-weight:500;color:var(--muted);">(if combined ownership is under 100%)</span></div>
+      <div class="grid c4">
+        <div class="field"><label>First name</label><div class="box"></div></div>
+        <div class="field"><label>Last name</label><div class="box"></div></div>
+        <div class="field"><label>Ownership %</label><div class="box"></div></div>
+        <div class="field"><label>Est. FICO / credit</label><div class="box"></div></div>
+        <div class="field"><label>SSN</label><div class="box"></div></div>
+        <div class="field"><label>Date of birth</label><div class="box"></div></div>
+        <div class="field"><label>Cell phone</label><div class="box"></div></div>
+        <div class="field"><label>Email</label><div class="box"></div></div>
+        <div class="field span2"><label>Home address</label><div class="box"></div></div>
+        <div class="field"><label>City / State / ZIP</label><div class="box"></div></div>
+        <div class="field"><label>Own / rent home</label>
+          <div class="choices" style="padding-top:5px;"><div class="choice"><span class="cb"></span>Own</div><div class="choice"><span class="cb"></span>Rent</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. Risk & background -->
+  <div class="section">
+    <div class="section-head"><div class="num">7</div><h2>Background &amp; Risk Disclosures</h2><div class="hint">Flag anything up front</div></div>
+    <div class="section-body">
+      <div class="grid c2" style="margin-bottom:8px;">
+        <div class="field"><label>Open tax liens or payment plan?</label>
+          <div class="choices" style="padding-top:4px;"><div class="choice"><span class="cb"></span>No</div><div class="choice"><span class="cb"></span>Yes — explain below</div></div></div>
+        <div class="field"><label>Bankruptcy (last 7 yrs)?</label>
+          <div class="choices" style="padding-top:4px;"><div class="choice"><span class="cb"></span>No</div><div class="choice"><span class="cb"></span>Yes — explain below</div></div></div>
+        <div class="field"><label>Judgments / liens on file?</label>
+          <div class="choices" style="padding-top:4px;"><div class="choice"><span class="cb"></span>No</div><div class="choice"><span class="cb"></span>Yes — explain below</div></div></div>
+        <div class="field"><label>Prior MCA paid in full?</label>
+          <div class="choices" style="padding-top:4px;"><div class="choice"><span class="cb"></span>No / first-time</div><div class="choice"><span class="cb"></span>Yes — attach history</div></div></div>
+      </div>
+      <div class="field"><label>Broker notes / deal story (defaults, seasonality, prior stips, anything an underwriter should know)</label><div class="box tall"></div></div>
+    </div>
+  </div>
+
+  <!-- 8. (spacer heading handled) Required documents -->
+  <div class="section">
+    <div class="section-head"><div class="num">8</div><h2>Required Documents Checklist</h2><div class="hint">Attach with submission</div></div>
+    <div class="section-body">
+      <div class="docwrap">
+        <div class="doc"><span class="cbig"></span><div class="txt"><b>Signed application <span class="req-pill pill-req">Required</span></b><span>This completed form, signed in Section&nbsp;9.</span></div></div>
+        <div class="doc"><span class="cbig"></span><div class="txt"><b>Business bank statements <span class="req-pill pill-req">Required</span></b><span>Most recent <b>4 months</b>, all pages (6 mo. for larger / seasonal deals).</span></div></div>
+        <div class="doc"><span class="cbig"></span><div class="txt"><b>Government photo ID <span class="req-pill pill-req">Required</span></b><span>Driver's license for each owner listed in Section&nbsp;6.</span></div></div>
+        <div class="doc"><span class="cbig"></span><div class="txt"><b>Voided business check <span class="req-pill pill-req">Required</span></b><span>Or bank letter — confirms the funding / ACH account.</span></div></div>
+        <div class="doc"><span class="cbig"></span><div class="txt"><b>Proof of ownership <span class="req-pill pill-req">Required</span></b><span>Articles of Incorporation / Organization or Operating Agreement.</span></div></div>
+        <div class="doc"><span class="cbig"></span><div class="txt"><b>EIN / business verification <span class="req-pill pill-req">Required</span></b><span>IRS EIN letter (SS-4) or current business license.</span></div></div>
+        <div class="doc"><span class="cbig"></span><div class="txt"><b>Merchant processing statements <span class="req-pill pill-cond">If card revenue</span></b><span>Last 3 months, if the business takes credit cards.</span></div></div>
+        <div class="doc"><span class="cbig"></span><div class="txt"><b>Business tax return <span class="req-pill pill-cond">Larger deals</span></b><span>Most recent filed return for requests over $150K.</span></div></div>
+        <div class="doc"><span class="cbig"></span><div class="txt"><b>P&amp;L and balance sheet <span class="req-pill pill-cond">Larger deals</span></b><span>Most recent / YTD for requests over $150K.</span></div></div>
+        <div class="doc"><span class="cbig"></span><div class="txt"><b>Business debt schedule <span class="req-pill pill-cond">If applicable</span></b><span>All term loans / obligations not shown in Section&nbsp;5.</span></div></div>
+        <div class="doc"><span class="cbig"></span><div class="txt"><b>A/R &amp; A/P aging <span class="req-pill pill-cond">If applicable</span></b><span>For B2B / invoice-based businesses.</span></div></div>
+        <div class="doc"><span class="cbig"></span><div class="txt"><b>Proof of property / lease <span class="req-pill pill-cond">If applicable</span></b><span>Lease or mortgage statement for site verification.</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 9. Attestation -->
+  <div class="section avoid">
+    <div class="section-head"><div class="num">9</div><h2>Authorization &amp; Signatures</h2><div class="hint">Required to fund</div></div>
+    <div class="section-body">
+      <div class="attest">
+        By signing below, the undersigned owner(s) certify that the information provided is true and complete, and authorize
+        Delt Capital and its assignees to (a) obtain business and personal <strong>credit reports and background checks</strong>,
+        (b) verify bank activity and business standing with third parties, and (c) contact the references and financial institutions listed.
+        The submitting broker certifies they are authorized to submit this deal and that the attached documents belong to the named business.
+        This authorization remains valid for the duration of the application and any resulting funding.
+      </div>
+      <div class="sign-grid">
+        <div class="sig"><div class="line"></div><div class="cap">Owner 1 signature</div></div>
+        <div class="sig"><div class="line"></div><div class="cap">Date</div></div>
+        <div class="sig"><div class="line"></div><div class="cap">Owner 2 signature (if applicable)</div></div>
+        <div class="sig"><div class="line"></div><div class="cap">Date</div></div>
+        <div class="sig"><div class="line"></div><div class="cap">Broker / ISO representative signature</div></div>
+        <div class="sig"><div class="line"></div><div class="cap">Date</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div>Delt Capital · Broker Deal Submission Form · v1.0</div>
+    <div>Submit complete files to deals@deltcapital.com · Confidential</div>
+  </div>
+
+</body>
+</html>
