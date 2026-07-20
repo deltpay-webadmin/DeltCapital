@@ -18,6 +18,31 @@ const V1APPLY_BANKS = [
 
 const V1APPLY_STEPS = ['Business', 'Bank', 'Identity', 'Offer', 'Done'];
 
+// Responsive breakpoint hook — mirrors the site-wide 768px mobile cutoff
+// (see the @media block in index.html). Kept self-contained here so the
+// apply modal can render a purpose-built mobile layout — a compact
+// horizontal stepper + full-height sheet — instead of squeezing the
+// desktop two-column shell through CSS !important overrides.
+function useV1ApplyMobile(bp = 768) {
+  const [m, setM] = React.useState(
+    () => typeof window !== 'undefined' && window.matchMedia
+      ? window.matchMedia(`(max-width:${bp}px)`).matches : false
+  );
+  React.useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+    const mq = window.matchMedia(`(max-width:${bp}px)`);
+    const on = (e) => setM(e.matches);
+    // addEventListener is the modern API; addListener is the Safari<14 fallback.
+    if (mq.addEventListener) mq.addEventListener('change', on);
+    else mq.addListener(on);
+    return () => {
+      if (mq.removeEventListener) mq.removeEventListener('change', on);
+      else mq.removeListener(on);
+    };
+  }, [bp]);
+  return m;
+}
+
 // ─── Field formatters & validators ───
 // EIN auto-formats to XX-XXXXXXX and phone to (555) 555-0199 as the user
 // types; the validators below gate the Continue button so every Business
@@ -455,7 +480,7 @@ function V1StepIdentity({ form, setForm, accent, onAdvance }) {
 }
 
 // ─── Step 4: Offer ───
-function V1StepOffer({ form, prefill, accent }) {
+function V1StepOffer({ form, prefill, accent, mobile }) {
   const amount = prefill?.high || form.amount || 75000;
   const factor = prefill?.factor || 1.18;
   const total = Math.round(amount * factor);
@@ -495,14 +520,18 @@ function V1StepOffer({ form, prefill, accent }) {
         {/* Hero — advance amount */}
         <div style={{
           background: V1.ink, color: V1.white,
-          padding: '28px 28px', position: 'relative', overflow: 'hidden',
+          padding: mobile ? '22px 20px' : '28px 28px', position: 'relative', overflow: 'hidden',
         }}>
           <div aria-hidden style={{
             position: 'absolute', top: -120, right: -80, width: 300, height: 300,
             background: `radial-gradient(circle, ${accent}40, transparent 60%)`,
             filter: 'blur(10px)', pointerEvents: 'none',
           }} />
-          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 20, position: 'relative' }}>
+          <div style={{
+            display: 'flex', alignItems: 'flex-end',
+            justifyContent: 'space-between', gap: mobile ? 14 : 20,
+            flexWrap: mobile ? 'wrap' : 'nowrap', position: 'relative',
+          }}>
             <div>
               <div style={{
                 fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 600,
@@ -510,7 +539,7 @@ function V1StepOffer({ form, prefill, accent }) {
                 color: 'rgba(255,255,255,0.6)',
               }}>Advance amount</div>
               <div style={{
-                fontFamily: V1.fontDisplay, fontSize: 56, fontWeight: 600,
+                fontFamily: V1.fontDisplay, fontSize: mobile ? 40 : 56, fontWeight: 600,
                 letterSpacing: '-0.04em', marginTop: 4,
                 fontVariantNumeric: 'tabular-nums', lineHeight: 1,
               }}>${amount.toLocaleString()}</div>
@@ -545,10 +574,12 @@ function V1StepOffer({ form, prefill, accent }) {
           </div>
         </div>
 
-        {/* Terms grid */}
+        {/* Terms grid — 4-up on desktop, 2-up on mobile so the numbers stay
+            legible instead of being crushed into ~80px columns. */}
         <div style={{
           background: V1.white, padding: 0,
-          display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)',
+          display: 'grid',
+          gridTemplateColumns: mobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)',
         }}>
           {[
             ['Factor rate', `${factor.toFixed(2)}×`],
@@ -557,8 +588,14 @@ function V1StepOffer({ form, prefill, accent }) {
             ['Weekly debit', `$${weekly.toLocaleString()}`],
           ].map(([k, v], i) => (
             <div key={k} style={{
-              padding: '22px 20px',
-              borderRight: i < 3 ? `1px solid ${V1.line}` : 'none',
+              padding: mobile ? '16px 16px' : '22px 20px',
+              // On mobile (2 columns) the right border falls on the left
+              // cell of each row and a bottom border separates the two rows;
+              // on desktop it's a simple 3-divider row.
+              borderRight: mobile
+                ? (i % 2 === 0 ? `1px solid ${V1.line}` : 'none')
+                : (i < 3 ? `1px solid ${V1.line}` : 'none'),
+              borderBottom: mobile && i < 2 ? `1px solid ${V1.line}` : 'none',
             }}>
               <div style={{
                 fontFamily: V1.fontMono, fontSize: 10, fontWeight: 600,
@@ -578,6 +615,7 @@ function V1StepOffer({ form, prefill, accent }) {
           padding: '14px 22px', background: V1.bg,
           borderTop: `1px solid ${V1.line}`,
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+          flexWrap: mobile ? 'wrap' : 'nowrap', gap: mobile ? 6 : 0,
           fontFamily: V1.fontMono, fontSize: 11, fontWeight: 500,
           letterSpacing: '0.08em', textTransform: 'uppercase', color: V1.muted,
         }}>
@@ -728,6 +766,7 @@ function V1ApplicationFlow({
     }));
   }, [open, prefill]);
   const [closing, setClosing] = React.useState(false);
+  const mobile = useV1ApplyMobile();
 
   React.useEffect(() => {
     if (open) { setStep(startStep); setClosing(false); }
@@ -882,8 +921,10 @@ function V1ApplicationFlow({
         position: 'fixed', inset: 0, zIndex: 100,
         background: 'rgba(15, 14, 23, 0.62)',
         backdropFilter: 'blur(8px)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        padding: 24,
+        display: 'flex',
+        alignItems: mobile ? 'stretch' : 'center',
+        justifyContent: 'center',
+        padding: mobile ? 0 : 24,
         animation: `${closing ? 'v1apFadeOut' : 'v1apFadeIn'} .2s ease`,
       }}
     >
@@ -894,14 +935,81 @@ function V1ApplicationFlow({
       `}</style>
 
       <div data-v1-apply-modal style={{
-        width: '100%', maxWidth: 1080, maxHeight: 'calc(100vh - 48px)',
-        background: V1.bg, borderRadius: 20, overflow: 'hidden',
-        display: 'grid', gridTemplateColumns: '300px 1fr',
-        boxShadow: '0 40px 100px -20px rgba(15,14,23,0.5)',
-        border: `1px solid ${V1.line}`,
+        width: '100%',
+        maxWidth: mobile ? '100%' : 1080,
+        // 100dvh tracks the *visible* viewport as mobile browser toolbars
+        // collapse, so the sticky action bar is never stranded behind them
+        // (the classic 100vh footer-cutoff bug).
+        maxHeight: mobile ? '100dvh' : 'calc(100vh - 48px)',
+        height: mobile ? '100dvh' : undefined,
+        background: V1.bg, borderRadius: mobile ? 0 : 20, overflow: 'hidden',
+        display: 'grid',
+        gridTemplateColumns: mobile ? '1fr' : '300px 1fr',
+        // On mobile the compact stepper band sizes to content and the body
+        // takes the rest, giving the inner scroll region a definite height.
+        gridTemplateRows: mobile ? 'auto 1fr' : undefined,
+        boxShadow: mobile ? 'none' : '0 40px 100px -20px rgba(15,14,23,0.5)',
+        border: mobile ? 'none' : `1px solid ${V1.line}`,
         animation: 'v1apSlideIn .28s cubic-bezier(.2,.7,.3,1)',
       }}>
-        {/* ─── Left rail — stepper + trust ─── */}
+        {/* ─── Mobile: compact horizontal stepper band ───
+            The desktop vertical rail (5 tall step rows + trust marks) was
+            previously crushed into a 140px scroll box on phones — a
+            nested-scroll trap that ate a third of the screen. On mobile we
+            swap it for a slim brand + segmented-progress band. */}
+        {mobile ? (
+          <aside style={{
+            background: V1.ink, color: V1.white,
+            padding: 'calc(14px + env(safe-area-inset-top)) 18px 14px',
+            display: 'flex', flexDirection: 'column', gap: 11,
+            position: 'relative', overflow: 'hidden',
+          }}>
+            <div aria-hidden style={{
+              position: 'absolute', top: -120, left: -40, width: 240, height: 240,
+              background: `radial-gradient(circle, ${accent}40, transparent 60%)`,
+              filter: 'blur(20px)', pointerEvents: 'none',
+            }} />
+            <div style={{
+              position: 'relative', display: 'flex', alignItems: 'center',
+              justifyContent: 'space-between', gap: 10,
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{
+                  width: 24, height: 24, borderRadius: 6,
+                  background: `linear-gradient(135deg, ${accent}, #818CF8)`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: V1.white, fontFamily: V1.fontDisplay, fontWeight: 700, fontSize: 13,
+                }}>D</div>
+                <div style={{
+                  fontFamily: V1.fontDisplay, fontWeight: 600, fontSize: 14,
+                  letterSpacing: '-0.01em',
+                }}>Delt · Get funded</div>
+              </div>
+              <div style={{
+                fontFamily: V1.fontMono, fontSize: 10, fontWeight: 600,
+                letterSpacing: '0.12em', textTransform: 'uppercase',
+                color: 'rgba(255,255,255,0.55)', whiteSpace: 'nowrap',
+              }}>Step {step + 1} / {V1APPLY_STEPS.length}</div>
+            </div>
+            {/* segmented progress — one bar per step, filled up to current */}
+            <div style={{ position: 'relative', display: 'flex', gap: 5 }}>
+              {V1APPLY_STEPS.map((s, i) => {
+                const filled = i <= step;
+                return (
+                  <div key={s} style={{
+                    flex: 1, height: 4, borderRadius: 3,
+                    background: filled
+                      ? `linear-gradient(90deg, ${accent}, #818CF8)`
+                      : 'rgba(255,255,255,0.12)',
+                    boxShadow: i === step ? `0 0 10px ${accent}` : 'none',
+                    transition: 'background .3s, box-shadow .3s',
+                  }} />
+                );
+              })}
+            </div>
+          </aside>
+        ) : (
+        /* ─── Left rail — stepper + trust ─── */
         <aside style={{
           background: V1.ink, color: V1.white,
           padding: '30px 26px 26px',
@@ -1007,15 +1115,20 @@ function V1ApplicationFlow({
             </div>
           </div>
         </aside>
+        )}
 
         {/* ─── Right panel — content ─── */}
         <div data-v1-apply-body style={{
           display: 'flex', flexDirection: 'column',
           background: V1.bg, overflow: 'hidden', position: 'relative',
+          // Grid item must be allowed to shrink below its content height so
+          // the body's own overflow-y scroll engages instead of the whole
+          // sheet overflowing (and clipping the action bar).
+          minHeight: 0,
         }}>
           {/* top bar */}
           <div style={{
-            padding: '18px 32px', borderBottom: `1px solid ${V1.line}`,
+            padding: mobile ? '13px 18px' : '18px 32px', borderBottom: `1px solid ${V1.line}`,
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             background: V1.white,
           }}>
@@ -1046,31 +1159,47 @@ function V1ApplicationFlow({
 
           {/* body — scrolls */}
           <div style={{
-            flex: 1, overflowY: 'auto',
-            padding: '38px 40px',
+            flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch',
+            padding: mobile ? '24px 18px 28px' : '38px 40px',
           }}>
             {step === 0 && <V1StepBusiness form={form} setForm={setForm} accent={accent} />}
             {step === 1 && <V1StepBank form={form} setForm={setForm} accent={accent} onAdvance={() => setStep(2)} autoOpen={autoOpenPlaid} />}
             {step === 2 && <V1StepIdentity form={form} setForm={setForm} accent={accent} onAdvance={() => setStep(3)} />}
-            {step === 3 && <V1StepOffer form={form} prefill={prefill} accent={accent} />}
+            {step === 3 && <V1StepOffer form={form} prefill={prefill} accent={accent} mobile={mobile} />}
             {step === 4 && <V1StepDone form={form} accent={accent} />}
           </div>
 
           {/* action bar */}
           <div data-v1-modal-footer style={{
-            padding: '16px 32px', borderTop: `1px solid ${V1.line}`,
+            // Safe-area bottom padding keeps the primary CTA clear of the
+            // iOS home indicator / gesture bar when the sheet is full-height.
+            padding: mobile
+              ? '12px 18px calc(12px + env(safe-area-inset-bottom))'
+              : '16px 32px',
+            borderTop: `1px solid ${V1.line}`,
             background: V1.white,
             display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            gap: 12,
           }}>
+            {/* On mobile the reassurance line is dropped — the stepper band
+                and step content already carry the security framing, and the
+                footer is reserved for the action so the CTA stays reachable. */}
+            {!mobile && (
+              <div style={{
+                fontFamily: V1.fontMono, fontSize: 11, fontWeight: 500,
+                letterSpacing: '0.08em', textTransform: 'uppercase', color: V1.muted,
+              }}>
+                {step < 4 ? '🔒 Secured · Plaid · Soft-pull only' : 'Application received'}
+              </div>
+            )}
             <div style={{
-              fontFamily: V1.fontMono, fontSize: 11, fontWeight: 500,
-              letterSpacing: '0.08em', textTransform: 'uppercase', color: V1.muted,
+              display: 'flex', gap: 10,
+              flex: mobile ? '1 1 100%' : '0 0 auto',
+              justifyContent: 'flex-end',
             }}>
-              {step < 4 ? '🔒 Secured · Plaid · Soft-pull only' : 'Application received'}
-            </div>
-            <div style={{ display: 'flex', gap: 10 }}>
-              {/* TEMP: dev-only skip — remove once IDV is green */}
-              {step < 2 && (
+              {/* TEMP: dev-only skip — remove once IDV is green.
+                  Hidden on mobile so it doesn't crowd the primary CTA. */}
+              {!mobile && step < 2 && (
                 <button
                   onClick={() => {
                     setForm((f) => ({
@@ -1112,12 +1241,14 @@ function V1ApplicationFlow({
                   onClick={() => canProceed && setStep(step + 1)}
                   disabled={!canProceed}
                   style={{
-                    padding: '11px 22px', borderRadius: 10, border: 'none',
+                    padding: mobile ? '13px 22px' : '11px 22px', borderRadius: 10, border: 'none',
                     background: canProceed ? accent : V1.line,
                     color: canProceed ? V1.white : V1.muted,
                     fontFamily: V1.fontBody, fontSize: 14, fontWeight: 600,
                     cursor: canProceed ? 'pointer' : 'not-allowed',
-                    display: 'inline-flex', alignItems: 'center', gap: 8,
+                    display: 'inline-flex', alignItems: 'center',
+                    justifyContent: 'center', gap: 8,
+                    flex: mobile ? '1 1 auto' : '0 0 auto',
                     transition: 'filter .15s, transform .1s, box-shadow .15s',
                     boxShadow: canProceed ? `0 8px 22px -10px ${accent}aa` : 'none',
                   }}
@@ -1133,12 +1264,14 @@ function V1ApplicationFlow({
                 <button
                   onClick={() => setStep(4)}
                   style={{
-                    padding: '11px 22px', borderRadius: 10, border: 'none',
+                    padding: mobile ? '13px 22px' : '11px 22px', borderRadius: 10, border: 'none',
                     background: `linear-gradient(135deg, ${accent}, #818CF8)`,
                     color: V1.white,
                     fontFamily: V1.fontBody, fontSize: 14, fontWeight: 600,
                     cursor: 'pointer',
-                    display: 'inline-flex', alignItems: 'center', gap: 8,
+                    display: 'inline-flex', alignItems: 'center',
+                    justifyContent: 'center', gap: 8,
+                    flex: mobile ? '1 1 auto' : '0 0 auto',
                     boxShadow: `0 10px 28px -10px ${accent}aa`,
                     transition: 'filter .15s, transform .1s',
                   }}
@@ -1154,9 +1287,11 @@ function V1ApplicationFlow({
                 <button
                   onClick={handleClose}
                   style={{
-                    padding: '11px 22px', borderRadius: 10,
+                    padding: mobile ? '13px 22px' : '11px 22px', borderRadius: 10,
                     background: V1.ink, color: V1.white, border: 'none', cursor: 'pointer',
                     fontFamily: V1.fontBody, fontSize: 14, fontWeight: 600,
+                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                    flex: mobile ? '1 1 auto' : '0 0 auto',
                   }}
                 >Close</button>
               )}

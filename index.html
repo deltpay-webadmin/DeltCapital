@@ -44,38 +44,18 @@
       gap: 16px !important;
     }
 
-    /* Apply modal: stack vertically, full-screen */
-    [data-v1-apply-modal] {
-      grid-template-columns: 1fr !important;
-      max-width: 100% !important;
-      width: 100% !important;
-      max-height: 100vh !important;
-      height: 100vh !important;
-      border-radius: 0 !important;
-    }
-    [data-v1-apply-modal] aside {
-      padding: 16px !important;
-      max-height: 140px !important;
-      overflow-y: auto !important;
-    }
-    [data-v1-apply-modal] [data-v1-apply-body] {
-      padding: 20px 16px !important;
-    }
-    [data-v1-apply-modal-overlay] {
-      padding: 0 !important;
-      align-items: stretch !important;
-    }
+    /* The Apply / Get-funded modal is now fully responsive in JS
+       (app/variation-1-apply.jsx → useV1ApplyMobile): a compact horizontal
+       stepper band, a 100dvh full-height sheet, and a safe-area-aware
+       action bar. Those inline styles own the layout, so the old
+       !important overrides for the modal / aside / overlay / footer were
+       removed to avoid fighting them. Only the Business-step input grid
+       still relies on this CSS collapse. */
 
     /* Apply form 2-col input grids -> 1 col */
     [data-v1-form-grid] {
       grid-template-columns: 1fr !important;
       gap: 14px !important;
-    }
-
-    /* Modal footer (skip/continue) — allow wrap */
-    [data-v1-modal-footer] {
-      flex-wrap: wrap !important;
-      gap: 10px !important;
     }
 
     /* Tickers: smaller text */
