@@ -557,6 +557,14 @@ function V1IDVerify({ open, onClose, onComplete }) {
     setStage('creating');
     try {
       const res = await window.PlaidIntegration.createIDV();
+      // A stable per-browser client_user_id means the create can hand back an
+      // already-completed session for a returning applicant. Treat that as
+      // done (→ auto-advances via the done effect) instead of dead-ending on
+      // the now-absent shareable_url.
+      if (String(res.status || '').toLowerCase() === 'success') {
+        setStage('done');
+        return;
+      }
       if (!res.shareable_url || !res.identity_verification_id) {
         throw new Error('Missing shareable_url or id');
       }

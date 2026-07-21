@@ -20,23 +20,11 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  const rawTemplateId = process.env.PLAID_IDV_TEMPLATE_ID || '';
-  const templateId = rawTemplateId.trim();
+  const templateId = (process.env.PLAID_IDV_TEMPLATE_ID || '').trim();
   if (!templateId) {
     res.status(500).json({ error: 'PLAID_IDV_TEMPLATE_ID is not set' });
     return;
   }
-  // TEMP: dev-only diagnostic — remove once IDV is green. Logs the trimmed
-  // template id length, raw length (catches hidden chars that survive .trim
-  // for things like ​ zero-width spaces), prefix and last-4 so we can
-  // compare against the dashboard without leaking the full id.
-  console.log(
-    'plaid-create-idv templateId diagnostic: ' +
-    `raw.length=${rawTemplateId.length} ` +
-    `trimmed.length=${templateId.length} ` +
-    `prefix=${JSON.stringify(templateId.slice(0, 7))} ` +
-    `last4=${JSON.stringify(templateId.slice(-4))}`
-  );
 
   try {
     // We send a stable client_user_id per browser, so a session for this
@@ -56,8 +44,18 @@ module.exports = async function handler(req, res) {
     // failed a prior attempt and tapped "Try again"), the idempotent create
     // just hands back that dead session. Start a fresh attempt via /retry so
     // the user actually gets a new shareable_url to scan.
+    //
+    // We ALSO retry when the returned session has no shareable_url and isn't
+    // already 'success': the stable per-browser client_user_id + is_idempotent
+    // means a prior non-shareable session can be handed back, and the frontend
+    // otherwise dead-ends on "Missing shareable_url". A 'success' session is
+    // deliberately left untouched — the applicant is already verified and the
+    // frontend treats that status as done rather than forcing a re-scan.
+    const status = String(data.status || '').toLowerCase();
     const terminal = ['failed', 'expired', 'canceled'];
-    if (data && terminal.includes(String(data.status || '').toLowerCase())) {
+    const needsFreshSession =
+      terminal.includes(status) || (status !== 'success' && !data.shareable_url);
+    if (data && needsFreshSession) {
       try {
         data = await plaidFetch('/identity_verification/retry', {
           client_user_id: clientUserId,
