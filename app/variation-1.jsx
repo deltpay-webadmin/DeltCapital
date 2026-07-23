@@ -362,18 +362,18 @@ function V1Hero({ accent, onApply, onNav }) {
         }
         .v1hero-washington img {
           height: 100%; width: auto; display: block;
-          opacity: 0.24;
+          opacity: 0.22;
         }
         @media (max-width: 1200px) {
           .v1hero-washington { right: -6%; }
         }
         @media (max-width: 900px) {
           .v1hero-washington { right: -12%; bottom: 0; height: 80%; max-height: 700px; }
-          .v1hero-washington img { opacity: 0.165; }
+          .v1hero-washington img { opacity: 0.15; }
         }
         @media (max-width: 560px) {
           .v1hero-washington { right: -24%; bottom: 0; height: 66%; }
-          .v1hero-washington img { opacity: 0.121; }
+          .v1hero-washington img { opacity: 0.11; }
         }
       `}</style>
       <div
