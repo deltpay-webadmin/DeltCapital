@@ -403,17 +403,7 @@ function V1Hero({ accent, onApply, onNav }) {
           transition: 'opacity 1100ms ease-out 200ms',
         }}
       >
-        {/* Breathing glow off the phone screen — sells the "screen is lit"
-            read against the plate-dark background. Positioned in % of the
-            portrait so it stays glued to the phone at every viewport. */}
-        <div className="v1hero-glow" style={{
-          position: 'absolute', left: '-7%', top: '16%', width: '46%', height: '72%',
-          background: 'radial-gradient(50% 42% at 42% 50%, rgba(129,140,248,0.28) 0%, rgba(73,69,255,0.10) 48%, rgba(12,26,42,0) 74%)',
-          filter: 'blur(18px)',
-          animation: 'v1heroGlow 5.5s ease-in-out infinite',
-          pointerEvents: 'none',
-        }} />
-        <img src="app/assets/washington-cutout.png" alt="" />
+        <img src="app/assets/washington-phone.png" alt="" />
       </div>
 
       <div data-v1-grid-2col style={{
