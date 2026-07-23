@@ -187,6 +187,8 @@ function V1Hero({ accent, onApply, onNav }) {
   const mounted = useV1Mounted(80);
   // Subscribe to language changes so the hero copy swaps on toggle.
   useLang();
+  // Hover state for the primary "Get Funded" CTA.
+  const [fundedHover, setFundedHover] = React.useState(false);
   // Hover state for the secondary "See how pricing works" CTA.
   const [pricingHover, setPricingHover] = React.useState(false);
   // Hover state for the "Speak to a live agent" tel: link.
@@ -503,7 +505,34 @@ function V1Hero({ accent, onApply, onNav }) {
             display: 'flex', gap: 12, marginTop: 36, alignItems: 'center', flexWrap: 'wrap',
             ...enter(700),
           }}>
-            <Btn variant="indigo" size="lg" onClick={onApply} style={{ background: accent, borderColor: accent }}>{t('cta.getFunded')} <Arr /></Btn>
+            {/* Primary CTA — custom (not <Btn/>) so it carries a bold indigo
+                hover animation: the #4945FF fill brightens, a strong indigo
+                glow blooms underneath, it lifts, and the arrow slides. */}
+            <button
+              onClick={onApply}
+              onMouseEnter={() => setFundedHover(true)}
+              onMouseLeave={() => setFundedHover(false)}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 8,
+                background: fundedHover ? '#5D5BFF' : accent,
+                color: '#fff',
+                border: `1px solid ${fundedHover ? '#5D5BFF' : accent}`,
+                borderRadius: 6, cursor: 'pointer', whiteSpace: 'nowrap',
+                padding: '13px 22px', fontFamily: DELT.font.body, fontSize: 15, fontWeight: 600,
+                transform: fundedHover ? 'translateY(-2px)' : 'translateY(0)',
+                boxShadow: fundedHover
+                  ? '0 12px 30px rgba(73,69,255,0.55), 0 0 0 1px rgba(93,91,255,0.6)'
+                  : '0 2px 10px rgba(73,69,255,0.25)',
+                transition: 'background .18s ease, border-color .18s ease, transform .2s cubic-bezier(0.22,1,0.36,1), box-shadow .2s ease',
+              }}
+            >
+              {t('cta.getFunded')}
+              <span style={{
+                display: 'inline-flex',
+                transform: fundedHover ? 'translateX(3px)' : 'translateX(0)',
+                transition: 'transform .22s cubic-bezier(0.22,1,0.36,1)',
+              }}><Arr /></span>
+            </button>
             {/* Secondary CTA → lending / pricing overview page. Custom button
                 (not <Btn/>) so it can carry its own hover animation: the
                 border and fill brighten, it lifts a hair, and the arrow slides. */}
@@ -547,13 +576,17 @@ function V1Hero({ accent, onApply, onNav }) {
               ...enter(760),
             }}
           >
+            {/* Solid indigo chip + light-blue label so the live-agent option
+                reads as a distinct blue accent against the dark plate and
+                stays easy to spot. */}
             <span style={{
               display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
               width: 34, height: 34, borderRadius: 999, flexShrink: 0,
-              background: agentHover ? accent : 'rgba(247,245,240,0.10)',
-              border: `1px solid ${agentHover ? accent : 'rgba(247,245,240,0.25)'}`,
-              color: '#F7F5F0',
-              transition: 'background .2s ease, border-color .2s ease',
+              background: agentHover ? '#5D5BFF' : accent,
+              border: `1px solid ${agentHover ? '#5D5BFF' : accent}`,
+              color: '#fff',
+              boxShadow: agentHover ? '0 6px 18px rgba(73,69,255,0.5)' : '0 2px 8px rgba(73,69,255,0.3)',
+              transition: 'background .2s ease, border-color .2s ease, box-shadow .2s ease',
             }}>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                 <path d="M3.2 2.8h2.1l1 2.6-1.5 1.1c.6 1.4 1.9 2.7 3.3 3.3l1.1-1.5 2.6 1v2.1c0 .6-.5 1.1-1.1 1C6.6 14 2 9.4 1.6 3.9c-.05-.6.45-1.1 1-1.1Z"
@@ -563,13 +596,14 @@ function V1Hero({ accent, onApply, onNav }) {
             <span style={{ display: 'inline-flex', flexDirection: 'column', lineHeight: 1.25 }}>
               <span style={{
                 fontFamily: DELT.font.body, fontSize: 14.5, fontWeight: 600,
-                color: '#F7F5F0',
+                color: agentHover ? '#C7D2FE' : '#A5B4FC',
                 textDecoration: agentHover ? 'underline' : 'none',
                 textUnderlineOffset: 3,
+                transition: 'color .2s ease',
               }}>{t('cta.liveAgent')}</span>
               <span style={{
                 fontFamily: DELT.font.mono, fontSize: 13, fontWeight: 500,
-                color: agentHover ? '#F7F5F0' : 'rgba(247,245,240,0.62)',
+                color: agentHover ? '#C7D2FE' : 'rgba(165,180,252,0.75)',
                 letterSpacing: '0.02em', transition: 'color .2s ease',
               }}>(864) 729-3358</span>
             </span>
