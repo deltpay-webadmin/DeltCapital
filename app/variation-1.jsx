@@ -342,43 +342,38 @@ function V1Hero({ accent, onApply, onNav }) {
         maskComposite: 'intersect',
       }} />
 
-      {/* Washington cutout — transparent PNG, absolutely positioned on the right.
-          Anchored to the section's right edge (right:0) with a small inner
-          pad so the full portrait — including the phone — stays on screen.
-          On narrow viewports we push it partially off-screen and dim it so
-          the copy stays readable (media query in <style> below).
-          No parallax / scroll transform — the portrait sits static, per
-          stakeholder direction. */}
+      {/* Washington watermark — the grinning "iPhone-forward" engraving,
+          baked to a transparent pale-steel ink (white field knocked out) so
+          it composits straight onto the Midnight-Steel plate as a faded
+          banknote watermark. Anchored to the right and pushed behind the
+          scanlines + copy (z-index:0) so it reads as background, not a
+          foreground cutout. No parallax / scroll transform — it sits static,
+          per stakeholder direction. */}
       <style>{`
-        /* Franklin-ratio portrait: anchored to the right so his head sits
-           in the upper-right quadrant and coat/shoulders spread down and
-           to the left. The wrapper shrink-wraps the img, so the phone-glow
-           child can use % coordinates that track the portrait at any size.
-           Mobile dim lives on the img (not the wrapper) because the wrapper
-           carries an inline entrance opacity that would win otherwise. */
+        /* Portrait anchored to the right so his head sits in the upper-right
+           quadrant and the coat/phone spread down and to the left. Opacity is
+           the fade dial; it lightens further on narrow viewports so the copy
+           stays legible over it. */
         .v1hero-washington {
           position: absolute;
-          right: 0; bottom: 0;
-          height: 75%; max-height: 675px;
-          z-index: 2; pointer-events: none;
+          right: -4%; bottom: 0;
+          height: 92%; max-height: 820px;
+          z-index: 0; pointer-events: none;
         }
         .v1hero-washington img {
           height: 100%; width: auto; display: block;
-          filter: drop-shadow(0 8px 22px rgba(0,0,0,0.28));
+          opacity: 0.22;
         }
         @media (max-width: 1200px) {
-          .v1hero-washington { right: 0; }
+          .v1hero-washington { right: -6%; }
         }
         @media (max-width: 900px) {
-          .v1hero-washington { right: -8%; bottom: 0; height: 82%; max-height: 620px; }
-          .v1hero-washington img { opacity: 0.45; animation: none; }
+          .v1hero-washington { right: -12%; bottom: 0; height: 80%; max-height: 700px; }
+          .v1hero-washington img { opacity: 0.15; }
         }
         @media (max-width: 560px) {
-          .v1hero-washington { right: -20%; bottom: 0; height: 68%; }
-          .v1hero-washington img { opacity: 0.28; }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .v1hero-washington img { animation: none; }
+          .v1hero-washington { right: -24%; bottom: 0; height: 66%; }
+          .v1hero-washington img { opacity: 0.11; }
         }
       `}</style>
       <div
@@ -389,17 +384,7 @@ function V1Hero({ accent, onApply, onNav }) {
           transition: 'opacity 1100ms ease-out 200ms',
         }}
       >
-        {/* Breathing glow off the phone screen — sells the "screen is lit"
-            read against the plate-dark background. Positioned in % of the
-            portrait so it stays glued to the phone at every viewport. */}
-        <div className="v1hero-glow" style={{
-          position: 'absolute', left: '-7%', top: '16%', width: '46%', height: '72%',
-          background: 'radial-gradient(50% 42% at 42% 50%, rgba(129,140,248,0.28) 0%, rgba(73,69,255,0.10) 48%, rgba(12,26,42,0) 74%)',
-          filter: 'blur(18px)',
-          animation: 'v1heroGlow 5.5s ease-in-out infinite',
-          pointerEvents: 'none',
-        }} />
-        <img src="app/assets/washington-cutout.png" alt="" />
+        <img src="app/assets/washington-grin.webp" alt="" />
       </div>
 
       <div data-v1-grid-2col style={{
