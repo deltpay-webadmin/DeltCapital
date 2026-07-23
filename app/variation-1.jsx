@@ -189,6 +189,8 @@ function V1Hero({ accent, onApply, onNav }) {
   useLang();
   // Hover state for the secondary "See how pricing works" CTA.
   const [pricingHover, setPricingHover] = React.useState(false);
+  // Hover state for the "Speak to a live agent" tel: link.
+  const [agentHover, setAgentHover] = React.useState(false);
 
   // Cursor-tracked spotlight on the background lines and cursor-tracked
   // gradient on the headline (both Plaid-style). The section receives CSS
@@ -365,17 +367,27 @@ function V1Hero({ accent, onApply, onNav }) {
         .v1hero-washington img {
           height: 100%; width: auto; display: block;
           filter: drop-shadow(0 8px 22px rgba(0,0,0,0.28));
+          /* Permanent faded state — a single, constant opacity at every
+             viewport so the portrait never jumps between "solid" and "dim"
+             as the window resizes. Because we can't predict the visitor's
+             screen width, keeping it always-faded guarantees the headline
+             and subhead stay readable at any size. */
+          opacity: 0.5;
+          /* Fade the left edge of the portrait (the phone + hand, which sit
+             closest to the copy column) to near-transparent so text is never
+             obscured where the two overlap on mid-width screens. */
+          -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.35) 16%, #000 40%);
+          mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.35) 16%, #000 40%);
         }
         @media (max-width: 1200px) {
           .v1hero-washington { right: 0; }
         }
         @media (max-width: 900px) {
           .v1hero-washington { right: -8%; bottom: 0; height: 82%; max-height: 620px; }
-          .v1hero-washington img { opacity: 0.45; animation: none; }
+          .v1hero-washington img { animation: none; }
         }
         @media (max-width: 560px) {
           .v1hero-washington { right: -20%; bottom: 0; height: 68%; }
-          .v1hero-washington img { opacity: 0.28; }
         }
         @media (prefers-reduced-motion: reduce) {
           .v1hero-washington img { animation: none; }
@@ -519,6 +531,49 @@ function V1Hero({ accent, onApply, onNav }) {
               }}><Arr /></span>
             </button>
           </div>
+
+          {/* Live-agent line — a real staffed number so a merchant who'd
+              rather talk than fill a form can reach a person immediately.
+              tel: link works on mobile (dials) and desktop (hands off to the
+              default calling app). Label translates; the digits never do. */}
+          <a
+            href="tel:+18647293358"
+            aria-label={t('cta.liveAgent.aria')}
+            onMouseEnter={() => setAgentHover(true)}
+            onMouseLeave={() => setAgentHover(false)}
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 10,
+              marginTop: 20, textDecoration: 'none', width: 'fit-content',
+              ...enter(760),
+            }}
+          >
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              width: 34, height: 34, borderRadius: 999, flexShrink: 0,
+              background: agentHover ? accent : 'rgba(247,245,240,0.10)',
+              border: `1px solid ${agentHover ? accent : 'rgba(247,245,240,0.25)'}`,
+              color: '#F7F5F0',
+              transition: 'background .2s ease, border-color .2s ease',
+            }}>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3.2 2.8h2.1l1 2.6-1.5 1.1c.6 1.4 1.9 2.7 3.3 3.3l1.1-1.5 2.6 1v2.1c0 .6-.5 1.1-1.1 1C6.6 14 2 9.4 1.6 3.9c-.05-.6.45-1.1 1-1.1Z"
+                  stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" />
+              </svg>
+            </span>
+            <span style={{ display: 'inline-flex', flexDirection: 'column', lineHeight: 1.25 }}>
+              <span style={{
+                fontFamily: DELT.font.body, fontSize: 14.5, fontWeight: 600,
+                color: '#F7F5F0',
+                textDecoration: agentHover ? 'underline' : 'none',
+                textUnderlineOffset: 3,
+              }}>{t('cta.liveAgent')}</span>
+              <span style={{
+                fontFamily: DELT.font.mono, fontSize: 13, fontWeight: 500,
+                color: agentHover ? '#F7F5F0' : 'rgba(247,245,240,0.62)',
+                letterSpacing: '0.02em', transition: 'color .2s ease',
+              }}>(864) 729-3358</span>
+            </span>
+          </a>
 
           <div data-v1-hero-substats style={{
             marginTop: 32, paddingTop: 24,

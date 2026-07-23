@@ -37,6 +37,10 @@
     'cta.seePricing':   { en: 'See how pricing works',   es: 'Ver cómo funciona el precio' },
     'cta.talkToUw':     { en: 'Talk to an underwriter',  es: 'Hablar con un analista' },
     'cta.apply':        { en: 'Apply',                    es: 'Aplicar' },
+    // Live-agent CTA — number is a real staffed line; keep the digits identical
+    // across languages (only the label translates).
+    'cta.liveAgent':    { en: 'Speak to a live agent',   es: 'Hablar con un agente en vivo' },
+    'cta.liveAgent.aria': { en: 'Speak to a live agent at (864) 729-3358', es: 'Hablar con un agente en vivo al (864) 729-3358' },
 
     // ── Hero ──────────────────────────────────────────────────────────────
     'hero.line1':       { en: 'You built the',           es: 'Tú creaste el' },
@@ -449,54 +453,82 @@ function t(key) { return window.DELT_I18N.t(key); }
 function V1LangToggle({ compact }) {
   const [lang, setLang] = useLang();
   const isEs = lang === 'es';
-  const height = compact ? 30 : 32;
+  const height = compact ? 32 : 34;
+  // Full language names read far clearer than the old bare "EN | ES" pill.
+  // A leading globe icon signals "language" at a glance, and the active
+  // segment is a solid high-contrast fill so which language is selected is
+  // never ambiguous.
   return (
     <div
       role="group"
       aria-label={window.DELT_I18N.t('lang.toggle.aria')}
       style={{
         display: 'inline-flex',
-        alignItems: 'stretch',
+        alignItems: 'center',
+        gap: 6,
         background: 'rgba(247,245,240,0.06)',
-        border: '1px solid rgba(247,245,240,0.18)',
+        border: '1px solid rgba(247,245,240,0.28)',
         borderRadius: 999,
-        padding: 2,
+        padding: '2px 2px 2px 9px',
         height,
         fontFamily: DELT.font.mono,
-        fontSize: 11,
-        letterSpacing: '0.08em',
+        fontSize: 12,
+        letterSpacing: '0.06em',
       }}
     >
-      {[
-        { code: 'en', label: 'EN' },
-        { code: 'es', label: 'ES' },
-      ].map((opt) => {
-        const active = (opt.code === 'es') === isEs;
-        return (
-          <button
-            key={opt.code}
-            type="button"
-            onClick={() => setLang(opt.code)}
-            aria-pressed={active}
-            style={{
-              border: 'none',
-              cursor: 'pointer',
-              minWidth: 32,
-              padding: '0 10px',
-              borderRadius: 999,
-              background: active ? '#F7F5F0' : 'transparent',
-              color: active ? DELT.colors.ink : 'rgba(247,245,240,0.75)',
-              fontFamily: 'inherit',
-              fontSize: 'inherit',
-              letterSpacing: 'inherit',
-              fontWeight: 600,
-              transition: 'background 160ms ease, color 160ms ease',
-            }}
-          >
-            {opt.label}
-          </button>
-        );
-      })}
+      {/* Globe glyph — communicates "language selector" without extra copy. */}
+      <svg
+        aria-hidden="true"
+        width="14"
+        height="14"
+        viewBox="0 0 16 16"
+        fill="none"
+        style={{ flexShrink: 0, color: 'rgba(247,245,240,0.75)' }}
+      >
+        <circle cx="8" cy="8" r="6.25" stroke="currentColor" strokeWidth="1.1" />
+        <path
+          d="M8 1.75c1.8 1.6 2.7 3.75 2.7 6.25S9.8 12.65 8 14.25C6.2 12.65 5.3 10.5 5.3 8S6.2 3.35 8 1.75ZM2 8h12"
+          stroke="currentColor"
+          strokeWidth="1.1"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+      <div style={{ display: 'inline-flex', alignItems: 'stretch', height: height - 6 }}>
+        {[
+          { code: 'en', label: 'EN', full: 'English' },
+          { code: 'es', label: 'ES', full: 'Español' },
+        ].map((opt) => {
+          const active = (opt.code === 'es') === isEs;
+          return (
+            <button
+              key={opt.code}
+              type="button"
+              onClick={() => setLang(opt.code)}
+              aria-pressed={active}
+              aria-label={opt.full}
+              title={opt.full}
+              style={{
+                border: 'none',
+                cursor: 'pointer',
+                minWidth: 34,
+                padding: '0 11px',
+                borderRadius: 999,
+                background: active ? '#F7F5F0' : 'transparent',
+                color: active ? DELT.colors.ink : 'rgba(247,245,240,0.68)',
+                fontFamily: 'inherit',
+                fontSize: 'inherit',
+                letterSpacing: 'inherit',
+                fontWeight: 700,
+                boxShadow: active ? '0 1px 3px rgba(0,0,0,0.25)' : 'none',
+                transition: 'background 160ms ease, color 160ms ease',
+              }}
+            >
+              {opt.label}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
