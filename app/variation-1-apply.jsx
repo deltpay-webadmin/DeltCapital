@@ -770,7 +770,43 @@ function V1ApplicationFlow({
   // Using a ref to track "already fired" so a re-render or a form-merge
   // doesn't double-ping. We deliberately don't await — these are pure
   // analytics and must never block UI transitions.
-  const beaconLeadId = prefill && prefill.leadId;
+  //
+  // capturedLeadId: organic visitors (no calculator gate, no email deep
+  // link) get a lead row created the moment they clear the Business step
+  // via /api/apply-lead. Its id also keys their progress beacons, which
+  // previously no-oped for organic traffic.
+  const [capturedLeadId, setCapturedLeadId] = React.useState(null);
+  const leadCaptureFiredRef = React.useRef(false);
+  const beaconLeadId = (prefill && prefill.leadId) || capturedLeadId;
+
+  // Early lead capture — fires once, on leaving the Business step. If the
+  // lead already exists (prefill.leadId), the endpoint just echoes it.
+  // Fire-and-forget: capture must never block or break the flow.
+  const captureStepOneLead = React.useCallback(() => {
+    if (leadCaptureFiredRef.current) return;
+    leadCaptureFiredRef.current = true;
+    try {
+      fetch('/api/apply-lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        keepalive: true,
+        body: JSON.stringify({
+          businessName: form.businessName,
+          ein: form.ein,
+          legalForm: form.legalForm,
+          state: form.state,
+          firstName: form.firstName,
+          lastName: form.lastName,
+          email: form.email,
+          phone: form.phone,
+          existingLeadId: (prefill && prefill.leadId) || null,
+        }),
+      })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => { if (d && d.leadId) setCapturedLeadId(d.leadId); })
+        .catch(() => {});
+    } catch (_) { /* capture must never throw into the UI */ }
+  }, [form, prefill]);
   const beaconFiredRef = React.useRef({});
   const fireBeacon = React.useCallback((event, meta) => {
     if (!beaconLeadId) return;
@@ -1109,7 +1145,11 @@ function V1ApplicationFlow({
 
               {step < 3 && (
                 <button
-                  onClick={() => canProceed && setStep(step + 1)}
+                  onClick={() => {
+                    if (!canProceed) return;
+                    if (step === 0) captureStepOneLead();
+                    setStep(step + 1);
+                  }}
                   disabled={!canProceed}
                   style={{
                     padding: '11px 22px', borderRadius: 10, border: 'none',
