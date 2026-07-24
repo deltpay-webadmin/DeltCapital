@@ -22,7 +22,7 @@
 
 const store = require('./_store');
 const { getAccessToken, sendMail } = require('./_email');
-const { buildApplyUrl } = require('./_deeplink');
+const { buildApplyUrl, withUtm } = require('./_deeplink');
 const { renderEmail } = require('./_email-layout');
 
 const NOTIFY_TO = process.env.LEADS_NOTIFY_EMAIL
@@ -121,8 +121,10 @@ function leadEmailBody({ firstName, businessName, email, phone, estimate, applyU
   const aboutClause = showBiz
     ? `Based on what you told us about <strong>${esc(businessName)}</strong>,`
     : `Based on the numbers you shared,`;
-  const ctaUrl = applyUrl
-               || buildApplyDeepLink({ firstName, businessName, email, phone, estimate });
+  const ctaUrl = withUtm(
+    applyUrl || buildApplyDeepLink({ firstName, businessName, email, phone, estimate }),
+    { utm_source: 'email', utm_medium: 'lifecycle', utm_campaign: 'calc-confirmation' }
+  );
   return `
       <p style="margin:0 0 6px;font-size:13px;color:#6B6877;letter-spacing:0.04em;text-transform:uppercase;font-weight:600;">Your pre-qualified offer</p>
       <h1 style="margin:0 0 16px;font-size:26px;line-height:1.2;letter-spacing:-0.01em;font-weight:700;color:#0A1133;">
@@ -165,7 +167,7 @@ function leadEmailBody({ firstName, businessName, email, phone, estimate, applyU
       </p>
       <p style="margin:16px 0 0;color:#0A1133;font-size:13.5px;line-height:1.55;">
         — David Hazday<br/>
-        <span style="color:#6B6877;font-weight:500;">Founder, Delt Capital</span>
+        <span style="color:#6B6877;font-weight:500;">Director, Delt Capital</span>
       </p>
   `;
 }

@@ -60,6 +60,19 @@ function buildApplyUrlFromRow(row) {
   });
 }
 
+// Append UTM (or any tracking) params to an already-built URL. The apply
+// deep link's `d` payload is read via URLSearchParams client-side, so
+// extra params ride along harmlessly. Skips null/empty values.
+function withUtm(url, params) {
+  if (!url) return url;
+  const qs = Object.entries(params || {})
+    .filter(([, v]) => v != null && v !== '')
+    .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
+    .join('&');
+  if (!qs) return url;
+  return url + (url.includes('?') ? '&' : '?') + qs;
+}
+
 // Short link (`/r/<8-char-prefix>`) for use in SMS bodies where the full
 // base64 payload would blow past 160 chars.
 function buildShortUrl(leadId) {
@@ -74,4 +87,5 @@ module.exports = {
   buildApplyUrl,
   buildApplyUrlFromRow,
   buildShortUrl,
+  withUtm,
 };
