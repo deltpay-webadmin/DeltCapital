@@ -31,8 +31,6 @@ const ASSETS = {
 const COMPANY = {
   name: 'Delt Capital',
   legalName: 'Delt Capital',
-  // Discreet, small per the operator. CAN-SPAM requires a physical address.
-  address: '2726 NW 72nd Ave, Miami, FL',
   phone: '(864) 729-3358',
   // tel: links want digits only
   phoneTel: '+18647293358',
@@ -75,8 +73,7 @@ function trustStrip() {
     </table>`;
 }
 
-// Lead-facing CAN-SPAM footer. Includes:
-//   • Mailing address (CAN-SPAM § 7704(a)(5) requirement)
+// Lead-facing footer. Includes:
 //   • Unsubscribe instruction (reply to opt out — we have <2k volume)
 //   • Disclaimers customers expect from a funding company
 //   • Phone + support email + site link
@@ -99,9 +96,6 @@ function leadFooter({ recipientEmail, recipientPhone } = {}) {
           verification. Not all applicants will qualify. Approval timing, fee structure,
           and total payback amounts vary by offer. Reviewing your offer does not impact
           your credit score &mdash; soft pull only until you accept terms in writing.
-        </p>
-        <p style="margin:0 0 6px;font-size:10.5px;line-height:1.55;color:#A4A0B0;">
-          ${esc(COMPANY.legalName)} &middot; ${esc(COMPANY.address)}
         </p>
         <p style="margin:0;font-size:10.5px;line-height:1.55;color:#A4A0B0;">
           You're receiving this because${safeEmail ? ` <span style="color:#8A8693;">${safeEmail}</span>` : ' you'} used the funding calculator on ${esc(COMPANY.site)}.
@@ -127,7 +121,7 @@ function operatorFooter() {
 
 // Outer email shell. Renders a centered card on a tinted background — same
 // visual language as the site. Body HTML is injected as-is.
-function renderEmail({ body, includeTrustStrip = true, audience = 'lead', recipientEmail, recipientPhone, preheader }) {
+function renderEmail({ body, includeTrustStrip = true, audience = 'lead', recipientEmail, recipientPhone, preheader, openPixelUrl }) {
   const footer = audience === 'operator' ? operatorFooter() : leadFooter({ recipientEmail, recipientPhone });
   const strip = includeTrustStrip ? trustStrip() : '';
   // Preheader text — shows in the inbox preview pane. Only the lead
@@ -167,6 +161,7 @@ function renderEmail({ body, includeTrustStrip = true, audience = 'lead', recipi
       </table>
     </td></tr>
   </table>
+  ${openPixelUrl ? `<img src="${esc(openPixelUrl)}" alt="" width="1" height="1" style="display:block;width:1px;height:1px;border:0;" />` : ''}
 </body>
 </html>`;
 }

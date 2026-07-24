@@ -28,8 +28,9 @@
 
 const store = require('./_store');
 const { getAccessToken, sendMail } = require('./_email');
-const { buildApplyUrlFromRow, buildShortUrl } = require('./_deeplink');
-const { renderEmail, esc: layoutEsc } = require('./_email-layout');
+const { buildApplyUrlFromRow, buildShortUrl, withUtm } = require('./_deeplink');
+const { renderEmail, esc: layoutEsc, COMPANY } = require('./_email-layout');
+const outreach = require('./_outreach');
 
 const NOTIFY_TO = process.env.LEADS_NOTIFY_EMAIL
                 || process.env.BOOKING_NOTIFY_EMAIL
@@ -68,58 +69,166 @@ function fmtMoney(n) {
   return '$' + Math.round(v).toLocaleString();
 }
 
-function nudgeEmailBody({ firstName, estimate, applyUrl }) {
-  const range = (estimate && estimate.low && estimate.high)
-    ? `${fmtMoney(estimate.low)}\u2013${fmtMoney(estimate.high)}`
-    : 'your pre-qualified offer';
+// Whole-thousands helper for subject lines / button copy ("$54K").
+// Returns null (not '$0') when there's no usable number so callers can
+// fall back to generic copy instead of quoting a bogus amount.
+function fmtK(n) {
+  const v = Number(n);
+  if (!Number.isFinite(v) || v <= 0) return null;
+  if (v < 1000) return '$' + Math.round(v).toLocaleString();
+  return '$' + Math.round(v / 1000) + 'K';
+}
+
+// ── Subject line A/B/C rotation ─────────────────────────────────────
+// Variant is picked deterministically from the lead id (not randomly)
+// so a retried send never flips copy on the same lead, and the split
+// stays roughly even. The chosen letter also rides the CTA link as
+// utm_content so clicks can be attributed per subject.
+function subjectVariant(leadId) {
+  const s = String(leadId || '');
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = ((h * 31) + s.charCodeAt(i)) >>> 0;
+  return 'abc'[h % 3];
+}
+
+function nudgeSubject({ variant, firstName, estimate }) {
+  const name = firstName ? String(firstName).trim() : '';
+  const low  = fmtK(estimate && estimate.low);
+  const high = fmtK(estimate && estimate.high);
+  if (variant === 'b') {
+    return 'Your Delt Capital offer expires Sunday';
+  }
+  if (variant === 'c') {
+    return (low && high)
+      ? `David @ Delt: your ${low}–${high} is still open`
+      : 'David @ Delt: your funding offer is still open';
+  }
+  // variant 'a'
+  const offer = high ? `your ${high} offer` : 'your funding offer';
+  return name
+    ? `${name} — ${offer} is holding (2 min to claim)`
+    : `Your ${high ? `${high} ` : ''}offer is holding (2 min to claim)`;
+}
+
+// The urgency line quotes a real date ("holds through Sunday, July 26")
+// instead of a vague "this weekend". Nudges never fire on weekends
+// (quiet hours skips Sat/Sun), so the upcoming Sunday is always a few
+// days out from any real send. Computed in Eastern, same as quiet hours.
+function upcomingSundayLabel(now = new Date()) {
+  const wd = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/New_York', weekday: 'short',
+  }).format(now);
+  const idx = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(wd);
+  const days = idx === -1 ? 7 : (((7 - idx) % 7) || 7);
+  const sunday = new Date(now.getTime() + days * 24 * 60 * 60 * 1000);
+  const monthDay = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/New_York', month: 'long', day: 'numeric',
+  }).format(sunday);
+  return `Sunday, ${monthDay}`;
+}
+
+function nudgeEmailBody({ firstName, estimate, ctaUrl }) {
+  const hasRange = !!(estimate && estimate.low && estimate.high);
+  const high  = hasRange ? fmtMoney(estimate.high) : null;
+  const lowK  = hasRange ? fmtK(estimate.low) : null;
+  const highK = hasRange ? fmtK(estimate.high) : null;
+  const name  = firstName ? String(firstName).trim() : '';
+  const deadline = upcomingSundayLabel();
+
+  const headline = name
+    ? (high ? `${name} \u2014 your ${high} is ready to claim.` : `${name} \u2014 your offer is ready to claim.`)
+    : (high ? `Your ${high} is ready to claim.` : 'Your offer is ready to claim.');
+  const ctaLabel = (lowK && highK)
+    ? `Claim my ${lowK}\u2013${highK} offer`
+    : 'Claim my offer';
+  const rangeNoun = hasRange ? 'this range' : 'this offer';
+
+  const bullet = (lead, rest) => `
+      <p style="margin:0 0 10px;font-size:14.5px;line-height:1.55;color:#0F0E17;">
+        <span style="color:#5B5BD6;font-weight:700;">&bull;</span>&nbsp;
+        <strong style="color:#0A1133;">${lead}</strong>${rest}
+      </p>`;
+
   return `
       <p style="margin:0 0 6px;font-size:13px;color:#6B6877;letter-spacing:0.04em;text-transform:uppercase;font-weight:600;">Your offer is still open</p>
       <h1 style="margin:0 0 16px;font-size:24px;line-height:1.25;font-weight:700;color:#0A1133;letter-spacing:-0.01em;">
-        ${esc(firstName ? `${firstName}, your ${range} range is ready when you are.` : `Your ${range} range is ready when you are.`)}
+        ${esc(headline)}
       </h1>
       <p style="font-size:15px;line-height:1.6;margin:0 0 14px;color:#0F0E17;">
-        You started the funding calculator earlier today and we've held your
-        ${esc(range)} pre-qualification open. It takes about 2 minutes to claim,
-        there's no credit pull until you accept terms, and bank verification
-        runs through Plaid \u2014 read-only, never your password.
+        ${name ? `Hey ${esc(name)},` : 'Hey,'}
+      </p>
+      <p style="font-size:15px;line-height:1.6;margin:0 0 20px;color:#0F0E17;">
+        You ran the funding calculator earlier today. I held your
+        pre-qualification open so you can pick up right where you left off.
+      </p>
+      <p style="margin:0 0 8px;">
+        <a href="${esc(ctaUrl)}"
+           style="display:inline-block;padding:14px 28px;background:linear-gradient(135deg,#5B5BD6 0%,#6366F1 50%,#5B5BD6 100%);color:#FFFFFF;text-decoration:none;border-radius:10px;font-weight:700;font-size:15px;letter-spacing:0.01em;">
+          ${esc(ctaLabel)} &rarr;
+        </a>
+      </p>
+      <p style="margin:0 0 22px;font-size:12.5px;color:#6B6877;">
+        Resumes your application.
+      </p>
+      <p style="margin:0 0 10px;font-size:14px;font-weight:600;color:#0A1133;">
+        Three things worth knowing before you click:
+      </p>
+      ${bullet('~2 minutes to finish', ' \u2014 most of your info is already saved.')}
+      ${bullet('Soft check only', ' \u2014 your credit score stays untouched until you accept terms.')}
+      ${bullet('Plaid verified.', ' Bank-grade encryption.')}
+      <p style="font-size:15px;line-height:1.6;margin:18px 0 14px;color:#0F0E17;">
+        Offers are priced against live bank data, so ${rangeNoun} holds through
+        <strong style="color:#0A1133;">${esc(deadline)}</strong>. After that we'll
+        re-verify and the numbers may shift.
       </p>
       <p style="font-size:15px;line-height:1.6;margin:0 0 22px;color:#0F0E17;">
-        If there's anything I can answer first, just reply to this email \u2014
-        it goes straight to my inbox.
-      </p>
-      <p style="margin:0 0 18px;">
-        <a href="${esc(applyUrl)}"
-           style="display:inline-block;padding:14px 28px;background:linear-gradient(135deg,#5B5BD6 0%,#6366F1 50%,#5B5BD6 100%);color:#FFFFFF;text-decoration:none;border-radius:10px;font-weight:700;font-size:15px;letter-spacing:0.01em;">
-          Continue my application &rarr;
-        </a>
+        If something's holding you back \u2014 rate, term, payback, timing \u2014
+        reply with your #1 question and I'll answer today. It comes straight
+        to my inbox.
       </p>
       <p style="margin:22px 0 0;color:#0A1133;font-size:13.5px;line-height:1.55;">
         \u2014 David Hazday<br/>
-        <span style="color:#6B6877;font-weight:500;">Founder, Delt Capital</span>
+        <span style="color:#6B6877;font-weight:500;">Director, Delt Capital</span>
+      </p>
+      <p style="margin:14px 0 0;font-size:13px;color:#6B6877;">
+        Prefer to talk? Call or text
+        <a href="tel:${esc(COMPANY.phoneTel)}" style="color:#5B5BD6;text-decoration:none;font-weight:600;">${esc(COMPANY.phone)}</a>.
       </p>
   `;
 }
 
-function nudgeEmail({ firstName, estimate, applyUrl, leadEmail, leadPhone }) {
-  const range = (estimate && estimate.low && estimate.high)
-    ? `${fmtMoney(estimate.low)}\u2013${fmtMoney(estimate.high)}`
-    : 'your funding offer';
+function nudgeEmail({ leadId, firstName, estimate, applyUrl, leadEmail, leadPhone, variant }) {
+  // Tag the CTA so clicks are attributable in any analytics tool that
+  // reads utm_* params; utm_content carries the subject-line variant.
+  const ctaUrl = withUtm(applyUrl, {
+    utm_source: 'email',
+    utm_medium: 'lifecycle',
+    utm_campaign: 'calc-nudge-45m',
+    utm_content: variant ? `subj-${variant}` : null,
+  });
   return renderEmail({
-    body: nudgeEmailBody({ firstName, estimate, applyUrl }),
+    body: nudgeEmailBody({ firstName, estimate, ctaUrl }),
     audience: 'lead',
     includeTrustStrip: true,
     recipientEmail: leadEmail,
     recipientPhone: leadPhone,
-    preheader: `Pick up where you left off. Your ${range} range is still good \u2014 2-min application, no credit pull.`,
+    preheader: 'Pick up where you left off \u2014 about 2 minutes.',
+    openPixelUrl: outreach.openPixelUrl({
+      leadId,
+      email: leadEmail,
+      campaign: 'calc-nudge-45m',
+      variant,
+    }),
   });
 }
 
-function internalNudgeBody({ lead, applyUrl, shortUrl, smsBody, gvLink }) {
+function internalNudgeBody({ lead, applyUrl, shortUrl, smsBody, gvLink, variant, subject }) {
   return `
       <h2 style="margin:0 0 12px;font-size:18px;">T+45min nudge fired</h2>
       <p style="margin:6px 0;font-size:14px;"><b>Lead:</b> ${esc(lead.first_name || '')} \u2014 ${esc(lead.business_name || '')}</p>
       <p style="margin:6px 0;font-size:14px;"><b>Email:</b> ${esc(lead.email || '')}</p>
       <p style="margin:6px 0;font-size:14px;"><b>Phone:</b> ${esc(lead.phone || '')}</p>
+      <p style="margin:6px 0;font-size:14px;"><b>Subject (variant ${esc(variant || '?')}):</b> ${esc(subject || '')}</p>
       <hr style="border:none;border-top:1px solid #EEE;margin:18px 0;" />
       <p style="margin:6px 0;font-size:14px;font-weight:600;">Send the SMS yourself from Google Voice:</p>
       <p style="margin:8px 0;">
@@ -223,18 +332,26 @@ module.exports = async function handler(req, res) {
       shortUrl,
     });
     const gvLink = googleVoiceLink({ phone: lead.phone, body: smsBody });
+    const variant = subjectVariant(lead.id);
+    const subject = nudgeSubject({
+      variant,
+      firstName: lead.first_name,
+      estimate: lead.estimate || {},
+    });
 
     // Email the lead first (the automation half of the hybrid).
     try {
       await sendMail(
         token, FROM_MAILBOX, lead.email,
-        `Still want that funding offer?`,
+        subject,
         nudgeEmail({
+          leadId: lead.id,
           firstName: lead.first_name,
           estimate: lead.estimate || {},
           applyUrl,
           leadEmail: lead.email,
           leadPhone: lead.phone,
+          variant,
         }),
         {
           from: FROM_MAILBOX,
@@ -249,12 +366,29 @@ module.exports = async function handler(req, res) {
       continue;
     }
 
+    // Outreach telemetry for the backend's Outreach page. Best-effort.
+    await outreach.recordOutreach({
+      leadId: lead.id,
+      leadEmail: lead.email,
+      leadName: lead.first_name,
+      campaign: 'calc-nudge-45m',
+      event: 'sent',
+      variant,
+      utm: {
+        utm_source: 'email',
+        utm_medium: 'lifecycle',
+        utm_campaign: 'calc-nudge-45m',
+        utm_content: `subj-${variant}`,
+      },
+      meta: { subject },
+    });
+
     // Then send the operator the SMS-ready note (the manual half).
     try {
       await sendMail(
         token, FROM_MAILBOX, NOTIFY_TO,
         `[Delt SMS nudge] ${lead.first_name || ''} \u2014 ${lead.business_name || ''}`,
-        internalNudgeNote({ lead, applyUrl, shortUrl, smsBody, gvLink }),
+        internalNudgeNote({ lead, applyUrl, shortUrl, smsBody, gvLink, variant, subject }),
         { from: FROM_MAILBOX, fromName: 'Delt Capital Bot' }
       );
     } catch (err) {
@@ -266,10 +400,10 @@ module.exports = async function handler(req, res) {
     // failed lead-email above leaves the lead eligible on the next run.
     try {
       await store.markNudged(lead.id);
-      results.push({ id: lead.id, ok: true });
+      results.push({ id: lead.id, ok: true, variant });
     } catch (err) {
       console.error(`[sms-nudge] markNudged failed for ${lead.id}:`, err && err.message);
-      results.push({ id: lead.id, ok: true, mark_failed: true });
+      results.push({ id: lead.id, ok: true, variant, mark_failed: true });
     }
   }
 

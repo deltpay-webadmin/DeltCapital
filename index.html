@@ -285,6 +285,14 @@
   })();
 </script>
 <!-- End Meta Pixel Code -->
+
+<!-- Vercel Web Analytics. Cookieless, first-party (served from this
+     origin), so it runs outside the Meta-pixel consent gate. Captures
+     pageviews + utm_* params for email/campaign attribution. -->
+<script>
+  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
   <!-- Meta Pixel fallback for no-JS visitors. Must live in <body>
