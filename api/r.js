@@ -21,6 +21,7 @@
 
 const store = require('./_store');
 const { buildApplyUrlFromRow, SITE_ORIGIN } = require('./_deeplink');
+const outreach = require('./_outreach');
 
 module.exports = async function handler(req, res) {
   try {
@@ -51,6 +52,18 @@ module.exports = async function handler(req, res) {
       res.end();
       return;
     }
+
+    // A resolved short link means the lead tapped the SMS (or copied the
+    // short URL from an email) — log the click for the Outreach page.
+    // Fire-and-forget: never delay the redirect on telemetry.
+    outreach.recordOutreach({
+      leadId: row.id,
+      leadEmail: row.email,
+      leadName: row.first_name,
+      campaign: 'sms-nudge',
+      channel: 'sms',
+      event: 'clicked',
+    }).catch(() => {});
 
     // Use 302 (Found) rather than 301 (Permanent) so we can change
     // the resolution behavior later without poisoning client caches.

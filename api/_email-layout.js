@@ -121,7 +121,7 @@ function operatorFooter() {
 
 // Outer email shell. Renders a centered card on a tinted background — same
 // visual language as the site. Body HTML is injected as-is.
-function renderEmail({ body, includeTrustStrip = true, audience = 'lead', recipientEmail, recipientPhone, preheader }) {
+function renderEmail({ body, includeTrustStrip = true, audience = 'lead', recipientEmail, recipientPhone, preheader, openPixelUrl }) {
   const footer = audience === 'operator' ? operatorFooter() : leadFooter({ recipientEmail, recipientPhone });
   const strip = includeTrustStrip ? trustStrip() : '';
   // Preheader text — shows in the inbox preview pane. Only the lead
@@ -161,6 +161,7 @@ function renderEmail({ body, includeTrustStrip = true, audience = 'lead', recipi
       </table>
     </td></tr>
   </table>
+  ${openPixelUrl ? `<img src="${esc(openPixelUrl)}" alt="" width="1" height="1" style="display:block;width:1px;height:1px;border:0;" />` : ''}
 </body>
 </html>`;
 }

@@ -30,6 +30,7 @@ const store = require('./_store');
 const { getAccessToken, sendMail } = require('./_email');
 const { buildApplyUrlFromRow, buildShortUrl, withUtm } = require('./_deeplink');
 const { renderEmail, esc: layoutEsc, COMPANY } = require('./_email-layout');
+const outreach = require('./_outreach');
 
 const NOTIFY_TO = process.env.LEADS_NOTIFY_EMAIL
                 || process.env.BOOKING_NOTIFY_EMAIL
@@ -196,7 +197,7 @@ function nudgeEmailBody({ firstName, estimate, ctaUrl }) {
   `;
 }
 
-function nudgeEmail({ firstName, estimate, applyUrl, leadEmail, leadPhone, variant }) {
+function nudgeEmail({ leadId, firstName, estimate, applyUrl, leadEmail, leadPhone, variant }) {
   // Tag the CTA so clicks are attributable in any analytics tool that
   // reads utm_* params; utm_content carries the subject-line variant.
   const ctaUrl = withUtm(applyUrl, {
@@ -212,6 +213,12 @@ function nudgeEmail({ firstName, estimate, applyUrl, leadEmail, leadPhone, varia
     recipientEmail: leadEmail,
     recipientPhone: leadPhone,
     preheader: 'Pick up where you left off \u2014 about 2 minutes.',
+    openPixelUrl: outreach.openPixelUrl({
+      leadId,
+      email: leadEmail,
+      campaign: 'calc-nudge-45m',
+      variant,
+    }),
   });
 }
 
@@ -338,6 +345,7 @@ module.exports = async function handler(req, res) {
         token, FROM_MAILBOX, lead.email,
         subject,
         nudgeEmail({
+          leadId: lead.id,
           firstName: lead.first_name,
           estimate: lead.estimate || {},
           applyUrl,
@@ -357,6 +365,23 @@ module.exports = async function handler(req, res) {
       results.push({ id: lead.id, ok: false, reason: 'lead_email_failed' });
       continue;
     }
+
+    // Outreach telemetry for the backend's Outreach page. Best-effort.
+    await outreach.recordOutreach({
+      leadId: lead.id,
+      leadEmail: lead.email,
+      leadName: lead.first_name,
+      campaign: 'calc-nudge-45m',
+      event: 'sent',
+      variant,
+      utm: {
+        utm_source: 'email',
+        utm_medium: 'lifecycle',
+        utm_campaign: 'calc-nudge-45m',
+        utm_content: `subj-${variant}`,
+      },
+      meta: { subject },
+    });
 
     // Then send the operator the SMS-ready note (the manual half).
     try {

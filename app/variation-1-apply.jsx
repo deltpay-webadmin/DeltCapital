@@ -807,6 +807,21 @@ function V1ApplicationFlow({
         .catch(() => {});
     } catch (_) { /* capture must never throw into the UI */ }
   }, [form, prefill]);
+  // utm_* params from the landing URL — set when the visitor arrived via
+  // a tracked email/SMS link. Rides the modal_opened beacon so the
+  // backend can attribute the click to a campaign + subject variant.
+  const readUtmParams = () => {
+    try {
+      const sp = new URLSearchParams(window.location.search);
+      const utm = {};
+      ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach((k) => {
+        const v = sp.get(k);
+        if (v) utm[k] = v;
+      });
+      return Object.keys(utm).length ? utm : null;
+    } catch (_) { return null; }
+  };
+
   const beaconFiredRef = React.useRef({});
   const fireBeacon = React.useCallback((event, meta) => {
     if (!beaconLeadId) return;
@@ -839,7 +854,7 @@ function V1ApplicationFlow({
   // when the modal closes so re-opening (e.g. after a refresh) re-pings.
   React.useEffect(() => {
     if (!open) { beaconFiredRef.current = {}; pixelFiredRef.current = {}; return; }
-    fireBeacon('modal_opened', { fromEmail: !!(prefill && prefill.fromEmail) });
+    fireBeacon('modal_opened', { fromEmail: !!(prefill && prefill.fromEmail), utm: readUtmParams() });
 
     // Meta Pixel: apply flow started — InitiateCheckout. Mid-funnel
     // conversion signal. Value carries the requested amount so Meta

@@ -24,6 +24,7 @@ const store = require('./_store');
 const { getAccessToken, sendMail } = require('./_email');
 const { buildApplyUrl, withUtm } = require('./_deeplink');
 const { renderEmail } = require('./_email-layout');
+const outreach = require('./_outreach');
 
 const NOTIFY_TO = process.env.LEADS_NOTIFY_EMAIL
                 || process.env.BOOKING_NOTIFY_EMAIL
@@ -183,6 +184,11 @@ function leadEmail(ctx) {
     recipientEmail: ctx.email,
     recipientPhone: ctx.phone,
     preheader,
+    openPixelUrl: outreach.openPixelUrl({
+      leadId: ctx.leadId,
+      email: ctx.email,
+      campaign: 'calc-confirmation',
+    }),
   });
 }
 
@@ -233,7 +239,7 @@ module.exports = async function handler(req, res) {
     // (CTA) and the internal notification (so David's team can paste-jump
     // a customer directly into their pre-filled application if needed).
     const applyUrl = buildApplyDeepLink({ leadId, firstName, businessName, email, phone, estimate });
-    const ctx = { firstName, businessName, email, phone, source, estimate, applyUrl };
+    const ctx = { leadId, firstName, businessName, email, phone, source, estimate, applyUrl };
 
     let token;
     try {
@@ -265,6 +271,15 @@ module.exports = async function handler(req, res) {
         fromName: 'Delt Capital',
         replyTo: [NOTIFY_TO],
         bcc: [NOTIFY_TO],
+      });
+      // Outreach telemetry for the backend's Outreach page. Best-effort.
+      await outreach.recordOutreach({
+        leadId,
+        leadEmail: email,
+        leadName: firstName,
+        campaign: 'calc-confirmation',
+        event: 'sent',
+        utm: { utm_source: 'email', utm_medium: 'lifecycle', utm_campaign: 'calc-confirmation' },
       });
     } catch (err) {
       console.error('leads booker sendMail failed:', err && err.stack ? err.stack : err);

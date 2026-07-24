@@ -24,6 +24,7 @@
 // malformed input (400) — never on transient backend failures.
 
 const store = require('./_store');
+const outreach = require('./_outreach');
 
 function setCors(res) {
   // Same-origin in production; permissive here so preview deploys (which
@@ -68,6 +69,20 @@ module.exports = async function handler(req, res) {
 
   try {
     await store.recordEvent({ leadId, event, meta });
+    // A modal_opened beacon carrying utm params means the lead arrived
+    // via a tracked email/SMS link — record the click against the lead
+    // so the backend's Outreach page can attribute it to a campaign
+    // (and, via utm_content, to a subject-line variant). Best-effort.
+    if (event === 'modal_opened' && meta && meta.utm && typeof meta.utm === 'object') {
+      const variant = String(meta.utm.utm_content || '').replace(/^subj-/, '') || null;
+      outreach.recordOutreach({
+        leadId,
+        campaign: meta.utm.utm_campaign || 'untagged',
+        event: 'clicked',
+        variant,
+        utm: meta.utm,
+      }).catch(() => {});
+    }
     res.status(200).json({ ok: true });
   } catch (err) {
     // Log but don't fail the client — beacons are fire-and-forget.
