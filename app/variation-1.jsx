@@ -273,9 +273,9 @@ function V1Hero({ accent, onApply, onNav }) {
   // descender ("d" in Source Serif Pro Italic sits below the baseline)
   // so line-height:0.95 on the h1 no longer clips it.
 
-  // Hero graphic — static George Washington cutout (transparent PNG).
-  // No parallax; the portrait is anchored at the right edge and stays put
-  // as the page scrolls.
+  // Hero graphic — static George Washington cutout (transparent WebP,
+  // phone held screen-toward-George). No parallax; the portrait is anchored
+  // at the right edge and stays put as the page scrolls.
 
   return (
     <section ref={heroRef} style={{
@@ -342,7 +342,7 @@ function V1Hero({ accent, onApply, onNav }) {
         maskComposite: 'intersect',
       }} />
 
-      {/* Washington cutout — transparent PNG, absolutely positioned on the right.
+      {/* Washington cutout — transparent WebP, absolutely positioned on the right.
           Anchored to the section's right edge (right:0) with a small inner
           pad so the full portrait — including the phone — stays on screen.
           On narrow viewports we push it partially off-screen and dim it so
@@ -389,17 +389,18 @@ function V1Hero({ accent, onApply, onNav }) {
           transition: 'opacity 1100ms ease-out 200ms',
         }}
       >
-        {/* Breathing glow off the phone screen — sells the "screen is lit"
-            read against the plate-dark background. Positioned in % of the
-            portrait so it stays glued to the phone at every viewport. */}
+        {/* Breathing glow around the phone — the screen faces George in this
+            pose, so the light reads as spill escaping past the phone's edges.
+            Positioned in % of the portrait so it stays glued to the phone at
+            every viewport. */}
         <div className="v1hero-glow" style={{
-          position: 'absolute', left: '-7%', top: '16%', width: '46%', height: '72%',
+          position: 'absolute', left: '-3%', top: '32%', width: '46%', height: '58%',
           background: 'radial-gradient(50% 42% at 42% 50%, rgba(129,140,248,0.28) 0%, rgba(73,69,255,0.10) 48%, rgba(12,26,42,0) 74%)',
           filter: 'blur(18px)',
           animation: 'v1heroGlow 5.5s ease-in-out infinite',
           pointerEvents: 'none',
         }} />
-        <img src="app/assets/washington-cutout.png" alt="" />
+        <img src="app/assets/washington-cutout-forward.webp" alt="" />
       </div>
 
       <div data-v1-grid-2col style={{
