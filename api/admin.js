@@ -17,9 +17,10 @@ function loginHtml({ error }) {
     .eyebrow{font-size:12px;color:#6B6877;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px}
     h1{font-size:22px;margin:0 0 6px;font-weight:600}
     .sub{color:#6B6877;font-size:14px;margin:0 0 22px;line-height:1.5}
-    label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
-    input[type=email]{width:100%;padding:12px 14px;border:1px solid #E2E0EA;border-radius:10px;font-size:15px;font-family:inherit;background:#FAFAFB;transition:border-color .15s,background .15s}
-    input[type=email]:focus{outline:none;border-color:#5B5BD6;background:#fff}
+    label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;margin-top:14px}
+    label:first-of-type{margin-top:0}
+    input[type=email],input[type=password]{width:100%;padding:12px 14px;border:1px solid #E2E0EA;border-radius:10px;font-size:15px;font-family:inherit;background:#FAFAFB;transition:border-color .15s,background .15s}
+    input[type=email]:focus,input[type=password]:focus{outline:none;border-color:#5B5BD6;background:#fff}
     button{margin-top:14px;width:100%;padding:13px 18px;border-radius:10px;border:none;cursor:pointer;background:linear-gradient(135deg,#5B5BD6 0%,#6366F1 50%,#5B5BD6 100%);color:#fff;font-weight:600;font-size:15px;font-family:inherit}
     button:disabled{opacity:.55;cursor:default}
     .msg{margin-top:14px;font-size:13px;line-height:1.5}
@@ -31,15 +32,17 @@ function loginHtml({ error }) {
     <div class="card">
       <div class="eyebrow">Delt Capital</div>
       <h1>Admin sign-in</h1>
-      <p class="sub">Enter your work email. We'll send you a sign-in link that works for 15 minutes.</p>
-      ${error === 'expired' ? `<p class="msg err">That sign-in link expired or was already used. Request a new one below.</p>` : ''}
+      <p class="sub">Sign in with your platform email and password.</p>
+      ${error === 'expired' ? `<p class="msg err">That sign-in link expired or was already used. Sign in below.</p>` : ''}
       <form id="f" autocomplete="off">
         <label for="email">Email</label>
-        <input id="email" name="email" type="email" required placeholder="you@deltpay.com" />
-        <button id="btn" type="submit">Send sign-in link</button>
+        <input id="email" name="email" type="email" required placeholder="you@deltpay.com" autocomplete="username" />
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" required placeholder="••••••••" autocomplete="current-password" />
+        <button id="btn" type="submit">Sign in</button>
         <p class="msg" id="msg" style="display:none"></p>
       </form>
-      <p class="foot">This page is restricted. Only emails on the allow list will receive a link.</p>
+      <p class="foot">This page is restricted to allow-listed platform users.</p>
     </div>
     <script>
       const f = document.getElementById('f');
@@ -47,23 +50,31 @@ function loginHtml({ error }) {
       const msg = document.getElementById('msg');
       f.addEventListener('submit', async (e) => {
         e.preventDefault();
-        btn.disabled = true; btn.textContent = 'Sending\u2026';
+        btn.disabled = true; btn.textContent = 'Signing in\u2026';
         msg.style.display = 'none';
         try {
-          await fetch('/api/admin-login', {
+          const r = await fetch('/api/admin-login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: document.getElementById('email').value }),
+            body: JSON.stringify({
+              email: document.getElementById('email').value,
+              password: document.getElementById('password').value,
+            }),
           });
-          msg.className = 'msg ok';
-          msg.textContent = 'Check your inbox \u2014 a sign-in link is on its way.';
+          if (r.ok) {
+            const data = await r.json().catch(() => ({}));
+            window.location.href = data.redirect || '/admin/leads';
+            return;
+          }
+          msg.className = 'msg err';
+          msg.textContent = 'Invalid email or password.';
           msg.style.display = 'block';
-          btn.textContent = 'Link sent';
+          btn.disabled = false; btn.textContent = 'Sign in';
         } catch (err) {
           msg.className = 'msg err';
           msg.textContent = 'Something went wrong. Try again in a moment.';
           msg.style.display = 'block';
-          btn.disabled = false; btn.textContent = 'Send sign-in link';
+          btn.disabled = false; btn.textContent = 'Sign in';
         }
       });
     </script>
