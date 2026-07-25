@@ -365,6 +365,9 @@ function V1Hero({ accent, onApply, onNav }) {
         .v1hero-washington img {
           height: 100%; width: auto; display: block;
           filter: drop-shadow(0 8px 22px rgba(0,0,0,0.28));
+          /* Slightly faded so the portrait supports the copy instead of
+             competing with it; mobile queries below override with deeper dims. */
+          opacity: 0.85;
         }
         @media (max-width: 1200px) {
           .v1hero-washington { right: 0; }
