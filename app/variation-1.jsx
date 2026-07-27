@@ -314,7 +314,12 @@ function V1Hero({ accent, onApply, onNav }) {
           previous 60-path SVG wave field. */}
       <div aria-hidden style={{
         position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
-        background: 'repeating-linear-gradient(180deg, rgba(125,160,205,0.10) 0px, rgba(125,160,205,0.10) 1px, transparent 1px, transparent 4px)',
+        // Feathered 1px line centered in each 4px period (transparent → core →
+        // transparent) instead of a hard 1px bar. Hard edges resample unevenly
+        // on fractional device-pixel ratios / browser zoom and produce visible
+        // scanline moiré (some lines bolder than others); the symmetric ramp
+        // anti-aliases every line identically, so the field stays uniform.
+        background: 'repeating-linear-gradient(180deg, transparent 0px, rgba(125,160,205,0.10) 1px, rgba(125,160,205,0.10) 2px, transparent 3px, transparent 4px)',
         // Lines halo around George (right of center) and fade toward the
         // copy column and corners, matching the reference plate — the
         // cursor-spotlight layer below still reveals them anywhere.
@@ -334,10 +339,10 @@ function V1Hero({ accent, onApply, onNav }) {
         // enters or leaves the hero.
         opacity: 'var(--illum-op, 0)',
         background: 'linear-gradient(105deg, #6EE7F9 0%, #7DD3FC 25%, #A5B4FC 55%, #C7D2FE 78%, #F7F5F0 100%)',
-        WebkitMaskImage: 'repeating-linear-gradient(180deg, #000 0px, #000 1px, transparent 1px, transparent 4px), radial-gradient(circle 640px at var(--mx, 50%) var(--my, 40%), #000 0%, rgba(0,0,0,0.82) 32%, rgba(0,0,0,0.4) 62%, rgba(0,0,0,0.12) 84%, transparent 100%)',
+        WebkitMaskImage: 'repeating-linear-gradient(180deg, transparent 0px, #000 1px, #000 2px, transparent 3px, transparent 4px), radial-gradient(circle 640px at var(--mx, 50%) var(--my, 40%), #000 0%, rgba(0,0,0,0.82) 32%, rgba(0,0,0,0.4) 62%, rgba(0,0,0,0.12) 84%, transparent 100%)',
         WebkitMaskRepeat: 'repeat, no-repeat',
         WebkitMaskComposite: 'source-in',
-        maskImage: 'repeating-linear-gradient(180deg, #000 0px, #000 1px, transparent 1px, transparent 4px), radial-gradient(circle 640px at var(--mx, 50%) var(--my, 40%), #000 0%, rgba(0,0,0,0.82) 32%, rgba(0,0,0,0.4) 62%, rgba(0,0,0,0.12) 84%, transparent 100%)',
+        maskImage: 'repeating-linear-gradient(180deg, transparent 0px, #000 1px, #000 2px, transparent 3px, transparent 4px), radial-gradient(circle 640px at var(--mx, 50%) var(--my, 40%), #000 0%, rgba(0,0,0,0.82) 32%, rgba(0,0,0,0.4) 62%, rgba(0,0,0,0.12) 84%, transparent 100%)',
         maskRepeat: 'repeat, no-repeat',
         maskComposite: 'intersect',
       }} />
