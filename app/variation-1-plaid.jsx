@@ -37,11 +37,14 @@ window.PlaidIntegration = window.PlaidIntegration || {
       return data;
     }),
 
-  exchangePublicToken: (publicToken) =>
+  // `applicant` ({ email, fullName, businessName, leadId }) lets the server
+  // persist the connection into the Delt CRM vault, matched to the lead by
+  // email. Optional — the exchange still works (non-persisting) without it.
+  exchangePublicToken: (publicToken, applicant) =>
     fetch('/api/plaid-exchange-token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ public_token: publicToken }),
+      body: JSON.stringify({ public_token: publicToken, applicant: applicant || null }),
     }).then(async (r) => {
       const data = await r.json().catch(() => ({}));
       if (!r.ok) throw V1PlaidThrowFromResponse(data, 'exchangePublicToken failed');
@@ -215,7 +218,7 @@ function V1PlaidQR({ dataUrl, size = 196 }) {
 //   intro → opening (SDK overlays our modal) → success
 //   intro → mobile (QR of hosted_link_url; desktop polls the hosted-link
 //           session and auto-advances to success once the phone finishes)
-function V1PlaidLink({ open, onClose, onSuccess }) {
+function V1PlaidLink({ open, onClose, onSuccess, applicant }) {
   const [stage, setStage] = React.useState('loading');
   const [tokenData, setTokenData] = React.useState(null);  // { link_token, hosted_link_url }
   const [err, setErr] = React.useState(null);
@@ -238,7 +241,7 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
   // success-flash screen — the apply flow takes over and advances.
   const completeWithPublicToken = React.useCallback(async (publicToken, instHint) => {
     try {
-      const result = await window.PlaidIntegration.exchangePublicToken(publicToken);
+      const result = await window.PlaidIntegration.exchangePublicToken(publicToken, applicant);
       const accountStrs = (result.accounts || []).map((a) =>
         a.mask ? `${a.name} ••${a.mask}` : a.name);
       onSuccess && onSuccess({
@@ -253,7 +256,7 @@ function V1PlaidLink({ open, onClose, onSuccess }) {
       setErr(`Could not finish linking${code}${msg}. Try again.`);
       setStage('intro');
     }
-  }, [onSuccess]);
+  }, [onSuccess, applicant]);
 
   // Reset on close. Tear down the Plaid SDK handler synchronously so its
   // document-level listeners can't swallow clicks on the page behind.

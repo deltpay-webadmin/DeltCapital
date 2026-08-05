@@ -54,9 +54,40 @@ PLAID_ENV               sandbox | development | production   (default: sandbox)
 PLAID_IDV_TEMPLATE_ID   Identity Verification template id
 PLAID_PRODUCTS          comma list, e.g. auth,transactions   (default: auth,transactions)
 PLAID_COUNTRY_CODES     comma list, e.g. US                  (default: US)
+APPLY_EXCHANGE_SECRET   optional — persists applicant bank connections into
+                        the Delt CRM Plaid Data Vault (see below)
 ```
 
 Sandbox test creds for Plaid Link bank flow: `user_good` / `pass_good` (any institution). For IDV in sandbox, follow the prompts on the mobile-optimized URL — Plaid accepts test images.
+
+**Testing without real identity verification:** never run the production
+flow with a real identity — production IDV performs real KYC and flags
+repeat applicants. Instead scope sandbox values (`PLAID_ENV=sandbox`,
+sandbox `PLAID_SECRET`, a sandbox-created `PLAID_IDV_TEMPLATE_ID`) to the
+**Preview** environment in Vercel; every preview deployment then runs the
+whole flow against Plaid sandbox while production stays on real
+credentials. Full runbook: `docs/plaid-testing-strategy.md` in the DeltPay
+repo.
+
+### Persisting connections into the Delt CRM (Plaid Data Vault)
+
+When `APPLY_EXCHANGE_SECRET` is set (matching the Supabase edge-function
+secret of the same name), `api/plaid-exchange-token.js` forwards the Link
+exchange — together with the applicant's email/name/business from the
+apply form — to the Delt Backend edge function, which stores the item in
+`plaid_items`/`plaid_credentials`, matches or creates the CRM pipeline
+lead by email, and runs a full data sync. Underwriting sees the prospect
+as **Connected** in the Plaid Data Vault immediately.
+
+Caveats:
+
+- Public tokens are environment-bound: persistence only works when this
+  site's `PLAID_ENV` matches the edge functions' `PLAID_ENV`. On mismatch
+  (or any forward failure) the endpoint falls back to the legacy local
+  exchange — the applicant flow is unaffected, but nothing persists (the
+  Vercel function log shows the fallback reason).
+- When `APPLY_EXCHANGE_SECRET` is unset, behavior is exactly the legacy
+  one: exchange locally, show account names, discard the access token.
 
 ### Plaid troubleshooting
 
