@@ -184,8 +184,19 @@ function V1StepBusiness({ form, setForm, accent }) {
 }
 
 // ─── Step 2: Bank (Plaid) ───
-function V1StepBank({ form, setForm, accent, onAdvance, autoOpen }) {
+function V1StepBank({ form, setForm, accent, onAdvance, autoOpen, leadId }) {
   const [plaidOpen, setPlaidOpen] = React.useState(false);
+
+  // Applicant identity forwarded with the token exchange so the server can
+  // persist the connection into the Delt CRM vault (matched by email).
+  // Memoized so the object identity is stable across re-renders — it feeds
+  // a useCallback dep inside V1PlaidLink.
+  const applicant = React.useMemo(() => ({
+    email: form.email || '',
+    fullName: form.firstName || '',
+    businessName: form.businessName || '',
+    leadId: leadId || null,
+  }), [form.email, form.firstName, form.businessName, leadId]);
 
   // When the user lands on Bank via the email deep-link we kick Plaid Link
   // open automatically — they've already committed once (clicked the
@@ -329,7 +340,7 @@ function V1StepBank({ form, setForm, accent, onAdvance, autoOpen }) {
         </>
       )}
 
-      <V1PlaidLink open={plaidOpen} onClose={() => setPlaidOpen(false)} onSuccess={handlePlaidSuccess} />
+      <V1PlaidLink open={plaidOpen} onClose={() => setPlaidOpen(false)} onSuccess={handlePlaidSuccess} applicant={applicant} />
     </div>
   );
 }
@@ -1101,7 +1112,7 @@ function V1ApplicationFlow({
             padding: '38px 40px',
           }}>
             {step === 0 && <V1StepBusiness form={form} setForm={setForm} accent={accent} />}
-            {step === 1 && <V1StepBank form={form} setForm={setForm} accent={accent} onAdvance={() => setStep(2)} autoOpen={autoOpenPlaid} />}
+            {step === 1 && <V1StepBank form={form} setForm={setForm} accent={accent} onAdvance={() => setStep(2)} autoOpen={autoOpenPlaid} leadId={beaconLeadId} />}
             {step === 2 && <V1StepIdentity form={form} setForm={setForm} accent={accent} onAdvance={() => setStep(3)} />}
             {step === 3 && <V1StepOffer form={form} prefill={prefill} accent={accent} />}
             {step === 4 && <V1StepDone form={form} accent={accent} />}
