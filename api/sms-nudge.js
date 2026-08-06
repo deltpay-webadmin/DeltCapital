@@ -28,8 +28,9 @@
 
 const store = require('./_store');
 const { getAccessToken, sendMail } = require('./_email');
-const { buildApplyUrlFromRow, buildShortUrl, withUtm } = require('./_deeplink');
-const { renderEmail, esc: layoutEsc, COMPANY } = require('./_email-layout');
+const { buildApplyUrlFromRow, buildShortUrl, withUtm, SITE_ORIGIN } = require('./_deeplink');
+const { renderEmail, esc: layoutEsc, ctaButton, COMPANY } = require('./_email-layout');
+const { firstNameOf } = require('./_name');
 const outreach = require('./_outreach');
 
 const NOTIFY_TO = process.env.LEADS_NOTIFY_EMAIL
@@ -56,9 +57,36 @@ function googleVoiceLink({ phone, body }) {
 // raw /apply?d=<base64> payload so the message stays well under 160
 // chars AND looks like a real link a human would send. The short link
 // 302s through api/r.js back to the same payloaded /apply URL.
-function smsTemplate({ firstName, shortUrl }) {
-  const name = firstName ? String(firstName).trim() : 'Hey';
-  return `${name}, this is David at Delt Capital. Saw you started the funding calculator earlier \u2014 here's your offer link, takes 2 min: ${shortUrl}`;
+//
+// Two things this used to get wrong:
+//   \u2022 It greeted with the raw column, so a lead whose first_name held
+//     "Null Null" got "Null Null, this is David...".
+//   \u2022 It told everyone they'd "started the funding calculator", which is
+//     false for apply_form leads \u2014 they filled in the Business step of the
+//     application and never touched the calculator.
+//
+// Budget: keep the whole body under 160 chars so it stays a single SMS
+// segment. The short link is ~34 chars, which leaves ~125 for the copy.
+function smsTemplate({ firstName, shortUrl, stage, source }) {
+  const name = firstNameOf(firstName) || 'Hey';
+  const lead = `${name}, this is David at Delt Capital.`;
+
+  // Past the first milestone, drop the "saw you started..." recap and lead
+  // with the one thing that's left. It's the more useful sentence and it's
+  // what keeps the whole body inside a single 160-char segment.
+  if (stage === 'bank_linked') {
+    return `${lead} Your bank's linked \u2014 just a 60-sec ID check left: ${shortUrl}`;
+  }
+  if (stage === 'idv_done' || stage === 'offer_presented') {
+    return `${lead} You're verified \u2014 your offer's ready to review: ${shortUrl}`;
+  }
+
+  const saw = source === 'apply_form'
+    ? 'Saw you started your application earlier'
+    : (source === 'calculator-gate'
+      ? 'Saw you ran the funding calculator earlier'
+      : 'Saw you started with us earlier');
+  return `${lead} ${saw} \u2014 here's your offer link, takes 2 min: ${shortUrl}`;
 }
 
 // HTML-escape — shared with _email-layout so we don't drift between modules.
@@ -91,23 +119,12 @@ function subjectVariant(leadId) {
   return 'abc'[h % 3];
 }
 
-function nudgeSubject({ variant, firstName, estimate }) {
-  const name = firstName ? String(firstName).trim() : '';
-  const low  = fmtK(estimate && estimate.low);
-  const high = fmtK(estimate && estimate.high);
-  if (variant === 'b') {
-    return 'Your Delt Capital offer expires Sunday';
-  }
-  if (variant === 'c') {
-    return (low && high)
-      ? `David @ Delt: your ${low}–${high} is still open`
-      : 'David @ Delt: your funding offer is still open';
-  }
-  // variant 'a'
-  const offer = high ? `your ${high} offer` : 'your funding offer';
-  return name
-    ? `${name} — ${offer} is holding (2 min to claim)`
-    : `Your ${high ? `${high} ` : ''}offer is holding (2 min to claim)`;
+// The subject is now derived from the same stageCopy() block as the body,
+// so the two can't drift into telling the lead different stories. Variant
+// selection itself is unchanged — still deterministic from the lead id.
+function nudgeSubject({ variant, stage, name, source, estimate, institution }) {
+  const copy = stageCopy({ stage, name, source, estimate, institution });
+  return copy.subjects[variant] || copy.subjects.a;
 }
 
 // The urgency line quotes a real date ("holds through Sunday, July 26")
@@ -127,21 +144,170 @@ function upcomingSundayLabel(now = new Date()) {
   return `Sunday, ${monthDay}`;
 }
 
-function nudgeEmailBody({ firstName, estimate, ctaUrl }) {
-  const hasRange = !!(estimate && estimate.low && estimate.high);
-  const high  = hasRange ? fmtMoney(estimate.high) : null;
-  const lowK  = hasRange ? fmtK(estimate.low) : null;
-  const highK = hasRange ? fmtK(estimate.high) : null;
-  const name  = firstName ? String(firstName).trim() : '';
-  const deadline = upcomingSundayLabel();
+// Only echo the bank name back at the lead when it looks like a real
+// institution name. Same defensive spirit as isPlausibleBusinessName in
+// api/leads.js \u2014 the meta comes off a client-fired beacon, so it is not
+// trusted input.
+function plausibleInstitution(s) {
+  const t = String(s || '').trim();
+  if (!t) return null;
+  return /^[A-Za-z0-9][\w .&'-]{1,40}$/.test(t) ? t : null;
+}
 
-  const headline = name
-    ? (high ? `${name} \u2014 your ${high} is ready to claim.` : `${name} \u2014 your offer is ready to claim.`)
-    : (high ? `Your ${high} is ready to claim.` : 'Your offer is ready to claim.');
-  const ctaLabel = (lowK && highK)
-    ? `Claim my ${lowK}\u2013${highK} offer`
-    : 'Claim my offer';
-  const rangeNoun = hasRange ? 'this range' : 'this offer';
+// \u2500\u2500 Stage-aware copy \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+//
+// The old email said exactly one thing to everybody: "You ran the funding
+// calculator earlier today... pick up right where you left off." Two
+// problems with that.
+//
+// First, it isn't always true. Leads created by api/apply-lead.js
+// (source 'apply_form') never touched the calculator \u2014 they filled in the
+// Business step of the application. Telling them otherwise reads as a
+// mail-merge that doesn't know who they are.
+//
+// Second, it's stage-blind. apply_progress already records exactly how far
+// each lead got, so we know the difference between somebody who never
+// opened the modal and somebody whose bank is linked and only needs a
+// 60-second ID check. Those two people need completely different asks. A
+// nudge that names the one thing left is a nudge that closes; a nudge that
+// says "finish your application" is a nudge that gets archived.
+//
+// Everything the body and the subject lines need comes out of here
+// together, so the two can't contradict each other about which step the
+// lead is on.
+//
+// Pure function \u2014 no I/O, no dates fetched internally \u2014 so it can be
+// rendered offline via the __test export at the bottom of this file.
+function stageCopy({ stage, name, source, estimate, institution, deadline }) {
+  const e = estimate || {};
+  const hasRange = !!(e.low && e.high);
+  const high  = hasRange ? fmtMoney(e.high) : null;
+  const lowK  = hasRange ? fmtK(e.low) : null;
+  const highK = hasRange ? fmtK(e.high) : null;
+  const bank  = plausibleInstitution(institution);
+  const by    = deadline || upcomingSundayLabel();
+
+  // How they got here. Only used for the 'new' stage: once a lead has hit
+  // a milestone, whereYouLeftOff below is both more specific and more
+  // accurate, and running both would say the same thing twice \u2014 or worse,
+  // contradict itself ("stopped after the business details" is simply
+  // false for someone whose bank is already linked).
+  //
+  // The neutral third branch covers rows whose `source` predates the
+  // current writers or arrived via the CRM mirror: better vague than wrong.
+  const provenance = source === 'apply_form'
+    ? 'You started your application earlier today and stopped after the business details. Nothing needs re-entering \u2014 I held your spot.'
+    : (source === 'calculator-gate'
+      ? 'You ran the funding calculator earlier today. I held your pre-qualification open so you can pick up right where you left off.'
+      : 'You started with us earlier today. I held your pre-qualification open so you can pick up right where you left off.');
+
+  // Name-and-amount aware headline builder, so each stage below only has
+  // to supply its own predicate.
+  const head = (withName, without) => (name ? withName : without);
+
+  // Stages past 'new' narrate themselves via whereYouLeftOff, so they
+  // suppress the provenance line entirely (see the comment above it).
+  const common = { lowK, highK, hasRange, provenance: null };
+
+  if (stage === 'opened') {
+    return {
+      ...common,
+      eyebrow: 'One step left \u2014 bank connection',
+      headline: head(
+        high ? `${name} \u2014 you're one step from your ${high}.` : `${name} \u2014 you're one step away.`,
+        high ? `You're one step from your ${high}.` : "You're one step away."
+      ),
+      whereYouLeftOff: 'You opened your application earlier today but stopped before connecting your bank. Nothing needs re-entering \u2014 and that connection is what prices the offer, so it\'s the only thing standing between you and a real number.',
+      ctaLabel: 'Connect my bank',
+      timeNote: 'Takes about 90 seconds. Resumes exactly where you stopped.',
+      // The generic "~2 minutes to finish" bullet would contradict the
+      // 90-second estimate above it. Only the 'new' stage, which has no
+      // per-step estimate of its own, keeps it.
+      showTimeBullet: false,
+      urgency: `Offers are priced against live bank data, so ${hasRange ? 'this range' : 'this offer'} holds through <strong style="color:#0A1133;">${esc(by)}</strong>. After that we'll re-verify and the numbers may shift.`,
+      preheader: 'One step left \u2014 connect your bank, about 90 seconds.',
+      subjects: {
+        a: name ? `${name} \u2014 one step left on your application` : 'One step left on your application',
+        b: `Your Delt Capital offer holds through ${by}`,
+        c: 'David @ Delt: your bank connection is the last step',
+      },
+    };
+  }
+
+  if (stage === 'bank_linked') {
+    return {
+      ...common,
+      eyebrow: 'Bank linked \u2014 ID check left',
+      headline: head(
+        `${name} \u2014 your bank is linked. One ID check to go.`,
+        'Your bank is linked. One ID check to go.'
+      ),
+      whereYouLeftOff: `You connected ${bank ? esc(bank) : 'your bank'} earlier today, which is the slow part and it's done. The only thing left before your offer is a photo ID check.`,
+      ctaLabel: 'Finish my ID check',
+      timeNote: 'About 60 seconds, on your phone.',
+      showTimeBullet: false,
+      urgency: `Your offer is priced against the bank data you just connected, so it's locked through <strong style="color:#0A1133;">${esc(by)}</strong>. Finish the ID check and it's yours to review.`,
+      preheader: 'Bank linked \u2014 one 60-second ID check left.',
+      subjects: {
+        a: name ? `${name} \u2014 one 60-second ID check left` : 'One 60-second ID check left',
+        b: `Your bank is linked \u2014 offer locked through ${by}`,
+        c: 'David @ Delt: just the ID check left',
+      },
+    };
+  }
+
+  if (stage === 'idv_done' || stage === 'offer_presented') {
+    return {
+      ...common,
+      eyebrow: 'Last step \u2014 review & accept',
+      headline: head(
+        high ? `${name} \u2014 everything checks out. Your ${high} is waiting.` : `${name} \u2014 everything checks out. Your offer is waiting.`,
+        high ? `Everything checks out. Your ${high} is waiting.` : 'Everything checks out. Your offer is waiting.'
+      ),
+      whereYouLeftOff: 'Bank connected, ID verified \u2014 you\'re through everything that takes real time. All that\'s left is reading your terms and signing.',
+      ctaLabel: 'Review and accept my offer',
+      timeNote: 'Under a minute. Nothing to re-enter.',
+      showTimeBullet: false,
+      urgency: `Your offer is priced against the bank data you connected, so it's locked through <strong style="color:#0A1133;">${esc(by)}</strong>. After that we re-verify and the numbers may shift.`,
+      preheader: 'Verified \u2014 your offer is ready to review and sign.',
+      subjects: {
+        a: name ? `${name} \u2014 your offer is ready to sign` : 'Your offer is ready to sign',
+        b: `You're verified \u2014 offer locked through ${by}`,
+        c: 'David @ Delt: your offer is ready, just needs a signature',
+      },
+    };
+  }
+
+  // stage === 'new' \u2014 we have contact details but no milestone at all, so
+  // provenance is the only thing we can honestly say about where they are.
+  return {
+    ...common,
+    provenance,
+    eyebrow: 'Your offer is still open',
+    headline: head(
+      high ? `${name} \u2014 your ${high} is ready to claim.` : `${name} \u2014 your offer is ready to claim.`,
+      high ? `Your ${high} is ready to claim.` : 'Your offer is ready to claim.'
+    ),
+    whereYouLeftOff: null,
+    ctaLabel: (lowK && highK) ? `Claim my ${lowK}\u2013${highK} offer` : 'Claim my offer',
+    timeNote: 'Resumes your application \u2014 about 2 minutes.',
+    showTimeBullet: true,
+    urgency: `Offers are priced against live bank data, so ${hasRange ? 'this range' : 'this offer'} holds through <strong style="color:#0A1133;">${esc(by)}</strong>. After that we'll re-verify and the numbers may shift.`,
+    preheader: 'Pick up where you left off \u2014 about 2 minutes.',
+    subjects: {
+      a: name
+        ? `${name} \u2014 ${high ? `your ${high} offer` : 'your funding offer'} is holding (2 min to claim)`
+        : `Your ${highK ? `${highK} ` : ''}offer is holding (2 min to claim)`,
+      b: `Your Delt Capital offer expires ${by}`,
+      c: (lowK && highK)
+        ? `David @ Delt: your ${lowK}\u2013${highK} is still open`
+        : 'David @ Delt: your funding offer is still open',
+    },
+  };
+}
+
+function nudgeEmailBody({ stage, name, source, estimate, institution, deadline, ctaUrl, pasteUrl }) {
+  const copy = stageCopy({ stage, name, source, estimate, institution, deadline });
 
   const bullet = (lead, rest) => `
       <p style="margin:0 0 10px;font-size:14.5px;line-height:1.55;color:#0F0E17;">
@@ -149,37 +315,40 @@ function nudgeEmailBody({ firstName, estimate, ctaUrl }) {
         <strong style="color:#0A1133;">${lead}</strong>${rest}
       </p>`;
 
+  // ctaButton owns the caption and the paste-me link, so they can never be
+  // orphaned from the button the way "Resumes your application." was.
+  const cta = ctaButton({
+    url: ctaUrl,
+    label: copy.ctaLabel,
+    bg: '#5B5BD6',
+    gradient: 'linear-gradient(135deg,#5B5BD6 0%,#6366F1 50%,#5B5BD6 100%)',
+    caption: copy.timeNote,
+    pasteUrl,
+  });
+
   return `
-      <p style="margin:0 0 6px;font-size:13px;color:#6B6877;letter-spacing:0.04em;text-transform:uppercase;font-weight:600;">Your offer is still open</p>
+      <p style="margin:0 0 6px;font-size:13px;color:#6B6877;letter-spacing:0.04em;text-transform:uppercase;font-weight:600;">${esc(copy.eyebrow)}</p>
       <h1 style="margin:0 0 16px;font-size:24px;line-height:1.25;font-weight:700;color:#0A1133;letter-spacing:-0.01em;">
-        ${esc(headline)}
+        ${esc(copy.headline)}
       </h1>
       <p style="font-size:15px;line-height:1.6;margin:0 0 14px;color:#0F0E17;">
-        ${name ? `Hey ${esc(name)},` : 'Hey,'}
+        ${name ? `Hey ${esc(name)},` : 'Hey there,'}
       </p>
-      <p style="font-size:15px;line-height:1.6;margin:0 0 20px;color:#0F0E17;">
-        You ran the funding calculator earlier today. I held your
-        pre-qualification open so you can pick up right where you left off.
-      </p>
-      <p style="margin:0 0 8px;">
-        <a href="${esc(ctaUrl)}"
-           style="display:inline-block;padding:14px 28px;background:linear-gradient(135deg,#5B5BD6 0%,#6366F1 50%,#5B5BD6 100%);color:#FFFFFF;text-decoration:none;border-radius:10px;font-weight:700;font-size:15px;letter-spacing:0.01em;">
-          ${esc(ctaLabel)} &rarr;
-        </a>
-      </p>
-      <p style="margin:0 0 22px;font-size:12.5px;color:#6B6877;">
-        Resumes your application.
-      </p>
+      ${copy.provenance ? `<p style="font-size:15px;line-height:1.6;margin:0 0 20px;color:#0F0E17;">
+        ${esc(copy.provenance)}
+      </p>` : ''}
+      ${copy.whereYouLeftOff ? `<p style="font-size:15px;line-height:1.6;margin:0 0 20px;color:#0F0E17;">
+        ${copy.whereYouLeftOff}
+      </p>` : ''}
+      ${cta}
       <p style="margin:0 0 10px;font-size:14px;font-weight:600;color:#0A1133;">
-        Three things worth knowing before you click:
+        ${copy.showTimeBullet ? 'Three things worth knowing before you click:' : 'Two things worth knowing before you click:'}
       </p>
-      ${bullet('~2 minutes to finish', ' \u2014 most of your info is already saved.')}
+      ${copy.showTimeBullet ? bullet('~2 minutes to finish', ' \u2014 most of your info is already saved.') : ''}
       ${bullet('Soft check only', ' \u2014 your credit score stays untouched until you accept terms.')}
       ${bullet('Plaid verified.', ' Bank-grade encryption.')}
       <p style="font-size:15px;line-height:1.6;margin:18px 0 14px;color:#0F0E17;">
-        Offers are priced against live bank data, so ${rangeNoun} holds through
-        <strong style="color:#0A1133;">${esc(deadline)}</strong>. After that we'll
-        re-verify and the numbers may shift.
+        ${copy.urgency}
       </p>
       <p style="font-size:15px;line-height:1.6;margin:0 0 22px;color:#0F0E17;">
         If something's holding you back \u2014 rate, term, payback, timing \u2014
@@ -197,7 +366,10 @@ function nudgeEmailBody({ firstName, estimate, ctaUrl }) {
   `;
 }
 
-function nudgeEmail({ leadId, firstName, estimate, applyUrl, leadEmail, leadPhone, variant }) {
+function nudgeEmail({
+  leadId, stage, name, source, estimate, institution, deadline,
+  applyUrl, pasteUrl, leadEmail, leadPhone, variant,
+}) {
   // Tag the CTA so clicks are attributable in any analytics tool that
   // reads utm_* params; utm_content carries the subject-line variant.
   const ctaUrl = withUtm(applyUrl, {
@@ -206,13 +378,21 @@ function nudgeEmail({ leadId, firstName, estimate, applyUrl, leadEmail, leadPhon
     utm_campaign: 'calc-nudge-45m',
     utm_content: variant ? `subj-${variant}` : null,
   });
+  const copy = stageCopy({ stage, name, source, estimate, institution, deadline });
   return renderEmail({
-    body: nudgeEmailBody({ firstName, estimate, ctaUrl }),
+    body: nudgeEmailBody({
+      stage, name, source, estimate, institution, deadline, ctaUrl, pasteUrl,
+    }),
     audience: 'lead',
     includeTrustStrip: true,
     recipientEmail: leadEmail,
     recipientPhone: leadPhone,
-    preheader: 'Pick up where you left off \u2014 about 2 minutes.',
+    // Don't tell an apply_form lead they used the calculator — the footer
+    // has the same provenance trap the body copy does.
+    footerReason: source === 'apply_form'
+      ? `started a funding application on ${COMPANY.site}`
+      : `used the funding calculator on ${COMPANY.site}`,
+    preheader: copy.preheader,
     openPixelUrl: outreach.openPixelUrl({
       leadId,
       email: leadEmail,
@@ -222,10 +402,16 @@ function nudgeEmail({ leadId, firstName, estimate, applyUrl, leadEmail, leadPhon
   });
 }
 
-function internalNudgeBody({ lead, applyUrl, shortUrl, smsBody, gvLink, variant, subject }) {
+// Operator-facing. Deliberately renders lead.first_name RAW \u2014 no
+// firstNameOf() here. When a lead's name column holds "Null Null", David
+// needs to see that so he can fix the row; sanitizing it would hide the
+// data problem behind a clean-looking internal email. Same for the
+// operator subject line below.
+function internalNudgeBody({ lead, stage, applyUrl, shortUrl, smsBody, gvLink, variant, subject }) {
   return `
       <h2 style="margin:0 0 12px;font-size:18px;">T+45min nudge fired</h2>
       <p style="margin:6px 0;font-size:14px;"><b>Lead:</b> ${esc(lead.first_name || '')} \u2014 ${esc(lead.business_name || '')}</p>
+      <p style="margin:6px 0;font-size:14px;"><b>Stage:</b> ${esc(stage || 'new')} (copy is tailored to this)</p>
       <p style="margin:6px 0;font-size:14px;"><b>Email:</b> ${esc(lead.email || '')}</p>
       <p style="margin:6px 0;font-size:14px;"><b>Phone:</b> ${esc(lead.phone || '')}</p>
       <p style="margin:6px 0;font-size:14px;"><b>Subject (variant ${esc(variant || '?')}):</b> ${esc(subject || '')}</p>
@@ -325,18 +511,56 @@ module.exports = async function handler(req, res) {
 
   const results = [];
   for (const lead of stale) {
-    const applyUrl = buildApplyUrlFromRow(lead);
-    const shortUrl = buildShortUrl(lead.id) || applyUrl;
-    const smsBody  = smsTemplate({
+    if (!lead || !lead.email) continue;
+
+    const stage = store.applyStage(lead);
+
+    // findStaleLeads filters on completed_at is null, but that isn't
+    // airtight: recordEvent swallows markCompleted failures, so a lead can
+    // carry a 'submitted' event with a null completed_at. Nudging someone
+    // who already applied is the worst thing this cron could do, so trust
+    // the event log over the column and mark them so we stop reconsidering.
+    if (stage === 'submitted') {
+      try { await store.markNudged(lead.id); } catch (_) { /* best effort */ }
+      results.push({ id: lead.id, ok: false, reason: 'already_submitted' });
+      continue;
+    }
+
+    // Pass the stage so the link opens on the step they actually stopped
+    // on — a "finish your ID check" CTA that lands on the business form
+    // isn't a one-click nudge.
+    const applyUrl = buildApplyUrlFromRow(lead, stage);
+    const shortUrl = buildShortUrl(lead.id);
+    // Never hand ctaButton a falsy URL — buildApplyUrlFromRow returns null
+    // for a null row and buildShortUrl returns null for a malformed id,
+    // and withUtm passes null straight through. An empty href resolves
+    // against the mail client's own base URL and silently does nothing.
+    const linkUrl  = applyUrl || shortUrl || `${SITE_ORIGIN.replace(/\/$/, '')}/apply`;
+    // The paste-me line gets the short link: it's readable when typed by
+    // hand, and api/r.js already logs a 'clicked' outreach row on the way
+    // through, so the fallback path stays attributable.
+    const pasteUrl = shortUrl || linkUrl;
+
+    const name = firstNameOf(lead.first_name);
+    const institution = lead.latest_event
+      && lead.latest_event.meta
+      && lead.latest_event.meta.institution;
+
+    const smsBody = smsTemplate({
       firstName: lead.first_name,
-      shortUrl,
+      shortUrl: pasteUrl,
+      stage,
+      source: lead.source,
     });
     const gvLink = googleVoiceLink({ phone: lead.phone, body: smsBody });
     const variant = subjectVariant(lead.id);
     const subject = nudgeSubject({
       variant,
-      firstName: lead.first_name,
+      stage,
+      name,
+      source: lead.source,
       estimate: lead.estimate || {},
+      institution,
     });
 
     // Email the lead first (the automation half of the hybrid).
@@ -346,9 +570,13 @@ module.exports = async function handler(req, res) {
         subject,
         nudgeEmail({
           leadId: lead.id,
-          firstName: lead.first_name,
+          stage,
+          name,
+          source: lead.source,
           estimate: lead.estimate || {},
-          applyUrl,
+          institution,
+          applyUrl: linkUrl,
+          pasteUrl,
           leadEmail: lead.email,
           leadPhone: lead.phone,
           variant,
@@ -380,7 +608,7 @@ module.exports = async function handler(req, res) {
         utm_campaign: 'calc-nudge-45m',
         utm_content: `subj-${variant}`,
       },
-      meta: { subject },
+      meta: { subject, stage },
     });
 
     // Then send the operator the SMS-ready note (the manual half).
@@ -388,7 +616,7 @@ module.exports = async function handler(req, res) {
       await sendMail(
         token, FROM_MAILBOX, NOTIFY_TO,
         `[Delt SMS nudge] ${lead.first_name || ''} \u2014 ${lead.business_name || ''}`,
-        internalNudgeNote({ lead, applyUrl, shortUrl, smsBody, gvLink, variant, subject }),
+        internalNudgeNote({ lead, stage, applyUrl: linkUrl, shortUrl: pasteUrl, smsBody, gvLink, variant, subject }),
         { from: FROM_MAILBOX, fromName: 'Delt Capital Bot' }
       );
     } catch (err) {
@@ -408,4 +636,19 @@ module.exports = async function handler(req, res) {
   }
 
   res.status(200).json({ ok: true, nudged: results.filter((r) => r.ok).length, results });
+};
+
+// Render harness. Vercel invokes the default export as the handler and
+// ignores extra properties on it, so this is safe in production and it's
+// the only way to render these templates offline — the repo has no build
+// step and no test runner. See the verification notes in the PR.
+module.exports.__test = {
+  stageCopy,
+  nudgeSubject,
+  nudgeEmailBody,
+  nudgeEmail,
+  smsTemplate,
+  subjectVariant,
+  upcomingSundayLabel,
+  plausibleInstitution,
 };

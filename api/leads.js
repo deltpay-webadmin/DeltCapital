@@ -23,7 +23,8 @@
 const store = require('./_store');
 const { getAccessToken, sendMail } = require('./_email');
 const { buildApplyUrl, withUtm } = require('./_deeplink');
-const { renderEmail } = require('./_email-layout');
+const { renderEmail, ctaButton } = require('./_email-layout');
+const { firstNameOf } = require('./_name');
 const outreach = require('./_outreach');
 
 const NOTIFY_TO = process.env.LEADS_NOTIFY_EMAIL
@@ -116,6 +117,9 @@ function internalEmail(ctx) {
 function leadEmailBody({ firstName, businessName, email, phone, estimate, applyUrl }) {
   const e = estimate || {};
   const range = (e.low && e.high) ? `${fmtMoney(e.low)} – ${fmtMoney(e.high)}` : 'your custom amount';
+  // Never greet a lead by whatever literally sits in the column — autofill
+  // and half-finished forms put "null" / "N/A" in there. See api/_name.js.
+  const greeting = firstNameOf(firstName);
   // Only echo the business name when it looks real — protects against
   // placeholder inputs like "123 my business" reading back awkwardly.
   const showBiz = isPlausibleBusinessName(businessName);
@@ -131,7 +135,7 @@ function leadEmailBody({ firstName, businessName, email, phone, estimate, applyU
       <h1 style="margin:0 0 16px;font-size:26px;line-height:1.2;letter-spacing:-0.01em;font-weight:700;color:#0A1133;">
         ${esc(range)} <span style="font-weight:500;color:#6B6877;font-size:20px;">in working capital</span>
       </h1>
-      <p style="margin:0 0 14px;font-size:15.5px;line-height:1.55;">Hi ${esc(firstName)},</p>
+      <p style="margin:0 0 14px;font-size:15.5px;line-height:1.55;">${greeting ? `Hi ${esc(greeting)},` : 'Hi there,'}</p>
       <p style="margin:0 0 14px;font-size:15px;line-height:1.6;">
         ${aboutClause} we've pre-qualified you for between <strong>${esc(range)}</strong> in working
         capital${e.boosted ? ' — that\'s the boosted estimate that comes with switching processing to Delt' : ''}.
@@ -142,14 +146,13 @@ function leadEmailBody({ firstName, businessName, email, phone, estimate, applyU
         takes about 2 minutes — we'll skip the questions you already answered and
         take you straight to the bank-link step:
       </p>
-      <p style="margin:0 0 28px;">
-        <a href="${esc(ctaUrl)}"
-           style="display:inline-block;background:#0A1133;color:#FFFFFF;text-decoration:none;
-                  padding:13px 28px;border-radius:6px;font-family:Arial,sans-serif;
-                  font-size:15px;font-weight:600;letter-spacing:0.01em;">
-          Continue my application &rarr;
-        </a>
-      </p>
+      <div style="margin:0 0 28px;">
+        ${ctaButton({
+          url: ctaUrl,
+          label: 'Continue my application',
+          bg: '#0A1133',
+        })}
+      </div>
       <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 24px;border-top:1px solid #E7E3DA;">
         <tr><td style="padding:14px 0 0;">
           <p style="margin:0 0 8px;font-size:13.5px;color:#5A6577;line-height:1.55;">

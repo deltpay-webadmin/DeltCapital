@@ -73,12 +73,86 @@ function trustStrip() {
     </table>`;
 }
 
+// The one and only call-to-action button.
+//
+// This exists because we shipped an email whose button was invisible. The
+// old markup was:
+//
+//   <a style="background:linear-gradient(135deg,#5B5BD6,...);color:#FFFFFF">
+//
+// The `background:` SHORTHAND resets background-color to transparent as
+// part of the same declaration. Any client that drops CSS gradients —
+// Outlook desktop (Word engine), Outlook.com, a lot of Android clients —
+// therefore painted no background at all, leaving white text on the white
+// card from renderEmail(). Recipients saw an empty gap. Nobody could click
+// anything.
+//
+// So the rules encoded here:
+//   1. background-color and background-image are SEPARATE declarations.
+//      A dropped gradient falls back to the solid color, never to nothing.
+//   2. The bgcolor attribute repeats the color for the Word engine, which
+//      weights HTML attributes over CSS (same reasoning as trustStrip).
+//   3. A falsy url returns '' rather than emitting href="" — an empty href
+//      resolves against the mail client's own base URL and silently does
+//      nothing, which looks identical to a working button.
+//   4. A visible "paste this link" line always accompanies the button.
+//      sendMail() posts HTML only (no text/plain alternative), so this is
+//      our sole fallback if a client mangles the table entirely.
+//
+// No VML <v:roundrect> here on purpose. The bug was invisibility, not
+// corner radius; bgcolor on the <td> solves it, and hand-written VML inside
+// a template literal is an unlintable new failure surface. Square corners
+// in Outlook desktop is a fine trade.
+// `caption` is rendered by this helper rather than by the caller so it
+// stays welded to the button. It used to be a standalone paragraph, which
+// is how the broken email ended up showing a bare "Resumes your
+// application." floating under an empty gap.
+function ctaButton({
+  url,
+  label,
+  bg = '#5B5BD6',
+  gradient = null,
+  color = '#FFFFFF',
+  caption = null,
+  pasteUrl = null,
+  pasteLabel = 'Button not working? Paste this link into your browser:',
+}) {
+  if (!url) return '';
+  const safeUrl = esc(url);
+  const bgImage = gradient ? `background-image:${gradient};` : '';
+  const paste = pasteUrl || url;
+
+  return `
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 10px;">
+      <tr>
+        <td align="center" bgcolor="${esc(bg)}"
+            style="background-color:${esc(bg)};${bgImage}border-radius:10px;">
+          <a href="${safeUrl}"
+             style="display:inline-block;padding:14px 28px;color:${esc(color)};text-decoration:none;font-weight:700;font-size:15px;letter-spacing:0.01em;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
+            ${esc(label)} &rarr;
+          </a>
+        </td>
+      </tr>
+    </table>
+    ${caption ? `<p style="margin:0 0 10px;font-size:12.5px;line-height:1.5;color:#6B6877;">${esc(caption)}</p>` : ''}
+    <p style="margin:0 0 22px;font-size:11.5px;line-height:1.5;color:#A4A0B0;">
+      ${esc(pasteLabel)}<br/>
+      <a href="${esc(paste)}" style="color:#5B5BD6;text-decoration:underline;word-break:break-all;">${esc(paste)}</a>
+    </p>`;
+}
+
 // Lead-facing footer. Includes:
 //   • Unsubscribe instruction (reply to opt out — we have <2k volume)
 //   • Disclaimers customers expect from a funding company
 //   • Phone + support email + site link
-function leadFooter({ recipientEmail, recipientPhone } = {}) {
+// `reason` completes the sentence "You're receiving this because <email>
+// ...". It defaults to the calculator because that's where most leads come
+// from, but callers must override it for leads that arrived another way —
+// telling somebody who filled in the application form that they "used the
+// funding calculator" is the same mail-merge tell the body copy avoids.
+function leadFooter({ recipientEmail, recipientPhone, reason } = {}) {
   const safeEmail = recipientEmail ? esc(recipientEmail) : null;
+  const why = reason || `used the funding calculator on ${COMPANY.site}`;
   return `
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:32px;border-top:1px solid #E7E3DA;">
       <tr><td style="padding:18px 4px 6px;">
@@ -98,7 +172,7 @@ function leadFooter({ recipientEmail, recipientPhone } = {}) {
           your credit score &mdash; soft pull only until you accept terms in writing.
         </p>
         <p style="margin:0;font-size:10.5px;line-height:1.55;color:#A4A0B0;">
-          You're receiving this because${safeEmail ? ` <span style="color:#8A8693;">${safeEmail}</span>` : ' you'} used the funding calculator on ${esc(COMPANY.site)}.
+          You're receiving this because${safeEmail ? ` <span style="color:#8A8693;">${safeEmail}</span>` : ' you'} ${esc(why)}.
           Reply <strong>STOP</strong> or <strong>unsubscribe</strong> to opt out of future emails from this address.
           ${recipientPhone ? `<br/>SMS messages will only be sent to ${esc(recipientPhone)} regarding your active funding inquiry. Reply STOP to that number to opt out of texts.` : ''}
         </p>
@@ -121,8 +195,10 @@ function operatorFooter() {
 
 // Outer email shell. Renders a centered card on a tinted background — same
 // visual language as the site. Body HTML is injected as-is.
-function renderEmail({ body, includeTrustStrip = true, audience = 'lead', recipientEmail, recipientPhone, preheader, openPixelUrl }) {
-  const footer = audience === 'operator' ? operatorFooter() : leadFooter({ recipientEmail, recipientPhone });
+function renderEmail({ body, includeTrustStrip = true, audience = 'lead', recipientEmail, recipientPhone, footerReason, preheader, openPixelUrl }) {
+  const footer = audience === 'operator'
+    ? operatorFooter()
+    : leadFooter({ recipientEmail, recipientPhone, reason: footerReason });
   const strip = includeTrustStrip ? trustStrip() : '';
   // Preheader text — shows in the inbox preview pane. Only the lead
   // emails set this; we hide it visually via the standard inbox-preview
@@ -169,6 +245,7 @@ function renderEmail({ body, includeTrustStrip = true, audience = 'lead', recipi
 module.exports = {
   renderEmail,
   trustStrip,
+  ctaButton,
   COMPANY,
   ASSETS,
   esc,

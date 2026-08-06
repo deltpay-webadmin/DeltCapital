@@ -26,6 +26,7 @@
 // /api/apply-progress beacons for organic visitors.
 
 const store = require('./_store');
+const { cleanName } = require('./_name');
 
 function setCors(res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -55,8 +56,15 @@ module.exports = async function handler(req, res) {
   const email = String(body.email || '').trim();
   if (!email) { res.status(400).json({ error: 'email_required' }); return; }
 
-  const firstName = String(body.firstName || '').trim();
-  const lastName  = String(body.lastName  || '').trim();
+  // The `leads` table has no last_name column (see docs/SUPABASE_SCHEMA.sql),
+  // so both halves are joined into first_name here. That's deliberate, not
+  // an accident — but it means junk in either field ends up in the one
+  // value every lead-facing email greets people by. cleanName drops the
+  // literal "null"/"undefined"/"N/A" tokens that browser autofill and
+  // half-finished forms push through, so "Null" + "Null" stores as NULL
+  // rather than producing "Hey Null Null,". See api/_name.js.
+  const firstName = cleanName(body.firstName);
+  const lastName  = cleanName(body.lastName);
   const fullName  = [firstName, lastName].filter(Boolean).join(' ');
 
   try {

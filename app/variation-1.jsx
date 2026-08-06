@@ -717,6 +717,12 @@ function Variation1() {
           cardSales:    Number(payload.cardSales) || 0,
           boosted:      !!payload.boosted,
         },
+        // Which step to open on, set by api/_deeplink.js from how far the
+        // lead actually got (see stepForStage there). Clamped to the Bank
+        // step at minimum — a deep link always means we already have their
+        // business details — and to Offer at maximum, because Done is not
+        // a step anyone should be able to land on from a URL.
+        startStep: Math.min(3, Math.max(1, Number(payload.s) || 1)),
         fromEmail: true,
       };
       setAppPrefill(prefill);
@@ -806,8 +812,11 @@ function Variation1() {
         onClose={() => { setAppOpen(false); setAppFromEmail(false); }}
         prefill={appPrefill}
         accent={accent}
-        startStep={appFromEmail ? 1 : 0}
-        autoOpenPlaid={appFromEmail}
+        startStep={appFromEmail ? ((appPrefill && appPrefill.startStep) || 1) : 0}
+        // Only auto-open Plaid when the bank step is actually where they're
+        // landing. A lead resuming at Identity or Offer has already linked
+        // their bank; throwing Link at them again reads as a broken link.
+        autoOpenPlaid={appFromEmail && ((appPrefill && appPrefill.startStep) || 1) === 1}
         onDraftChange={saveApplyDraft}
         onComplete={clearApplyDraft}
       />

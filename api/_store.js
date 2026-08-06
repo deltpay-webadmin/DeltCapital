@@ -40,6 +40,8 @@
 // to keep the dependency footprint at zero and match the existing pattern in
 // api/_plaid.js (hand-rolled fetch, no SDK).
 
+const { cleanName } = require('./_name');
+
 const SUPABASE_URL = (process.env.SUPABASE_URL || '').replace(/\/$/, '');
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
@@ -87,7 +89,10 @@ async function createLead({ firstName, businessName, email, phone, source, estim
     method: 'POST',
     headers: { Prefer: 'return=representation' },
     body: JSON.stringify([{
-      first_name: firstName || null,
+      // Last line of defence for the name column. api/leads.js only checks
+      // that firstName is truthy before inserting, so "null" sails through
+      // its validation — catch it here so no writer can dirty the column.
+      first_name: cleanName(firstName),
       business_name: businessName || null,
       email: email || '',
       phone: phone || null,
@@ -128,9 +133,41 @@ async function getLeadByPrefix(prefix) {
   return rows[0];
 }
 
+// Latest apply_progress event per lead, in a single round trip.
+//
+// Shared by listLeads (the admin dashboard) and findStaleLeads (the nudge
+// cron), which both need "where is this lead up to?" for a batch of ids.
+// For a dataset this size that's cheaper than a PG function.
+//
+// `meta` is in the select because plaid_connected carries { institution }
+// (see app/variation-1-apply.jsx fireBeacon) and the nudge copy names the
+// bank the applicant actually linked.
+//
+// The limit=1000 is deliberately far above what either caller can need:
+// findStaleLeads caps at 50 leads and there are only 4 milestone events,
+// so 200 rows is the realistic worst case. Revisit if either cap moves.
+async function latestEventsFor(leadIds) {
+  const latest = new Map();
+  if (!ENABLED || !Array.isArray(leadIds) || !leadIds.length) return latest;
+  const inList = leadIds.map((i) => `"${i}"`).join(',');
+  const events = await pgFetch(
+    `/apply_progress?lead_id=in.(${inList})&select=lead_id,event,created_at,meta&order=created_at.desc&limit=1000`,
+    { method: 'GET' }
+  );
+  (events || []).forEach((e) => {
+    if (!latest.has(e.lead_id)) latest.set(e.lead_id, e);
+  });
+  return latest;
+}
+
 // Find leads that submitted N+ minutes ago but never reached the
 // 'plaid_connected' milestone and haven't been nudged yet. Used by the
 // /api/sms-nudge cron.
+//
+// Each returned row carries `latest_event` so the nudge can address the
+// step the lead actually stopped on instead of sending everyone the same
+// "pick up where you left off". If the progress lookup fails we return the
+// leads anyway with latest_event: null — a generic nudge beats no nudge.
 async function findStaleLeads({ minMinutes = 45, maxMinutes = 24 * 60 } = {}) {
   if (!ENABLED) return [];
   const cutoffMin = new Date(Date.now() - minMinutes * 60 * 1000).toISOString();
@@ -148,7 +185,15 @@ async function findStaleLeads({ minMinutes = 45, maxMinutes = 24 * 60 } = {}) {
     `limit=50`,
   ].join('&');
   const rows = await pgFetch(path, { method: 'GET' });
-  return Array.isArray(rows) ? rows : [];
+  if (!Array.isArray(rows) || !rows.length) return [];
+
+  let latest = new Map();
+  try {
+    latest = await latestEventsFor(rows.map((r) => r.id));
+  } catch (err) {
+    console.error('[store] findStaleLeads progress lookup failed:', err && err.message);
+  }
+  return rows.map((r) => ({ ...r, latest_event: latest.get(r.id) || null }));
 }
 
 async function markNudged(leadId) {
@@ -178,19 +223,7 @@ async function listLeads({ limit = 100, offset = 0 } = {}) {
     { method: 'GET' }
   );
   if (!Array.isArray(rows) || !rows.length) return [];
-  // Fetch the latest event per lead in a single round trip. We grab all
-  // events for these leads and reduce client-side; for a small admin
-  // dashboard this is cheaper than a PG function.
-  const ids = rows.map((r) => r.id);
-  const inList = ids.map((i) => `"${i}"`).join(',');
-  const events = await pgFetch(
-    `/apply_progress?lead_id=in.(${inList})&select=lead_id,event,created_at&order=created_at.desc&limit=1000`,
-    { method: 'GET' }
-  );
-  const latestByLead = new Map();
-  (events || []).forEach((e) => {
-    if (!latestByLead.has(e.lead_id)) latestByLead.set(e.lead_id, e);
-  });
+  const latestByLead = await latestEventsFor(rows.map((r) => r.id));
   return rows.map((r) => ({
     ...r,
     latest_event: latestByLead.get(r.id) || null,
@@ -203,8 +236,33 @@ const VALID_EVENTS = new Set([
   'modal_opened',
   'plaid_connected',
   'idv_done',
+  'offer_presented',
+  'offer_accepted',
   'submitted',
 ]);
+
+// How far through the application is this lead?
+//
+// Derived, not stored — the same ladder api/admin-leads.js statusFor()
+// walks for the dashboard, expressed as a machine-readable stage so the
+// nudge cron can branch its copy on it. Expects a row from findStaleLeads
+// or listLeads (i.e. one carrying `latest_event`).
+//
+// Order matters: completed_at wins over everything, then the milestone.
+function applyStage(lead) {
+  if (!lead) return 'new';
+  if (lead.completed_at) return 'submitted';
+  const event = lead.latest_event && lead.latest_event.event;
+  switch (event) {
+    case 'submitted':       return 'submitted';
+    case 'offer_accepted':  return 'submitted';
+    case 'offer_presented': return 'offer_presented';
+    case 'idv_done':        return 'idv_done';
+    case 'plaid_connected': return 'bank_linked';
+    case 'modal_opened':    return 'opened';
+    default:                return 'new';
+  }
+}
 
 async function recordEvent({ leadId, event, meta }) {
   if (!ENABLED || !leadId) return null;
@@ -230,10 +288,13 @@ async function recordEvent({ leadId, event, meta }) {
 
 module.exports = {
   ENABLED,
+  pgFetch,
   createLead,
   getLead,
   getLeadByPrefix,
   findStaleLeads,
+  latestEventsFor,
+  applyStage,
   markNudged,
   markCompleted,
   listLeads,

@@ -9,6 +9,8 @@
 // The payload is a URL-safe base64-encoded JSON object that the client
 // (app/variation-1.jsx) decodes to pre-fill the apply modal.
 
+const { cleanName } = require('./_name');
+
 const SITE_ORIGIN = (() => {
   const explicit = process.env.PUBLIC_SITE_ORIGIN;
   if (explicit) return explicit;
@@ -23,15 +25,38 @@ function b64url(obj) {
     .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
+// Which application step the link should open on. The modal's steps are
+// ['Business','Bank','Identity','Offer','Done'] (app/variation-1-apply.jsx),
+// so a lead whose bank is already linked belongs on step 2, not step 0.
+// Sending a "finish your ID check" email to a link that dumps them back at
+// the business form is how a one-click nudge turns into a five-click chore.
+const STEP_FOR_STAGE = {
+  new: 0,
+  opened: 1,
+  bank_linked: 2,
+  idv_done: 3,
+  offer_presented: 3,
+};
+
+function stepForStage(stage) {
+  const s = STEP_FOR_STAGE[stage];
+  return Number.isInteger(s) ? s : 0;
+}
+
 // Build the full /apply?d=<base64> deep link from a lead row (or any
-// {firstName, businessName, email, phone, estimate, leadId} object).
-function buildApplyUrl({ leadId, firstName, businessName, email, phone, estimate }) {
+// {firstName, businessName, email, phone, estimate, leadId, stage} object).
+function buildApplyUrl({ leadId, firstName, businessName, email, phone, estimate, stage }) {
   const e = estimate || {};
   const payload = {
     v: 1,
     t: Date.now(),
     leadId: leadId ? String(leadId) : undefined,
-    firstName: String(firstName || '').trim(),
+    // Sanitized so the prefilled First name field doesn't come up holding
+    // "Null Null" — the same junk that used to reach the email greeting.
+    firstName: cleanName(firstName) || '',
+    // Step to open on. 0 (Business) unless the lead has already made it
+    // further; the client clamps this, see app/variation-1.jsx.
+    s: stepForStage(stage),
     businessName: String(businessName || '').trim(),
     email: String(email || '').trim(),
     phone: String(phone || '').trim(),
@@ -48,7 +73,7 @@ function buildApplyUrl({ leadId, firstName, businessName, email, phone, estimate
 
 // Convert a Supabase lead row (snake_case) into the camelCase shape the
 // builder expects. Centralized so sms-nudge.js + r.js stay in sync.
-function buildApplyUrlFromRow(row) {
+function buildApplyUrlFromRow(row, stage) {
   if (!row) return null;
   return buildApplyUrl({
     leadId: row.id,
@@ -57,6 +82,7 @@ function buildApplyUrlFromRow(row) {
     email: row.email,
     phone: row.phone,
     estimate: row.estimate || {},
+    stage,
   });
 }
 
@@ -87,5 +113,6 @@ module.exports = {
   buildApplyUrl,
   buildApplyUrlFromRow,
   buildShortUrl,
+  stepForStage,
   withUtm,
 };
