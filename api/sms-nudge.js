@@ -122,8 +122,8 @@ function subjectVariant(leadId) {
 // The subject is now derived from the same stageCopy() block as the body,
 // so the two can't drift into telling the lead different stories. Variant
 // selection itself is unchanged — still deterministic from the lead id.
-function nudgeSubject({ variant, stage, name, source, estimate, institution }) {
-  const copy = stageCopy({ stage, name, source, estimate, institution });
+function nudgeSubject({ variant, stage, name, source, estimate, institution, deadline }) {
+  const copy = stageCopy({ stage, name, source, estimate, institution, deadline });
   return copy.subjects[variant] || copy.subjects.a;
 }
 
@@ -304,6 +304,18 @@ function stageCopy({ stage, name, source, estimate, institution, deadline }) {
         : 'David @ Delt: your funding offer is still open',
     },
   };
+}
+
+// Format a real offer expiry the same way upcomingSundayLabel() formats
+// its invented one, so the copy around it reads identically either way.
+function offerDeadlineLabel(expiresAt) {
+  try {
+    return new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/New_York', weekday: 'long', month: 'long', day: 'numeric',
+    }).format(new Date(expiresAt));
+  } catch (_) {
+    return null;
+  }
 }
 
 function nudgeEmailBody({ stage, name, source, estimate, institution, deadline, ctaUrl, pasteUrl }) {
@@ -546,6 +558,24 @@ module.exports = async function handler(req, res) {
       && lead.latest_event.meta
       && lead.latest_event.meta.institution;
 
+    // If the lead has a live offer, quote its real terms and its real
+    // expiry. Without one we fall back to the upcoming-Sunday label, which
+    // is a soft framing rather than a claim about a specific offer —
+    // "locked through Sunday" should only be said when something actually
+    // is. Best-effort: a lookup failure just drops us to the fallback.
+    let offer = null;
+    try {
+      offer = await store.findOpenOffer(lead.id);
+    } catch (err) {
+      console.error(`[sms-nudge] offer lookup failed for ${lead.id}:`, err && err.message);
+    }
+    const deadline = offer ? offerDeadlineLabel(offer.expires_at) : null;
+    // A real quote beats the calculator estimate — it's what the applicant
+    // will actually be signing.
+    const estimate = offer
+      ? { ...(lead.estimate || {}), low: Number(offer.advance_amount), high: Number(offer.advance_amount) }
+      : (lead.estimate || {});
+
     const smsBody = smsTemplate({
       firstName: lead.first_name,
       shortUrl: pasteUrl,
@@ -559,8 +589,9 @@ module.exports = async function handler(req, res) {
       stage,
       name,
       source: lead.source,
-      estimate: lead.estimate || {},
+      estimate,
       institution,
+      deadline,
     });
 
     // Email the lead first (the automation half of the hybrid).
@@ -573,8 +604,9 @@ module.exports = async function handler(req, res) {
           stage,
           name,
           source: lead.source,
-          estimate: lead.estimate || {},
+          estimate,
           institution,
+          deadline,
           applyUrl: linkUrl,
           pasteUrl,
           leadEmail: lead.email,
@@ -650,5 +682,6 @@ module.exports.__test = {
   smsTemplate,
   subjectVariant,
   upcomingSundayLabel,
+  offerDeadlineLabel,
   plausibleInstitution,
 };

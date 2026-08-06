@@ -466,14 +466,98 @@ function V1StepIdentity({ form, setForm, accent, onAdvance }) {
 }
 
 // ─── Step 4: Offer ───
-function V1StepOffer({ form, prefill, accent }) {
-  const amount = prefill?.high || form.amount || 75000;
-  const factor = prefill?.factor || 1.18;
-  const total = Math.round(amount * factor);
-  const term = 8;
-  const weekly = Math.round(total / (term * 4.33));
+//
+// Every number on this screen comes from /api/offer-create. It used to be
+// computed right here in the browser — factor rate and term were hardcoded
+// constants, the offer ID was Math.random() inside a useMemo (so it changed
+// identity on every re-render), and "Locked 72h" was a static string with
+// no expiry behind it. None of it was persisted, which meant there was no
+// record of what any applicant had been shown.
+//
+// Pricing is now server-side and unforgeable from the client, the offer
+// code is minted once and stored, and the countdown below runs off a real
+// expires_at.
+
+// Live countdown to the offer's expiry. Returns null once it has lapsed so
+// the caller can swap in the expired state.
+function useOfferCountdown(expiresAt) {
+  const [now, setNow] = React.useState(() => Date.now());
+  React.useEffect(() => {
+    if (!expiresAt) return undefined;
+    const id = window.setInterval(() => setNow(Date.now()), 30 * 1000);
+    return () => window.clearInterval(id);
+  }, [expiresAt]);
+  if (!expiresAt) return null;
+  const ms = new Date(expiresAt).getTime() - now;
+  if (!Number.isFinite(ms) || ms <= 0) return null;
+  const hours = Math.floor(ms / 3600000);
+  if (hours >= 24) return `${Math.floor(hours / 24)}d ${hours % 24}h left`;
+  if (hours >= 1) return `${hours}h left`;
+  return `${Math.max(1, Math.round(ms / 60000))}m left`;
+}
+
+function V1StepOffer({ form, offer, offerState, offerError, onRetry, signature, setSignature, agreed, setAgreed, accent }) {
+  const countdown = useOfferCountdown(offer && offer.expiresAt);
+
+  // Loading / failure states. The old screen had neither, because it never
+  // asked anybody for anything — it just rendered whatever the client had
+  // computed. Now that terms are authoritative, "we couldn't load your
+  // offer" has to be a visible state rather than a silently wrong number.
+  if (offerState !== 'ready' || !offer) {
+    const failed = offerState === 'error';
+    return (
+      <div style={{ padding: '48px 0', textAlign: 'center' }}>
+        <div style={{
+          fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 600,
+          letterSpacing: '0.16em', textTransform: 'uppercase', color: accent,
+        }}>Step 04 · Offer</div>
+        <h3 style={{
+          fontFamily: V1.fontDisplay, fontSize: 28, fontWeight: 600,
+          letterSpacing: '-0.03em', color: V1.ink, margin: '12px 0 10px',
+        }}>
+          {failed ? 'We couldn’t load your offer.' : 'Pricing your offer…'}
+        </h3>
+        <p style={{
+          fontFamily: V1.fontBody, fontSize: 15, color: V1.muted,
+          lineHeight: 1.6, margin: '0 auto', maxWidth: 460,
+        }}>
+          {failed
+            ? (offerError || 'Something went wrong on our end. Try again, or call us and we’ll read your terms out over the phone.')
+            : 'Checking your connected bank data against today’s rates. This takes a few seconds.'}
+        </p>
+        {failed && (
+          <div style={{ marginTop: 22, display: 'flex', gap: 10, justifyContent: 'center' }}>
+            <button
+              onClick={onRetry}
+              style={{
+                padding: '11px 22px', borderRadius: 10, border: 'none',
+                background: accent, color: V1.white, cursor: 'pointer',
+                fontFamily: V1.fontBody, fontSize: 14, fontWeight: 600,
+              }}
+            >Try again</button>
+            <a
+              href="tel:+18647293358"
+              style={{
+                padding: '11px 22px', borderRadius: 10,
+                border: `1px solid ${V1.line}`, color: V1.ink,
+                textDecoration: 'none', fontFamily: V1.fontBody,
+                fontSize: 14, fontWeight: 600,
+              }}
+            >Call (864) 729-3358</a>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  const amount = offer.advanceAmount;
+  const factor = offer.factorRate;
+  const total = offer.totalRepayment;
+  const term = offer.termMonths;
+  const weekly = offer.weeklyDebit;
   const daily = Math.round(total / (term * 22));
-  const offerId = React.useMemo(() => `DLT-2026-${Math.floor(100000 + Math.random() * 900000)}`, []);
+  const offerId = offer.offerCode;
+  const expired = !countdown;
 
   return (
     <div>
@@ -494,8 +578,8 @@ function V1StepOffer({ form, prefill, accent }) {
         fontFamily: V1.fontBody, fontSize: 15, color: V1.muted,
         lineHeight: 1.55, margin: 0, maxWidth: 540,
       }}>
-        No addenda, no "processing fee", no origination fee. Counter-sign to
-        move to funding.
+        No addenda, no "processing fee", no origination fee. Sign to send
+        your file to final verification.
       </p>
 
       <div style={{
@@ -525,11 +609,15 @@ function V1StepOffer({ form, prefill, accent }) {
                 letterSpacing: '-0.04em', marginTop: 4,
                 fontVariantNumeric: 'tabular-nums', lineHeight: 1,
               }}>${amount.toLocaleString()}</div>
+              {/* This used to read "Wires same-day when signed before 2:00
+                  PM ET" — a funding promise made by a screen that couldn't
+                  keep it. Signing starts verification; the wire is a
+                  separate step a human confirms. */}
               <div style={{
                 marginTop: 8, fontFamily: V1.fontBody, fontSize: 13.5,
                 color: 'rgba(255,255,255,0.7)',
               }}>
-                Wires same-day when signed before 2:00 PM ET
+                Priced against your connected account
               </div>
             </div>
             <div style={{ textAlign: 'right' }}>
@@ -542,15 +630,21 @@ function V1StepOffer({ form, prefill, accent }) {
                 fontFamily: V1.fontMono, fontSize: 13.5, color: V1.white,
                 marginTop: 6, letterSpacing: '0.04em',
               }}>{offerId}</div>
+              {/* Real countdown off the server's expires_at — this used to
+                  read "Locked 72h" no matter how old the offer was. */}
               <div style={{
                 marginTop: 10, display: 'inline-flex', alignItems: 'center', gap: 6,
                 padding: '5px 10px', borderRadius: 99,
-                background: `${accent}22`, color: accent,
+                background: expired ? 'rgba(255,255,255,0.14)' : `${accent}22`,
+                color: expired ? 'rgba(255,255,255,0.75)' : accent,
                 fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 600,
                 letterSpacing: '0.1em', textTransform: 'uppercase',
               }}>
-                <span style={{ width: 6, height: 6, borderRadius: 99, background: accent }} />
-                Locked 72h
+                <span style={{
+                  width: 6, height: 6, borderRadius: 99,
+                  background: expired ? 'rgba(255,255,255,0.75)' : accent,
+                }} />
+                {expired ? 'Expired' : countdown}
               </div>
             </div>
           </div>
@@ -597,21 +691,109 @@ function V1StepOffer({ form, prefill, accent }) {
         </div>
       </div>
 
+      {/* ── Signature ──
+          Accepting used to be a bare setStep(4) with nothing captured. An
+          advance agreement needs the applicant to actually assent to
+          specific terms, so: type your legal name, tick the box, and both
+          the name and the terms version travel to /api/offer-accept and
+          land in an immutable acceptance record. */}
+      {expired ? (
+        <div style={{
+          marginTop: 22, padding: '16px 18px', borderRadius: 12,
+          background: '#FFF6ED', border: '1px solid #F0D3B0',
+        }}>
+          <div style={{
+            fontFamily: V1.fontBody, fontSize: 14, fontWeight: 600,
+            color: '#7A4A12', marginBottom: 4,
+          }}>This offer has expired.</div>
+          <div style={{ fontFamily: V1.fontBody, fontSize: 13.5, color: '#8A6236', lineHeight: 1.55 }}>
+            Offers are priced against live bank data, so they don't stand
+            indefinitely. Call <b>(864) 729-3358</b> or reply to your email
+            and we'll re-verify and re-issue — it usually takes a few minutes.
+          </div>
+        </div>
+      ) : (
+        <div style={{
+          marginTop: 22, padding: '18px 20px', borderRadius: 12,
+          background: V1.bg, border: `1px solid ${V1.line}`,
+        }}>
+          <div style={{
+            fontFamily: V1.fontMono, fontSize: 10, fontWeight: 600,
+            letterSpacing: '0.14em', textTransform: 'uppercase',
+            color: V1.muted, marginBottom: 10,
+          }}>Sign to accept</div>
+
+          <label style={{ display: 'block', marginBottom: 12 }}>
+            <div style={{
+              fontFamily: V1.fontBody, fontSize: 13, color: V1.muted, marginBottom: 6,
+            }}>Type your full legal name</div>
+            <input
+              value={signature}
+              onChange={(e) => setSignature(e.target.value)}
+              placeholder={[form.firstName, form.lastName].filter(Boolean).join(' ') || 'Maria Rodriguez'}
+              autoComplete="name"
+              style={{
+                width: '100%', boxSizing: 'border-box',
+                padding: '12px 14px', borderRadius: 9,
+                border: `1px solid ${V1.line}`, background: V1.white,
+                fontFamily: '"Source Serif Pro", Georgia, serif',
+                fontStyle: 'italic', fontSize: 19, color: V1.ink,
+                outline: 'none',
+              }}
+            />
+          </label>
+
+          <label style={{
+            display: 'flex', alignItems: 'flex-start', gap: 10, cursor: 'pointer',
+          }}>
+            <input
+              type="checkbox"
+              checked={agreed}
+              onChange={(e) => setAgreed(e.target.checked)}
+              style={{ marginTop: 3, width: 16, height: 16, accentColor: accent, cursor: 'pointer' }}
+            />
+            <span style={{
+              fontFamily: V1.fontBody, fontSize: 13, color: V1.muted, lineHeight: 1.55,
+            }}>
+              I have read and agree to Delt's advance agreement
+              (version <b style={{ color: V1.ink }}>{offer.termsVersion}</b>) and to the
+              terms shown above: <b style={{ color: V1.ink }}>${amount.toLocaleString()}</b> advanced,
+              <b style={{ color: V1.ink }}> ${total.toLocaleString()}</b> total repayment
+              over <b style={{ color: V1.ink }}>{term} months</b>. I understand this is
+              an electronic signature.
+            </span>
+          </label>
+        </div>
+      )}
+
       <p style={{
         marginTop: 16, fontFamily: V1.fontBody, fontSize: 12.5,
         color: V1.muted, lineHeight: 1.5, maxWidth: 620,
       }}>
-        By accepting, you agree to Delt's standard advance agreement. You'll
-        receive a signed PDF and a payment schedule by email within 60 seconds
-        of counter-signing.
+        Signing sends your file to final verification. A funding specialist
+        confirms the details against your connected account and contacts you
+        to arrange the wire — you'll get a copy of these exact terms by email
+        as soon as you sign.
       </p>
     </div>
   );
 }
 
 // ─── Step 5: Done ───
-function V1StepDone({ form, accent }) {
-  const ref = React.useMemo(() => `DLT-2026-${Math.floor(100000 + Math.random() * 900000)}`, []);
+//
+// This screen used to say "You're funded. Tomorrow by 2 PM," tell the
+// applicant the money would land in their "connected Chase account"
+// (hardcoded, whatever bank they'd actually linked), and name a rep called
+// Elena Morgan who does not exist — all off the back of a button that made
+// no server call and recorded nothing.
+//
+// It now states only what the system actually knows: the offer was signed,
+// here is its real code, here is the bank you really linked, and a human
+// will be in touch. Signing is not funding, and this screen no longer
+// claims otherwise.
+function V1StepDone({ form, offer, acceptedAt, accent }) {
+  const ref = (offer && offer.offerCode) || null;
+  const bank = form.bankInstitution || null;
   return (
     <div style={{ textAlign: 'center', padding: '24px 0 16px' }}>
       <div style={{
@@ -637,40 +819,51 @@ function V1StepDone({ form, accent }) {
       <div style={{
         marginTop: 22, fontFamily: V1.fontMono, fontSize: 11, fontWeight: 600,
         letterSpacing: '0.16em', textTransform: 'uppercase', color: accent,
-      }}>Counter-signed</div>
+      }}>Signed &amp; received</div>
       <h3 style={{
         fontFamily: V1.fontDisplay, fontSize: 36, fontWeight: 600,
         letterSpacing: '-0.03em', color: V1.ink, margin: '12px 0 8px', lineHeight: 1.1,
       }}>
-        You're funded.{' '}
+        That's your agreement{' '}
         <em style={{
           fontFamily: '"Source Serif Pro", Georgia, serif',
           fontStyle: 'italic', fontWeight: 400, color: accent,
-        }}>Tomorrow by 2 PM.</em>
+        }}>signed.</em>
       </h3>
       <p style={{
         fontFamily: V1.fontBody, fontSize: 15, color: V1.muted,
-        lineHeight: 1.6, margin: '0 auto 26px', maxWidth: 480,
+        lineHeight: 1.6, margin: '0 auto 12px', maxWidth: 500,
       }}>
-        Funds will hit your connected Chase account by 2:00 PM ET tomorrow.
-        Contract + amortization schedule are on the way to{' '}
-        <b style={{ color: V1.ink }}>{form.email || 'your email'}</b>.
+        A copy of the terms you just signed is on its way to{' '}
+        <b style={{ color: V1.ink }}>{form.email || 'your email'}</b>. Your file
+        now goes to final verification{bank ? <> against your connected <b style={{ color: V1.ink }}>{bank}</b> account</> : null},
+        and a funding specialist will call you to arrange the wire.
+      </p>
+      <p style={{
+        fontFamily: V1.fontBody, fontSize: 13.5, color: V1.muted,
+        lineHeight: 1.6, margin: '0 auto 26px', maxWidth: 500,
+      }}>
+        Nothing else is needed from you right now. Questions before we call?{' '}
+        <a href="tel:+18647293358" style={{ color: accent, fontWeight: 600, textDecoration: 'none' }}>
+          (864) 729-3358
+        </a>
       </p>
 
       <div style={{
         maxWidth: 480, margin: '0 auto',
         padding: '16px 20px',
         background: V1.bg, border: `1px solid ${V1.line}`, borderRadius: 12,
-        display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 0,
+        display: 'grid',
+        gridTemplateColumns: `repeat(${bank ? 3 : 2}, 1fr)`, gap: 0,
       }}>
         {[
-          ['REF',     ref],
-          ['FUND BY', '2:00 PM ET'],
-          ['TEAM',    'Elena Morgan'],
-        ].map(([k, v], i) => (
+          ['REF', ref || 'Pending'],
+          ['STATUS', 'In verification'],
+          ...(bank ? [['BANK', bank]] : []),
+        ].map(([k, v], i, arr) => (
           <div key={k} style={{
             textAlign: 'center',
-            borderRight: i < 2 ? `1px solid ${V1.line}` : 'none',
+            borderRight: i < arr.length - 1 ? `1px solid ${V1.line}` : 'none',
           }}>
             <div style={{
               fontFamily: V1.fontMono, fontSize: 9.5, fontWeight: 600,
@@ -856,6 +1049,100 @@ function V1ApplicationFlow({
       }
     } catch (_) { /* analytics must never throw into the UI */ }
   }, [beaconLeadId]);
+
+  // ─── Offer: fetched, never computed ───
+  //
+  // Terms come from /api/offer-create, which prices server-side and is
+  // idempotent per lead, so re-entering this step returns the same offer
+  // code and the same numbers rather than minting a new quote. Previously
+  // all of this was calculated in the browser from hardcoded constants,
+  // which meant the "offer" was unverifiable, unrecorded, and different on
+  // every render.
+  const [offer, setOffer] = React.useState(null);
+  const [offerState, setOfferState] = React.useState('idle'); // idle|loading|ready|error
+  const [offerError, setOfferError] = React.useState('');
+  const [signature, setSignature] = React.useState('');
+  const [agreed, setAgreed] = React.useState(false);
+  const [accepting, setAccepting] = React.useState(false);
+  const [acceptError, setAcceptError] = React.useState('');
+  const [acceptedAt, setAcceptedAt] = React.useState(null);
+
+  const loadOffer = React.useCallback(() => {
+    if (!beaconLeadId) {
+      // No lead row means no offer can be issued or recorded. Say so
+      // rather than falling back to a number we invented client-side.
+      setOfferState('error');
+      setOfferError('We couldn\'t find your application. Call us and we\'ll pull it up by phone.');
+      return;
+    }
+    setOfferState('loading');
+    setOfferError('');
+    fetch('/api/offer-create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ leadId: beaconLeadId }),
+    })
+      .then((r) => r.json().then((d) => ({ ok: r.ok, d })))
+      .then(({ ok, d }) => {
+        if (ok && d && d.offer) { setOffer(d.offer); setOfferState('ready'); return; }
+        setOfferState('error');
+        setOfferError((d && d.message) || 'We couldn\'t price your offer just now.');
+      })
+      .catch(() => {
+        setOfferState('error');
+        setOfferError('We couldn\'t reach our servers. Check your connection and try again.');
+      });
+  }, [beaconLeadId]);
+
+  // Ask for the offer as the Offer step opens.
+  React.useEffect(() => {
+    if (!open || step !== 3) return;
+    if (offerState === 'loading' || offerState === 'ready') return;
+    loadOffer();
+  }, [open, step, offerState, loadOffer]);
+
+  // Accepting is a real server transaction now, not a step increment. We
+  // only advance to Done once the acceptance is durably recorded.
+  const acceptOffer = React.useCallback(() => {
+    if (!offer || accepting) return;
+    setAccepting(true);
+    setAcceptError('');
+    fetch('/api/offer-accept', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        offerCode: offer.offerCode,
+        typedSignature: signature.trim(),
+        agreedTermsVersion: offer.termsVersion,
+      }),
+    })
+      .then((r) => r.json().then((d) => ({ ok: r.ok, d })))
+      .then(({ ok, d }) => {
+        setAccepting(false);
+        if (ok && d && d.ok) {
+          setAcceptedAt(d.acceptedAt || null);
+          setStep(4);
+          return;
+        }
+        setAcceptError((d && d.message) || 'We couldn\'t record your acceptance. Please try again.');
+        // An expired or superseded offer means what's on screen is stale —
+        // reload it so the applicant isn't looking at dead terms.
+        if (d && (d.error === 'offer_expired' || d.error === 'terms_changed')) loadOffer();
+      })
+      .catch(() => {
+        setAccepting(false);
+        setAcceptError('We couldn\'t reach our servers. Check your connection and try again.');
+      });
+  }, [offer, signature, accepting, loadOffer]);
+
+  const canAccept = !!(
+    offer
+    && offerState === 'ready'
+    && agreed
+    && signature.trim().length >= 2
+    && !accepting
+    && new Date(offer.expiresAt).getTime() > Date.now()
+  );
 
   // Track modal-open state so pixel events fire exactly once per open
   // session, mirroring the fireBeacon dedupe semantics.
@@ -1114,8 +1401,21 @@ function V1ApplicationFlow({
             {step === 0 && <V1StepBusiness form={form} setForm={setForm} accent={accent} />}
             {step === 1 && <V1StepBank form={form} setForm={setForm} accent={accent} onAdvance={() => setStep(2)} autoOpen={autoOpenPlaid} leadId={beaconLeadId} />}
             {step === 2 && <V1StepIdentity form={form} setForm={setForm} accent={accent} onAdvance={() => setStep(3)} />}
-            {step === 3 && <V1StepOffer form={form} prefill={prefill} accent={accent} />}
-            {step === 4 && <V1StepDone form={form} accent={accent} />}
+            {step === 3 && (
+              <V1StepOffer
+                form={form}
+                offer={offer}
+                offerState={offerState}
+                offerError={offerError}
+                onRetry={loadOffer}
+                signature={signature}
+                setSignature={setSignature}
+                agreed={agreed}
+                setAgreed={setAgreed}
+                accent={accent}
+              />
+            )}
+            {step === 4 && <V1StepDone form={form} offer={offer} acceptedAt={acceptedAt} accent={accent} />}
           </div>
 
           {/* action bar */}
@@ -1124,36 +1424,28 @@ function V1ApplicationFlow({
             background: V1.white,
             display: 'flex', justifyContent: 'space-between', alignItems: 'center',
           }}>
-            <div style={{
-              fontFamily: V1.fontMono, fontSize: 11, fontWeight: 500,
-              letterSpacing: '0.08em', textTransform: 'uppercase', color: V1.muted,
-            }}>
-              {step < 4 ? '🔒 Secured · Plaid · Soft-pull only' : 'Application received'}
-            </div>
+            {/* Acceptance failures surface here rather than in a toast the
+                user might miss — if signing didn't work, they need to know
+                before they close the tab believing it did. */}
+            {acceptError ? (
+              <div style={{
+                fontFamily: V1.fontBody, fontSize: 12.5, color: '#B4342B',
+                lineHeight: 1.45, maxWidth: 460, paddingRight: 12,
+              }}>{acceptError}</div>
+            ) : (
+              <div style={{
+                fontFamily: V1.fontMono, fontSize: 11, fontWeight: 500,
+                letterSpacing: '0.08em', textTransform: 'uppercase', color: V1.muted,
+              }}>
+                {step < 4 ? '🔒 Secured · Plaid · Soft-pull only' : 'Signed · in verification'}
+              </div>
+            )}
             <div style={{ display: 'flex', gap: 10 }}>
-              {/* TEMP: dev-only skip — remove once IDV is green */}
-              {step < 2 && (
-                <button
-                  onClick={() => {
-                    setForm((f) => ({
-                      ...f,
-                      businessName: f.businessName || 'Test Co',
-                      email: f.email || 'test@example.com',
-                      bankConnected: true,
-                      bankInstitution: f.bankInstitution || 'Test Bank',
-                    }));
-                    setStep(2);
-                  }}
-                  style={{
-                    padding: '7px 10px', borderRadius: 6,
-                    background: 'transparent', border: `1px dashed ${V1.muted}`,
-                    color: V1.muted, cursor: 'pointer',
-                    fontFamily: V1.fontMono, fontSize: 10.5, fontWeight: 600,
-                    letterSpacing: '0.12em', textTransform: 'uppercase',
-                  }}
-                >Skip → Identity</button>
-              )}
-              {/* /TEMP */}
+              {/* The dev-only "Skip → Identity" button that used to sit here
+                  was live in production. It let anyone jump past both the
+                  bank link and the ID check straight to the offer step —
+                  which is exactly the gate /api/offer-create now depends on
+                  to price against real deposits. Removed. */}
               {step > 0 && step < 4 && (
                 <button
                   onClick={() => setStep(step - 1)}
@@ -1195,24 +1487,32 @@ function V1ApplicationFlow({
                 </button>
               )}
 
+              {/* Accepting posts to /api/offer-accept and only advances on a
+                  recorded acceptance. It used to be onClick={setStep(4)} —
+                  no signature, no server call, no record of what anyone
+                  agreed to. */}
               {step === 3 && (
                 <button
-                  onClick={() => setStep(4)}
+                  onClick={acceptOffer}
+                  disabled={!canAccept}
+                  title={canAccept ? undefined : 'Type your full legal name and tick the agreement box to sign'}
                   style={{
                     padding: '11px 22px', borderRadius: 10, border: 'none',
-                    background: `linear-gradient(135deg, ${accent}, #818CF8)`,
-                    color: V1.white,
+                    background: canAccept ? `linear-gradient(135deg, ${accent}, #818CF8)` : V1.line,
+                    color: canAccept ? V1.white : V1.muted,
                     fontFamily: V1.fontBody, fontSize: 14, fontWeight: 600,
-                    cursor: 'pointer',
+                    cursor: canAccept ? 'pointer' : 'not-allowed',
                     display: 'inline-flex', alignItems: 'center', gap: 8,
-                    boxShadow: `0 10px 28px -10px ${accent}aa`,
+                    boxShadow: canAccept ? `0 10px 28px -10px ${accent}aa` : 'none',
                     transition: 'filter .15s, transform .1s',
                   }}
-                  onMouseEnter={(e) => { e.currentTarget.style.filter = 'brightness(1.08)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.filter = 'none'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                  onMouseEnter={(e) => { if (canAccept) { e.currentTarget.style.filter = 'brightness(1.08)'; e.currentTarget.style.transform = 'translateY(-1px)'; } }}
+                  onMouseLeave={(e) => { if (canAccept) { e.currentTarget.style.filter = 'none'; e.currentTarget.style.transform = 'translateY(0)'; } }}
                 >
-                  Accept offer
-                  <svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  {accepting ? 'Signing…' : 'Sign & accept'}
+                  {!accepting && (
+                    <svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  )}
                 </button>
               )}
 

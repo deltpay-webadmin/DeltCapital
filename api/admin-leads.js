@@ -71,15 +71,24 @@ function smsBodyFor(lead, applyUrl) {
   return `${first}this is David at Delt Capital. Your ${range} offer is still open \u2014 takes 2 min to claim: ${applyUrl}`;
 }
 
-// Status derived from the latest_event we joined in api/_store.listLeads
+// Status derived from the latest_event we joined in api/_store.listLeads.
+//
+// The stage ladder itself lives in store.applyStage so the dashboard and
+// the nudge cron can never disagree about where a lead is — this used to be
+// a duplicated if-chain, and it silently mislabelled every lead that hit a
+// milestone the copy here hadn't been taught about.
+const STAGE_LABELS = {
+  submitted:       { label: 'Submitted',    tone: 'good' },
+  offer_presented: { label: 'Offer sent',   tone: 'mid'  },
+  idv_done:        { label: 'IDV done',     tone: 'mid'  },
+  bank_linked:     { label: 'Bank linked',  tone: 'mid'  },
+  opened:          { label: 'Opened app',   tone: 'mid'  },
+};
+
 function statusFor(lead) {
-  if (lead.completed_at) return { label: 'Submitted',       tone: 'good' };
-  const ev = lead.latest_event && lead.latest_event.event;
-  if (ev === 'submitted')       return { label: 'Submitted', tone: 'good' };
-  if (ev === 'idv_done')        return { label: 'IDV done',  tone: 'mid'  };
-  if (ev === 'plaid_connected') return { label: 'Bank linked', tone: 'mid' };
-  if (ev === 'modal_opened')    return { label: 'Opened app', tone: 'mid' };
-  if (lead.nudged_at)           return { label: 'Nudged',     tone: 'warn' };
+  const known = STAGE_LABELS[store.applyStage(lead)];
+  if (known) return known;
+  if (lead.nudged_at) return { label: 'Nudged', tone: 'warn' };
   return { label: 'No reply', tone: 'cold' };
 }
 

@@ -286,6 +286,97 @@ async function recordEvent({ leadId, event, meta }) {
   return { ok: true };
 }
 
+// ─── Offers ───
+
+// The lead's current live quote, if any: status 'presented' and not yet
+// expired. /api/offer-create uses this to stay idempotent — a lead who
+// reloads the offer screen must see the same offer_code and the same
+// numbers, not a freshly minted quote each time.
+async function findOpenOffer(leadId) {
+  if (!ENABLED || !leadId) return null;
+  const path = `/offers?` + [
+    `lead_id=eq.${encodeURIComponent(leadId)}`,
+    `status=eq.presented`,
+    `expires_at=gt.${new Date().toISOString()}`,
+    `select=*`,
+    `order=created_at.desc`,
+    `limit=1`,
+  ].join('&');
+  const rows = await pgFetch(path, { method: 'GET' });
+  return Array.isArray(rows) && rows.length ? rows[0] : null;
+}
+
+async function getOfferByCode(offerCode) {
+  if (!ENABLED || !offerCode) return null;
+  const rows = await pgFetch(
+    `/offers?offer_code=eq.${encodeURIComponent(offerCode)}&select=*&limit=1`,
+    { method: 'GET' }
+  );
+  return Array.isArray(rows) && rows.length ? rows[0] : null;
+}
+
+async function createOffer(offer) {
+  if (!ENABLED) return null;
+  const rows = await pgFetch('/offers', {
+    method: 'POST',
+    headers: { Prefer: 'return=representation' },
+    body: JSON.stringify([{
+      lead_id:         offer.leadId,
+      offer_code:      offer.offerCode,
+      advance_amount:  offer.advanceAmount,
+      factor_rate:     offer.factorRate,
+      term_months:     offer.termMonths,
+      total_repayment: offer.totalRepayment,
+      weekly_debit:    offer.weeklyDebit,
+      terms_version:   offer.termsVersion,
+      status:          'presented',
+      expires_at:      offer.expiresAt,
+      meta:            offer.meta || null,
+    }]),
+  });
+  return Array.isArray(rows) ? rows[0] : null;
+}
+
+// Flip an offer to accepted, but only from 'presented'. The status filter
+// is the concurrency guard: two submits racing the same offer both PATCH,
+// and whichever loses matches zero rows and gets null back, so we never
+// record two acceptances for one offer.
+async function markOfferAccepted(offerId) {
+  if (!ENABLED || !offerId) return null;
+  const rows = await pgFetch(
+    `/offers?id=eq.${encodeURIComponent(offerId)}&status=eq.presented`,
+    {
+      method: 'PATCH',
+      headers: { Prefer: 'return=representation' },
+      body: JSON.stringify({
+        status: 'accepted',
+        accepted_at: new Date().toISOString(),
+      }),
+    }
+  );
+  return Array.isArray(rows) && rows.length ? rows[0] : null;
+}
+
+// The signature record. Append-only — never updated, never deleted.
+async function recordAcceptance(acceptance) {
+  if (!ENABLED) return null;
+  const rows = await pgFetch('/offer_acceptances', {
+    method: 'POST',
+    headers: { Prefer: 'return=representation' },
+    body: JSON.stringify([{
+      offer_id:          acceptance.offerId,
+      lead_id:           acceptance.leadId,
+      typed_signature:   acceptance.typedSignature,
+      signer_email:      acceptance.signerEmail,
+      terms_version:     acceptance.termsVersion,
+      ip:                acceptance.ip || null,
+      user_agent:        acceptance.userAgent || null,
+      contract_snapshot: acceptance.contractSnapshot,
+    }]),
+  });
+  return Array.isArray(rows) ? rows[0] : null;
+}
+
 module.exports = {
   ENABLED,
   pgFetch,
@@ -299,5 +390,10 @@ module.exports = {
   markCompleted,
   listLeads,
   recordEvent,
+  findOpenOffer,
+  getOfferByCode,
+  createOffer,
+  markOfferAccepted,
+  recordAcceptance,
   VALID_EVENTS,
 };
