@@ -22,6 +22,8 @@
 //    vault wiring is unconfigured or down.
 
 const { plaidFetch, requireMethod, readJsonBody } = require('./_plaid');
+const { computeBankMetrics } = require('./_bank-metrics');
+const store = require('./_store');
 
 const SUPABASE_URL = (process.env.SUPABASE_URL || '').replace(/\/$/, '');
 // Any valid project JWT passes Supabase's platform verification; the edge
@@ -92,7 +94,62 @@ async function localExchange(publicToken) {
     }
   }
 
-  return { item_id: itemId, institution_name: institutionName, accounts };
+  return {
+    item_id: itemId,
+    institution_name: institutionName,
+    accounts,
+    // Held in-process only, for the metrics pass below. Never returned to
+    // the browser, never logged, never persisted — see deriveBankMetrics.
+    _accessToken: accessToken,
+    _rawAccounts: accountsResp.accounts || [],
+  };
+}
+
+// Derive deposit metrics from the freshly-linked item, so offers can be
+// priced against real revenue instead of a slider (api/_bank-metrics.js).
+//
+// Only the aggregates are stored. The access token stays in this function's
+// scope and dies with the request — this app deliberately does not hold bank
+// credentials, and that is not changed here.
+//
+// Expect this to come up empty most of the time in production. Plaid prepares
+// transaction history asynchronously after the item is created: /transactions
+// /sync returns HTTP 200 with EMPTY arrays until the pull finishes, rather
+// than erroring. That empty response is precisely why computeBankMetrics
+// returns null rather than a zeroed object — "no data yet" and "this merchant
+// has no deposits" must never collapse into the same $0 revenue figure.
+//
+// The reliable production route is /api/bank-metrics-ingest, called by
+// whoever holds the token once Plaid signals the historical pull is complete.
+async function deriveBankMetrics({ accessToken, rawAccounts, applicant }) {
+  if (!accessToken || !store.ENABLED) return;
+  const leadId = applicant && applicant.leadId;
+  const email = applicant && applicant.email;
+  if (!leadId && !email) return;
+
+  try {
+    const sync = await plaidFetch('/transactions/sync', {
+      access_token: accessToken,
+      count: 500,
+    });
+    const added = (sync && sync.added) || [];
+    if (!added.length) {
+      console.log('[plaid-exchange] transactions not ready yet — metrics deferred to ingest');
+      return;
+    }
+    const metrics = computeBankMetrics({ transactions: added, accounts: rawAccounts });
+    if (!metrics) return;
+    await store.setBankMetrics({ leadId, email, metrics });
+    console.log(
+      `[plaid-exchange] bank metrics stored: ${metrics.monthsCovered}mo, ` +
+      `pricingRevenue=${metrics.pricingRevenue}, usable=${metrics.usableForPricing}`
+    );
+  } catch (err) {
+    // Never fatal. The applicant has connected their bank successfully; a
+    // missing metrics pass just means we fall back to the calculator
+    // estimate when pricing.
+    console.warn('[plaid-exchange] bank metrics pass failed:', err && err.message);
+  }
 }
 
 module.exports = async function handler(req, res) {
@@ -129,15 +186,28 @@ module.exports = async function handler(req, res) {
     }
   }
 
-  // Path 2 — legacy local exchange (nothing persists).
+  // Path 2 — legacy local exchange (the item itself is not persisted).
   try {
     const data = await localExchange(public_token);
-    res.status(200).json({ success: true, ...data, persisted: false });
+    const { _accessToken, _rawAccounts, ...safe } = data;
+    // Respond before the metrics pass so the applicant's bank-connect
+    // confirmation never waits on a transactions call.
+    res.status(200).json({ success: true, ...safe, persisted: false });
+    await deriveBankMetrics({
+      accessToken: _accessToken,
+      rawAccounts: _rawAccounts,
+      applicant,
+    });
   } catch (err) {
     console.error('plaid-exchange-token error:', err && err.stack ? err.stack : err);
-    res.status(err.status || 500).json({
-      error: 'Could not exchange Plaid token',
-      code: err.plaidErrorCode || null,
-    });
+    // The metrics pass runs after the response and swallows its own errors,
+    // but guard anyway — double-sending would turn a successful bank
+    // connection into a client-side failure.
+    if (!res.headersSent) {
+      res.status(err.status || 500).json({
+        error: 'Could not exchange Plaid token',
+        code: err.plaidErrorCode || null,
+      });
+    }
   }
 };

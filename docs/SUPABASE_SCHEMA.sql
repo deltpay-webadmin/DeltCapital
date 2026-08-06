@@ -16,7 +16,16 @@ create table if not exists public.leads (
   email         text not null,
   phone         text,
   source        text,
+  -- What the applicant TOLD us, via the calculator. Self-reported, unverified.
   estimate      jsonb,
+  -- What their BANK told us: monthly deposit aggregates derived from Plaid
+  -- transactions (see api/_bank-metrics.js). Verified, and preferred over
+  -- `estimate` when pricing an offer.
+  --
+  -- Aggregates only. The Plaid access_token is deliberately NOT stored here
+  -- or anywhere else in this database — it lives in the CRM's Plaid Data
+  -- Vault, and this app holds only derived numbers.
+  bank_metrics  jsonb,
   -- set by the /api/sms-nudge cron once we've sent the T+45min reminder
   nudged_at     timestamptz,
   -- set when apply-progress sees the 'submitted' event

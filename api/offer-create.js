@@ -85,10 +85,15 @@ module.exports = async function handler(req, res) {
       return;
     }
 
-    const terms = priceOffer(lead.estimate || {});
+    // Verified deposit metrics when we have them, the self-reported
+    // calculator estimate otherwise. See api/_offer-terms.js.
+    const terms = priceOffer({
+      estimate: lead.estimate || {},
+      metrics: lead.bank_metrics || null,
+    });
     if (!terms) {
-      // We have bank data but nothing to size the advance from. Better to
-      // hand this to a human than to guess at a number.
+      // Nothing to size an advance from — no usable deposit history and no
+      // calculator estimate. Hand it to a human rather than guess a number.
       res.status(409).json({
         error: 'insufficient_data',
         message: "We need a little more information before we can price this. We'll call you shortly.",
@@ -100,7 +105,15 @@ module.exports = async function handler(req, res) {
       leadId,
       offerCode: mintOfferCode(),
       expiresAt: expiryFrom().toISOString(),
-      meta: { stage, source: lead.source || null },
+      meta: {
+        stage,
+        source: lead.source || null,
+        pricingBasis: terms.pricingBasis,
+        // Carry the underwriting signals onto the offer so whoever reviews
+        // this file sees them without re-deriving anything.
+        bankFlags: (lead.bank_metrics && lead.bank_metrics.flags) || null,
+        monthsCovered: (lead.bank_metrics && lead.bank_metrics.monthsCovered) || null,
+      },
       ...terms,
     });
     if (!created) { res.status(500).json({ error: 'offer_create_failed' }); return; }

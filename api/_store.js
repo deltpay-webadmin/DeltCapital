@@ -286,6 +286,31 @@ async function recordEvent({ leadId, event, meta }) {
   return { ok: true };
 }
 
+// ─── Verified bank metrics ───
+
+// Store the deposit aggregates we derived from a lead's connected account.
+//
+// Aggregates ONLY. The Plaid access_token is never written here — it stays
+// in the CRM's Plaid Data Vault, which is where this codebase has always
+// deliberately kept bank credentials. See api/_bank-metrics.js.
+//
+// Matched by lead id when we have one, else by email (the vault's ingest
+// path knows the applicant's email but not necessarily our lead id).
+async function setBankMetrics({ leadId, email, metrics }) {
+  if (!ENABLED || !metrics) return null;
+  let filter;
+  if (leadId) filter = `id=eq.${encodeURIComponent(leadId)}`;
+  else if (email) filter = `email=eq.${encodeURIComponent(String(email).trim().toLowerCase())}`;
+  else return null;
+
+  const rows = await pgFetch(`/leads?${filter}`, {
+    method: 'PATCH',
+    headers: { Prefer: 'return=representation' },
+    body: JSON.stringify({ bank_metrics: metrics }),
+  });
+  return Array.isArray(rows) && rows.length ? rows[0] : null;
+}
+
 // ─── Offers ───
 
 // The lead's current live quote, if any: status 'presented' and not yet
@@ -390,6 +415,7 @@ module.exports = {
   markCompleted,
   listLeads,
   recordEvent,
+  setBankMetrics,
   findOpenOffer,
   getOfferByCode,
   createOffer,
