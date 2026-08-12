@@ -21,6 +21,50 @@
 
 const RESEND_READY = !!(process.env.RESEND_API_KEY && process.env.RESEND_FROM_EMAIL);
 
+// ── Suppression gate + failure log (shared Supabase, service role) ────
+// Addresses that hard-bounced or hit "report spam" land in
+// email_suppressions (fed by the resend-webhook edge function in the
+// DeltPay repo). We skip them here so lifecycle sequences can never
+// hammer a dead inbox. Both helpers are best-effort and fail open —
+// a suppression-check outage must never block transactional mail.
+
+async function isSuppressed(to) {
+  const base = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!base || !key) return false;
+  try {
+    const email = String(to || '').trim().toLowerCase();
+    const r = await fetch(
+      `${base}/rest/v1/email_suppressions?email=eq.${encodeURIComponent(email)}&select=email&limit=1`,
+      { headers: { apikey: key, Authorization: `Bearer ${key}` } },
+    );
+    if (!r.ok) return false;
+    const rows = await r.json().catch(() => []);
+    return Array.isArray(rows) && rows.length > 0;
+  } catch (_) { return false; }
+}
+
+async function logSendError(to, subject, reason) {
+  const base = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!base || !key) return;
+  try {
+    await fetch(`${base}/rest/v1/email_events`, {
+      method: 'POST',
+      headers: {
+        apikey: key, Authorization: `Bearer ${key}`,
+        'Content-Type': 'application/json', Prefer: 'return=minimal',
+      },
+      body: JSON.stringify([{
+        recipient: String(to || '').trim().toLowerCase(),
+        event: 'send_error',
+        reason: String(reason || '').slice(0, 400),
+        subject: String(subject || '').slice(0, 200),
+      }]),
+    });
+  } catch (_) { /* best-effort */ }
+}
+
 // ── Resend path ──────────────────────────────────────────────────────
 
 async function resendSend(to, subject, html, opts = {}) {
@@ -119,8 +163,17 @@ async function getAccessToken() {
 }
 
 async function sendMail(token, senderMailbox, to, subject, html, opts = {}) {
-  if (RESEND_READY) return resendSend(to, subject, html, opts);
-  return graphSend(token, senderMailbox, to, subject, html, opts);
+  if (await isSuppressed(to)) {
+    console.warn(`[email] suppressed recipient — skipping: ${to} (${subject})`);
+    return; // treated as a quiet no-op by callers
+  }
+  try {
+    if (RESEND_READY) return await resendSend(to, subject, html, opts);
+    return await graphSend(token, senderMailbox, to, subject, html, opts);
+  } catch (err) {
+    logSendError(to, subject, err && err.message).catch(() => {});
+    throw err;
+  }
 }
 
 module.exports = { getAccessToken, sendMail };
