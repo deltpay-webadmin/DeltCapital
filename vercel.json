@@ -9,6 +9,7 @@
     { "source": "/r/:code",         "destination": "/api/r?c=:code" }
   ],
   "crons": [
-    { "path": "/api/sms-nudge", "schedule": "*/15 * * * *" }
+    { "path": "/api/sms-nudge", "schedule": "*/15 * * * *" },
+    { "path": "/api/email-lifecycle", "schedule": "10 * * * *" }
   ]
 }

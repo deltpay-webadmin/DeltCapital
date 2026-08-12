@@ -25,6 +25,76 @@
 
 const store = require('./_store');
 const outreach = require('./_outreach');
+const { getAccessToken, sendMail } = require('./_email');
+const { renderEmail, esc } = require('./_email-layout');
+
+const NOTIFY_TO = process.env.LEADS_NOTIFY_EMAIL
+                || process.env.BOOKING_NOTIFY_EMAIL
+                || 'david@deltpay.com';
+
+// DC-8 — "in review" confirmation, sent once when the lead reaches the
+// submitted milestone. Best-effort: a failed send never blocks the beacon.
+function inReviewBody(firstName) {
+  const name = firstName ? String(firstName).trim() : '';
+  return `
+      <h1 style="margin:0 0 16px;font-size:24px;line-height:1.25;font-weight:700;color:#0A1133;">
+        Application complete — your offer is being built.
+      </h1>
+      <p style="font-size:15px;line-height:1.6;margin:0 0 14px;color:#0F0E17;">${name ? `Hi ${esc(name)},` : 'Hi,'}</p>
+      <p style="font-size:15px;line-height:1.6;margin:0 0 14px;color:#0F0E17;">
+        Your bank connection came through and your file is complete. Here's what's happening now:
+      </p>
+      <p style="margin:0 0 10px;font-size:14.5px;line-height:1.55;color:#0F0E17;"><span style="color:#5B5BD6;font-weight:700;">&bull;</span>&nbsp;Our underwriting looks at your <strong style="color:#0A1133;">actual cash flow</strong> — deposits, balance patterns, revenue trend. Not just a credit score.</p>
+      <p style="margin:0 0 10px;font-size:14.5px;line-height:1.55;color:#0F0E17;"><span style="color:#5B5BD6;font-weight:700;">&bull;</span>&nbsp;<strong style="color:#0A1133;">You'll have a decision within 1 business day</strong>, usually faster.</p>
+      <p style="margin:0 0 18px;font-size:14.5px;line-height:1.55;color:#0F0E17;"><span style="color:#5B5BD6;font-weight:700;">&bull;</span>&nbsp;No credit pull happens unless you accept an offer.</p>
+      <p style="font-size:15px;line-height:1.6;margin:0 0 14px;color:#0F0E17;">
+        Nothing to do but keep your phone handy. Talk soon.
+      </p>
+      <p style="margin:22px 0 0;color:#0A1133;font-size:13.5px;line-height:1.55;">
+        — David Hazday<br/>
+        <span style="color:#6B6877;font-weight:500;">Director, Delt Capital</span>
+      </p>`;
+}
+
+async function sendInReview(leadId) {
+  const lead = await store.getLead(leadId);
+  if (!lead || !lead.email || lead.review_emailed_at) return;
+  let token = null;
+  try { token = await getAccessToken(); } catch (_) { /* Resend path needs no token */ }
+  const html = renderEmail({
+    body: inReviewBody(lead.first_name),
+    audience: 'lead',
+    includeTrustStrip: true,
+    recipientEmail: lead.email,
+    recipientPhone: lead.phone,
+    preheader: 'Decision within 1 business day. No action needed.',
+    openPixelUrl: outreach.openPixelUrl({ leadId, email: lead.email, campaign: 'in-review' }),
+  });
+  await sendMail(token, process.env.OUTLOOK_FROM_EMAIL, lead.email,
+    'Application received — your offer is being built', html, {
+      fromName: 'Delt Capital',
+      replyTo: [NOTIFY_TO],
+    });
+  await store.markReviewEmailed(leadId);
+  outreach.recordOutreach({
+    leadId, leadEmail: lead.email, leadName: lead.first_name,
+    campaign: 'in-review', event: 'sent',
+  }).catch(() => {});
+  // Internal heads-up — a completed file is the hottest moment in the funnel.
+  sendMail(token, process.env.OUTLOOK_FROM_EMAIL, NOTIFY_TO,
+    `🔥 Capital application submitted: ${lead.business_name || lead.first_name || leadId}`,
+    renderEmail({
+      body: `<h2 style="margin:0 0 12px;font-size:18px;">File complete — underwrite now</h2>
+        <p style="margin:6px 0;font-size:14px;"><b>Lead:</b> ${esc(lead.first_name || '')} — ${esc(lead.business_name || '')}</p>
+        <p style="margin:6px 0;font-size:14px;"><b>Email:</b> ${esc(lead.email || '')}</p>
+        <p style="margin:6px 0;font-size:14px;"><b>Phone:</b> ${esc(lead.phone || '')}</p>
+        <p style="margin:12px 0 0;font-size:13px;color:#555;">The lead was told: decision within 1 business day.</p>`,
+      audience: 'operator',
+      includeTrustStrip: false,
+    }),
+    { fromName: 'Delt Capital' },
+  ).catch(() => {});
+}
 
 function setCors(res) {
   // Same-origin in production; permissive here so preview deploys (which
@@ -69,6 +139,11 @@ module.exports = async function handler(req, res) {
 
   try {
     await store.recordEvent({ leadId, event, meta });
+    // DC-8: confirmation + internal alert on the submitted milestone.
+    if (event === 'submitted') {
+      sendInReview(leadId).catch((err) =>
+        console.error('[apply-progress] in-review email failed:', err && err.message));
+    }
     // A modal_opened beacon carrying utm params means the lead arrived
     // via a tracked email/SMS link — record the click against the lead
     // so the backend's Outreach page can attribute it to a campaign

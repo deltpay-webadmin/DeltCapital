@@ -151,6 +151,47 @@ async function findStaleLeads({ minMinutes = 45, maxMinutes = 24 * 60 } = {}) {
   return Array.isArray(rows) ? rows : [];
 }
 
+// Find leads for the email lifecycle cron (api/email-lifecycle.js):
+// never submitted, have an email, created 24h–14d ago, and behind on the
+// email sequence (email_nudge_count 0 → DC-3 at 24h, 1 → DC-4 at 72h).
+// Selection is deliberately independent of the 45-min SMS nudge — both
+// sequences can touch the same lead on different clocks.
+async function findEmailLifecycleLeads() {
+  if (!ENABLED) return [];
+  const dayAgo = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
+  const twoWeeksAgo = new Date(Date.now() - 14 * 24 * 3600 * 1000).toISOString();
+  const path = `/leads?` + [
+    `created_at=lte.${dayAgo}`,
+    `created_at=gte.${twoWeeksAgo}`,
+    `completed_at=is.null`,
+    `email=not.is.null`,
+    `email_nudge_count=lt.2`,
+    `select=*`,
+    `order=created_at.asc`,
+    `limit=50`,
+  ].join('&');
+  const rows = await pgFetch(path, { method: 'GET' });
+  return Array.isArray(rows) ? rows : [];
+}
+
+async function markEmailNudged(leadId, count) {
+  if (!ENABLED || !leadId) return;
+  await pgFetch(`/leads?id=eq.${encodeURIComponent(leadId)}`, {
+    method: 'PATCH',
+    headers: { Prefer: 'return=minimal' },
+    body: JSON.stringify({ email_nudge_count: count, email_nudged_at: new Date().toISOString() }),
+  });
+}
+
+async function markReviewEmailed(leadId) {
+  if (!ENABLED || !leadId) return;
+  await pgFetch(`/leads?id=eq.${encodeURIComponent(leadId)}`, {
+    method: 'PATCH',
+    headers: { Prefer: 'return=minimal' },
+    body: JSON.stringify({ review_emailed_at: new Date().toISOString() }),
+  });
+}
+
 async function markNudged(leadId) {
   if (!ENABLED || !leadId) return;
   await pgFetch(`/leads?id=eq.${encodeURIComponent(leadId)}`, {
@@ -234,6 +275,9 @@ module.exports = {
   getLead,
   getLeadByPrefix,
   findStaleLeads,
+  findEmailLifecycleLeads,
+  markEmailNudged,
+  markReviewEmailed,
   markNudged,
   markCompleted,
   listLeads,
