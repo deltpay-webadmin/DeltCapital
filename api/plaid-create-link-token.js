@@ -20,14 +20,30 @@ module.exports = async function handler(req, res) {
   }
   const kind = productKind === 'idv' ? 'idv' : 'bank';
 
+  // Transactions consent is what Delt underwrites on. Guarantee it is
+  // requested on every bank token regardless of the PLAID_PRODUCTS env —
+  // items minted without it land in the CRM vault as unusable
+  // ADDITIONAL_CONSENT_REQUIRED errors (the exact production incident
+  // this guard was added for).
+  const bankProducts = plaidProducts();
+  if (!bankProducts.includes('transactions')) bankProducts.push('transactions');
+
   const body = {
     user: { client_user_id: clientUserId },
     client_name: 'Delt Capital',
     language: 'en',
     country_codes: plaidCountryCodes(),
-    products: kind === 'idv' ? ['identity_verification'] : plaidProducts(),
+    products: kind === 'idv' ? ['identity_verification'] : bankProducts,
     hosted_link: { url_lifetime_seconds: 3600 },
   };
+
+  // Attach the CRM's webhook receiver so items created here get
+  // webhook-driven syncs (INITIAL_UPDATE etc.) and error/repair signals.
+  // Without it the vault only learns about new data on the nightly cron.
+  const supabaseUrl = (process.env.SUPABASE_URL || '').replace(/\/$/, '');
+  if (kind === 'bank' && supabaseUrl) {
+    body.webhook = `${supabaseUrl}/functions/v1/plaid-webhook`;
+  }
 
   if (kind === 'idv') {
     const templateId = (process.env.PLAID_IDV_TEMPLATE_ID || '').trim();
