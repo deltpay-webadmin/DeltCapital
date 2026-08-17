@@ -37,7 +37,7 @@ function canForward(applicant) {
   );
 }
 
-async function forwardToVault(publicToken, applicant) {
+async function forwardToVault(publicToken, applicant, linkSessionId) {
   const url = `${SUPABASE_URL}/functions/v1/make-server-940653c6/apply/plaid-exchange`;
   const r = await fetch(url, {
     method: 'POST',
@@ -53,6 +53,8 @@ async function forwardToVault(publicToken, applicant) {
         fullName: applicant.fullName || undefined,
         businessName: applicant.businessName || undefined,
         leadId: applicant.leadId || undefined,
+        // Plaid Link session id — CRM-side funnel telemetry.
+        linkSessionId: linkSessionId || undefined,
       },
     }),
   });
@@ -99,7 +101,7 @@ module.exports = async function handler(req, res) {
   if (!requireMethod(req, res, 'POST')) return;
 
   const body = readJsonBody(req);
-  const { public_token, applicant } = body;
+  const { public_token, applicant, link_session_id } = body;
   if (!public_token || typeof public_token !== 'string') {
     res.status(400).json({ error: 'public_token is required' });
     return;
@@ -108,7 +110,11 @@ module.exports = async function handler(req, res) {
   // Path 1 — persist into the CRM vault via the Delt Backend edge function.
   if (canForward(applicant)) {
     try {
-      const data = await forwardToVault(public_token, applicant);
+      const data = await forwardToVault(
+        public_token,
+        applicant,
+        typeof link_session_id === 'string' ? link_session_id : null,
+      );
       res.status(200).json({
         success: true,
         item_id: data.item_id,

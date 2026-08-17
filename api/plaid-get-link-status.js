@@ -27,6 +27,7 @@ function extractCompletion(data) {
         return {
           public_token: a.public_token,
           institution_name: (a.institution && a.institution.name) || '',
+          link_session_id: (s && s.link_session_id) || '',
         };
       }
     }
@@ -58,6 +59,7 @@ module.exports = async function handler(req, res) {
         status: 'success',
         public_token: completion.public_token,
         institution_name: completion.institution_name,
+        link_session_id: completion.link_session_id,
       });
       return;
     }

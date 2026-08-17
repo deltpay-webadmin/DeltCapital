@@ -40,16 +40,34 @@ window.PlaidIntegration = window.PlaidIntegration || {
   // `applicant` ({ email, fullName, businessName, leadId }) lets the server
   // persist the connection into the Delt CRM vault, matched to the lead by
   // email. Optional — the exchange still works (non-persisting) without it.
-  exchangePublicToken: (publicToken, applicant) =>
+  // `linkSessionId` (from Link's onSuccess metadata / hosted-link poll)
+  // rides along for CRM funnel telemetry.
+  exchangePublicToken: (publicToken, applicant, linkSessionId) =>
     fetch('/api/plaid-exchange-token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ public_token: publicToken, applicant: applicant || null }),
+      body: JSON.stringify({
+        public_token: publicToken,
+        applicant: applicant || null,
+        link_session_id: linkSessionId || null,
+      }),
     }).then(async (r) => {
       const data = await r.json().catch(() => ({}));
       if (!r.ok) throw V1PlaidThrowFromResponse(data, 'exchangePublicToken failed');
       return data;
     }),
+
+  // Link funnel telemetry (opened / exit / error) → CRM plaid_link_events.
+  // Strictly fire-and-forget: failures are swallowed, nothing awaits this.
+  recordLinkEvent: (payload) => {
+    try {
+      fetch('/api/plaid-link-event', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload || {}),
+      }).catch(() => {});
+    } catch (_) {}
+  },
 
   createIDV: () =>
     fetch('/api/plaid-create-idv', {
@@ -239,9 +257,9 @@ function V1PlaidLink({ open, onClose, onSuccess, applicant }) {
   // Exchange a public_token (from either the SDK or the hosted phone handoff)
   // for account metadata, then hand straight back to the apply flow. No
   // success-flash screen — the apply flow takes over and advances.
-  const completeWithPublicToken = React.useCallback(async (publicToken, instHint) => {
+  const completeWithPublicToken = React.useCallback(async (publicToken, instHint, linkSessionId) => {
     try {
-      const result = await window.PlaidIntegration.exchangePublicToken(publicToken, applicant);
+      const result = await window.PlaidIntegration.exchangePublicToken(publicToken, applicant, linkSessionId);
       const accountStrs = (result.accounts || []).map((a) =>
         a.mask ? `${a.name} ••${a.mask}` : a.name);
       onSuccess && onSuccess({
@@ -292,7 +310,7 @@ function V1PlaidLink({ open, onClose, onSuccess, applicant }) {
         if (pollStoppedRef.current) return;
         if (res && res.status === 'success' && res.public_token) {
           stopLinkPolling();
-          completeWithPublicToken(res.public_token, res.institution_name);
+          completeWithPublicToken(res.public_token, res.institution_name, res.link_session_id || null);
           return;
         }
       } catch (e) {
@@ -333,18 +351,41 @@ function V1PlaidLink({ open, onClose, onSuccess, applicant }) {
     }
     setErr(null);
     setStage('opening');
+    const applicantEmail = (applicant && applicant.email) || undefined;
     handlerRef.current = window.Plaid.create({
       token: tokenData.link_token,
-      onSuccess: (publicToken /*, metadata */) => {
-        completeWithPublicToken(publicToken);
+      onSuccess: (publicToken, metadata) => {
+        completeWithPublicToken(
+          publicToken,
+          metadata && metadata.institution && metadata.institution.name,
+          (metadata && metadata.link_session_id) || null,
+        );
       },
-      onExit: (exitErr /*, metadata */) => {
+      onExit: (exitErr, metadata) => {
+        // Structured exit capture: reason + session id → CRM funnel.
+        window.PlaidIntegration.recordLinkEvent({
+          event: 'exit',
+          linkSessionId: (metadata && metadata.link_session_id) || undefined,
+          errorCode: (exitErr && exitErr.error_code) || undefined,
+          institution: (metadata && metadata.institution && metadata.institution.name) || undefined,
+          email: applicantEmail,
+        });
         // User closed Plaid Link. Drop back to our intro so they can retry
         // or pick the mobile path.
         if (exitErr) {
           setErr(exitErr.display_message || exitErr.error_message || 'Plaid Link exited.');
         }
         setStage('intro');
+      },
+      onEvent: (eventName, metadata) => {
+        if (eventName !== 'OPEN' && eventName !== 'ERROR') return;
+        window.PlaidIntegration.recordLinkEvent({
+          event: eventName === 'OPEN' ? 'opened' : 'error',
+          linkSessionId: (metadata && metadata.link_session_id) || undefined,
+          errorCode: (metadata && metadata.error_code) || undefined,
+          institution: (metadata && metadata.institution_name) || undefined,
+          email: applicantEmail,
+        });
       },
     });
     handlerRef.current.open();
@@ -376,10 +417,20 @@ function V1PlaidLink({ open, onClose, onSuccess, applicant }) {
           }}>Delt uses Plaid to connect your bank</div>
           <div style={{
             fontFamily: V1.fontBody, fontSize: 13.5, lineHeight: 1.55,
-            color: '#475569', textAlign: 'center', marginBottom: 18,
+            color: '#475569', textAlign: 'center', marginBottom: 12,
           }}>
             Plaid lets you securely link your account in seconds. Delt sees
             balances and 90 days of deposits — never your credentials.
+          </div>
+          <div style={{
+            fontFamily: V1.fontBody, fontSize: 11.5, lineHeight: 1.5,
+            color: '#94a3b8', textAlign: 'center', marginBottom: 16,
+          }}>
+            By continuing, you authorize Delt Capital to access your account,
+            balance and transaction data through Plaid to review your funding
+            request, as described in our{' '}
+            <a href="/#privacy" target="_blank" rel="noopener noreferrer"
+              style={{ color: '#64748b', textDecoration: 'underline' }}>Privacy Policy</a>.
           </div>
           {err && (
             <div style={{
